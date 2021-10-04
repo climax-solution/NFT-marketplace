@@ -1,0 +1,35 @@
+/* .card {
+  position: relative;
+  margin: 1rem;
+  flex: 1 0 25rem;
+  max-width: 15rem;
+  max-height: 25rem;
+  height: 100%;
+  transition: 0.2s;
+  cursor: pointer;
+} */
+
+/* .card:hover {
+  transform: translateY(-0.5rem);
+  box-shadow: 0.5rem 0.75rem 1.5rem #bbbbbb;
+} */
+
+.image-over img {
+  min-width: 100%;
+  max-height: 100%;
+}
+
+.image-over {
+  min-height: 65%;
+  max-height: 65%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.assets-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: first baseline;
+  margin-top: 5rem;
+}
