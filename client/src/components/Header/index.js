@@ -23,9 +23,7 @@ class Header extends Component{
         }
     }
     async connectWallet() {
-        alert('YERS');
         await this.props.WalletConnect();
-        alert('OK');
     }
     render() {
         const { wallet_connect } = this.state;
