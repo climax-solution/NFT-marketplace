@@ -286,6 +286,7 @@ class MyPhotos extends Component {
                                                         <Button
                                                             size={"medium"}
                                                             width={1}
+                                                            className="btn"
                                                             onClick={() => this.putOnSale(item.photoId, idx)}
                                                         >
                                                             {" "}
