@@ -1,45 +1,36 @@
 import React, { Component } from "react";
 import getWeb3, { getGanacheWeb3, Web3 } from "../../utils/getWeb3";
-import ipfs from "../ipfs/ipfsApi.js";
+import ipfs from '../ipfs/ipfsApi.js'
 
-import { Grid } from "@material-ui/core";
-import {
-    Loader,
-    Button,
-    Card,
-    Input,
-    Heading,
-    Table,
-    Form,
-    Field,
-} from "rimble-ui";
-import { zeppelinSolidityHotLoaderOptions } from "../../../config/webpack";
-
-// import styles from "../../App.module.scss";
+import { Grid } from '@material-ui/core';
+import { Loader, Button, Card, Input, Heading, Table, Form, Field } from 'rimble-ui';
+import { zeppelinSolidityHotLoaderOptions } from '../../../config/webpack';
+import { confirmAlert } from 'react-confirm-alert';
 import Breadcrumb from "../Breadcrumb/Breadcrumb";
 import { SetStatus } from "../../store/action/wallet.actions";
 import { connect } from "react-redux";
+import styles from "../../App.module.scss";
+import 'react-confirm-alert/src/react-confirm-alert.css';
 
 class Publish extends Component {
-    constructor(props) {
+    constructor(props) {    
         super(props);
 
         this.state = {
-            /////// Default state
-            storageValue: 0,
-            web3: null,
-            accounts: null,
-            route: window.location.pathname.replace("/", ""),
+          /////// Default state
+          storageValue: 0,
+          web3: null,
+          accounts: null,
+          route: window.location.pathname.replace("/", ""),
 
-            /////// NFT concern
-            valueNFTName: "",
-            valueNFTSymbol: "",
-            valuePhotoPrice: "",
-            photoNFT : null, 
+          /////// NFT concern
+          valueNFTName: '',
+          valueNFTSymbol: '',
+          valuePhotoPrice: '',
 
-            /////// Ipfs Upload
-            buffer: null,
-            ipfsHash: "",
+          /////// Ipfs Upload
+          buffer: null,
+          ipfsHash: ''
         };
 
         /////// Handle
@@ -52,9 +43,10 @@ class Publish extends Component {
         this.onSubmit = this.onSubmit.bind(this);
     }
 
+
     ///--------------------------
     /// Handler
-    ///--------------------------
+    ///-------------------------- 
     handleNFTName(event) {
         this.setState({ valueNFTName: event.target.value });
     }
@@ -68,279 +60,275 @@ class Publish extends Component {
     }
 
     ///--------------------------
-    /// Functions of ipfsUpload
-    ///--------------------------
+    /// Functions of ipfsUpload 
+    ///-------------------------- 
     captureFile(event) {
-        event.preventDefault();
-        const file = event.target.files[0];
-
-        const reader = new window.FileReader();
-        reader.readAsArrayBuffer(file); // Read bufffered file
+        event.preventDefault()
+        const file = event.target.files[0]
+        
+        const reader = new window.FileReader()
+        reader.readAsArrayBuffer(file)  // Read bufffered file
 
         // Callback
         reader.onloadend = () => {
-            this.setState({ buffer: Buffer(reader.result) });
-            console.log("=== buffer ===", this.state.buffer);
-        };
+          this.setState({ buffer: Buffer(reader.result) })
+          console.log('=== buffer ===', this.state.buffer)
+        }
     }
-
+      
     onSubmit(event) {
-        const {
-            web3,
-            accounts,
-            photoNFT,
-            valueNFTName,
-            valueNFTSymbol,
-            valuePhotoPrice,
-        } = this.state;
+        const { web3, accounts, photoNFTFactory, photoNFTMarketplace, PHOTO_NFT_MARKETPLACE, valueNFTName, valueNFTSymbol, valuePhotoPrice } = this.state;
 
-        console.log('====photoNFT', photoNFT);
-
-        event.preventDefault();
+        event.preventDefault()
 
         ipfs.files.add(this.state.buffer, (error, result) => {
-            // In case of fail to upload to IPFS
+          // In case of fail to upload to IPFS
 
-            console.log("add function");
+          console.log('add function')
 
-            if (error) {
-                console.log("error", error);
-                console.error(error);
-                return;
-            }
+          if (error) {
+            console.log('error', error)
+            console.error(error)
+            return
+          }
 
-            // In case of successful to upload to IPFS
-            this.setState({ ipfsHash: result[0].hash });
-            console.log("=== ipfsHash ===", this.state.ipfsHash);
+          // In case of successful to upload to IPFS
+          this.setState({ ipfsHash: result[0].hash });
+          console.log('=== ipfsHash ===', this.state.ipfsHash);
 
-            const nftName = valueNFTName;
-            const nftSymbol = "NFT-MARKETPLACE"; /// [Note]: All NFT's symbol are common symbol
-            //const nftSymbol = valueNFTSymbol;
-            const _photoPrice = valuePhotoPrice;
-            console.log("=== nftName ===", nftName);
-            console.log("=== nftSymbol ===", nftSymbol);
-            console.log("=== _photoPrice ===", _photoPrice);
-            this.setState({
-                valueNFTName: "",
-                valueNFTSymbol: "",
-                valuePhotoPrice: "",
-            });
+          const nftName = valueNFTName;
+          const nftSymbol = "NFT-MARKETPLACE";  /// [Note]: All NFT's symbol are common symbol
+          //const nftSymbol = valueNFTSymbol;
+          const _photoPrice = valuePhotoPrice;
+          console.log('=== nftName ===', nftName);
+          console.log('=== nftSymbol ===', nftSymbol);
+          console.log('=== _photoPrice ===', _photoPrice);
+          this.setState({ 
+            valueNFTName: '',
+            valueNFTSymbol: '',
+            valuePhotoPrice: '',
+            buffer: ''
+          });
 
-            //let PHOTO_NFT;  /// [Note]: This is a photoNFT address created
-            const photoPrice = web3.utils.toWei(_photoPrice, "ether");
-            const ipfsHashOfPhoto = this.state.ipfsHash;
-            photoNFT.methods
-                .mint(
-                  ipfsHashOfPhoto,
-                  photoPrice,
-                  nftName
-                )
-                .send({ from: accounts[0] })
-                .once("receipt", (receipt) => {
-                    console.log("=== receipt ===", receipt);
+          //let PHOTO_NFT;  /// [Note]: This is a photoNFT address created
+          const photoPrice = web3.utils.toWei(_photoPrice, 'ether');
+          const ipfsHashOfPhoto = this.state.ipfsHash;
+          photoNFTFactory.methods.createNewPhotoNFT(nftName, nftSymbol, photoPrice, ipfsHashOfPhoto).send({ from: accounts[0] })
+          .once('receipt', (receipt) => {
+            console.log('=== receipt ===', receipt);
 
-                    /// Check owner of photoId
-                    const photoId = receipt.events.PhotoNFTCreated.returnValues.photoId; 
-                    console.log('====photoId ====', photoId)
+            const PHOTO_NFT = receipt.events.PhotoNFTCreated.returnValues.photoNFT;
+            console.log('=== PHOTO_NFT ===', PHOTO_NFT);
 
-                    /// [Note]: Promise (nested-structure) is needed for executing those methods below (Or, rewrite by async/await)
-                    photoNFT.methods.openTrade(photoId).send({from : accounts[0]})
-                        .once("receipt", (receipt) => {
-                            console.log('===openTrade=====', receipt);
-                        });
-                });
-        });
-    }
+            /// Get instance by using created photoNFT address
+            let PhotoNFT = {};
+            PhotoNFT = require("../../../../build/contracts/PhotoNFT.json"); 
+            let photoNFT = new web3.eth.Contract(PhotoNFT.abi, PHOTO_NFT);
+            console.log('=== photoNFT ===', photoNFT);
+     
+            /// Check owner of photoId==1
+            const photoId = 1;  /// [Note]: PhotoID is always 1. Because each photoNFT is unique.
+            photoNFT.methods.ownerOf(photoId).call().then(owner => console.log('=== owner of photoId 1 ===', owner));
+            
+            /// [Note]: Promise (nested-structure) is needed for executing those methods below (Or, rewrite by async/await)
+            photoNFT.methods.approve(PHOTO_NFT_MARKETPLACE, photoId).send({ from: accounts[0] }).once('receipt', (receipt) => {
+                /// Put on sale (by a seller who is also called as owner)
+                photoNFTMarketplace.methods.openTradeWhenCreateNewPhotoNFT(PHOTO_NFT, photoId, photoPrice).send({ from: accounts[0] }).once('receipt', (receipt) => {})
+            })
+          })
+        })
+    }  
 
-    ////////////////////////////////////
+     
+    //////////////////////////////////// 
     /// Ganache
     ////////////////////////////////////
     getGanacheAddresses = async () => {
         if (!this.ganacheProvider) {
-            this.ganacheProvider = getGanacheWeb3();
+          this.ganacheProvider = getGanacheWeb3();
         }
         if (this.ganacheProvider) {
-            return await this.ganacheProvider.eth.getAccounts();
+          return await this.ganacheProvider.eth.getAccounts();
         }
         return [];
-    };
+    }
 
     componentDidMount = async () => {
         const hotLoaderDisabled = zeppelinSolidityHotLoaderOptions.disabled;
-
-        let PhotoNFT = {};
+     
+        let PhotoNFTFactory = {};
+        let PhotoNFTMarketplace = {};
         try {
-          PhotoNFT = require("../../../../build/contracts/PhotoNFT.json"); // Load ABI of contract of PhotoNFTFactory
+          PhotoNFTFactory = require("../../../../build/contracts/PhotoNFTFactory.json"); // Load ABI of contract of PhotoNFTFactory
+          PhotoNFTMarketplace = require("../../../../build/contracts/PhotoNFTMarketplace.json");
         } catch (e) {
-            console.log(e);
+          console.log(e);
         }
 
         try {
-            const isProd = process.env.NODE_ENV === "production";
-            if (!isProd) {
-                // Get network provider and web3 instance.
-                const web3 = await getWeb3("load");
-                let ganacheAccounts = [];
+          const isProd = process.env.NODE_ENV === 'production';
+          if (!isProd) {
+            // Get network provider and web3 instance.
+            const web3 = await getWeb3("load");
+            let ganacheAccounts = [];
 
-                try {
-                    ganacheAccounts = await this.getGanacheAddresses();
-                } catch (e) {
-                    console.log("Ganache is not running");
-                }
-
-                // Use web3 to get the user's accounts.
-                const accounts = await web3.eth.getAccounts();
-                // Get the contract instance.
-                const networkId = await web3.eth.net.getId();
-                const networkType = await web3.eth.net.getNetworkType();
-                const isMetaMask = web3.currentProvider.isMetaMask;
-                console.log('isMetaMask',isMetaMask);
-                this.props.setConnection(isMetaMask);
-                let balance =
-                    accounts.length > 0
-                        ? await web3.eth.getBalance(accounts[0])
-                        : web3.utils.toWei("0");
-                balance = web3.utils.fromWei(balance, "ether");
-
-                let instancePhotoNFT = null;
-                let deployedNetwork = null;
-
-                // Create instance of contracts
-                if (PhotoNFT.networks) {
-                    deployedNetwork =
-                    PhotoNFT.networks[networkId.toString()];
-                    if (deployedNetwork) {
-                      instancePhotoNFT = new web3.eth.Contract(
-                            PhotoNFT.abi,
-                            deployedNetwork && deployedNetwork.address
-                        );
-                        console.log(
-                            "=== instancePhotoNFT ===",
-                            instancePhotoNFT
-                        );
-                    }
-                }
-                if (instancePhotoNFT) {
-                    // Set web3, accounts, and contract to the state, and then proceed with an
-                    // example of interacting with the contract's methods.
-                    this.setState(
-                        {
-                            web3,
-                            ganacheAccounts,
-                            accounts,
-                            balance,
-                            networkId,
-                            networkType,
-                            hotLoaderDisabled,
-                            isMetaMask,
-                            photoNFT: instancePhotoNFT,
-                        },
-                        () => {
-                            this.refreshValues(instancePhotoNFT);
-                            setInterval(() => {
-                                this.refreshValues(instancePhotoNFT);
-                            }, 5000);
-                        }
-                    );
-                } else {
-                    this.setState({
-                        web3,
-                        ganacheAccounts,
-                        accounts,
-                        balance,
-                        networkId,
-                        networkType,
-                        hotLoaderDisabled,
-                        isMetaMask,
-                    });
-                }
+            try {
+              ganacheAccounts = await this.getGanacheAddresses();
+            } catch (e) {
+              console.log('Ganache is not running');
             }
+
+            // Use web3 to get the user's accounts.
+            const accounts = await web3.eth.getAccounts();
+            // Get the contract instance.
+            const networkId = await web3.eth.net.getId();
+            const networkType = await web3.eth.net.getNetworkType();
+            const isMetaMask = web3.currentProvider.isMetaMask;
+            this.props.setConnection(isMetaMask);
+            let balance = accounts.length > 0 ? await web3.eth.getBalance(accounts[0]): web3.utils.toWei('0');
+            balance = web3.utils.fromWei(balance, 'ether');
+
+            let instancePhotoNFTFactory = null;
+            let instancePhotoNFTMarketplace = null;
+            let PHOTO_NFT_MARKETPLACE;
+            let deployedNetwork = null;
+
+            // Create instance of contracts
+            if (PhotoNFTFactory.networks) {
+              deployedNetwork = PhotoNFTFactory.networks[networkId.toString()];
+              if (deployedNetwork) {
+                instancePhotoNFTFactory = new web3.eth.Contract(
+                  PhotoNFTFactory.abi,
+                  deployedNetwork && deployedNetwork.address,
+                );
+                console.log('=== instancePhotoNFTFactory ===', instancePhotoNFTFactory);
+              }
+            }
+
+            if (PhotoNFTMarketplace.networks) {
+              deployedNetwork = PhotoNFTMarketplace.networks[networkId.toString()];
+              if (deployedNetwork) {
+                instancePhotoNFTMarketplace = new web3.eth.Contract(
+                  PhotoNFTMarketplace.abi,
+                  deployedNetwork && deployedNetwork.address,
+                );
+                PHOTO_NFT_MARKETPLACE = deployedNetwork.address;
+                console.log('=== instancePhotoNFTMarketplace ===', instancePhotoNFTMarketplace);
+                console.log('=== PHOTO_NFT_MARKETPLACE ===', PHOTO_NFT_MARKETPLACE);
+              }
+            }
+
+            if (instancePhotoNFTFactory) {
+                // Set web3, accounts, and contract to the state, and then proceed with an
+                // example of interacting with the contract's methods.
+                this.setState({ 
+                    web3, 
+                    ganacheAccounts, 
+                    accounts, 
+                    balance, 
+                    networkId, 
+                    networkType, 
+                    hotLoaderDisabled,
+                    isMetaMask, 
+                    photoNFTFactory: instancePhotoNFTFactory,
+                    photoNFTMarketplace: instancePhotoNFTMarketplace, 
+                    PHOTO_NFT_MARKETPLACE: PHOTO_NFT_MARKETPLACE }, () => {
+                      this.refreshValues(instancePhotoNFTFactory);
+                      setInterval(() => {
+                        this.refreshValues(instancePhotoNFTFactory);
+                    }, 5000);
+                });
+            }
+            else {
+              this.setState({ web3, ganacheAccounts, accounts, balance, networkId, networkType, hotLoaderDisabled, isMetaMask });
+            }
+          }
         } catch (error) {
-            // Catch any errors for any of the above operations.
-            // alert(
-            //     `Failed to load web3, accounts, or contract. Check console for details.`
-            // );
-            console.error(error);
+          // Catch any errors for any of the above operations.
+          alert(
+            `Failed to load web3, accounts, or contract. Check console for details.`,
+          );
+          console.error(error);
         }
     };
 
     componentWillUnmount() {
         if (this.interval) {
-            clearInterval(this.interval);
+          clearInterval(this.interval);
         }
     }
 
-    refreshValues = (instancePhotoNFT) => {
-        if (instancePhotoNFT) {
-            console.log("refreshValues of instancePhotoNFT");
+    refreshValues = (instancePhotoNFTFactory) => {
+        if (instancePhotoNFTFactory) {
+          console.log('refreshValues of instancePhotoNFTFactory');
         }
-    };
+    }
 
-    render() {
+    render()  {
         return (
-            <>
-                <Breadcrumb title="MINT"/>
-                <section className="author-area">
-                    <div className="container">
-                        <div className="row mt-3 mb-3">
-                            {/*  */}
-                            <div className="col-12 col-sm-8 col-md-6 mx-auto">
-                                {/* Item Form */}
-                                <form className="item-form card no-hover" onSubmit={this.onSubmit}>
-                                    <Field label="Token Item Name" className="form-group">
-                                        <Input
-                                            type="text"
-                                            width={1}
-                                            placeholder="e.g) Art NFT Token"
-                                            required={true}
-                                            value={this.state.valueNFTName}
-                                            onChange={this.handleNFTName}
-                                        />
-                                    </Field>
+          <>
+            <Breadcrumb title="MINT"/>
+            <section className="author-area">
+                <div className="container">
+                    <div className="row mt-3 mb-3">
+                        {/*  */}
+                        <div className="col-12 col-sm-8 col-md-6 mx-auto">
+                            {/* Item Form */}
+                            <form className="item-form card no-hover" onSubmit={this.onSubmit}>
+                                <Field label="Token Item Name" className="form-group">
+                                    <Input
+                                        type="text"
+                                        width={1}
+                                        placeholder="e.g) Art NFT Token"
+                                        required={true}
+                                        value={this.state.valueNFTName}
+                                        onChange={this.handleNFTName}
+                                    />
+                                </Field>
 
-                                    {/*
-                                    <Field label="Photo NFT Symbol">
-                                        <Input
-                                            type="text"
-                                            width={1}
-                                            placeholder="e.g) ARNT"
-                                            required={true}
-                                            value={this.state.valueNFTSymbol} 
-                                            onChange={this.handleNFTSymbol}                                        
-                                        />
-                                    </Field>
-                                    */}
+                                {/*
+                                <Field label="Photo NFT Symbol">
+                                    <Input
+                                        type="text"
+                                        width={1}
+                                        placeholder="e.g) ARNT"
+                                        required={true}
+                                        value={this.state.valueNFTSymbol} 
+                                        onChange={this.handleNFTSymbol}                                        
+                                    />
+                                </Field>
+                                */}
 
-                                    <Field label="Token Price (unit: ETH)" className="form-group">
-                                        <Input
-                                            type="text"
-                                            width={1}
-                                            placeholder="e.g) 10"
-                                            required={true}
-                                            value={this.state.valuePhotoPrice}
-                                            onChange={this.handlePhotoPrice}
-                                        />
-                                    </Field>
+                                <Field label="Token Price (unit: ETH)" className="form-group">
+                                    <Input
+                                        type="number"
+                                        width={1}
+                                        placeholder="e.g) 10"
+                                        required={true}
+                                        value={this.state.valuePhotoPrice}
+                                        onChange={this.handlePhotoPrice}
+                                    />
+                                </Field>
 
-                                    <Field label="Art for uploading to IPFS" className="form-group">
-                                        <input
-                                            type="file"
-                                            onChange={this.captureFile}
-                                            required={true}
-                                        />
-                                    </Field>
-                                    <button className="btn w-100 mt-3 mt-sm-4" type="submit">Create Item</button>
-                                </form>
-                            </div>
+                                <Field label="Art for uploading to IPFS" className="form-group">
+                                    <input
+                                        type="file"
+                                        onChange={this.captureFile}
+                                        required={true}
+                                    />
+                                </Field>
+                                <button className="btn w-100 mt-3 mt-sm-4" type="submit">Create Item</button>
+                            </form>
                         </div>
                     </div>
-                </section>
-            </>
+                </div>
+            </section>
+          </>
         );
     }
 }
 
 const mapDispatchToProps = dispatch => ({
-    setConnection: (status) => dispatch(SetStatus(status))
+  setConnection: (status) => dispatch(SetStatus(status))
 })
 export default connect(null, mapDispatchToProps)(Publish);

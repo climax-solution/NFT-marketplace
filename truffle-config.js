@@ -1,9 +1,9 @@
 require('dotenv').config();
 
 const HDWalletProvider = require('@truffle/hdwallet-provider');  // @notice - Should use new module.
-const mnemonic = 'offer rescue tag suit home regular prevent again life local cash right'; // process.env.MNEMONIC;
+const mnemonic = 'copper ecology amateur bag slight phone auction behave stage equip machine neck'; // process.env.MNEMONIC;
 
-const INFURA_API_KEY="1ba14d9e1aeb4db7b96800261a237f7f";
+const INFURA_API_KEY="e5f6b05589544b1bb8526dc3c034c63e";
 
 process.env.INFURA_KEY = INFURA_API_KEY
 //console.log('https://ropsten.infura.io/v3/' + process.env.INFURA_KEY);
@@ -15,13 +15,15 @@ module.exports = {
   networks: {
     ropsten: {
       provider: () => new HDWalletProvider(mnemonic, 'https://ropsten.infura.io/v3/' + process.env.INFURA_KEY),
-      network_id: '3',
+      network_id: 3,
       gas: 4712388,
       //gas: 4465030,          // Original
       //gasPrice: 5000000000,  // 5 gwei (Original)
       //gasPrice: 10000000000, // 10 gwei
       gasPrice: 100000000000,  // 100 gwei
       skipDryRun: true,        // Skip dry run before migrations? (default: false for public nets)
+      networkCheckTimeout: 1000000
+
     },
     kovan: {
       provider: () => new HDWalletProvider(mnemonic, 'https://kovan.infura.io/v3/' + process.env.INFURA_KEY),
@@ -63,7 +65,7 @@ module.exports = {
   },
   compilers: {
     solc: {
-      version: "0.5.16",  /// Final version of solidity-v0.5.x
+      version: "0.8.9",  /// Final version of solidity-v0.5.x
       settings: {
         optimizer: {
           enabled: true,

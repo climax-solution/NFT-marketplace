@@ -4,7 +4,7 @@ import Web3 from "web3";
 
 //const FALLBACK_WEB3_PROVIDER = process.env.REACT_APP_NETWORK || 'https://rinkeby.infura.io/v3/' + INFURA_API_KEY;    // Rinkeby
 //const FALLBACK_WEB3_PROVIDER = process.env.REACT_APP_NETWORK || 'http://0.0.0.0:7545';                                 // Ganache-GUI
-const FALLBACK_WEB3_PROVIDER = process.env.REACT_APP_NETWORK || 'http://0.0.0.0:8545';
+const FALLBACK_WEB3_PROVIDER = process.env.REACT_APP_NETWORK;
 
 
 const getWeb3 = (e_name) =>
@@ -48,6 +48,7 @@ const getGanacheWeb3 = () => {
   }
   const provider = new Web3.providers.HttpProvider(
     //'https://rinkeby.infura.io/v3/' + INFURA_API_KEY  // Rinkeby
+    // 'https://ropsten.infura.io/v3/' + "e5f6b05589544b1bb8526dc3c034c63e"  // Rinkeby
     'http://127.0.0.1:7545'  // Ganache-GUI
     // 'http://127.0.0.1:8545'  // Ganache-CLI
   );

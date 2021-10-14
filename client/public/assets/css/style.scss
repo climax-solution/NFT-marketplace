@@ -1596,7 +1596,7 @@ header {
 
 .hero-section {
     position: relative;
-    background-color: var(--footer-bg-color);
+    background-image: url(../../img/banner.png);
     z-index: 1;
     span {
         @extend .text-effect;

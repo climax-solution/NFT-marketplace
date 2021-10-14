@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { WalletConnect } from '../../store/action/wallet.actions';
 import { connect } from 'react-redux';
 import getWeb3, { getGanacheWeb3, Web3 } from "../../utils/getWeb3";
-
+import ModalMenu from '../Modal/ModalMenu';
 class Header extends Component{
     constructor(props) {
         super(props);
@@ -75,6 +75,7 @@ class Header extends Component{
                         </ul>
                     </div>
                 </nav>
+                <ModalMenu/>
             </header>
         )
     }

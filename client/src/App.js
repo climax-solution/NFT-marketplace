@@ -11,9 +11,8 @@ import { Loader, Button, Card, Input, Heading, Table, Form, Flex, Box, Image } f
 import { zeppelinSolidityHotLoaderOptions } from '../config/webpack';
 import { BrowserRouter as Router, Switch, Route, Redirect} from "react-router-dom";
 import Home from "./components/Home";
-// import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
-// import styles from './App.module.scss';
+import styles from './App.module.scss';
 //import './App.css';
 
 
@@ -57,29 +56,53 @@ class App extends Component {
     }
   };
 
-  // renderLoader() {
-  //   return (
-  //     <div className={styles.loader}>
-  //       <Loader size="80px" color="red" />
-  //       <h3> Loading Web3, accounts, and contract...</h3>
-  //       <p> Unlock your metamask </p>
-  //     </div>
-  //   );
-  // }
+  renderLoader() {
+    return (
+      <div className={styles.loader}>
+        <Loader size="80px" color="red" />
+        <h3> Loading Web3, accounts, and contract...</h3>
+        <p> Unlock your metamask </p>
+      </div>
+    );
+  }
 
-  // renderDeployCheck(instructionsKey) {
-  //   return (
-  //     <div className={styles.setup}>
-  //       <div className={styles.notice}>
-  //         Your <b> contracts are not deployed</b> in this network. Two potential reasons: <br />
-  //         <p>
-  //           Maybe you are in the wrong network? Point Metamask to localhost.<br />
-  //           You contract is not deployed. Follow the instructions below.
-  //         </p>
-  //       </div>
-  //     </div>
-  //   );
-  // }
+  renderDeployCheck(instructionsKey) {
+    return (
+      <div className={styles.setup}>
+        <div className={styles.notice}>
+          Your <b> contracts are not deployed</b> in this network. Two potential reasons: <br />
+          <p>
+            Maybe you are in the wrong network? Point Metamask to localhost.<br />
+            You contract is not deployed. Follow the instructions below.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  renderPublish() {
+    return (
+      <div className={styles.wrapper}>
+        <Publish />
+      </div>
+    );
+  }
+
+  renderMyPhotos() {
+    return (
+      <div className={styles.wrapper}>
+        <MyPhotos />
+      </div>
+    );
+  }
+
+  renderPhotoMarketPlace() {
+    return (
+      <div className={styles.wrapper}>
+        <PhotoMarketplace />
+      </div>    
+    );
+  }
 
   render() {
     return (
