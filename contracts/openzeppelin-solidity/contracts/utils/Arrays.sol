@@ -1,22 +1,21 @@
-pragma solidity ^0.5.0;
+// SPDX-License-Identifier: MIT
 
-import "../math/Math.sol";
+pragma solidity ^0.8.0;
 
+import "./math/Math.sol";
 
 /**
- * @title Arrays
- * @dev Utility library of inline array functions
+ * @dev Collection of functions related to array types.
  */
 library Arrays {
     /**
-     * @dev Upper bound search function which is kind of binary search algoritm. It searches sorted
-     * array to find index of the element value. If element is found then returns it's index otherwise
-     * it returns index of first element which is grater than searched value. If searched element is
-     * bigger than any array element function then returns first index after last element (i.e. all
-     * values inside the array are smaller than the target). Complexity O(log n).
-     * @param array The array sorted in ascending order.
-     * @param element The element's value to be find.
-     * @return The calculated index value. Returns 0 for empty array.
+     * @dev Searches a sorted `array` and returns the first index that contains
+     * a value greater or equal to `element`. If no such index exists (i.e. all
+     * values in the array are strictly less than `element`), the array length is
+     * returned. Time complexity O(log n).
+     *
+     * `array` is expected to be sorted in ascending order, and to contain no
+     * repeated elements.
      */
     function findUpperBound(uint256[] storage array, uint256 element) internal view returns (uint256) {
         if (array.length == 0) {
