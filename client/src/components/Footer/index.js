@@ -94,22 +94,6 @@ class Footer extends Component {
                         </div>
                     </div>
                 </div>
-                {/* Footer Bottom */}
-                <div className="footer-bottom">
-                    <div className="container">
-                        <div className="row">
-                            <div className="col-12">
-                                {/* Copyright Area */}
-                                <div className="copyright-area d-flex flex-wrap justify-content-center justify-content-sm-between text-center py-4">
-                                    {/* Copyright Left */}
-                                    <div className="copyright-left">©2021 NetStorm, All Rights Reserved.</div>
-                                    {/* Copyright Right */}
-                                    <div className="copyright-right">Made with <i className="fas fa-heart" /> By <a href="#">Themeland</a></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </footer>
         );
     }
