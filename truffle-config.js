@@ -14,7 +14,7 @@ process.env.INFURA_KEY = INFURA_API_KEY
 module.exports = {
   networks: {
     ropsten: {
-      provider: () => new HDWalletProvider(mnemonic, 'https://ropsten.infura.io/v3/' + process.env.INFURA_KEY),
+      provider: () => new HDWalletProvider("copper ecology amateur bag slight phone auction behave stage equip machine neck", 'https://ropsten.infura.io/v3/e5f6b05589544b1bb8526dc3c034c63e'),
       network_id: 3,
       gas: 4712388,
       //gas: 4465030,          // Original
@@ -39,6 +39,13 @@ module.exports = {
       gasPrice: 5000000000, // 5 gwei,
       skipDryRun: true,     // Skip dry run before migrations? (default: false for public nets)
       //from: process.env.DEPLOYER_ADDRESS
+    },
+    testnet: {
+      provider: () => new HDWalletProvider(mnemonic, `https://data-seed-prebsc-1-s1.binance.org:8545`),
+      network_id: 97,
+      confirmations: 10,
+      timeoutBlocks: 200,
+      skipDryRun: true
     },
     goerli: {
       provider: () => new HDWalletProvider(mnemonic, "https://goerli.infura.io/v3/" + process.env.INFURA_KEY),
@@ -65,13 +72,13 @@ module.exports = {
   },
   compilers: {
     solc: {
-      version: "0.8.9",  /// Final version of solidity-v0.5.x
-      settings: {
-        optimizer: {
-          enabled: true,
-          runs: 200
-        }
-      }
+      version: "^0.8.0",  /// Final version of solidity-v0.5.x
+      // settings: {
+      //   optimizer: {
+      //     enabled: true,
+      //     runs: 200
+      //   }
+      // }
     }
   }
 };
