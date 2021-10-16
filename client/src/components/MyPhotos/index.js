@@ -24,7 +24,8 @@ class MyPhotos extends Component {
           route: window.location.pathname.replace("/", ""),
 
           /////// NFT
-          assets: []
+          assets: [],
+          isMetaMask: undefined
         };
 
         //this.handlePhotoNFTAddress = this.handlePhotoNFTAddress.bind(this);
@@ -261,10 +262,10 @@ class MyPhotos extends Component {
           }
         } catch (error) {
           // Catch any errors for any of the above operations.
-          alert(
-            `Failed to load web3, accounts, or contract. Check console for details.`,
-          );
-          console.error(error);
+          // alert(
+          //   `Failed to load web3, accounts, or contract. Check console for details.`,
+          // );
+          // console.error(error);
         }
     };
 
@@ -294,7 +295,7 @@ class MyPhotos extends Component {
           <>
             <Breadcrumb title="ASSETS"/>
             {
-                !isMetaMask ?
+                !isMetaMask == undefined ?
                 <Loader
                     type="ThreeDots"
                     color="#00BFFF"

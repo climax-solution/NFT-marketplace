@@ -199,10 +199,10 @@ class Home extends Component {
           }
         } catch (error) {
           // Catch any errors for any of the above operations.
-          alert(
-            `Failed to load web3, accounts, or contract. Check console for details.`,
-          );
-          console.error(error);
+          // alert(
+          //   `Failed to load web3, accounts, or contract. Check console for details.`,
+          // );
+          // console.error(error);
         }
     };
 
@@ -219,7 +219,7 @@ class Home extends Component {
     }
     render() {
         const { web3, allPhotos, currentAccount } = this.state;
-        console.log(allPhotos);
+        console.log('allPhotos',allPhotos);
         return(
             <>
                 <Banner/>
@@ -235,9 +235,9 @@ class Home extends Component {
                 </div>
                 <div className="row items" style={{minHeight: '300px'}}>
                     {allPhotos.map((item, idx) => {
-                        if (currentAccount != item.ownerAddress) {
+                        if (currentAccount != item.ownerAddress && item.premiumStatus == true) {
                             return (
-                                <div className="col-12 col-sm-6 col-md-4 col-lg-3 item" key={`exo_${idx}`}>
+                                <div className="col-12 col-sm-6 col-md-4 col-lg-3 item" key={idx}>
                                     <div className="card">
                                         <div className="image-over">
                                             <img className="card-img-top" src={`http://localhost:8080/ipfs/${item.ipfsHashOfPhoto}`} alt="" />
