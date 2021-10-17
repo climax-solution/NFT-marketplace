@@ -49,8 +49,8 @@ const getGanacheWeb3 = () => {
   const provider = new Web3.providers.HttpProvider(
     //'https://rinkeby.infura.io/v3/' + INFURA_API_KEY  // Rinkeby
     // 'https://ropsten.infura.io/v3/' + "e5f6b05589544b1bb8526dc3c034c63e"  // Rinkeby
-    'http://127.0.0.1:7545'  // Ganache-GUI
-    // 'http://127.0.0.1:8545'  // Ganache-CLI
+    // 'http://127.0.0.1:7545'  // Ganache-GUI
+    'https://data-seed-prebsc-1-s1.binance.org:8545'
   );
   const web3 = new Web3(provider);
   console.log("No local ganache found.");
