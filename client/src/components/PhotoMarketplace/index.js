@@ -55,7 +55,7 @@ class PhotoMarketplace extends Component {
 
         /// Get instance by using created photoNFT address
         let PhotoNFT = {};
-        PhotoNFT = require("../../../../build/contracts/PhotoNFT.json"); 
+        PhotoNFT = require("../../contracts/PhotoNFT.json"); 
         let photoNFT = new web3.eth.Contract(PhotoNFT.abi, PHOTO_NFT);
 
         /// Check owner of photoId
@@ -122,8 +122,8 @@ class PhotoMarketplace extends Component {
         let PhotoNFTMarketplace = {};
         let PhotoNFTData = {};
         try {
-          PhotoNFTMarketplace = require("../../../../build/contracts/PhotoNFTMarketplace.json");
-          PhotoNFTData = require("../../../../build/contracts/PhotoNFTData.json");
+          PhotoNFTMarketplace = require("../../contracts/PhotoNFTMarketplace.json");
+          PhotoNFTData = require("../../contracts/PhotoNFTData.json");
         } catch (e) {
           console.log(e);
         }
@@ -244,7 +244,7 @@ class PhotoMarketplace extends Component {
                           <div className="col-12 col-sm-6 col-lg-3 item" key={`exo_${idx}`}>
                               <div className="card">
                                   <div className="image-over">
-                                      <img className="card-img-top" src={`http://localhost:8080/ipfs/${item.ipfsHashOfPhoto}`} alt="" />
+                                      <img className="card-img-top" src={`https://ipfs.io/${item.ipfsHashOfPhoto}`} alt="" />
                                   </div>
                                   {/* Card Caption */}
                                   <div className="card-caption col-12 p-0">
@@ -281,7 +281,7 @@ class PhotoMarketplace extends Component {
                           <div className="col-12 col-sm-6 col-lg-3 item" key={`exo_${idx}`}>
                               <div className="card">
                                   <div className="image-over">
-                                      <img className="card-img-top" src={`http://localhost:8080/ipfs/${item.ipfsHashOfPhoto}`} alt="" />
+                                      <img className="card-img-top" src={`https://ipfs.io/${item.ipfsHashOfPhoto}`} alt="" />
                                   </div>
                                   {/* Card Caption */}
                                   <div className="card-caption col-12 p-0">

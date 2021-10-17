@@ -1,0 +1,119 @@
+{
+  "contractName": "ERC165NotSupported",
+  "abi": [],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.9+commit.e5eed63a\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/openzeppelin-solidity/contracts/mocks/ERC165/ERC165NotSupported.sol\":\"ERC165NotSupported\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/openzeppelin-solidity/contracts/mocks/ERC165/ERC165NotSupported.sol\":{\"keccak256\":\"0x030a6419e5850ff201a812ccce892700d5ef8d0a7e4926262a2492e04630ab2c\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://a143842eb85b45d82afa5a821334c5e3ce80accd53b39684da606fded4920074\",\"dweb:/ipfs/QmUtYEetC5b2jsKuMkZzweJnPgZDNjNRLx1uq7kic9jpAR\"]}},\"version\":1}",
+  "bytecode": "0x6080604052348015600f57600080fd5b50603f80601d6000396000f3fe6080604052600080fdfea2646970667358221220b411a4e0f1f56a362c49795c503b0f1cd73f2f297ee0da2ae7efef99c7c45fe864736f6c63430008090033",
+  "deployedBytecode": "0x6080604052600080fdfea2646970667358221220b411a4e0f1f56a362c49795c503b0f1cd73f2f297ee0da2ae7efef99c7c45fe864736f6c63430008090033",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "62:30:89:-:0;;;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "62:30:89:-:0;;;;;",
+  "source": "// SPDX-License-Identifier: MIT\r\n\r\npragma solidity ^0.8.0;\r\n\r\ncontract ERC165NotSupported {}\r\n",
+  "sourcePath": "C:\\testing\\NFT-marketplace\\contracts\\openzeppelin-solidity\\contracts\\mocks\\ERC165\\ERC165NotSupported.sol",
+  "ast": {
+    "absolutePath": "project:/contracts/openzeppelin-solidity/contracts/mocks/ERC165/ERC165NotSupported.sol",
+    "exportedSymbols": {
+      "ERC165NotSupported": [
+        9082
+      ]
+    },
+    "id": 9083,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 9081,
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "35:23:89"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "ERC165NotSupported",
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "fullyImplemented": true,
+        "id": 9082,
+        "linearizedBaseContracts": [
+          9082
+        ],
+        "name": "ERC165NotSupported",
+        "nameLocation": "71:18:89",
+        "nodeType": "ContractDefinition",
+        "nodes": [],
+        "scope": 9083,
+        "src": "62:30:89",
+        "usedErrors": []
+      }
+    ],
+    "src": "35:59:89"
+  },
+  "legacyAST": {
+    "absolutePath": "project:/contracts/openzeppelin-solidity/contracts/mocks/ERC165/ERC165NotSupported.sol",
+    "exportedSymbols": {
+      "ERC165NotSupported": [
+        9082
+      ]
+    },
+    "id": 9083,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 9081,
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "35:23:89"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "canonicalName": "ERC165NotSupported",
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "fullyImplemented": true,
+        "id": 9082,
+        "linearizedBaseContracts": [
+          9082
+        ],
+        "name": "ERC165NotSupported",
+        "nameLocation": "71:18:89",
+        "nodeType": "ContractDefinition",
+        "nodes": [],
+        "scope": 9083,
+        "src": "62:30:89",
+        "usedErrors": []
+      }
+    ],
+    "src": "35:59:89"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.9+commit.e5eed63a.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.3",
+  "updatedAt": "2021-10-16T13:16:48.045Z",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}

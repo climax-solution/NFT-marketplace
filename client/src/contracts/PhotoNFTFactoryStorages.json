@@ -1,0 +1,342 @@
+{
+  "contractName": "PhotoNFTFactoryStorages",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "tokenId",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "reputationCount",
+          "type": "uint256"
+        }
+      ],
+      "name": "AddReputation",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "contract PhotoNFT",
+          "name": "photoNFT",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "nftName",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "nftSymbol",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "photoPrice",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "ipfsHashOfPhoto",
+          "type": "string"
+        }
+      ],
+      "name": "PhotoNFTCreated",
+      "type": "event"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.9+commit.e5eed63a\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"tokenId\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"reputationCount\",\"type\":\"uint256\"}],\"name\":\"AddReputation\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":false,\"internalType\":\"address\",\"name\":\"owner\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"contract PhotoNFT\",\"name\":\"photoNFT\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"nftName\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"nftSymbol\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"photoPrice\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"ipfsHashOfPhoto\",\"type\":\"string\"}],\"name\":\"PhotoNFTCreated\",\"type\":\"event\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/photo-nft-factory/commons/PhotoNFTFactoryStorages.sol\":\"PhotoNFTFactoryStorages\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/PhotoNFT.sol\":{\"keccak256\":\"0xe6de1d7b2abe309028f71a000f0da09186344818a2110634ef5cc3c9e13fed85\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://7c6320feb33ddff3f0c6070ff62fe714928104a7df10bca0a45844f53f5d4e9a\",\"dweb:/ipfs/QmYWyNLFFfuCFoVnkESM61RefTWz8EEzun7gPe7qrxmyuu\"]},\"project:/contracts/openzeppelin-solidity/contracts/token/ERC721/ERC721.sol\":{\"keccak256\":\"0xc25177ed1ea59b7933c0bf43f3204d74c80ba8e53b1039eeb14fc74b47de1eed\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://328c313f0e6532e000ae3ca3050e081bb469584dc5f852d9de3ddd98dfed2f1d\",\"dweb:/ipfs/QmYTj7kcMeSU5uA3DYLFtBf8zUyzyaZwAD9mTDoHpfR5QL\"]},\"project:/contracts/openzeppelin-solidity/contracts/token/ERC721/IERC721.sol\":{\"keccak256\":\"0xf0fe20bd400cead51aada7bdb015eacfad41e530e84cd6b49bfedf1274e9e579\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://13cffe9019d15aa2027b233b2f3db0401d8164650ac080faa7dc76ec74f88ca0\",\"dweb:/ipfs/QmQfJamQssogNgqx8gjQKTEFszxefrEczSVrS2edmjLiWe\"]},\"project:/contracts/openzeppelin-solidity/contracts/token/ERC721/IERC721Receiver.sol\":{\"keccak256\":\"0x24fc4c6299bee913b0a8ae0d512f7cbdb1a5af559d0b4abc150872cbab82c196\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://881bcb5aaa76bb8900418e65d5f9c412dbe7234d49b10b4d0bc34a8e00582d08\",\"dweb:/ipfs/Qmd16FnmVrSQqknnTuDroj4p7VaUaqkqaRmrz9W6oczkBN\"]},\"project:/contracts/openzeppelin-solidity/contracts/token/ERC721/extensions/ERC721URIStorage.sol\":{\"keccak256\":\"0x8841e63dfadf2e6a2f4baf3179b5576bdd5834b46c6348f8694458c25dd01219\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://4d9dca1d0fb388d19b84439ed661da6cfdb0580f6b00ac4f7d69f49b67a50f91\",\"dweb:/ipfs/QmaSXDa9bam1CuuvJmbwa38VhjMs5axWjJq4KSktNfqXsF\"]},\"project:/contracts/openzeppelin-solidity/contracts/token/ERC721/extensions/IERC721Metadata.sol\":{\"keccak256\":\"0x01ceb635c84e3096829dd737434ed16a0772e07e41313bc75ac51763b59e77ce\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://d09c8ea4578de9645004f6a6bf80f4a839904fdb45d298eb970f670780165199\",\"dweb:/ipfs/QmRpKxfraAGvGRHrkewuQkBPRWAH5VQ9cav44hFPC3SVnA\"]},\"project:/contracts/openzeppelin-solidity/contracts/utils/Address.sol\":{\"keccak256\":\"0x85c79373fa21bb27e0c79326fc64f28d37fc09f85ac7742afe55405c4c3cf274\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://7c1dcc8d5faab1747f83c9a8179a1e8477ba25473506ee153a949a0d511b8486\",\"dweb:/ipfs/QmVJ8RgJr7Wi6gCkoZnNJ9nfM4fcdF9kwGa7mswM3QtFwz\"]},\"project:/contracts/openzeppelin-solidity/contracts/utils/Context.sol\":{\"keccak256\":\"0x2e2ac762cc60af55c199a4926f4c360aa00cec4af6dfed7475fc866353ea6c58\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://98f72b227c30903022ee8a898b55dacbbcc73d633e10022edcaeea61e4ef312e\",\"dweb:/ipfs/QmedXrqXE7r6Pazs4aBfwDJNPdiw25ovisBiWZ3EACFQFh\"]},\"project:/contracts/openzeppelin-solidity/contracts/utils/Strings.sol\":{\"keccak256\":\"0xd2f5a48a2733d28b75fe2e72d2d529daedd929a15fa7352d9ac20f6cd3e669fb\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://2a9f46eba504744121b3bc97804c93cda7aef861cc56ea5f760f25fb280f71c9\",\"dweb:/ipfs/QmbszNNUMg9FwjjrJUJBZa3wmiQFMJ6rtBWbaNXrZyf8pF\"]},\"project:/contracts/openzeppelin-solidity/contracts/utils/introspection/ERC165.sol\":{\"keccak256\":\"0x071cfd008ed1810ddf23f56bd1ce2f0c3983bc291559067e94618547f579e1f2\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://a3235dc4cbf8fe1bde8426a0515c2d19205953cce2bef84e635a74b1b0140250\",\"dweb:/ipfs/QmcLniP23L9VH3rSdoE4YnLosayZELS38z6HJCZQ3Q4Vq2\"]},\"project:/contracts/openzeppelin-solidity/contracts/utils/introspection/IERC165.sol\":{\"keccak256\":\"0x7e30ce048ac2ce3cc97d725487ed5a82192bb939456f46e0cbe38f1b48644f9e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://93406f5266094615e2b829d0eb4a3a668c72a3a6562da91a9ea9044cd001dd80\",\"dweb:/ipfs/QmUqT5ZLn5HTvE4Bas9BA5RSCamz4p3KwbvEsNvNJ2taav\"]},\"project:/contracts/photo-nft-factory/commons/PhotoNFTFactoryEvents.sol\":{\"keccak256\":\"0x0b83a561b7f45f74bb75786d117eb2a492ea3c8bca59932921dd16cb4d638c0a\",\"urls\":[\"bzz-raw://b5c14e0e0f8bcd83238e0991e32b82add0baf0b72c5b219f4c7c8b1d910e7bd2\",\"dweb:/ipfs/QmdD6LtqRdfraMaU4yDp6kcr9WZ7pFjmhhG3KgKXpsiB6W\"]},\"project:/contracts/photo-nft-factory/commons/PhotoNFTFactoryObjects.sol\":{\"keccak256\":\"0x573155a65211b16ff45772c320fdeae26730f2abfeb10207331e679b181615d0\",\"urls\":[\"bzz-raw://a344c33cc7f3aa76353fce36b9a52cc920f96fbeb366346a915bbdc8112871f3\",\"dweb:/ipfs/Qmaoq6McJpMi9bdyGtEGQhvSm8i2mxyCVim3ya28GeVNMN\"]},\"project:/contracts/photo-nft-factory/commons/PhotoNFTFactoryStorages.sol\":{\"keccak256\":\"0xfc5b0f762e0d9f0e012c309c39c149915c63618bd32ef668d5168a25a7bbfdb5\",\"urls\":[\"bzz-raw://f4e600d7628bfc3017fa2c891f5b3e70d49febc85bf403c5cbfea95999ddaf4d\",\"dweb:/ipfs/QmdphVMfptCDvdfZ2F4jSrrjLrkzEbqadTqraa3tn2bQL5\"]}},\"version\":1}",
+  "bytecode": "0x6080604052348015600f57600080fd5b50603f80601d6000396000f3fe6080604052600080fdfea26469706673582212200177fbe2f8a6d47f2375dc9db90aa0fc6e2d56ffdc6689ac8042fabca83458c164736f6c63430008090033",
+  "deployedBytecode": "0x6080604052600080fdfea26469706673582212200177fbe2f8a6d47f2375dc9db90aa0fc6e2d56ffdc6689ac8042fabca83458c164736f6c63430008090033",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "250:120:239:-:0;;;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "250:120:239:-:0;;;;;",
+  "source": "pragma solidity ^0.8.0;\r\n\r\n//import \"../openzeppelin-solidity/ReentrancyGuard.sol\";\r\nimport { PhotoNFTFactoryObjects } from \"./PhotoNFTFactoryObjects.sol\";\r\nimport { PhotoNFTFactoryEvents } from \"./PhotoNFTFactoryEvents.sol\";\r\n\r\n\r\n// shared storage\r\ncontract PhotoNFTFactoryStorages is PhotoNFTFactoryObjects, PhotoNFTFactoryEvents {\r\n\r\n    //Photo[] public photos;\r\n\r\n}\r\n\r\n",
+  "sourcePath": "C:\\testing\\NFT-marketplace\\contracts\\photo-nft-factory\\commons\\PhotoNFTFactoryStorages.sol",
+  "ast": {
+    "absolutePath": "project:/contracts/photo-nft-factory/commons/PhotoNFTFactoryStorages.sol",
+    "exportedSymbols": {
+      "PhotoNFTFactoryEvents": [
+        28987
+      ],
+      "PhotoNFTFactoryObjects": [
+        28992
+      ],
+      "PhotoNFTFactoryStorages": [
+        29003
+      ]
+    },
+    "id": 29004,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 28994,
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:239"
+      },
+      {
+        "absolutePath": "project:/contracts/photo-nft-factory/commons/PhotoNFTFactoryObjects.sol",
+        "file": "./PhotoNFTFactoryObjects.sol",
+        "id": 28996,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 29004,
+        "sourceUnit": 28993,
+        "src": "85:70:239",
+        "symbolAliases": [
+          {
+            "foreign": {
+              "id": 28995,
+              "name": "PhotoNFTFactoryObjects",
+              "nodeType": "Identifier",
+              "overloadedDeclarations": [],
+              "src": "94:22:239",
+              "typeDescriptions": {}
+            },
+            "nameLocation": "-1:-1:-1"
+          }
+        ],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "project:/contracts/photo-nft-factory/commons/PhotoNFTFactoryEvents.sol",
+        "file": "./PhotoNFTFactoryEvents.sol",
+        "id": 28998,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 29004,
+        "sourceUnit": 28988,
+        "src": "157:68:239",
+        "symbolAliases": [
+          {
+            "foreign": {
+              "id": 28997,
+              "name": "PhotoNFTFactoryEvents",
+              "nodeType": "Identifier",
+              "overloadedDeclarations": [],
+              "src": "166:21:239",
+              "typeDescriptions": {}
+            },
+            "nameLocation": "-1:-1:-1"
+          }
+        ],
+        "unitAlias": ""
+      },
+      {
+        "abstract": false,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 28999,
+              "name": "PhotoNFTFactoryObjects",
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 28992,
+              "src": "286:22:239"
+            },
+            "id": 29000,
+            "nodeType": "InheritanceSpecifier",
+            "src": "286:22:239"
+          },
+          {
+            "baseName": {
+              "id": 29001,
+              "name": "PhotoNFTFactoryEvents",
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 28987,
+              "src": "310:21:239"
+            },
+            "id": 29002,
+            "nodeType": "InheritanceSpecifier",
+            "src": "310:21:239"
+          }
+        ],
+        "canonicalName": "PhotoNFTFactoryStorages",
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "fullyImplemented": true,
+        "id": 29003,
+        "linearizedBaseContracts": [
+          29003,
+          28987,
+          28992
+        ],
+        "name": "PhotoNFTFactoryStorages",
+        "nameLocation": "259:23:239",
+        "nodeType": "ContractDefinition",
+        "nodes": [],
+        "scope": 29004,
+        "src": "250:120:239",
+        "usedErrors": []
+      }
+    ],
+    "src": "0:374:239"
+  },
+  "legacyAST": {
+    "absolutePath": "project:/contracts/photo-nft-factory/commons/PhotoNFTFactoryStorages.sol",
+    "exportedSymbols": {
+      "PhotoNFTFactoryEvents": [
+        28987
+      ],
+      "PhotoNFTFactoryObjects": [
+        28992
+      ],
+      "PhotoNFTFactoryStorages": [
+        29003
+      ]
+    },
+    "id": 29004,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 28994,
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".0"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:239"
+      },
+      {
+        "absolutePath": "project:/contracts/photo-nft-factory/commons/PhotoNFTFactoryObjects.sol",
+        "file": "./PhotoNFTFactoryObjects.sol",
+        "id": 28996,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 29004,
+        "sourceUnit": 28993,
+        "src": "85:70:239",
+        "symbolAliases": [
+          {
+            "foreign": {
+              "id": 28995,
+              "name": "PhotoNFTFactoryObjects",
+              "nodeType": "Identifier",
+              "overloadedDeclarations": [],
+              "src": "94:22:239",
+              "typeDescriptions": {}
+            },
+            "nameLocation": "-1:-1:-1"
+          }
+        ],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "project:/contracts/photo-nft-factory/commons/PhotoNFTFactoryEvents.sol",
+        "file": "./PhotoNFTFactoryEvents.sol",
+        "id": 28998,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 29004,
+        "sourceUnit": 28988,
+        "src": "157:68:239",
+        "symbolAliases": [
+          {
+            "foreign": {
+              "id": 28997,
+              "name": "PhotoNFTFactoryEvents",
+              "nodeType": "Identifier",
+              "overloadedDeclarations": [],
+              "src": "166:21:239",
+              "typeDescriptions": {}
+            },
+            "nameLocation": "-1:-1:-1"
+          }
+        ],
+        "unitAlias": ""
+      },
+      {
+        "abstract": false,
+        "baseContracts": [
+          {
+            "baseName": {
+              "id": 28999,
+              "name": "PhotoNFTFactoryObjects",
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 28992,
+              "src": "286:22:239"
+            },
+            "id": 29000,
+            "nodeType": "InheritanceSpecifier",
+            "src": "286:22:239"
+          },
+          {
+            "baseName": {
+              "id": 29001,
+              "name": "PhotoNFTFactoryEvents",
+              "nodeType": "IdentifierPath",
+              "referencedDeclaration": 28987,
+              "src": "310:21:239"
+            },
+            "id": 29002,
+            "nodeType": "InheritanceSpecifier",
+            "src": "310:21:239"
+          }
+        ],
+        "canonicalName": "PhotoNFTFactoryStorages",
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "fullyImplemented": true,
+        "id": 29003,
+        "linearizedBaseContracts": [
+          29003,
+          28987,
+          28992
+        ],
+        "name": "PhotoNFTFactoryStorages",
+        "nameLocation": "259:23:239",
+        "nodeType": "ContractDefinition",
+        "nodes": [],
+        "scope": 29004,
+        "src": "250:120:239",
+        "usedErrors": []
+      }
+    ],
+    "src": "0:374:239"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.9+commit.e5eed63a.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.3",
+  "updatedAt": "2021-10-16T13:16:48.809Z",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}

@@ -111,8 +111,8 @@ class Home extends Component {
         let PhotoNFTMarketplace = {};
         let PhotoNFTData = {};
         try {
-          PhotoNFTMarketplace = require("../../../../build/contracts/PhotoNFTMarketplace.json");
-          PhotoNFTData = require("../../../../build/contracts/PhotoNFTData.json");
+          PhotoNFTMarketplace = require("../../contracts/PhotoNFTMarketplace.json");
+          PhotoNFTData = require("../../contracts/PhotoNFTData.json");
         } catch (e) {
           console.log(e);
         }
@@ -240,7 +240,7 @@ class Home extends Component {
                                 <div className="col-12 col-sm-6 col-md-4 col-lg-3 item" key={idx}>
                                     <div className="card">
                                         <div className="image-over">
-                                            <img className="card-img-top" src={`http://localhost:8080/ipfs/${item.ipfsHashOfPhoto}`} alt="" />
+                                            <img className="card-img-top" src={`https://ipfs.io/${item.ipfsHashOfPhoto}`} alt="" />
                                         </div>
                                         {/* Card Caption */}
                                         <div className="card-caption col-12 p-0">
