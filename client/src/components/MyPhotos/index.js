@@ -370,7 +370,7 @@ class MyPhotos extends Component {
                         else return <></>;
                     })}
                     {
-                        !assets.length && <h2 className="text-center text-muted">No items.</h2>
+                        !assets.length && <h3 className="text-center text-muted">No items.</h3>
                     }
                 </div>
             }

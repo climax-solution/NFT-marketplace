@@ -10,7 +10,7 @@ class Breadcrumb extends Component {
                         <div className="col-12">
                             {/* Breamcrumb Content */}
                             <div className="breadcrumb-content text-center">
-                                <h2 className={`m-0 ${styles['shadow-blue']}`}>{this.props.title}</h2>
+                                <h3 className={`m-0 ${styles['shadow-blue']}`}>{this.props.title}</h3>
                             </div>
                         </div>
                     </div>

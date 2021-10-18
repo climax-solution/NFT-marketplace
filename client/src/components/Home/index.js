@@ -3,8 +3,8 @@ import { connect } from "react-redux";
 import { SetStatus } from "../../store/action/wallet.actions";
 import getWeb3, { getGanacheWeb3, Web3 } from "../../utils/getWeb3";
 import { zeppelinSolidityHotLoaderOptions } from '../../../config/webpack';
+import Breadcrumb from "../Breadcrumb/Breadcrumb";
 
-import Banner from "../Banner";
 class Home extends Component {
     constructor(props) {    
         super(props);
@@ -221,7 +221,7 @@ class Home extends Component {
         console.log('allPhotos',allPhotos);
         return(
             <>
-                <Banner/>
+                <Breadcrumb title=""/>
                 <div className="row mt-3">
                     <div className="col-12">
                         {/* Intro */}

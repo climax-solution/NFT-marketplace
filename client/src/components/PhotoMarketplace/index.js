@@ -313,7 +313,7 @@ class PhotoMarketplace extends Component {
                   return <></>;
               })}
               {
-                !allPhotos.length && <h2 className="text-center text-muted">No items.</h2>
+                !allPhotos.length && <h3 className="text-center text-muted">No items.</h3>
               }
           </div>
       </>
