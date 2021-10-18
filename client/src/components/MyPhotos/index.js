@@ -10,7 +10,7 @@ import Breadcrumb from "../Breadcrumb/Breadcrumb";
 import "./products.css";
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import Loader from "react-loader-spinner";
-
+import Swal from "sweetalert2";
 class MyPhotos extends Component {
     constructor(props) {    
         super(props);
@@ -46,28 +46,45 @@ class MyPhotos extends Component {
     /// Functions put a photo NFT on sale or cancel it on sale 
     ///---------------------------------------------------------
     putOnSale = async (id) => {
-        const { web3, accounts, photoNFTMarketplace, photoNFTData, PHOTO_NFT_MARKETPLACE } = this.state;
+        // const { web3, accounts, photoNFTMarketplace, photoNFTData, PHOTO_NFT_MARKETPLACE } = this.state;
 
-        console.log('=== value of putOnSale ===', id);
-        console.log('=== PHOTO_NFT_MARKETPLACE ===', PHOTO_NFT_MARKETPLACE);
+        // console.log('=== value of putOnSale ===', id);
+        // console.log('=== PHOTO_NFT_MARKETPLACE ===', PHOTO_NFT_MARKETPLACE);
 
-        const PHOTO_NFT = id;
+        // const PHOTO_NFT = id;
 
-        /// Get instance by using created photoNFT address
-        let PhotoNFT = {};
-        PhotoNFT = require("../../../../build/contracts/PhotoNFT.json"); 
-        let photoNFT = new web3.eth.Contract(PhotoNFT.abi, PHOTO_NFT);
+        // /// Get instance by using created photoNFT address
+        // let PhotoNFT = {};
+        // PhotoNFT = require("../../../../build/contracts/PhotoNFT.json"); 
+        // let photoNFT = new web3.eth.Contract(PhotoNFT.abi, PHOTO_NFT);
 
-        /// Check owner of photoId
-        const photoId = 1;  /// [Note]: PhotoID is always 1. Because each photoNFT is unique.
-        const owner = await photoNFT.methods.ownerOf(photoId).call();
-        console.log('=== owner of photoId ===', owner);  /// [Expect]: Owner should be the PhotoNFTMarketplace.sol (This also called as a proxy/escrow contract)
+        // /// Check owner of photoId
+        // const photoId = 1;  /// [Note]: PhotoID is always 1. Because each photoNFT is unique.
+        // const owner = await photoNFT.methods.ownerOf(photoId).call();
+        // console.log('=== owner of photoId ===', owner);  /// [Expect]: Owner should be the PhotoNFTMarketplace.sol (This also called as a proxy/escrow contract)
             
-        /// Put on sale (by a seller who is also called as owner)
-        const txReceipt1 = await photoNFT.methods.approve(PHOTO_NFT_MARKETPLACE, photoId).send({ from: accounts[0] });
-        const xx = 'xx';
-        const txReceipt2 = await photoNFTMarketplace.methods.openTrade(PHOTO_NFT, photoId).send({ from: accounts[0] });
-        console.log('=== response of openTrade ===', txReceipt2);
+        // /// Put on sale (by a seller who is also called as owner)
+        // const txReceipt1 = await photoNFT.methods.approve(PHOTO_NFT_MARKETPLACE, photoId).send({ from: accounts[0] });
+        // const xx = 'xx';
+        // const txReceipt2 = await photoNFTMarketplace.methods.openTrade(PHOTO_NFT, photoId).send({ from: accounts[0] });
+        // console.log('=== response of openTrade ===', txReceipt2);
+        Swal.fire({
+          title: '<span style="font-size: 22px">PLEASE ENTER PRICE</span>',
+          input: 'text',
+          width: 300,
+          inputAttributes: {
+            autocapitalize: 'off'
+          },
+          showCancelButton: true,
+          confirmButtonText: 'OK',
+          showLoaderOnConfirm: true,
+          preConfirm: (login) => {
+            
+          },
+          allowOutsideClick: () => !Swal.isLoading()
+        }).then((result) => {
+          
+        })
     }
 
     cancelOnSale = async (id) => {
