@@ -8,9 +8,9 @@ export const WalletConnect = () => async dispatch => {
         console.log('????','XSD');
         try {
             const web3 = await getWeb3('click');
-            // Use web3 to get the user's accounts.
+            await window.ethereum.enable();
             const accounts = await web3.eth.getAccounts();
-            const isMetaMask = web3.currentProvider.isMetaMask;
+            const isMetaMask = accounts.length ? true : false;
             console.log('MEATATAT', isMetaMask);
             if (isMetaMask) {
                 dispatch({
