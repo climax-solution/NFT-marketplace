@@ -239,7 +239,7 @@ class Home extends Component {
                                 <div className="col-12 col-sm-6 col-md-4 col-lg-3 item" key={idx}>
                                     <div className="card">
                                         <div className="image-over">
-                                            <img className="card-img-top" src={`https://ipfs.infura.io/ipfs/${item.ipfsHashOfPhoto}`} alt="" />
+                                            <img className="card-img-top" src={`${process.env.REACT_APP_IPFS}/ipfs/${item.ipfsHashOfPhoto}`} alt="" />
                                         </div>
                                         {/* Card Caption */}
                                         <div className="card-caption col-12 p-0">
