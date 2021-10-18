@@ -122,7 +122,7 @@ class Publish extends Component {
 
             /// Get instance by using created photoNFT address
             let PhotoNFT = {};
-            PhotoNFT = require("../../contracts/PhotoNFT.json"); 
+            PhotoNFT = require("../../../../build/contracts/PhotoNFT.json"); 
             let photoNFT = new web3.eth.Contract(PhotoNFT.abi, PHOTO_NFT);
             console.log('=== photoNFT ===', photoNFT);
      
@@ -159,8 +159,8 @@ class Publish extends Component {
         let PhotoNFTFactory = {};
         let PhotoNFTMarketplace = {};
         try {
-          PhotoNFTFactory = require("../../contracts/PhotoNFTFactory.json"); // Load ABI of contract of PhotoNFTFactory
-          PhotoNFTMarketplace = require("../../contracts/PhotoNFTMarketplace.json");
+          PhotoNFTFactory = require("../../../../build/contracts/PhotoNFTFactory.json"); // Load ABI of contract of PhotoNFTFactory
+          PhotoNFTMarketplace = require("../../../../build/contracts/PhotoNFTMarketplace.json");
         } catch (e) {
           console.log(e);
         }

@@ -111,8 +111,8 @@ class Home extends Component {
         let PhotoNFTMarketplace = {};
         let PhotoNFTData = {};
         try {
-          PhotoNFTMarketplace = require("../../contracts/PhotoNFTMarketplace.json");
-          PhotoNFTData = require("../../contracts/PhotoNFTData.json");
+          PhotoNFTMarketplace = require("../../../../build/contracts/PhotoNFTMarketplace.json");
+          PhotoNFTData = require("../../../../build/contracts/PhotoNFTData.json");
         } catch (e) {
           console.log(e);
         }
@@ -123,7 +123,6 @@ class Home extends Component {
             // Get network provider and web3 instance.
             const web3 = await getWeb3("load");
             let ganacheAccounts = [];
-
             try {
               ganacheAccounts = await this.getGanacheAddresses();
             } catch (e) {

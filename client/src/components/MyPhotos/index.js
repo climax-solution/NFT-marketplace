@@ -55,7 +55,7 @@ class MyPhotos extends Component {
 
         /// Get instance by using created photoNFT address
         let PhotoNFT = {};
-        PhotoNFT = require("../../contracts/PhotoNFT.json"); 
+        PhotoNFT = require("../../../../build/contracts/PhotoNFT.json"); 
         let photoNFT = new web3.eth.Contract(PhotoNFT.abi, PHOTO_NFT);
 
         /// Check owner of photoId
@@ -79,7 +79,7 @@ class MyPhotos extends Component {
 
         /// Get instance by using created photoNFT address
         let PhotoNFT = {};
-        PhotoNFT = require("../../contracts/PhotoNFT.json"); 
+        PhotoNFT = require("../../../../build/contracts/PhotoNFT.json"); 
         let photoNFT = new web3.eth.Contract(PhotoNFT.abi, PHOTO_NFT);
 
         /// Check owner of photoId
@@ -102,7 +102,7 @@ class MyPhotos extends Component {
 
         /// Get instance by using created photoNFT address
         let PhotoNFT = {};
-        PhotoNFT = require("../../contracts/PhotoNFT.json"); 
+        PhotoNFT = require("../../../../build/contracts/PhotoNFT.json"); 
         let photoNFT = new web3.eth.Contract(PhotoNFT.abi, PHOTO_NFT);
 
         /// Check owner of photoId
@@ -124,7 +124,7 @@ class MyPhotos extends Component {
 
         /// Get instance by using created photoNFT address
         let PhotoNFT = {};
-        PhotoNFT = require("../../contracts/PhotoNFT.json"); 
+        PhotoNFT = require("../../../../build/contracts/PhotoNFT.json"); 
         let photoNFT = new web3.eth.Contract(PhotoNFT.abi, PHOTO_NFT);
 
         /// Check owner of photoId
@@ -170,8 +170,8 @@ class MyPhotos extends Component {
         let PhotoNFTMarketplace = {};
         let PhotoNFTData = {};
         try {
-          PhotoNFTMarketplace = require("../../contracts/PhotoNFTMarketplace.json");
-          PhotoNFTData = require("../../contracts/PhotoNFTData.json");
+          PhotoNFTMarketplace = require("../../../../build/contracts/PhotoNFTMarketplace.json");
+          PhotoNFTData = require("../../../../build/contracts/PhotoNFTData.json");
         } catch (e) {
           console.log(e);
         }
