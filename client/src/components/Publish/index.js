@@ -299,7 +299,7 @@ class Publish extends Component {
                                 </Field>
                                 */}
 
-                                <Field label="Token Price (unit: ETH)" className="form-group">
+                                <Field label="Token Price (unit: BNB)" className="form-group">
                                     <Input
                                         type="number"
                                         width={1}
@@ -310,7 +310,7 @@ class Publish extends Component {
                                     />
                                 </Field>
 
-                                <Field label="Art for uploading to IPFS" className="form-group">
+                                <Field label="Art for uploading to NFT" className="form-group">
                                     <input
                                         type="file"
                                         onChange={this.captureFile}
