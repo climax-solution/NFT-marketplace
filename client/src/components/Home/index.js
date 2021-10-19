@@ -221,7 +221,7 @@ class Home extends Component {
         console.log('allPhotos',allPhotos);
         return(
             <>
-                <Breadcrumb title=""/>
+                <Breadcrumb title="NFT DEVELOPEMENT"/>
                 <div className="row mt-3">
                     <div className="col-12">
                         {/* Intro */}

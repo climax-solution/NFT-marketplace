@@ -213,7 +213,6 @@ class MyPhotos extends Component {
             // Get the contract instance.
             const networkId = await web3.eth.net.getId();
             const networkType = await web3.eth.net.getNetworkType();
-            const isMetaMask = accounts.length ? true : false;
             //this.props.setConnection(isMetaMask);
             let balance = accounts.length > 0 ? await web3.eth.getBalance(accounts[0]): web3.utils.toWei('0');
             balance = web3.utils.fromWei(balance, 'ether');
@@ -258,7 +257,6 @@ class MyPhotos extends Component {
                     networkId, 
                     networkType, 
                     hotLoaderDisabled,
-                    isMetaMask, 
                     currentAccount: currentAccount,
                     photoNFTMarketplace: instancePhotoNFTMarketplace,
                     photoNFTData: instancePhotoNFTData,
@@ -270,7 +268,15 @@ class MyPhotos extends Component {
                 });
             }
             else {
-              this.setState({ web3, ganacheAccounts, accounts, balance, networkId, networkType, hotLoaderDisabled, isMetaMask });
+              this.setState({
+                web3,
+                ganacheAccounts,
+                accounts,
+                balance,
+                networkId,
+                networkType,
+                hotLoaderDisabled
+              });
             }
 
             ///@dev - NFT（Always load listed NFT data
@@ -292,6 +298,13 @@ class MyPhotos extends Component {
         }
     }
 
+    componentDidUpdate(preprops) {
+      if (preprops != this.props) {
+        this.setState({
+          isMetaMask: this.props.connected
+        })
+      }
+    }
     refreshValues = (instancePhotoNFTMarketplace) => {
         if (instancePhotoNFTMarketplace) {
           console.log('refreshValues of instancePhotoNFTMarketplace');
@@ -312,14 +325,6 @@ class MyPhotos extends Component {
           <>
             <Breadcrumb title="ASSETS"/>
             {
-                !isMetaMask == undefined ?
-                <Loader
-                    type="ThreeDots"
-                    color="#00BFFF"
-                    height={100}
-                    width={100}
-                    className="text-center"
-                />:
                 <div className="row items" style={{padding: '30px 0'}}>
                     {assets.map((item, idx) => {
                         if (currentAccount == item.ownerAddress) {
@@ -387,7 +392,10 @@ class MyPhotos extends Component {
                         else return <></>;
                     })}
                     {
-                        !assets.length && <h3 className="text-center text-muted">No items.</h3>
+                        (!assets.length) && <h3 className="text-center text-muted">No items.</h3>
+                    }
+                    {
+                      (!isMetaMask || !currentAccount) && <h3 className="text-center text-muted">Please Connect Metamask.</h3>
                     }
                 </div>
             }
@@ -396,5 +404,8 @@ class MyPhotos extends Component {
     }
 }
 
-export default MyPhotos;
+const mapToStateProps = ({wallet}) => ({
+  connected: wallet.wallet_connected
+})
 
+export default connect(mapToStateProps, null)(MyPhotos);
