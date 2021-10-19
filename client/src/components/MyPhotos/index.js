@@ -214,7 +214,7 @@ class MyPhotos extends Component {
             const networkId = await web3.eth.net.getId();
             const networkType = await web3.eth.net.getNetworkType();
             const isMetaMask = accounts.length ? true : false;
-            this.props.setConnection(isMetaMask);
+            //this.props.setConnection(isMetaMask);
             let balance = accounts.length > 0 ? await web3.eth.getBalance(accounts[0]): web3.utils.toWei('0');
             balance = web3.utils.fromWei(balance, 'ether');
 
@@ -395,8 +395,6 @@ class MyPhotos extends Component {
         );
     }
 }
-const mapDispatchToProps = dispatch => ({
-  setConnection: (status) => dispatch(SetStatus(status))
-})
-export default connect(null, mapDispatchToProps)(MyPhotos);
+
+export default MyPhotos;
 

@@ -7,7 +7,6 @@ const status = {
 export default function (state = status, action) {
     switch(action.type) {
         case WALLET_CONNECT:
-            console.log('WALLLLLLLL', action);
             return {...state, wallet_connected: action.payload}
             break;
         default:

@@ -3,15 +3,26 @@ import { WalletConnect } from '../../store/action/wallet.actions';
 import { connect } from 'react-redux';
 import getWeb3, { getGanacheWeb3, Web3 } from "../../utils/getWeb3";
 import ModalMenu from '../Modal/ModalMenu';
+import styles from "./header.module.scss";
+
 class Header extends Component{
     constructor(props) {
         super(props);
         this.state = {
-            wallet_connect: false
+            wallet_connect: false,
+            account: ''
         }
     }
     async componentDidMount() {
-        // await this.props.WalletConnect();
+        try {
+            const web3 = await getWeb3("load");
+            const account = await web3.eth.getAccounts();
+            this.setState({
+                account: account
+            })
+        } catch(err) {
+
+        }
     }
     
     componentDidUpdate(preprops) {
@@ -23,10 +34,29 @@ class Header extends Component{
         }
     }
     async connectWallet() {
+        try {
+            const web3 = await getWeb3('click');
+            await window.ethereum.enable();
+            const accounts = await web3.eth.getAccounts();
+            const isMetaMask = accounts.length ? true : false;
+            window.localStorage.setItem("nftdevelopments",JSON.stringify({connected: isMetaMask}));
+            if (isMetaMask) {
+                await this.props.WalletConnect();
+            }
+        } catch(err) {
+
+        }
+    }
+
+    async disconnectWallet() {
+        const web3 = await getWeb3('click');
+        await window.ethereum.enable();
+        const accounts = await web3.eth.getAccounts();
+        window.localStorage.setItem("nftdevelopments",JSON.stringify({connected: false}));
         await this.props.WalletConnect();
     }
     render() {
-        const { wallet_connect } = this.state;
+        const { wallet_connect, account } = this.state;
         return (
             <header id="header">
                 {/* Navbar */}
@@ -63,13 +93,15 @@ class Header extends Component{
                         {/* Navbar Action Button */}
                         <ul className="navbar-nav action">
                             {
-                                !wallet_connect ? <li className="nav-item ml-3">
-                                    <a className="btn ml-lg-auto" onClick={() => this.connectWallet()}>
+                                !wallet_connect && account ? <li className="nav-item ml-3">
+                                    <a className={`ml-lg-auto ${styles.pointer}`} onClick={() => this.connectWallet()}>
                                         <i className="icon-wallet mr-md-2" />
                                     </a>
                                 </li>
                                 : <li className="nav-item ml-3">
-                                    <i className="icon-user fa-2x"></i>
+                                    <a className={`ml-lg-auto ${styles.pointer}`} onClick={() => this.disconnectWallet()}>
+                                        <i className="icon-logout mr-md-2" />
+                                    </a>
                                 </li>
                             }
                         </ul>

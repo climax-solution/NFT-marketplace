@@ -62,7 +62,9 @@
     }
   }
 }
-
+.pointer {
+  cursor: pointer;
+}
 @media only screen and (max-width: $screen-sm-max) {
 
   .header nav ul .brand {
