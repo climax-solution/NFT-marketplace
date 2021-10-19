@@ -327,6 +327,14 @@ class MyPhotos extends Component {
             {
                 <div className="row items" style={{padding: '30px 0'}}>
                     {assets.map((item, idx) => {
+                      let ItemPrice = web3.utils.fromWei(`${item.photoPrice}`,"ether");
+                      const pidx = ItemPrice.indexOf('.');
+                      const pLen = ItemPrice.length;
+                      if (pidx > 0) {
+                        if (pLen - pidx > 3) {
+                          ItemPrice = ItemPrice.substr(0, pidx + 4);
+                        }
+                      }
                         if (currentAccount == item.ownerAddress) {
                             return (
                                 <div className="col-12 col-sm-6 col-lg-3 item" key={idx}>
@@ -344,10 +352,7 @@ class MyPhotos extends Component {
                                                 </div>
                                                 <div className="card-bottom d-flex justify-content-between">
                                                     <span>{item.photoNFTName}</span>
-                                                    <span>{web3.utils.fromWei(
-                                                        `${item.photoPrice}`,
-                                                        "ether"
-                                                    )}</span>
+                                                    <span>{ItemPrice}</span>
                                                 </div>
                                                 { item.status == "Cancelled" ? 
                                                     <Button

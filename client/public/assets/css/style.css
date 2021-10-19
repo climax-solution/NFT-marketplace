@@ -1620,6 +1620,7 @@ header .navbar-expand .dropdown:hover > .dropdown-menu {
 
 .card .card-img-top {
   border-radius: 6px;
+  aspect-ratio: 1;
 }
 
 .card .card-body {
