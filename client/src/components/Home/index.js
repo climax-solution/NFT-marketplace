@@ -100,7 +100,7 @@ class Home extends Component {
 
       const allPhotos = await photoNFTData.methods.getAllPhotos().call()
       // console.log('=== allPhotos ===', allPhotos)
-      const list = isMetaMask ? allPhotos.filter(item => currentAccount != item.ownerAddress) : allPhotos;
+      const list = allPhotos.filter(item => item.premiumStatus);
       // console.log('list',list);
       this.setState({ allPhotos: list })
       return list
@@ -236,15 +236,10 @@ class Home extends Component {
 
     async componentDidUpdate(preprops) {
       if (preprops != this.props) {
-        let { currentAccount, web3, photoNFTData } = this.state;
         const { connected } = this.props;
-        if (!connected) currentAccount = '';
-        console.log('currentAccount',currentAccount);
         this.setState({
-          isMetaMask: this.props.connected,
-          currentAccount: currentAccount
+          isMetaMask: connected,
         })
-        if (photoNFTData) this.getAllPhotos();
 
       }
     }
@@ -257,6 +252,7 @@ class Home extends Component {
 
     render() {
         const { web3, allPhotos, currentAccount, isMetaMask } = this.state;
+        console.log(isMetaMask, allPhotos);
         return(
             <>
                 <Breadcrumb title="NFT DEVELOPEMENT"/>
@@ -274,6 +270,14 @@ class Home extends Component {
                     {allPhotos.map((item, idx) => {
                         if (isMetaMask && currentAccount == item.ownerAddress || !item.premiumStatus) return <></>;
                         else {
+                          let ItemPrice = web3.utils.fromWei(`${item.photoPrice}`,"ether");
+                          const pidx = ItemPrice.indexOf('.');
+                          const pLen = ItemPrice.length;
+                          if (pidx > 0) {
+                            if (pLen - pidx > 3) {
+                              ItemPrice = ItemPrice.substr(0, pidx + 4);
+                            }
+                          }
                             return (
                                 <div className="col-12 col-sm-6 col-md-4 col-lg-3 item" key={idx}>
                                     <div className="card">
@@ -290,10 +294,7 @@ class Home extends Component {
                                                 </div>
                                                 <div className="card-bottom d-flex justify-content-between">
                                                     <span>{item.photoNFTName}</span>
-                                                    <span>{web3.utils.fromWei(
-                                                        `${item.photoPrice}`,
-                                                        "ether"
-                                                    )}</span>
+                                                    <span>{ItemPrice}</span>
                                                 </div>
                                                 <Button
                                                   size={'medium'}

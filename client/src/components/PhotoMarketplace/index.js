@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import getWeb3, { getGanacheWeb3, Web3 } from "../../utils/getWeb3";
 
-import { Loader, Button, Card, Input, Table, Form, Field, Image } from 'rimble-ui';
+import { Loader, Button, Card, Input, Table, Form, Field, Image, is } from 'rimble-ui';
 import { zeppelinSolidityHotLoaderOptions } from '../../../config/webpack';
 
 import styles from '../../App.module.scss';
@@ -234,18 +234,12 @@ class PhotoMarketplace extends Component {
         }
     }
 
-    async componentDidUpdate(preprops) {
+    componentDidUpdate(preprops) {
       if (preprops != this.props) {
-        let { currentAccount, web3, photoNFTData } = this.state;
         const { connected } = this.props;
-        if (!connected) currentAccount = '';
-        console.log('currentAccount',currentAccount);
         this.setState({
-          isMetaMask: this.props.connected,
-          currentAccount: currentAccount
+          isMetaMask: connected
         })
-        if (photoNFTData) this.getAllPhotos();
-
       }
     }
 
@@ -257,9 +251,9 @@ class PhotoMarketplace extends Component {
 
     render() {
         const { web3, allPhotos, currentAccount, isMetaMask } = this.state;
-        console.log('allPhotos',allPhotos);
         const premiumNFT = allPhotos.filter(item => item.premiumStatus == true);
         const normalNFT = allPhotos.filter(item => item.premiumStatus == false);
+        console.log(currentAccount, allPhotos, isMetaMask);
         return (
           <>
           <Breadcrumb title="MARKETPLACE"/>
@@ -267,6 +261,14 @@ class PhotoMarketplace extends Component {
               {premiumNFT.map((item, idx) => {
                   if (isMetaMask && currentAccount == item.ownerAddress || !item.premiumStatus) return <></>;
                   else {
+                      let ItemPrice = web3.utils.fromWei(`${item.photoPrice}`,"ether");
+                      const pidx = ItemPrice.indexOf('.');
+                      const pLen = ItemPrice.length;
+                      if (pidx > 0) {
+                        if (pLen - pidx > 3) {
+                          ItemPrice = ItemPrice.substr(0, pidx + 4);
+                        }
+                      }
                       return (
                           <div className="col-12 col-sm-6 col-lg-3 item" key={idx}>
                               <div className="card">
@@ -283,10 +285,7 @@ class PhotoMarketplace extends Component {
                                           </div>
                                           <div className="card-bottom d-flex justify-content-between">
                                               <span>{item.photoNFTName}</span>
-                                              <span>{web3.utils.fromWei(
-                                                  `${item.photoPrice}`,
-                                                  "ether"
-                                              )}</span>
+                                              <span>{ItemPrice}</span>
                                           </div>
                                           <Button
                                               size={'medium'}
@@ -302,7 +301,8 @@ class PhotoMarketplace extends Component {
                   }
               })}
               {normalNFT.map((item, idx) => {
-                  if (currentAccount != item.ownerAddress) {
+                  if (isMetaMask && currentAccount == item.ownerAddress || item.premiumStatus) return <></>;
+                  else {
                       let ItemPrice = web3.utils.fromWei(`${item.photoPrice}`,"ether");
                       const pidx = ItemPrice.indexOf('.');
                       const pLen = ItemPrice.length;

@@ -246,7 +246,7 @@ class MyPhotos extends Component {
               }
             }
 
-            if (instancePhotoNFTMarketplace) {
+            if (instancePhotoNFTData) {
                 // Set web3, accounts, and contract to the state, and then proceed with an
                 // example of interacting with the contract's methods.
                 this.setState({ 
@@ -327,20 +327,21 @@ class MyPhotos extends Component {
             {
                 <div className="row items" style={{padding: '30px 0'}}>
                     {assets.map((item, idx) => {
-                      let ItemPrice = web3.utils.fromWei(`${item.photoPrice}`,"ether");
-                      const pidx = ItemPrice.indexOf('.');
-                      const pLen = ItemPrice.length;
-                      if (pidx > 0) {
-                        if (pLen - pidx > 3) {
-                          ItemPrice = ItemPrice.substr(0, pidx + 4);
+                        if (!isMetaMask && currentAccount == item.ownerAddress) return <></>;
+                        let ItemPrice = web3.utils.fromWei(`${item.photoPrice}`,"ether");
+                        const pidx = ItemPrice.indexOf('.');
+                        const pLen = ItemPrice.length;
+                        if (pidx > 0) {
+                          if (pLen - pidx > 3) {
+                            ItemPrice = ItemPrice.substr(0, pidx + 4);
+                          }
                         }
-                      }
                         if (currentAccount == item.ownerAddress) {
                             return (
                                 <div className="col-12 col-sm-6 col-lg-3 item" key={idx}>
                                     <div className="card" key={`exo_${idx}`}>
                                         <div className="image-over">
-                                            <img className="card-img-top" src={`${process.env.REACT_APP_IPFS}/ipfs/${item.ipfsHashOfPhoto}`} alt="" />
+                                            <a href={`/item-details/${item.photoNFT}`}><img className="card-img-top" src={`${process.env.REACT_APP_IPFS}/ipfs/${item.ipfsHashOfPhoto}`} alt="" /></a>
                                         </div>
                                         {/* Card Caption */}
                                         <div className="card-caption col-12 p-0">

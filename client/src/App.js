@@ -6,6 +6,7 @@ import Footer from "./components/Footer/index.js";
 import Publish from "./components/Publish/index.js";
 import MyPhotos from "./components/MyPhotos/index.js";
 import PhotoMarketplace from "./components/PhotoMarketplace/index.js";
+import ItemDetails from "./components/ItemDetails/ItemDetails";
 import ipfs from './components/ipfs/ipfsApi.js'
 
 import { Loader, Button, Card, Input, Heading, Table, Form, Flex, Box, Image } from 'rimble-ui';
@@ -116,6 +117,7 @@ class App extends Component {
             <Route path="/publish" component={Publish}/>
             <Route path="/my-photos" component={MyPhotos}/>
             <Route path="/photo-marketplace" component={PhotoMarketplace}/>
+            <Route path="/item-details/:address" component={ItemDetails}/>
           </Switch>
         <Footer />
       </Router>
