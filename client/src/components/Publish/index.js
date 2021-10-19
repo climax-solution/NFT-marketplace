@@ -113,7 +113,9 @@ class Publish extends Component {
           const nftName = valueNFTName;
           const nftSymbol = "NFT-MARKETPLACE";  /// [Note]: All NFT's symbol are common symbol
           //const nftSymbol = valueNFTSymbol;
+          
           const _photoPrice = valuePhotoPrice;
+          console.log('_photoPrice',_photoPrice)
           console.log('=== nftName ===', nftName);
           console.log('=== nftSymbol ===', nftSymbol);
           console.log('=== _photoPrice ===', _photoPrice);
@@ -125,7 +127,7 @@ class Publish extends Component {
           });
 
           //let PHOTO_NFT;  /// [Note]: This is a photoNFT address created
-          const photoPrice = web3.utils.toWei(_photoPrice, 'ether');
+          const photoPrice = web3.utils.toWei(_photoPrice, 'ether'); // _photoPrice * 1.05 - trasaction fee 5%
           const ipfsHashOfPhoto = this.state.ipfsHash;
           photoNFTFactory.methods.createNewPhotoNFT(nftName, nftSymbol, photoPrice, ipfsHashOfPhoto).send({ from: accounts[0] })
           .once('receipt', (receipt) => {
@@ -271,12 +273,14 @@ class Publish extends Component {
         }
     };
 
-    componentDidUpdate(preprops) {
-      console.log("Props", this.props);
-
+    async componentDidUpdate(preprops) {
       if (preprops != this.props) {
+        let { currentAccount, web3 } = this.state;
+        const { connected } = this.props;
+        if (!connected) currentAccount = '';
         this.setState({
-          isMetaMask: this.props.connected
+          isMetaMask: this.props.connected,
+          currentAccount
         })
       }
     }
@@ -308,7 +312,7 @@ class Publish extends Component {
                                     <Input
                                         type="text"
                                         width={1}
-                                        placeholder="e.g) Art NFT Token"
+                                        placeholder="Art NFT Token"
                                         required={true}
                                         value={this.state.valueNFTName}
                                         onChange={this.handleNFTName}
@@ -332,14 +336,14 @@ class Publish extends Component {
                                     <Input
                                         type="number"
                                         width={1}
-                                        placeholder="e.g) 10"
+                                        placeholder="10"
                                         required={true}
                                         value={this.state.valuePhotoPrice}
                                         onChange={this.handlePhotoPrice}
                                     />
                                 </Field>
 
-                                <Field label="Art for uploading to NFT" className="form-group">
+                                <Field label="Art for NFT" className="form-group">
                                     <input
                                         type="file"
                                         onChange={this.captureFile}

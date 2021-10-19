@@ -5,6 +5,7 @@ import getWeb3, { getGanacheWeb3, Web3 } from "../../utils/getWeb3";
 import { zeppelinSolidityHotLoaderOptions } from '../../../config/webpack';
 import Breadcrumb from "../Breadcrumb/Breadcrumb";
 import {  Button } from 'rimble-ui';
+import { NotificationManager } from "react-notifications";
 
 class Home extends Component {
     constructor(props) {    
@@ -21,7 +22,8 @@ class Home extends Component {
 
           /////// NFT
           allPhotos: [],
-          loading: false
+          loading: false,
+          isConnected: false
         };
 
         //this.handlePhotoNFTAddress = this.handlePhotoNFTAddress.bind(this);
@@ -41,24 +43,36 @@ class Home extends Component {
     ///---------------------------------
     /// Functions of buying a photo NFT 
     ///---------------------------------
-    buyPhotoNFT = async (e) => {
-        const { web3, accounts, photoNFT } = this.state;
+    buyPhotoNFT = async (id) => {
+      const { web3, accounts, photoNFTMarketplace, photoNFTData, isMetaMask } = this.state;
+      if (!isMetaMask) {
+        NotificationManager.warning("Metamask is not connected!", "Warning");
+        return;
+      }
+      //const { web3, accounts, photoNFTMarketplace, photoNFTData, valuePhotoNFTAddress } = this.state;
 
-        console.log('photoNFT', photoNFT);
-        //const { web3, accounts, photoNFTMarketplace, photoNFTData, valuePhotoNFTAddress } = this.state;
+      // console.log('=== value of buyPhotoNFT ===', e.target.value);
 
-        console.log('=== value of buyPhotoNFT ===', e.target.value);
+      const PHOTO_NFT = id;
+      //const PHOTO_NFT = valuePhotoNFTAddress;
+      //this.setState({ valuePhotoNFTAddress: "" });
 
-        const photoId = e.target.value;
-        
-       
-        const photo = await photoNFT.methods.getPhoto(photoId).call();
-        const buyAmount = photo.photoPrice;
-        const txReceipt1 = await photoNFT.methods.buyNFT(photoId).send({ from: accounts[0], value: buyAmount });
-        console.log('=== response of buyPhotoNFT ===', txReceipt1);
+      /// Get instance by using created photoNFT address
+      let PhotoNFT = {};
+      PhotoNFT = require("../../../../build/contracts/PhotoNFT.json"); 
+      let photoNFT = new web3.eth.Contract(PhotoNFT.abi, PHOTO_NFT);
 
-        await this.getAllPhotos();
-    }
+      /// Check owner of photoId
+      const photoId = 1;  /// [Note]: PhotoID is always 1. Because each photoNFT is unique.
+      const owner = await photoNFT.methods.ownerOf(photoId).call();
+      console.log('=== owner of photoId ===', owner);  /// [Expect]: Owner should be the PhotoNFTMarketplace.sol (This also called as a proxy/escrow contract)
+
+      const photo = await photoNFTData.methods.getPhotoByNFTAddress(PHOTO_NFT).call();
+      const buyAmount = await photo.photoPrice;
+      const txReceipt1 = await photoNFTMarketplace.methods.buyPhotoNFT(PHOTO_NFT).send({ from: accounts[0], value: buyAmount });
+      this.getAllPhotos();
+      console.log('=== response of buyPhotoNFT ===', txReceipt1);
+  }
 
 
     ///--------------------------
@@ -82,14 +96,14 @@ class Home extends Component {
     /// NFT（Always load listed NFT data）
     ///-------------------------------------
     getAllPhotos = async () => {
-        const { photoNFTData, currentAccount } = this.state
+      const { photoNFTData, currentAccount, isMetaMask } = this.state
 
-        const allPhotos = await photoNFTData.methods.getAllPhotos().call()
-        console.log('=== allPhotos ===', allPhotos)
-        const list = allPhotos.filter(item => currentAccount != item.ownerAddress);
-        console.log('list',list);
-        this.setState({ allPhotos: list })
-        return list
+      const allPhotos = await photoNFTData.methods.getAllPhotos().call()
+      // console.log('=== allPhotos ===', allPhotos)
+      const list = isMetaMask ? allPhotos.filter(item => currentAccount != item.ownerAddress) : allPhotos;
+      // console.log('list',list);
+      this.setState({ allPhotos: list })
+      return list
     }
 
 
@@ -180,7 +194,6 @@ class Home extends Component {
                     networkId, 
                     networkType, 
                     hotLoaderDisabled,
-                    isMetaMask, 
                     currentAccount: currentAccount, 
                     photoNFTMarketplace: instancePhotoNFTMarketplace,
                     photoNFTData: instancePhotoNFTData }, () => {
@@ -191,7 +204,15 @@ class Home extends Component {
                 });
             }
             else {
-              this.setState({ web3, ganacheAccounts, accounts, balance, networkId, networkType, hotLoaderDisabled, isMetaMask });
+              this.setState({
+                web3,
+                ganacheAccounts,
+                accounts,
+                balance,
+                networkId,
+                networkType,
+                hotLoaderDisabled,
+              });
             }
 
             ///@dev - NFT（Always load listed NFT data
@@ -204,6 +225,7 @@ class Home extends Component {
           // );
           // console.error(error);
         }
+        console.log(111111111);
     };
 
     componentWillUnmount() {
@@ -212,14 +234,29 @@ class Home extends Component {
         }
     }
 
+    async componentDidUpdate(preprops) {
+      if (preprops != this.props) {
+        let { currentAccount, web3, photoNFTData } = this.state;
+        const { connected } = this.props;
+        if (!connected) currentAccount = '';
+        console.log('currentAccount',currentAccount);
+        this.setState({
+          isMetaMask: this.props.connected,
+          currentAccount: currentAccount
+        })
+        if (photoNFTData) this.getAllPhotos();
+
+      }
+    }
+
     refreshValues = (instancePhotoNFTMarketplace) => {
         if (instancePhotoNFTMarketplace) {
           console.log('refreshValues of instancePhotoNFTMarketplace');
         }
     }
+
     render() {
-        const { web3, allPhotos, currentAccount } = this.state;
-        console.log('allPhotos',allPhotos);
+        const { web3, allPhotos, currentAccount, isMetaMask } = this.state;
         return(
             <>
                 <Breadcrumb title="NFT DEVELOPEMENT"/>
@@ -235,7 +272,8 @@ class Home extends Component {
                 </div>
                 <div className="row items" style={{minHeight: '300px'}}>
                     {allPhotos.map((item, idx) => {
-                        if (currentAccount != item.ownerAddress && item.premiumStatus == true) {
+                        if (isMetaMask && currentAccount == item.ownerAddress || !item.premiumStatus) return <></>;
+                        else {
                             return (
                                 <div className="col-12 col-sm-6 col-md-4 col-lg-3 item" key={idx}>
                                     <div className="card">
@@ -269,12 +307,18 @@ class Home extends Component {
                                 </div>
                             );
                         }
-                        return <></>;
                     })}
+                    {
+                      !allPhotos.length && <h3 className="text-center text-muted">No items.</h3>
+                    }
                 </div>
             </>
         )
     }
 }
 
-export default Home;
+const mapToStateProps = ({wallet}) => ({
+  connected: wallet.wallet_connected
+})
+
+export default connect(mapToStateProps, null)(Home);

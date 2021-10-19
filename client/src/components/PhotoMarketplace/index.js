@@ -8,6 +8,7 @@ import styles from '../../App.module.scss';
 import { connect } from "react-redux";
 import { SetStatus } from "../../store/action/wallet.actions";
 import Breadcrumb from "../Breadcrumb/Breadcrumb";
+import { NotificationManager } from "react-notifications";
 
 
 class PhotoMarketplace extends Component {
@@ -44,9 +45,12 @@ class PhotoMarketplace extends Component {
     /// Functions of buying a photo NFT 
     ///---------------------------------
     buyPhotoNFT = async (id) => {
-        const { web3, accounts, photoNFTMarketplace, photoNFTData } = this.state;
+        const { web3, accounts, photoNFTMarketplace, photoNFTData, isMetaMask } = this.state;
         //const { web3, accounts, photoNFTMarketplace, photoNFTData, valuePhotoNFTAddress } = this.state;
-
+        if (!isMetaMask) {
+          NotificationManager.warning("Metamask is not connected!", "Warning");
+          return;
+        }
         // console.log('=== value of buyPhotoNFT ===', e.target.value);
 
         const PHOTO_NFT = id;
@@ -92,12 +96,12 @@ class PhotoMarketplace extends Component {
     /// NFT（Always load listed NFT data）
     ///-------------------------------------
     getAllPhotos = async () => {
-        const { photoNFTData, currentAccount } = this.state
+        const { photoNFTData, currentAccount, isMetaMask } = this.state
 
         const allPhotos = await photoNFTData.methods.getAllPhotos().call()
-        console.log('=== allPhotos ===', allPhotos)
-        const list = allPhotos.filter(item => currentAccount != item.ownerAddress);
-        console.log('list',list);
+        // console.log('=== allPhotos ===', allPhotos)
+        const list = isMetaMask ? allPhotos.filter(item => currentAccount != item.ownerAddress) : allPhotos;
+        // console.log('list',list);
         this.setState({ allPhotos: list })
         return list
     }
@@ -191,7 +195,6 @@ class PhotoMarketplace extends Component {
                     networkId, 
                     networkType, 
                     hotLoaderDisabled,
-                    isMetaMask, 
                     currentAccount: currentAccount, 
                     photoNFTMarketplace: instancePhotoNFTMarketplace,
                     photoNFTData: instancePhotoNFTData }, () => {
@@ -202,7 +205,15 @@ class PhotoMarketplace extends Component {
                 });
             }
             else {
-              this.setState({ web3, ganacheAccounts, accounts, balance, networkId, networkType, hotLoaderDisabled, isMetaMask });
+              this.setState({
+                web3,
+                ganacheAccounts,
+                accounts,
+                balance,
+                networkId,
+                networkType,
+                hotLoaderDisabled,
+              });
             }
 
             ///@dev - NFT（Always load listed NFT data
@@ -223,6 +234,21 @@ class PhotoMarketplace extends Component {
         }
     }
 
+    async componentDidUpdate(preprops) {
+      if (preprops != this.props) {
+        let { currentAccount, web3, photoNFTData } = this.state;
+        const { connected } = this.props;
+        if (!connected) currentAccount = '';
+        console.log('currentAccount',currentAccount);
+        this.setState({
+          isMetaMask: this.props.connected,
+          currentAccount: currentAccount
+        })
+        if (photoNFTData) this.getAllPhotos();
+
+      }
+    }
+
     refreshValues = (instancePhotoNFTMarketplace) => {
         if (instancePhotoNFTMarketplace) {
           console.log('refreshValues of instancePhotoNFTMarketplace');
@@ -230,7 +256,7 @@ class PhotoMarketplace extends Component {
     }
 
     render() {
-        const { web3, allPhotos, currentAccount } = this.state;
+        const { web3, allPhotos, currentAccount, isMetaMask } = this.state;
         console.log('allPhotos',allPhotos);
         const premiumNFT = allPhotos.filter(item => item.premiumStatus == true);
         const normalNFT = allPhotos.filter(item => item.premiumStatus == false);
@@ -239,46 +265,10 @@ class PhotoMarketplace extends Component {
           <Breadcrumb title="MARKETPLACE"/>
           <div className="row items" style={{minHeight: '300px'}}>
               {premiumNFT.map((item, idx) => {
-                  if (currentAccount != item.ownerAddress) {
+                  if (isMetaMask && currentAccount == item.ownerAddress || !item.premiumStatus) return <></>;
+                  else {
                       return (
-                          <div className="col-12 col-sm-6 col-lg-3 item" key={`exo_${idx}`}>
-                              <div className="card">
-                                  <div className="image-over">
-                                      <img className="card-img-top" src={`https://ipfs.infura.io/ipfs/${item.ipfsHashOfPhoto}`} alt="" />
-                                  </div>
-                                  {/* Card Caption */}
-                                  <div className="card-caption col-12 p-0">
-                                      {/* Card Body */}
-                                      <div className="card-body">
-                                          <div className="card-bottom d-flex justify-content-between">
-                                              <span>Token Name</span>
-                                              <span>Price</span>
-                                          </div>
-                                          <div className="card-bottom d-flex justify-content-between">
-                                              <span>{item.photoNFTName}</span>
-                                              <span>{web3.utils.fromWei(
-                                                  `${item.photoPrice}`,
-                                                  "ether"
-                                              )}</span>
-                                          </div>
-                                          <Button
-                                              size={'medium'}
-                                              width={1}
-                                              onClick={() => this.buyPhotoNFT(item.photoNFT)}
-                                              className="btn"
-                                          > Buy </Button>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                      );
-                  }
-                  return <></>;
-              })}
-              {normalNFT.map((item, idx) => {
-                  if (currentAccount != item.ownerAddress) {
-                      return (
-                          <div className="col-12 col-sm-6 col-lg-3 item" key={`exo_${idx}`}>
+                          <div className="col-12 col-sm-6 col-lg-3 item" key={idx}>
                               <div className="card">
                                   <div className="image-over">
                                       <img className="card-img-top" src={`${process.env.REACT_APP_IPFS}/ipfs/${item.ipfsHashOfPhoto}`} alt="" />
@@ -310,6 +300,47 @@ class PhotoMarketplace extends Component {
                           </div>
                       );
                   }
+              })}
+              {normalNFT.map((item, idx) => {
+                  if (currentAccount != item.ownerAddress) {
+                      let ItemPrice = web3.utils.fromWei(`${item.photoPrice}`,"ether");
+                      const pidx = ItemPrice.indexOf('.');
+                      const pLen = ItemPrice.length;
+                      if (pidx > 0) {
+                        if (pLen - pidx > 3) {
+                          ItemPrice = ItemPrice.substr(0, pidx + 4);
+                        }
+                      }
+                      return (
+                          <div className="col-12 col-sm-6 col-lg-3 item" key={`exo_${idx}`}>
+                              <div className="card">
+                                  <div className="image-over">
+                                      <img className="card-img-top" src={`${process.env.REACT_APP_IPFS}/ipfs/${item.ipfsHashOfPhoto}`} alt="" />
+                                  </div>
+                                  {/* Card Caption */}
+                                  <div className="card-caption col-12 p-0">
+                                      {/* Card Body */}
+                                      <div className="card-body">
+                                          <div className="card-bottom d-flex justify-content-between">
+                                              <span>Token Name</span>
+                                              <span>Price</span>
+                                          </div>
+                                          <div className="card-bottom d-flex justify-content-between">
+                                              <span>{item.photoNFTName}</span>
+                                              <span>{ItemPrice}</span>
+                                          </div>
+                                          <Button
+                                              size={'medium'}
+                                              width={1}
+                                              onClick={() => this.buyPhotoNFT(item.photoNFT)}
+                                              className="btn"
+                                          > Buy </Button>
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      );
+                  }
                   return <></>;
               })}
               {
@@ -321,4 +352,8 @@ class PhotoMarketplace extends Component {
     }
 }
 
-export default PhotoMarketplace;
+const mapToStateProps = ({wallet}) => ({
+  connected: wallet.wallet_connected
+})
+
+export default connect(mapToStateProps, null)(PhotoMarketplace);
