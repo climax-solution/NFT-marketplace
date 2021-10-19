@@ -10,10 +10,3 @@ export const WalletConnect = () => async dispatch => {
         payload: wallet.connected
     })
 }
-
-export const SetStatus = (status) => dispatch => {
-    dispatch({
-        type: WALLET_CONNECT,
-        payload: status
-    })
-}

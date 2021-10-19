@@ -3,6 +3,7 @@ import { WalletConnect } from '../../store/action/wallet.actions';
 import { connect } from 'react-redux';
 import getWeb3, { getGanacheWeb3, Web3 } from "../../utils/getWeb3";
 import ModalMenu from '../Modal/ModalMenu';
+import { NotificationManager } from "react-notifications";
 import styles from "./header.module.scss";
 
 class Header extends Component{
@@ -16,10 +17,11 @@ class Header extends Component{
     async componentDidMount() {
         try {
             const web3 = await getWeb3("load");
-            const account = await web3.eth.getAccounts();
+            const accounts = await web3.eth.getAccounts();
             this.setState({
-                account: account
+                account: accounts[0]
             })
+            await this.props.WalletConnect();
         } catch(err) {
 
         }
@@ -40,11 +42,12 @@ class Header extends Component{
             const accounts = await web3.eth.getAccounts();
             const isMetaMask = accounts.length ? true : false;
             window.localStorage.setItem("nftdevelopments",JSON.stringify({connected: isMetaMask}));
-            if (isMetaMask) {
-                await this.props.WalletConnect();
-            }
+            await this.props.WalletConnect();
+            this.setState({
+                account: accounts[0]
+            })
         } catch(err) {
-
+            NotificationManager.error(err.message, "Error");
         }
     }
 
@@ -93,16 +96,22 @@ class Header extends Component{
                         {/* Navbar Action Button */}
                         <ul className="navbar-nav action">
                             {
-                                !wallet_connect && account ? <li className="nav-item ml-3">
-                                    <a className={`ml-lg-auto ${styles.pointer}`} onClick={() => this.connectWallet()}>
+                                (!wallet_connect || !account) ? <li className="nav-item ml-3">
+                                    <a className={`ml-lg-auto ${styles.pointer} btn`} onClick={() => this.connectWallet()}>
                                         <i className="icon-wallet mr-md-2" />
                                     </a>
                                 </li>
-                                : <li className="nav-item ml-3">
-                                    <a className={`ml-lg-auto ${styles.pointer}`} onClick={() => this.disconnectWallet()}>
-                                        <i className="icon-logout mr-md-2" />
-                                    </a>
-                                </li>
+                                : (<li className="nav-item dropdown">
+                                    <a className="nav-link btn" href="#">{account.substr(0,6) + "..." + account.substr(-4)}</a>
+                                    <ul className="dropdown-menu mt-1 pl-3">
+                                        <li className="nav-item black mt-2">
+                                            <a className={`ml-lg-auto ${styles.pointer}`} onClick={() => this.disconnectWallet()}>
+                                                <i className="icon-logout mr-md-2" style={{color: "#000"}}/>
+                                                Log Out
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </li>)
                             }
                         </ul>
                     </div>

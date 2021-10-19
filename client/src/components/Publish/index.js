@@ -9,6 +9,7 @@ import { confirmAlert } from 'react-confirm-alert';
 import Breadcrumb from "../Breadcrumb/Breadcrumb";
 import { SetStatus } from "../../store/action/wallet.actions";
 import { connect } from "react-redux";
+import  {NotificationManager} from "react-notifications";
 import styles from "../../App.module.scss";
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
@@ -77,10 +78,23 @@ class Publish extends Component {
     }
       
     onSubmit(event) {
-        const { web3, accounts, photoNFTFactory, photoNFTMarketplace, PHOTO_NFT_MARKETPLACE, valueNFTName, valueNFTSymbol, valuePhotoPrice } = this.state;
+        const {
+          web3,
+          accounts,
+          photoNFTFactory,
+          photoNFTMarketplace,
+          PHOTO_NFT_MARKETPLACE,
+          valueNFTName,
+          valueNFTSymbol,
+          valuePhotoPrice,
+          isMetaMask
+        } = this.state;
 
         event.preventDefault()
-
+        if (!isMetaMask) {
+          NotificationManager.warning("Metamask is not connected!", "Warning")
+          return;
+        }
         ipfs.files.add(this.state.buffer, (error, result) => {
           // In case of fail to upload to IPFS
 
@@ -183,8 +197,6 @@ class Publish extends Component {
             // Get the contract instance.
             const networkId = await web3.eth.net.getId();
             const networkType = await web3.eth.net.getNetworkType();
-            const isMetaMask = accounts.length ? true : false;
-            //this.props.setConnection(isMetaMask);
             let balance = accounts.length > 0 ? await web3.eth.getBalance(accounts[0]): web3.utils.toWei('0');
             balance = web3.utils.fromWei(balance, 'ether');
 
@@ -229,7 +241,6 @@ class Publish extends Component {
                     networkId, 
                     networkType, 
                     hotLoaderDisabled,
-                    isMetaMask, 
                     photoNFTFactory: instancePhotoNFTFactory,
                     photoNFTMarketplace: instancePhotoNFTMarketplace, 
                     PHOTO_NFT_MARKETPLACE: PHOTO_NFT_MARKETPLACE }, () => {
@@ -240,7 +251,15 @@ class Publish extends Component {
                 });
             }
             else {
-              this.setState({ web3, ganacheAccounts, accounts, balance, networkId, networkType, hotLoaderDisabled, isMetaMask });
+              this.setState({
+                web3,
+                ganacheAccounts,
+                accounts,
+                balance,
+                networkId,
+                networkType,
+                hotLoaderDisabled,
+              });
             }
           }
         } catch (error) {
@@ -251,6 +270,16 @@ class Publish extends Component {
           // console.error(error);
         }
     };
+
+    componentDidUpdate(preprops) {
+      console.log("Props", this.props);
+
+      if (preprops != this.props) {
+        this.setState({
+          isMetaMask: this.props.connected
+        })
+      }
+    }
 
     componentWillUnmount() {
         if (this.interval) {
@@ -328,4 +357,8 @@ class Publish extends Component {
     }
 }
 
-export default Publish;
+const mapToStateProps = ({wallet}) => ({
+  connected: wallet.wallet_connected
+})
+
+export default connect(mapToStateProps, null)(Publish);

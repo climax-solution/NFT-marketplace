@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { NotificationContainer } from "react-notifications";
 import getWeb3, { getGanacheWeb3, Web3 } from "./utils/getWeb3";
 import Header from "./components/Header/index.js";
 import Footer from "./components/Footer/index.js";
@@ -11,6 +12,7 @@ import { Loader, Button, Card, Input, Heading, Table, Form, Flex, Box, Image } f
 import { zeppelinSolidityHotLoaderOptions } from '../config/webpack';
 import { BrowserRouter as Router, Switch, Route, Redirect} from "react-router-dom";
 import Home from "./components/Home";
+import 'react-notifications/lib/notifications.css';
 
 import styles from './App.module.scss';
 //import './App.css';
@@ -108,6 +110,7 @@ class App extends Component {
     return (
       <Router >
         <Header />
+        <NotificationContainer/>
           <Switch>
             <Route exact path="/" component={Home}/>
             <Route path="/publish" component={Publish}/>
