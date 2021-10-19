@@ -4,6 +4,7 @@ import { SetStatus } from "../../store/action/wallet.actions";
 import getWeb3, { getGanacheWeb3, Web3 } from "../../utils/getWeb3";
 import { zeppelinSolidityHotLoaderOptions } from '../../../config/webpack';
 import Breadcrumb from "../Breadcrumb/Breadcrumb";
+import {  Button } from 'rimble-ui';
 
 class Home extends Component {
     constructor(props) {    
@@ -256,6 +257,12 @@ class Home extends Component {
                                                         "ether"
                                                     )}</span>
                                                 </div>
+                                                <Button
+                                                  size={'medium'}
+                                                  width={1}
+                                                  onClick={() => this.buyPhotoNFT(item.photoNFT)}
+                                                  className="btn"
+                                                > Buy </Button>
                                             </div>
                                         </div>
                                     </div>
