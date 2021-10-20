@@ -309,12 +309,17 @@ class MyPhotos extends Component {
     async componentDidUpdate(preprops) {
       const { web3 } = this.state;
       if (preprops != this.props) {
-        this.setState({
-          isMetaMask: this.props.connected
-        })
         if (web3 != null) {
+          const accounts = await web3.eth.getAccounts();
+          this.setState({
+            currentAccount: accounts[0]
+          })
           await this.getAllPhotos();
         }
+        this.setState({
+          isMetaMask: this.props.connected,
+        })
+
       }
     }
     refreshValues = (instancePhotoNFTMarketplace) => {
@@ -332,7 +337,7 @@ class MyPhotos extends Component {
     }
     render() {
         const { web3, assets, currentAccount, isMetaMask } = this.state;
-        console.log(assets);
+        console.log('isMetaMask=>',isMetaMask);
         return (
           <>
             <Breadcrumb title="ASSETS"/>
@@ -351,7 +356,7 @@ class MyPhotos extends Component {
                         if (currentAccount == item.ownerAddress) {
                             return (
                                 <div className="col-12 col-sm-6 col-lg-3 item" key={idx}>
-                                    <div className="card" key={`exo_${idx}`}>
+                                    <div className="card">
                                         <div className="image-over">
                                             <a href={`/item-details/${item.photoNFT}`}><img className="card-img-top" src={`${process.env.REACT_APP_IPFS}/ipfs/${item.ipfsHashOfPhoto}`} alt="" /></a>
                                         </div>
@@ -413,7 +418,7 @@ class MyPhotos extends Component {
                         (isMetaMask && currentAccount && !assets.length) && <h3 className="text-center text-muted ml-2">No items.</h3>
                     }
                     {
-                      (!isMetaMask || !currentAccount) && <h3 className="text-center text-muted ml-2">Please Connect Metamask.</h3>
+                      (!isMetaMask || !currentAccount) && <h3 className="text-center text-muted ml-2">Connect Metamask.</h3>
                     }
                 </div>
             }

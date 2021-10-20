@@ -111,7 +111,7 @@ class Publish extends Component {
           console.log('=== ipfsHash ===', this.state.ipfsHash);
 
           const nftName = valueNFTName;
-          const nftSymbol = "NFT-MARKETPLACE";  /// [Note]: All NFT's symbol are common symbol
+          const nftSymbol = "NFT DEVELOPMENTS";  /// [Note]: All NFT's symbol are common symbol
           //const nftSymbol = NFTDesc;
           
           const _photoPrice = valuePhotoPrice;
@@ -346,7 +346,6 @@ class Publish extends Component {
 
                                 <Field label="Description" className="form-group">
                                     <Textarea
-                                        placeholder="This is ....."
                                         required={true}
                                         value={this.state.NFTDesc}
                                         className="p-2"

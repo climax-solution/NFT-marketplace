@@ -234,11 +234,14 @@ class PhotoMarketplace extends Component {
       const { web3 } = this.state;
       if (preprops != this.props) {
         const { connected } = this.props;
-        console.log('connected', connected)
         this.setState({
           isMetaMask: connected
         })
         if (web3 != null) {
+          const accounts = await web3.eth.getAccounts();
+          this.setState({
+            currentAccount: accounts[0]
+          })
           await this.getAllPhotos();
         }
       }
