@@ -11,6 +11,7 @@ bridge.log
 
 # dependencies
 /node_modules
+/build-history
 /.pnp
 .pnp.js
 
