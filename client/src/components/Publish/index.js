@@ -3,7 +3,7 @@ import getWeb3, { getGanacheWeb3, Web3 } from "../../utils/getWeb3";
 import ipfs from '../ipfs/ipfsApi.js'
 
 import { Grid } from '@material-ui/core';
-import { Loader, Button, Card, Input, Heading, Table, Form, Field } from 'rimble-ui';
+import { Loader, Button, Card, Input, Heading, Table, Form, Field, Textarea } from 'rimble-ui';
 import { zeppelinSolidityHotLoaderOptions } from '../../../config/webpack';
 import { confirmAlert } from 'react-confirm-alert';
 import Breadcrumb from "../Breadcrumb/Breadcrumb";
@@ -26,7 +26,7 @@ class Publish extends Component {
 
           /////// NFT concern
           valueNFTName: '',
-          valueNFTSymbol: '',
+          NFTDesc: '',
           valuePhotoPrice: '',
 
           /////// Ipfs Upload
@@ -36,7 +36,7 @@ class Publish extends Component {
 
         /////// Handle
         this.handleNFTName = this.handleNFTName.bind(this);
-        this.handleNFTSymbol = this.handleNFTSymbol.bind(this);
+        this.handleNFTDesc = this.handleNFTDesc.bind(this);
         this.handlePhotoPrice = this.handlePhotoPrice.bind(this);
 
         /////// Ipfs Upload
@@ -52,8 +52,8 @@ class Publish extends Component {
         this.setState({ valueNFTName: event.target.value });
     }
 
-    handleNFTSymbol(event) {
-        this.setState({ valueNFTSymbol: event.target.value });
+    handleNFTDesc(event) {
+        this.setState({ NFTDesc: event.target.value });
     }
 
     handlePhotoPrice(event) {
@@ -85,7 +85,7 @@ class Publish extends Component {
           photoNFTMarketplace,
           PHOTO_NFT_MARKETPLACE,
           valueNFTName,
-          valueNFTSymbol,
+          NFTDesc,
           valuePhotoPrice,
           isMetaMask
         } = this.state;
@@ -112,7 +112,7 @@ class Publish extends Component {
 
           const nftName = valueNFTName;
           const nftSymbol = "NFT-MARKETPLACE";  /// [Note]: All NFT's symbol are common symbol
-          //const nftSymbol = valueNFTSymbol;
+          //const nftSymbol = NFTDesc;
           
           const _photoPrice = valuePhotoPrice;
           console.log('_photoPrice',_photoPrice)
@@ -121,15 +121,21 @@ class Publish extends Component {
           console.log('=== _photoPrice ===', _photoPrice);
           this.setState({ 
             valueNFTName: '',
-            valueNFTSymbol: '',
+            NFTDesc: '',
             valuePhotoPrice: '',
             buffer: ''
           });
 
           //let PHOTO_NFT;  /// [Note]: This is a photoNFT address created
           const photoPrice = web3.utils.toWei(_photoPrice, 'ether'); // _photoPrice * 1.05 - trasaction fee 5%
+          console.log('photoPrice', photoPrice)
+          let BN = web3.utils.BN;
+
+          const fee = new BN(photoPrice).div(new BN("20"));
+          console.log(fee);
           const ipfsHashOfPhoto = this.state.ipfsHash;
-          photoNFTFactory.methods.createNewPhotoNFT(nftName, nftSymbol, photoPrice, ipfsHashOfPhoto).send({ from: accounts[0] })
+          photoNFTFactory.methods.createNewPhotoNFT(nftName, nftSymbol, photoPrice, ipfsHashOfPhoto, NFTDesc)
+          .send({ from: accounts[0], value: fee })
           .once('receipt', (receipt) => {
             console.log('=== receipt ===', receipt);
 
@@ -319,19 +325,6 @@ class Publish extends Component {
                                     />
                                 </Field>
 
-                                {/*
-                                <Field label="Photo NFT Symbol">
-                                    <Input
-                                        type="text"
-                                        width={1}
-                                        placeholder="e.g) ARNT"
-                                        required={true}
-                                        value={this.state.valueNFTSymbol} 
-                                        onChange={this.handleNFTSymbol}                                        
-                                    />
-                                </Field>
-                                */}
-
                                 <Field label="Token Price (unit: BNB)" className="form-group">
                                     <Input
                                         type="number"
@@ -348,6 +341,17 @@ class Publish extends Component {
                                         type="file"
                                         onChange={this.captureFile}
                                         required={true}
+                                    />
+                                </Field>
+
+                                <Field label="Description" className="form-group">
+                                    <Textarea
+                                        placeholder="This is ....."
+                                        required={true}
+                                        value={this.state.NFTDesc}
+                                        className="p-2"
+                                        style={{height: '150px'}}
+                                        onChange={this.handleNFTDesc}                                        
                                     />
                                 </Field>
                                 <button className="btn w-100 mt-3 mt-sm-4" type="submit">Create Item</button>

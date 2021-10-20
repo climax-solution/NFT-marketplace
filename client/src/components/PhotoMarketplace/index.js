@@ -99,11 +99,8 @@ class PhotoMarketplace extends Component {
         const { photoNFTData, currentAccount, isMetaMask } = this.state
 
         const allPhotos = await photoNFTData.methods.getAllPhotos().call()
-        // console.log('=== allPhotos ===', allPhotos)
-        const list = isMetaMask ? allPhotos.filter(item => currentAccount != item.ownerAddress) : allPhotos;
         // console.log('list',list);
-        this.setState({ allPhotos: list })
-        return list
+        this.setState({ allPhotos: allPhotos });
     }
 
 
@@ -152,7 +149,6 @@ class PhotoMarketplace extends Component {
             // Get the contract instance.
             const networkId = await web3.eth.net.getId();
             const networkType = await web3.eth.net.getNetworkType();
-            const isMetaMask = accounts.length ? true : false;
             //this.props.setConnection(isMetaMask);
             let balance = accounts.length > 0 ? await web3.eth.getBalance(accounts[0]): web3.utils.toWei('0');
             balance = web3.utils.fromWei(balance, 'ether');
@@ -234,12 +230,17 @@ class PhotoMarketplace extends Component {
         }
     }
 
-    componentDidUpdate(preprops) {
+    async componentDidUpdate(preprops) {
+      const { web3 } = this.state;
       if (preprops != this.props) {
         const { connected } = this.props;
+        console.log('connected', connected)
         this.setState({
           isMetaMask: connected
         })
+        if (web3 != null) {
+          await this.getAllPhotos();
+        }
       }
     }
 
@@ -251,9 +252,18 @@ class PhotoMarketplace extends Component {
 
     render() {
         const { web3, allPhotos, currentAccount, isMetaMask } = this.state;
-        const premiumNFT = allPhotos.filter(item => item.premiumStatus == true);
-        const normalNFT = allPhotos.filter(item => item.premiumStatus == false);
-        console.log(currentAccount, allPhotos, isMetaMask);
+        let premiumNFT, normalNFT;
+        let isExist = true;
+        if (isMetaMask) {
+          premiumNFT = allPhotos.filter(item => item.premiumStatus && item.ownerAddress != currentAccount);
+          normalNFT = allPhotos.filter(item => !item.premiumStatus&& item.ownerAddress != currentAccount);
+          if (premiumNFT.length + normalNFT.length == 0) isExist = false;
+        }
+        else {
+          premiumNFT = allPhotos.filter(item => item.premiumStatus );
+          normalNFT = allPhotos.filter(item => !item.premiumStatus);
+          if (premiumNFT.length + normalNFT.length == 0) isExist = false;
+        }
         return (
           <>
           <Breadcrumb title="MARKETPLACE"/>
@@ -344,7 +354,7 @@ class PhotoMarketplace extends Component {
                   return <></>;
               })}
               {
-                !allPhotos.length && <h3 className="text-center text-muted">No items.</h3>
+                !isExist && <h3 className="text-center text-muted">No items.</h3>
               }
           </div>
       </>

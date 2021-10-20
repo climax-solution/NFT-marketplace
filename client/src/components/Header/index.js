@@ -47,7 +47,13 @@ class Header extends Component{
                 account: accounts[0]
             })
         } catch(err) {
-            NotificationManager.error(err.message, "Error");
+            if (err.code == 4001) {
+                console.log(err.message);
+                NotificationManager.error(err.message, "Error");
+            }
+            else {
+                NotificationManager.error("Metamask is not installed.", "Error");
+            }
         }
     }
 
