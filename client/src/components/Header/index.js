@@ -19,7 +19,7 @@ class Header extends Component{
             const web3 = await getWeb3("load");
             const accounts = await web3.eth.getAccounts();
             if (!accounts.length) {
-                window.localStorage.setItem("nftdevelopements",JSON.stringify({connected: false}))
+                window.localStorage.setItem("nftdevelopments",JSON.stringify({connected: false}))
             }
             else {
 
@@ -49,7 +49,7 @@ class Header extends Component{
             const accounts = await web3.eth.getAccounts();
             const isMetaMask = accounts.length ? true : false;
             console.log('isMetaMask+',isMetaMask);
-            window.localStorage.setItem("nftdevelopements",JSON.stringify({connected: isMetaMask}));
+            window.localStorage.setItem("nftdevelopments",JSON.stringify({connected: isMetaMask}));
             await this.props.WalletConnect();
             this.setState({
                 account: accounts[0]
@@ -68,7 +68,7 @@ class Header extends Component{
     async disconnectWallet() {
         const web3 = await getWeb3('click');
         const accounts = await web3.eth.getAccounts();
-        window.localStorage.setItem("nftdevelopements",JSON.stringify({connected: false}));
+        window.localStorage.setItem("nftdevelopments",JSON.stringify({connected: false}));
         await this.props.WalletConnect();
     }
     render() {

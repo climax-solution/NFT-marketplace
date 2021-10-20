@@ -262,7 +262,7 @@ class Home extends Component {
         console.log(isMetaMask, allPhotos);
         return(
             <>
-                <Breadcrumb title="NFT DEVELOPEMENTS"/>
+                <Breadcrumb title="NFT DEVELOPMENTS"/>
                 <div className="row mt-3">
                     <div className="col-12">
                         {/* Intro */}

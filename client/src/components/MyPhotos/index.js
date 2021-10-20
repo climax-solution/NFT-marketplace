@@ -310,6 +310,9 @@ class MyPhotos extends Component {
     async componentDidUpdate(preprops) {
       const { web3 } = this.state;
       if (preprops != this.props) {
+        this.setState({
+          isMetaMask: this.props.connected,
+        })
         if (web3 != null) {
           const accounts = await web3.eth.getAccounts();
           this.setState({
@@ -317,9 +320,7 @@ class MyPhotos extends Component {
           })
           await this.getAllPhotos();
         }
-        this.setState({
-          isMetaMask: this.props.connected,
-        })
+        
 
       }
     }
