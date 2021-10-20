@@ -35,7 +35,7 @@ class Footer extends Component {
                                 <div className="footer-items">
                                     {/* Logo */}
                                     <a className="navbar-brand" href="/">
-                                        <img src={this.state.data.img} alt="" />
+                                        <img src={this.state.data.img} style={{width: '150px'}} alt="" />
                                     </a>
                                     <p>{this.state.data.content}</p>
                                     {/* Social Icons */}

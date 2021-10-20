@@ -1,5 +1,5 @@
 import React from 'react';
-
+import './custom.css';
 const ModalMenu = () => {
     return (
         <div id="menu" className="modal fade p-0">

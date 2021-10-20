@@ -235,12 +235,19 @@ class Home extends Component {
     }
 
     async componentDidUpdate(preprops) {
+      const { web3 } = this.state;
       if (preprops != this.props) {
         const { connected } = this.props;
         this.setState({
-          isMetaMask: connected,
+          isMetaMask: connected
         })
-
+        if (web3 != null) {
+          const accounts = await web3.eth.getAccounts();
+          this.setState({
+            currentAccount: accounts[0]
+          })
+          await this.getAllPhotos();
+        }
       }
     }
 
@@ -255,7 +262,7 @@ class Home extends Component {
         console.log(isMetaMask, allPhotos);
         return(
             <>
-                <Breadcrumb title="NFT DEVELOPEMENT"/>
+                <Breadcrumb title="NFT DEVELOPEMENTS"/>
                 <div className="row mt-3">
                     <div className="col-12">
                         {/* Intro */}

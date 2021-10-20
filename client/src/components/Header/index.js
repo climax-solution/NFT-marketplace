@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { WalletConnect } from '../../store/action/wallet.actions';
 import { connect } from 'react-redux';
 import getWeb3, { getGanacheWeb3, Web3 } from "../../utils/getWeb3";
-import ModalMenu from '../Modal/ModalMenu';
+import { ModalMenu, WalletMenu } from '../Modal';
 import { NotificationManager } from "react-notifications";
 import styles from "./header.module.scss";
 
@@ -18,9 +18,16 @@ class Header extends Component{
         try {
             const web3 = await getWeb3("load");
             const accounts = await web3.eth.getAccounts();
+            if (!accounts.length) {
+                window.localStorage.setItem("nftdevelopements",JSON.stringify({connected: false}))
+            }
+            else {
+
+            }
             this.setState({
                 account: accounts[0]
             })
+
             await this.props.WalletConnect();
         } catch(err) {
 
@@ -41,7 +48,8 @@ class Header extends Component{
             await window.ethereum.enable();
             const accounts = await web3.eth.getAccounts();
             const isMetaMask = accounts.length ? true : false;
-            window.localStorage.setItem("nftdevelopments",JSON.stringify({connected: isMetaMask}));
+            console.log('isMetaMask+',isMetaMask);
+            window.localStorage.setItem("nftdevelopements",JSON.stringify({connected: isMetaMask}));
             await this.props.WalletConnect();
             this.setState({
                 account: accounts[0]
@@ -59,9 +67,8 @@ class Header extends Component{
 
     async disconnectWallet() {
         const web3 = await getWeb3('click');
-        await window.ethereum.enable();
         const accounts = await web3.eth.getAccounts();
-        window.localStorage.setItem("nftdevelopments",JSON.stringify({connected: false}));
+        window.localStorage.setItem("nftdevelopements",JSON.stringify({connected: false}));
         await this.props.WalletConnect();
     }
     render() {
@@ -103,20 +110,13 @@ class Header extends Component{
                         <ul className="navbar-nav action">
                             {
                                 (!wallet_connect || !account) ? <li className="nav-item ml-3">
-                                    <a className={`ml-lg-auto ${styles.pointer} btn`} onClick={() => this.connectWallet()}>
+                                    <a className={`ml-lg-auto ${styles.pointer}`} onClick={() => this.connectWallet()}>
                                         <i className="icon-wallet mr-md-2" />
                                     </a>
                                 </li>
-                                : (<li className="nav-item dropdown">
-                                    <a className="nav-link btn" href="#">{account.substr(0,6) + "..." + account.substr(-4)}</a>
-                                    <ul className="dropdown-menu mt-1 pl-3">
-                                        <li className="nav-item black mt-2">
-                                            <a className={`ml-lg-auto ${styles.pointer}`} onClick={() => this.disconnectWallet()}>
-                                                <i className="icon-logout mr-md-2" style={{color: "#000"}}/>
-                                                Log Out
-                                            </a>
-                                        </li>
-                                    </ul>
+                                : (<li className="nav-item">
+                                    <a className="nav-link" href="#" data-toggle="modal" data-target="#wallet-menu"><i className="icon-user fa-2x mr-md-2" /></a>
+                                    <WalletMenu account={account} logOut={() => this.disconnectWallet()}/>
                                 </li>)
                             }
                         </ul>
