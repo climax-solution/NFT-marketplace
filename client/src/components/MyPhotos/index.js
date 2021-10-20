@@ -7,9 +7,9 @@ import { zeppelinSolidityHotLoaderOptions } from '../../../config/webpack';
 import { SetStatus } from "../../store/action/wallet.actions";
 import { connect } from "react-redux";
 import Breadcrumb from "../Breadcrumb/Breadcrumb";
-import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
-import Loader from "react-loader-spinner";
 import Swal from "sweetalert2";
+import "./custom.css";
+
 class MyPhotos extends Component {
     constructor(props) {    
         super(props);
@@ -55,6 +55,7 @@ class MyPhotos extends Component {
         inputValidator: (value) => {
           if (value <= 0)  return "Price must be greater than zero.";
         },
+        color: '#000',
         showCancelButton: true,
         confirmButtonText: 'OK',
         showLoaderOnConfirm: true,
