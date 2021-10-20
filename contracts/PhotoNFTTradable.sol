@@ -13,6 +13,7 @@ import { PhotoNFTData } from "./PhotoNFTData.sol";
 contract PhotoNFTTradable {
     event TradeStatusChange(address ad, bytes32 status);
     event TradePremiumStatusChange(address ad, bool status);
+    event OpenTradeInfo(address owner, address sender);
 
     //cjh 
     // PhotoNFT public photoNFT;
@@ -40,36 +41,39 @@ contract PhotoNFTTradable {
      * @param _photoId The id for the photoId to trade.
      * @param _photoPrice The amount of currency for which to trade the photoId.
      */
-    function openTradeWhenCreateNewPhotoNFT(PhotoNFT photoNFT, uint256 _photoId, uint256 _photoPrice) public {
-        photoNFT.transferFrom(msg.sender, address(this), _photoId);
+    function registerTradeWhenCreateNewPhotoNFT(PhotoNFT photoNFT, uint256 _photoId, uint256 _photoPrice, address seller) public {
+        // photoNFT.transferFrom(msg.sender, address(this), _photoId);
 
         tradeCounter += 1;    /// [Note]: New. Trade count is started from "1". This is to align photoId
 
         //cjh
         // trades[tradeCounter] = Trade({
         trades[address(photoNFT)] = Trade({
-            seller: msg.sender,
+            seller: seller,
             photoId: _photoId,
             photoPrice: _photoPrice,
-            status: "Open", 
+            status: "Cancelled", 
             premiumStatus : false
         });
         //tradeCounter += 1;  /// [Note]: Original
-        emit TradeStatusChange(address(photoNFT), "Open");
+        // emit TradeStatusChange(address(photoNFT), "Open");
     }
 
     /**
      * @dev Opens a trade by the seller.
      */
-    function openTrade(PhotoNFT photoNFT, uint256 _photoId) public {
+    function openTrade(PhotoNFT photoNFT, uint256 _photoId, uint price) public {
+
+        
         
         Trade storage trade = trades[address(photoNFT)];
         require(
             msg.sender == trade.seller,
             "Trade can be open only by seller."
         );
+        // emit OpenTradeInfo(msg.sender, trade.seller);
 
-        photoNFTData.updateStatus(photoNFT, "Open");
+        photoNFTData.updateStatus(photoNFT, "Open", price);
         photoNFT.transferFrom(msg.sender, address(this), trade.photoId);
         // trades[photoNFT].status = "Open";
         //cjh 
@@ -89,7 +93,7 @@ contract PhotoNFTTradable {
         );
         // require(trade.status == "Open", "Trade is not Open.");
 
-        photoNFTData.updateStatus(photoNFT, "Cancelled");
+        photoNFTData.updateStatus(photoNFT, "Cancelled", 0);
         photoNFT.transferFrom(address(this), trade.seller, trade.photoId);
         trade.status = "Cancelled";
         emit TradeStatusChange(address(photoNFT), "Cancelled");

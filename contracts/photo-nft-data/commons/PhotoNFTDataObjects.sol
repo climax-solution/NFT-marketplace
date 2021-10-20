@@ -15,6 +15,9 @@ contract PhotoNFTDataObjects {
         string status;  // "Open" or "Cancelled"
         uint256 reputation;
         bool premiumStatus; //0 : not, 1 : premium
+        string photoNFTDesc;
+        uint256 premiumTimestamp;
+        uint256 createdAt;
     }
 
 }

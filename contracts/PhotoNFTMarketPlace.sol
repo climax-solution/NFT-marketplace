@@ -13,11 +13,19 @@ contract PhotoNFTMarketplace is PhotoNFTTradable, PhotoNFTMarketplaceEvents {
 
     address public PHOTO_NFT_MARKETPLACE;
 
+    // address private _market_owner;
+    address public _market_owner;
+
     // PhotoNFTData public photoNFTData;
 
-    constructor(PhotoNFTData _photoNFTData) public PhotoNFTTradable(_photoNFTData) {
+    constructor(PhotoNFTData _photoNFTData, address owner) public PhotoNFTTradable(_photoNFTData) {
         photoNFTData = _photoNFTData;
         address payable PHOTO_NFT_MARKETPLACE = payable(address(this));
+        _market_owner = owner;
+    }
+
+    function getOwnerPayableAddress() public returns(address payable) {
+        return payable(_market_owner);
     }
 
     /** 
@@ -47,7 +55,7 @@ contract PhotoNFTMarketplace is PhotoNFTTradable, PhotoNFTMarketplaceEvents {
         // Transfer Ownership of the PhotoNFT from a seller to a buyer
         transferOwnershipOfPhotoNFT(photoNFT, photoId, buyer);    
         photoNFTData.updateOwnerOfPhotoNFT(photoNFT, buyer);
-        photoNFTData.updateStatus(photoNFT, "Cancelled");
+        photoNFTData.updateStatus(photoNFT, "Cancelled", 0);
 
         // Event for checking result of transferring ownership of a photoNFT
         address ownerAfterOwnershipTransferred = photoNFT.ownerOf(photoId);
@@ -56,6 +64,13 @@ contract PhotoNFTMarketplace is PhotoNFTTradable, PhotoNFTMarketplaceEvents {
         // Mint a photo with a new photoId
         //string memory tokenURI = photoNFTFactory.getTokenURI(photoData.ipfsHashOfPhoto);  // [Note]: IPFS hash + URL
         //photoNFT.mint(msg.sender, tokenURI);
+    }
+
+    function transferMarketplaceOwnership(address newOwner) public returns (bool) {
+        // only the owner can send this
+        require(msg.sender == _market_owner, "sender should be the market owner");
+        //set the marketplace owner
+        _market_owner = newOwner;
     }
 
 

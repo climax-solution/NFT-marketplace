@@ -1,9 +1,9 @@
 require('dotenv').config();
 
 const HDWalletProvider = require('@truffle/hdwallet-provider');  // @notice - Should use new module.
-const mnemonic = 'copper ecology amateur bag slight phone auction behave stage equip machine neck'; // process.env.MNEMONIC;
+const mnemonic = ''; // process.env.MNEMONIC;
 
-const INFURA_API_KEY="e5f6b05589544b1bb8526dc3c034c63e";
+const INFURA_API_KEY="";
 
 process.env.INFURA_KEY = INFURA_API_KEY
 //console.log('https://ropsten.infura.io/v3/' + process.env.INFURA_KEY);
@@ -14,7 +14,7 @@ process.env.INFURA_KEY = INFURA_API_KEY
 module.exports = {
   networks: {
     ropsten: {
-      provider: () => new HDWalletProvider("copper ecology amateur bag slight phone auction behave stage equip machine neck", 'https://ropsten.infura.io/v3/e5f6b05589544b1bb8526dc3c034c63e'),
+      provider: () => new HDWalletProvider(mnemonic, 'https://ropsten.infura.io/v3/' + INFURA_API_KEY),
       network_id: 3,
       gas: 4712388,
       //gas: 4465030,          // Original

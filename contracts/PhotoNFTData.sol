@@ -13,6 +13,8 @@ contract PhotoNFTData is PhotoNFTDataStorages {
 
     address[] public photoAddresses;
 
+    uint256 public premiumLimit = 2592000; //30 * 24 * 3600
+
     constructor() public {}
 
     /**
@@ -25,7 +27,8 @@ contract PhotoNFTData is PhotoNFTDataStorages {
         string memory _photoNFTSymbol, 
         address _ownerAddress, 
         uint _photoPrice, 
-        string memory _ipfsHashOfPhoto
+        string memory _ipfsHashOfPhoto, 
+        string memory desc
     ) public returns (bool) {
 
         Photo memory photo = Photo({ ///make a photo data
@@ -35,9 +38,12 @@ contract PhotoNFTData is PhotoNFTDataStorages {
             ownerAddress: _ownerAddress,
             photoPrice: _photoPrice,
             ipfsHashOfPhoto: _ipfsHashOfPhoto,
-            status: "Open",
+            status: "Cancelled",
             reputation: 0, 
-            premiumStatus : false
+            premiumStatus : false, 
+            photoNFTDesc : desc,
+            premiumTimestamp : 0, 
+            createdAt : block.timestamp
         });
         photos.push(photo);
 
@@ -59,11 +65,12 @@ contract PhotoNFTData is PhotoNFTDataStorages {
     /**
      * @notice - Update status ("Open" or "Cancelled")
      */
-    function updateStatus(PhotoNFT _photoNFT, string memory _newStatus) public returns (bool) {
+    function updateStatus(PhotoNFT _photoNFT, string memory _newStatus, uint price) public returns (bool) {
         
         uint photoIndex = getPhotoIndex(_photoNFT); 
         Photo storage photo = photos[photoIndex]; 
         photo.status = _newStatus;  
+        if (price != 0) photo.photoPrice = price;
     }
 
     /**
@@ -75,12 +82,20 @@ contract PhotoNFTData is PhotoNFTDataStorages {
         
         Photo storage photo = photos[photoIndex]; // Update metadata of a photoNFT of photo
         photo.premiumStatus = _newStatus;  
+
+        //if _newstatus : true then save timestamp
+        if (_newStatus) photo.premiumTimestamp = block.timestamp;
+        else photo.premiumTimestamp = 0;
     }
     ///-----------------
     /// Getter methods
     ///-----------------
     function getPhoto(uint index) public view returns (Photo memory _photo) {
         Photo memory photo = photos[index];
+        if ((photo.premiumStatus) && (photo.premiumTimestamp + premiumLimit > block.timestamp)) {
+            photo.premiumStatus = false;
+            photo.premiumTimestamp = 0;
+        }
         return photo;
     }
 
@@ -114,7 +129,15 @@ contract PhotoNFTData is PhotoNFTDataStorages {
     }
 
     function getAllPhotos() public view returns (Photo[] memory _photos) {
-        return photos;
+        Photo[] memory result;
+        result = photos;
+        for (uint i = 0; i < result.length; i++) {
+            if ((result[i].premiumStatus) && (result[i].premiumTimestamp + premiumLimit < block.timestamp)) {
+                result[i].premiumStatus = false;
+                result[i].premiumTimestamp = 0;
+            }
+        }
+        return result;
     }
 
 }

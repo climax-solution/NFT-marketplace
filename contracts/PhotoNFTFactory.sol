@@ -15,6 +15,8 @@ import { PhotoNFTData } from "./PhotoNFTData.sol";
 contract PhotoNFTFactory is PhotoNFTFactoryStorages {
     using Strings for string;    
 
+    // error FeeNotSufficient();
+
     address[] public photoAddresses;
     address PHOTO_NFT_MARKETPLACE;
 
@@ -30,15 +32,25 @@ contract PhotoNFTFactory is PhotoNFTFactoryStorages {
     /**
      * @notice - Create a new photoNFT when a seller (owner) upload a photo onto IPFS
      */
-    function createNewPhotoNFT(string memory nftName, string memory nftSymbol, uint photoPrice, string memory ipfsHashOfPhoto) public returns (bool) {
+    function createNewPhotoNFT(string memory nftName, string memory nftSymbol, uint photoPrice, string memory ipfsHashOfPhoto, string memory description) public payable returns (bool) {
         address owner = msg.sender;  // [Note]: Initial owner of photoNFT is msg.sender
         string memory tokenURI = getTokenURI(ipfsHashOfPhoto);  // [Note]: IPFS hash + URL
-        PhotoNFT photoNFT = new PhotoNFT(owner, nftName, nftSymbol, tokenURI, photoPrice);
+
+        uint feeValue = photoPrice / 20;
+        require(msg.value == feeValue, "Fee must be paid");
+
+        //transfer fee
+        address payable marketOwner = photoNFTMarketplace.getOwnerPayableAddress();
+        marketOwner.transfer(feeValue);
+
+        PhotoNFT photoNFT = new PhotoNFT(owner, nftName, nftSymbol, tokenURI, photoPrice, description);
         photoAddresses.push(address(photoNFT));
 
         // Save metadata of a photoNFT created
-        photoNFTData.saveMetadataOfPhotoNFT(photoAddresses, photoNFT, nftName, nftSymbol, msg.sender, photoPrice, ipfsHashOfPhoto);
-        photoNFTData.updateStatus(photoNFT, "Open");
+        photoNFTData.saveMetadataOfPhotoNFT(photoAddresses, photoNFT, nftName, nftSymbol, msg.sender, photoPrice, ipfsHashOfPhoto, description);
+        // photoNFTData.updateStatus(photoNFT, "Open", photoPrice);
+        photoNFTMarketplace.registerTradeWhenCreateNewPhotoNFT(photoNFT, 1, photoPrice, msg.sender);
+
 
         emit PhotoNFTCreated(msg.sender, photoNFT, nftName, nftSymbol, photoPrice, ipfsHashOfPhoto);
     }

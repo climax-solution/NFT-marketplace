@@ -19,7 +19,7 @@ contract PhotoNFT is ERC721URIStorage {
     uint256 public currentPhotoId;
     
     constructor(
-        address owner,  string memory _nftName, string memory _nftSymbol, string memory _tokenURI, uint photoPrice
+        address owner,  string memory _nftName, string memory _nftSymbol, string memory _tokenURI, uint photoPrice, string memory desc
     ) 
         public 
         ERC721(_nftName, _nftSymbol) 
@@ -54,6 +54,4 @@ contract PhotoNFT is ERC721URIStorage {
     function getNextPhotoId() private returns (uint nextPhotoId) {
         return currentPhotoId + 1;
     }
-    
-
 }
