@@ -111,7 +111,7 @@ class ItemDetails extends Component {
 
         try {
           const isProd = process.env.NODE_ENV === 'production';
-          if (!isProd) {
+          if (isProd) {
             // Get network provider and web3 instance.
             const web3 = await getWeb3("load");
             let ganacheAccounts = [];
