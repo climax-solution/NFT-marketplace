@@ -125,6 +125,10 @@ contract PhotoNFTData is PhotoNFTDataStorages {
         }
 
         Photo memory photo = photos[photoIndex];
+        if ((photo.premiumStatus) && (photo.premiumTimestamp + premiumLimit > block.timestamp)) {
+            photo.premiumStatus = false;
+            photo.premiumTimestamp = 0;
+        }
         return photo;
     }
 

@@ -41,9 +41,25 @@ contract PhotoNFTMarketplace is PhotoNFTTradable, PhotoNFTMarketplaceEvents {
         address payable seller = payable(_seller);  // Convert owner address with payable
         uint buyAmount = photo.photoPrice;
         require (msg.value == buyAmount, "msg.value should be equal to the buyAmount");
- 
+
+        uint photoIndex = photoNFTData.getPhotoIndex(photoNFT);
+         
         // Bought-amount is transferred into a seller wallet
-        seller.transfer(buyAmount);
+
+        if (photoIndex < 1001) {
+            seller.transfer(buyAmount); // send full amount to the seller
+        }
+        else {
+            if (photo.premiumStatus) {
+                seller.transfer(buyAmount * 90 / 100);
+                getOwnerPayableAddress().transfer(buyAmount / 10);
+            }
+            else {
+                seller.transfer(buyAmount * 95 / 100);
+                getOwnerPayableAddress().transfer(buyAmount / 20); //send fee
+            }
+        }
+        
 
         // Approve a buyer address as a receiver before NFT's transferFrom method is executed
         address buyer = msg.sender;

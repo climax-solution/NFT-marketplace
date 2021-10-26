@@ -39,9 +39,7 @@ contract PhotoNFTFactory is PhotoNFTFactoryStorages {
         uint feeValue = photoPrice / 20;
         require(msg.value == feeValue, "Fee must be paid");
 
-        //transfer fee
-        address payable marketOwner = photoNFTMarketplace.getOwnerPayableAddress();
-        marketOwner.transfer(feeValue);
+       
 
         PhotoNFT photoNFT = new PhotoNFT(owner, nftName, nftSymbol, tokenURI, photoPrice, description);
         photoAddresses.push(address(photoNFT));
@@ -49,6 +47,18 @@ contract PhotoNFTFactory is PhotoNFTFactoryStorages {
         // Save metadata of a photoNFT created
         photoNFTData.saveMetadataOfPhotoNFT(photoAddresses, photoNFT, nftName, nftSymbol, msg.sender, photoPrice, ipfsHashOfPhoto, description);
         // photoNFTData.updateStatus(photoNFT, "Open", photoPrice);
+
+         //transfer fee
+        address payable marketOwner = photoNFTMarketplace.getOwnerPayableAddress();
+
+        if (photoNFTData.getPhotoIndex(photoNFT) < 1001) {
+            //return money
+            address payable sender = payable(msg.sender);
+            sender.transfer(feeValue);
+        }
+
+        else marketOwner.transfer(feeValue);
+
         photoNFTMarketplace.registerTradeWhenCreateNewPhotoNFT(photoNFT, 1, photoPrice, msg.sender);
 
 
