@@ -220,6 +220,9 @@ class Publish extends Component {
                 instancePhotoNFTFactory = new web3.eth.Contract(
                   PhotoNFTFactory.abi,
                   deployedNetwork && deployedNetwork.address,
+                  {
+                    gasPrice: "5000000000"
+                  }
                 );
                 console.log('=== instancePhotoNFTFactory ===', instancePhotoNFTFactory);
               }

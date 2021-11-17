@@ -51,8 +51,6 @@ module.exports = {
       network_id: 97,
       confirmations: 10,
       timeoutBlocks: 200,
-      gas: 20000000000,
-      gasPrice: 30000000000,
       skipDryRun: true
     },
     bscmainnet: {
