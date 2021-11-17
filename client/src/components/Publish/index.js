@@ -195,11 +195,11 @@ class Publish extends Component {
             const web3 = await getWeb3("load");
             let ganacheAccounts = [];
 
-            try {
-              ganacheAccounts = await this.getGanacheAddresses();
-            } catch (e) {
-              console.log('Ganache is not running');
-            }
+            // try {
+            //   ganacheAccounts = await this.getGanacheAddresses();
+            // } catch (e) {
+            //   console.log('Ganache is not running');
+            // }
 
             // Use web3 to get the user's accounts.
             const accounts = await web3.eth.getAccounts();
@@ -215,32 +215,32 @@ class Publish extends Component {
             let deployedNetwork = null;
 
             // Create instance of contracts
-            if (PhotoNFTFactory.networks) {
-              // - deployedNetwork = PhotoNFTFactory.networks[networkId.toString()];
-              if (deployedNetwork) {
+            // if (PhotoNFTFactory.networks) {
+            //   // - deployedNetwork = PhotoNFTFactory.networks[networkId.toString()];
+            //   if (deployedNetwork) {
                 instancePhotoNFTFactory = new web3.eth.Contract(
                   PhotoNFTFactory,
-                  process.env.PHOTO_NFTFACTORY_ADDRESS,
+                  process.env.REACT_APP_PHOTO_NFTFACTORY_ADDRESS,
                   {
                     gasPrice: "5000000000"
                   }
                 );
-                console.log('=== instancePhotoNFTFactory ===', instancePhotoNFTFactory);
-              }
-            }
+                console.log('=== instancePhotoNFTFactory ===', process.env);
+            //   }
+            // }
 
-            if (PhotoNFTMarketplace.networks) {
-              // - deployedNetwork = PhotoNFTMarketplace.networks[networkId.toString()];
-              if (deployedNetwork) {
+            // if (PhotoNFTMarketplace.networks) {
+            //   // - deployedNetwork = PhotoNFTMarketplace.networks[networkId.toString()];
+            //   if (deployedNetwork) {
+                PHOTO_NFT_MARKETPLACE = process.env.REACT_APP_PHOTO_MARKETPLACE_ADDRESS;
                 instancePhotoNFTMarketplace = new web3.eth.Contract(
                   PhotoNFTMarketplace,
-                  process.env.PHOTO_MARKETPLACE_ADDRESS,
+                  PHOTO_NFT_MARKETPLACE,
                 );
-                PHOTO_NFT_MARKETPLACE = deployedNetwork.address;
                 console.log('=== instancePhotoNFTMarketplace ===', instancePhotoNFTMarketplace);
                 console.log('=== PHOTO_NFT_MARKETPLACE ===', PHOTO_NFT_MARKETPLACE);
-              }
-            }
+            //   }
+            // }
 
             if (instancePhotoNFTFactory) {
                 // Set web3, accounts, and contract to the state, and then proceed with an

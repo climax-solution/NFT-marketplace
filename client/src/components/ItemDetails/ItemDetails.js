@@ -141,7 +141,7 @@ class ItemDetails extends Component {
               if (deployedNetwork) {
                 instancePhotoNFTData = new web3.eth.Contract(
                   PhotoNFTData,
-                  process.env.PHOTO_NFTDATA_ADDRESS,
+                  process.env.REACT_APP_PHOTO_NFTDATA_ADDRESS,
                 );
                 console.log('=== instancePhotoNFTData ===', instancePhotoNFTData);
               }

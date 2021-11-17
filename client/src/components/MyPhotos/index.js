@@ -238,7 +238,7 @@ class MyPhotos extends Component {
               if (deployedNetwork) {
                 instancePhotoNFTMarketplace = new web3.eth.Contract(
                   PhotoNFTMarketplace,
-                  process.env.PHOTO_MARKETPLACE_ADDRESS,
+                  process.env.REACT_APP_PHOTO_MARKETPLACE_ADDRESS,
                 );
                 PHOTO_NFT_MARKETPLACE = deployedNetwork.address;
                 console.log('=== instancePhotoNFTMarketplace ===', instancePhotoNFTMarketplace);
@@ -250,7 +250,7 @@ class MyPhotos extends Component {
               if (deployedNetwork) {
                 instancePhotoNFTData = new web3.eth.Contract(
                   PhotoNFTData,
-                  process.env.PHOTO_NFTDATA_ADDRESS,
+                  process.env.REACT_APP_PHOTO_NFTDATA_ADDRESS,
                 );
                 console.log('=== instancePhotoNFTData ===', instancePhotoNFTData);
               }
