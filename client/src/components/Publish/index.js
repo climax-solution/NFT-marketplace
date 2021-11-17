@@ -95,19 +95,19 @@ class Publish extends Component {
           NotificationManager.warning("Metamask is not connected!", "Warning")
           return;
         }
-        ipfs.files.add(this.state.buffer, (error, result) => {
+        // ipfs.files.add(this.state.buffer, (error, result) => {
           // In case of fail to upload to IPFS
 
-          console.log('add function')
+          // console.log('add function')
 
-          if (error) {
-            console.log('error', error)
-            console.error(error)
-            return
-          }
+          // if (error) {
+          //   console.log('error', error)
+          //   console.error(error)
+          //   return
+          // }
 
-          // In case of successful to upload to IPFS
-          this.setState({ ipfsHash: result[0].hash });
+          // // In case of successful to upload to IPFS
+          // this.setState({ ipfsHash: result[0].hash });
           console.log('=== ipfsHash ===', this.state.ipfsHash);
 
           const nftName = valueNFTName;
@@ -127,6 +127,7 @@ class Publish extends Component {
           });
 
           //let PHOTO_NFT;  /// [Note]: This is a photoNFT address created
+          console.log("WEB3=>", photoNFTFactory);
           const photoPrice = web3.utils.toWei(_photoPrice, 'ether'); // _photoPrice * 1.05 - trasaction fee 5%
           console.log('photoPrice', photoPrice)
           let BN = web3.utils.BN;
@@ -143,22 +144,22 @@ class Publish extends Component {
             console.log('=== PHOTO_NFT ===', PHOTO_NFT);
 
             /// Get instance by using created photoNFT address
-            let PhotoNFT = {};
-            PhotoNFT = require("../../../../build/contracts/PhotoNFT.json"); 
-            let photoNFT = new web3.eth.Contract(PhotoNFT.abi, PHOTO_NFT);
-            console.log('=== photoNFT ===', photoNFT);
+            // let PhotoNFT = {};
+            // PhotoNFT = require("../../abi/PhotoNFT.json"); 
+            // let photoNFT = new web3.eth.Contract(PhotoNFT, PHOTO_NFT);
+            // console.log('=== photoNFT ===', photoNFT);
      
-            /// Check owner of photoId==1
-            const photoId = 1;  /// [Note]: PhotoID is always 1. Because each photoNFT is unique.
-            // photoNFT.methods.ownerOf(photoId).call().then(owner => console.log('=== owner of photoId 1 ===', owner));
+            // /// Check owner of photoId==1
+            // const photoId = 1;  /// [Note]: PhotoID is always 1. Because each photoNFT is unique.
+            // // photoNFT.methods.ownerOf(photoId).call().then(owner => console.log('=== owner of photoId 1 ===', owner));
             
-            /// [Note]: Promise (nested-structure) is needed for executing those methods below (Or, rewrite by async/await)
-            photoNFT.methods.approve(PHOTO_NFT_MARKETPLACE, photoId).send({ from: accounts[0] }).once('receipt', (receipt) => {
-                /// Put on sale (by a seller who is also called as owner)
-                // photoNFTMarketplace.methods.openTradeWhenCreateNewPhotoNFT(PHOTO_NFT, photoId, photoPrice).send({ from: accounts[0] }).once('receipt', (receipt) => {})
-            })
+            // /// [Note]: Promise (nested-structure) is needed for executing those methods below (Or, rewrite by async/await)
+            // photoNFT.methods.approve(PHOTO_NFT_MARKETPLACE, photoId).send({ from: accounts[0] }).once('receipt', (receipt) => {
+            //     /// Put on sale (by a seller who is also called as owner)
+            //     // photoNFTMarketplace.methods.openTradeWhenCreateNewPhotoNFT(PHOTO_NFT, photoId, photoPrice).send({ from: accounts[0] }).once('receipt', (receipt) => {})
+            // })
           })
-        })
+        // })
     }  
 
      
@@ -181,15 +182,15 @@ class Publish extends Component {
         let PhotoNFTFactory = {};
         let PhotoNFTMarketplace = {};
         try {
-          PhotoNFTFactory = require("../../../../build/contracts/PhotoNFTFactory.json"); // Load ABI of contract of PhotoNFTFactory
-          PhotoNFTMarketplace = require("../../../../build/contracts/PhotoNFTMarketplace.json");
+          PhotoNFTFactory = require("../../abi/PhotoNFTFactory.json"); // Load ABI of contract of PhotoNFTFactory
+          PhotoNFTMarketplace = require("../../abi/PhotoNFTMarketplace.json");
         } catch (e) {
           console.log(e);
         }
 
         try {
           const isProd = process.env.NODE_ENV === 'production';
-          if (isProd) {
+          if (!isProd) {
             // Get network provider and web3 instance.
             const web3 = await getWeb3("load");
             let ganacheAccounts = [];
@@ -215,11 +216,11 @@ class Publish extends Component {
 
             // Create instance of contracts
             if (PhotoNFTFactory.networks) {
-              deployedNetwork = PhotoNFTFactory.networks[networkId.toString()];
+              // - deployedNetwork = PhotoNFTFactory.networks[networkId.toString()];
               if (deployedNetwork) {
                 instancePhotoNFTFactory = new web3.eth.Contract(
-                  PhotoNFTFactory.abi,
-                  deployedNetwork && deployedNetwork.address,
+                  PhotoNFTFactory,
+                  process.env.PHOTO_NFTFACTORY_ADDRESS,
                   {
                     gasPrice: "5000000000"
                   }
@@ -229,11 +230,11 @@ class Publish extends Component {
             }
 
             if (PhotoNFTMarketplace.networks) {
-              deployedNetwork = PhotoNFTMarketplace.networks[networkId.toString()];
+              // - deployedNetwork = PhotoNFTMarketplace.networks[networkId.toString()];
               if (deployedNetwork) {
                 instancePhotoNFTMarketplace = new web3.eth.Contract(
-                  PhotoNFTMarketplace.abi,
-                  deployedNetwork && deployedNetwork.address,
+                  PhotoNFTMarketplace,
+                  process.env.PHOTO_MARKETPLACE_ADDRESS,
                 );
                 PHOTO_NFT_MARKETPLACE = deployedNetwork.address;
                 console.log('=== instancePhotoNFTMarketplace ===', instancePhotoNFTMarketplace);

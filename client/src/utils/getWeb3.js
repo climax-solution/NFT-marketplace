@@ -41,7 +41,7 @@ const getWeb3 = (e_name) =>
   });
 const getGanacheWeb3 = () => {
   const isProd = process.env.NODE_ENV === 'production';
-  if (isProd) {
+  if (!isProd) {
     return null;
   }
   const provider = new Web3.providers.HttpProvider(

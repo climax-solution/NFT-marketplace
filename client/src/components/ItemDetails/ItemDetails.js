@@ -104,14 +104,14 @@ class ItemDetails extends Component {
         let PhotoNFTMarketplace = {};
         let PhotoNFTData = {};
         try {
-          PhotoNFTData = require("../../../../build/contracts/PhotoNFTData.json");
+          PhotoNFTData = require("../../abi/PhotoNFTData.json");
         } catch (e) {
           console.log(e);
         }
 
         try {
           const isProd = process.env.NODE_ENV === 'production';
-          if (isProd) {
+          if (!isProd) {
             // Get network provider and web3 instance.
             const web3 = await getWeb3("load");
             let ganacheAccounts = [];
@@ -137,11 +137,11 @@ class ItemDetails extends Component {
             let deployedNetwork = null;
 
             if (PhotoNFTData.networks) {
-              deployedNetwork = PhotoNFTData.networks[networkId.toString()];
+              // - deployedNetwork = PhotoNFTData.networks[networkId.toString()];
               if (deployedNetwork) {
                 instancePhotoNFTData = new web3.eth.Contract(
-                  PhotoNFTData.abi,
-                  deployedNetwork && deployedNetwork.address,
+                  PhotoNFTData,
+                  process.env.PHOTO_NFTDATA_ADDRESS,
                 );
                 console.log('=== instancePhotoNFTData ===', instancePhotoNFTData);
               }

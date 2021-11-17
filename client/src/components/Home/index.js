@@ -58,14 +58,14 @@ class Home extends Component {
       //this.setState({ valuePhotoNFTAddress: "" });
 
       /// Get instance by using created photoNFT address
-      let PhotoNFT = {};
-      PhotoNFT = require("../../../../build/contracts/PhotoNFT.json"); 
-      let photoNFT = new web3.eth.Contract(PhotoNFT.abi, PHOTO_NFT);
+      // let PhotoNFT = {};
+      // PhotoNFT = require("../../abi/PhotoNFT.json"); 
+      // let photoNFT = new web3.eth.Contract(PhotoNFT, PHOTO_NFT);
 
       /// Check owner of photoId
       const photoId = 1;  /// [Note]: PhotoID is always 1. Because each photoNFT is unique.
-      const owner = await photoNFT.methods.ownerOf(photoId).call();
-      console.log('=== owner of photoId ===', owner);  /// [Expect]: Owner should be the PhotoNFTMarketplace.sol (This also called as a proxy/escrow contract)
+      // const owner = await photoNFT.methods.ownerOf(photoId).call();
+      // console.log('=== owner of photoId ===', owner);  /// [Expect]: Owner should be the PhotoNFTMarketplace.sol (This also called as a proxy/escrow contract)
 
       const photo = await photoNFTData.methods.getPhotoByNFTAddress(PHOTO_NFT).call();
       const buyAmount = await photo.photoPrice;
@@ -126,15 +126,15 @@ class Home extends Component {
         let PhotoNFTMarketplace = {};
         let PhotoNFTData = {};
         try {
-          PhotoNFTMarketplace = require("../../../../build/contracts/PhotoNFTMarketplace.json");
-          PhotoNFTData = require("../../../../build/contracts/PhotoNFTData.json");
+          PhotoNFTMarketplace = require("../../abi/PhotoNFTMarketplace.json");
+          PhotoNFTData = require("../../abi/PhotoNFTData.json");
         } catch (e) {
           console.log(e);
         }
 
         try {
           const isProd = process.env.NODE_ENV === 'production';
-          if (isProd) {
+          if (!isProd) {
             // Get network provider and web3 instance.
             const web3 = await getWeb3("load");
             let ganacheAccounts = [];
@@ -162,22 +162,22 @@ class Home extends Component {
 
             // Create instance of contracts
             if (PhotoNFTMarketplace.networks) {
-              deployedNetwork = PhotoNFTMarketplace.networks[networkId.toString()];
+              // - deployedNetwork = PhotoNFTMarketplace.networks[networkId.toString()];
               if (deployedNetwork) {
                 instancePhotoNFTMarketplace = new web3.eth.Contract(
-                  PhotoNFTMarketplace.abi,
-                  deployedNetwork && deployedNetwork.address,
+                  PhotoNFTMarketplace,
+                  process.env.PHOTO_MARKETPLACE_ADDRESS,
                 );
                 console.log('=== instancePhotoNFTMarketplace ===', instancePhotoNFTMarketplace);
               }
             }
 
             if (PhotoNFTData.networks) {
-              deployedNetwork = PhotoNFTData.networks[networkId.toString()];
+              // - deployedNetwork = PhotoNFTData.networks[networkId.toString()];
               if (deployedNetwork) {
                 instancePhotoNFTData = new web3.eth.Contract(
-                  PhotoNFTData.abi,
-                  deployedNetwork && deployedNetwork.address,
+                  PhotoNFTData,
+                  process.env.PHOTO_NFTDATA_ADDRESS,
                 );
                 console.log('=== instancePhotoNFTData ===', instancePhotoNFTData);
               }
