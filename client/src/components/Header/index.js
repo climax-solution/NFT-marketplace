@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { WalletConnect } from '../../store/action/wallet.actions';
 import { connect } from 'react-redux';
-import getWeb3, { getGanacheWeb3, Web3 } from "../../utils/getWeb3";
+import getWeb3 from "../../utils/getWeb3";
 import { ModalMenu, WalletMenu } from '../Modal';
 import { NotificationManager } from "react-notifications";
 import styles from "./header.module.scss";
@@ -16,13 +16,10 @@ class Header extends Component{
     }
     async componentDidMount() {
         try {
-            const web3 = await getWeb3("load");
+            const web3 = await getWeb3();
             const accounts = await web3.eth.getAccounts();
             if (!accounts.length) {
                 window.localStorage.setItem("nftdevelopments",JSON.stringify({connected: false}))
-            }
-            else {
-
             }
             this.setState({
                 account: accounts[0]
@@ -48,7 +45,7 @@ class Header extends Component{
             await window.ethereum.enable();
             const accounts = await web3.eth.getAccounts();
             const isMetaMask = accounts.length ? true : false;
-            console.log('isMetaMask+',isMetaMask);
+            //console.log('isMetaMask+',isMetaMask);
             window.localStorage.setItem("nftdevelopments",JSON.stringify({connected: isMetaMask}));
             await this.props.WalletConnect();
             this.setState({
@@ -56,7 +53,7 @@ class Header extends Component{
             })
         } catch(err) {
             if (err.code == 4001) {
-                console.log(err.message);
+                //console.log(err.message);
                 NotificationManager.error(err.message, "Error");
             }
             else {

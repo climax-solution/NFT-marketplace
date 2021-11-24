@@ -3,191 +3,101 @@ import getWeb3 from '../../utils/getWeb3';
 import { zeppelinSolidityHotLoaderOptions } from '../../../config/webpack';
 import Breadcrumb from '../Breadcrumb/Breadcrumb';
 
-const initData = {
-    itemImg: "/img/auction_2.jpg",
-    date: "2022-03-30",
-    tab_1: "Bids",
-    tab_2: "History",
-    tab_3: "Details",
-    ownerImg: "/img/avatar_1.jpg",
-    itemOwner: "Themeland",
-    created: "15 Jul 2021",
-    title: "Walking On Air",
-    content: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Laborum obcaecati dignissimos quae quo ad iste ipsum officiis deleniti asperiores sit.",
-    price_1: "1.5 ETH",
-    price_2: "$500.89",
-    count: "1 of 5",
-    size: "14000 x 14000 px",
-    volume: "64.1",
-    highest_bid: "2.9 BNB",
-    bid_count: "1 of 5",
-    btnText: "Place a Bid"
-}
-
-const tabData_1 = [
-    {
-        id: "1",
-        img: "/img/avatar_1.jpg",
-        price: "14 ETH",
-        time: "4 hours ago",
-        author: "@arham"
-    },
-    {
-        id: "2",
-        img: "/img/avatar_2.jpg",
-        price: "10 ETH",
-        time: "8 hours ago",
-        author: "@junaid"
-    },
-    {
-        id: "3",
-        img: "/img/avatar_3.jpg",
-        price: "12 ETH",
-        time: "3 hours ago",
-        author: "@yasmin"
-    }
-]
-
-const tabData_2 = [
-    {
-        id: "1",
-        img: "/img/avatar_6.jpg",
-        price: "32 ETH",
-        time: "10 hours ago",
-        author: "@hasan"
-    },
-    {
-        id: "2",
-        img: "/img/avatar_7.jpg",
-        price: "24 ETH",
-        time: "6 hours ago",
-        author: "@artnox"
-    },
-    {
-        id: "3",
-        img: "/img/avatar_8.jpg",
-        price: "29 ETH",
-        time: "12 hours ago",
-        author: "@meez"
-    }
-]
-
-const sellerData = [
-    {
-        id: "1",
-        img: "/img/avatar_1.jpg",
-        seller: "@ArtNoxStudio",
-        post: "Creator"
-    },
-    {
-        id: "2",
-        img: "/img/avatar_2.jpg",
-        seller: "Virtual Worlds",
-        post: "Collection"
-    }
-]
-
 class ItemDetails extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
           web3: null,
-          itemData: []
+          itemData: {}
         }
     }
 
-    async componentDidMount(){
-        const { address } = this.props.match.params;
+    async componentDidMount() {
+        const { id } = this.props.match.params;
         const hotLoaderDisabled = zeppelinSolidityHotLoaderOptions.disabled;
-     
-        let PhotoNFTMarketplace = {};
-        let PhotoNFTData = {};
+        let PhotoNFT = {};
+        let PhotoMarketplace = {};
         try {
-          PhotoNFTData = require("../../abi/PhotoNFTData.json");
+          PhotoMarketplace = require("../../../../build/contracts/PhotoMarketplace.json");
         } catch (e) {
-          console.log(e);
+          //console.log(e);
         }
 
         try {
           const isProd = process.env.NODE_ENV === 'production';
-          if (!isProd) {
+          if (isProd) {
             // Get network provider and web3 instance.
-            const web3 = await getWeb3("load");
-            let ganacheAccounts = [];
-
-            try {
-              ganacheAccounts = await this.getGanacheAddresses();
-            } catch (e) {
-              console.log('Ganache is not running');
-            }
+            const web3 = await getWeb3();
 
             // Use web3 to get the user's accounts.
             const accounts = await web3.eth.getAccounts();
             const currentAccount = accounts[0];
-
             // Get the contract instance.
             const networkId = await web3.eth.net.getId();
             const networkType = await web3.eth.net.getNetworkType();
-            //this.props.setConnection(isMetaMask);
-            let balance = accounts.length > 0 ? await web3.eth.getBalance(accounts[0]): web3.utils.toWei('0');
-            balance = web3.utils.fromWei(balance, 'ether');
+            const isMetaMask = web3.currentProvider.isMetaMask;
+            let balance =
+                accounts.length > 0
+                    ? await web3.eth.getBalance(accounts[0])
+                    : web3.utils.toWei("0");
+            balance = web3.utils.fromWei(balance, "ether");
 
-            let instancePhotoNFTData = null;
+            let instancePhotoNFT = null;
             let deployedNetwork = null;
+            let instancePhotoMarketplace = null;
+            let marketplaceAddress = null;
 
-            if (PhotoNFTData.networks) {
-              // - deployedNetwork = PhotoNFTData.networks[networkId.toString()];
-              if (deployedNetwork) {
-                instancePhotoNFTData = new web3.eth.Contract(
-                  PhotoNFTData,
-                  process.env.REACT_APP_PHOTO_NFTDATA_ADDRESS,
-                );
-                console.log('=== instancePhotoNFTData ===', instancePhotoNFTData);
-              }
+            // Create instance of contracts
+            if (PhotoMarketplace.networks) {
+                deployedNetwork = PhotoMarketplace.networks[networkId.toString()];
+                if (deployedNetwork) {
+                    instancePhotoMarketplace = new web3.eth.Contract(
+                        PhotoMarketplace.abi,
+                        deployedNetwork && deployedNetwork.address
+                    );
+                    marketplaceAddress = deployedNetwork.address;
+                }
             }
 
-            if (instancePhotoNFTData) {
+            
+            if (instancePhotoNFT && instancePhotoMarketplace) {
                 // Set web3, accounts, and contract to the state, and then proceed with an
                 // example of interacting with the contract's methods.
-                this.setState({ 
-                    web3, 
-                    ganacheAccounts, 
-                    accounts, 
-                    balance, 
-                    networkId, 
-                    networkType, 
+                this.setState(
+                    {
+                        web3,
+                        accounts,
+                        balance,
+                        networkId,
+                        networkType,
+                        hotLoaderDisabled,
+                        isMetaMask,
+                        PhotoMarketplace : instancePhotoMarketplace, 
+                        currentAccount, 
+                        marketplaceAddress
+                     });
+            } else {
+                this.setState({
+                    web3,
+                    accounts,
+                    balance,
+                    networkId,
+                    networkType,
                     hotLoaderDisabled,
-                    currentAccount: currentAccount,
-                    photoNFTData: instancePhotoNFTData,
+                    isMetaMask,
                 });
             }
-            else {
-              this.setState({
-                web3,
-                ganacheAccounts,
-                accounts,
-                balance,
-                networkId,
-                networkType,
-                hotLoaderDisabled
-              });
-            }
 
-            ///@dev - NFT（Always load listed NFT data
-            const { photoNFTData } = this.state;
-            const ItemData = await photoNFTData.methods.getPhotoByNFTAddress(address).call();
+            const item = await instancePhotoMarketplace.methods.getPhoto(id).call();
+            const response = await fetch(`http://localhost:8080/ipfs/${item.nftData.tokenURI}`);
+            const result = await response.json();
             this.setState({
-                itemData: ItemData
+                itemData: { ...item, ...result }
             })
-
           }
         } catch (error) {
-          // Catch any errors for any of the above operations.
-          // alert(
-          //   `Failed to load web3, accounts, or contract. Check console for details.`,
-          // );
-          // console.error(error);
+          console.error('error=>',error);
         }
     }
     render() {
@@ -195,48 +105,44 @@ class ItemDetails extends Component {
         return (
             <>
             <Breadcrumb title="NFT ITEM"/>
-            {itemData.length ?
+            {
+            Object.keys(itemData).length ?
                 <section className="item-details-area">
                     <div className="container">
                         <div className="row justify-content-between">
                             <div className="col-12 col-lg-5">
                                 <div className="item-info">
                                     <div className="item-thumb text-center p-md-4 p-3" style={{background: "rgba(255,255,255,0.1)"}}>
-                                        <img src={`${process.env.REACT_APP_IPFS}/ipfs/${itemData.ipfsHashOfPhoto}`} alt="" />
+                                        <img src={`${process.env.REACT_APP_IPFS}/ipfs/${itemData.image}`} alt="" />
                                     </div>
                                 </div>
                             </div>
                             <div className="col-12 col-lg-6">
                                 {/* Content */}
                                 <div className="content mt-5 mt-lg-0">
-                                    <h3 className="m-0">{itemData.photoNFTName}</h3>
+                                    <h3 className="m-0">{itemData.nftName}</h3>
                                     {/* Owner */}
-                                    <div className="owner d-flex align-items-center">
-                                        <span>Owner </span>
-                                        <a className="owner-meta d-flex align-items-center ml-3" href="/author">
-                                            {/* <img className="avatar-sm rounded-circle" src={itemData.ownerImg} alt="" /> */}
-                                            <h6 className="ml-2">{itemData.ownerAddress.substr(0,14) + "..." + itemData.ownerAddress.substr(-4)}</h6>
-                                        </a>
-                                    </div>
-                                    <div className="owner d-flex align-items-center">
-                                        <span>Contract </span>
-                                        <a className="owner-meta d-flex align-items-center ml-3" href="/author">
-                                            {/* <img className="avatar-sm rounded-circle" src={itemData.ownerImg} alt="" /> */}
-                                            <h6 className="ml-2">{itemData.photoNFT.substr(0,14) + "..." + itemData.photoNFT.substr(-4)}</h6>
-                                        </a>
+                                    <div className="owner d-flex align-items-center mt-4">
+                                        <span>Owner : </span>
+                                        <a href={`https://bscscan.com/address/${itemData.nftData.owner}`} target="_blank" className="ml-2">{itemData.nftData.owner.substr(0,14) + "..." + itemData.nftData.owner.substr(-4)}</a>
                                     </div>
                                     {/* Item Info List */}
                                     <div className="item-info-list mt-4">
                                         <ul className="list-unstyled">
                                             <li className="price d-flex justify-content-between">
-                                                <span>Current Price {web3.utils.fromWei(`${itemData.photoPrice}`,"ether")}</span>
-                                                {/* <span>{itemData.price_2}</span>
-                                                <span>{itemData.count}</span> */}
+                                                <span>Current Price :  {web3.utils.fromWei(`${itemData.marketData.price}`,"ether")} BNB</span>
                                             </li>
                                         </ul>
                                     </div>
+                                    <div className="item-info-list mt-4">
+                                        <ul className="list-unstyled">
+                                            <li className="price d-flex justify-content-between">
+                                                <span>Premium NFT :  {itemData.marketData.premiumStatus ? "YES" : "NO"}</span>
+                                            </li>
+                                        </ul>
+                                    </div>  
                                     <p>Description:</p>
-                                    <p>{itemData.photoNFTDesc}</p>
+                                    <p>{itemData.nftDesc}</p>
                                 </div>
                             </div>
                         </div>

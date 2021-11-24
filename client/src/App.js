@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { NotificationContainer } from "react-notifications";
-import getWeb3, { getGanacheWeb3, Web3 } from "./utils/getWeb3";
+import getWeb3 from "./utils/getWeb3";
 import Header from "./components/Header/index.js";
 import Footer from "./components/Footer/index.js";
 import Publish from "./components/Publish/index.js";
@@ -30,19 +30,6 @@ class App extends Component {
       accounts: null,
       route: window.location.pathname.replace("/", ""),
     };
-  }
- 
-  //////////////////////////////////// 
-  ///// Ganache
-  ////////////////////////////////////
-  getGanacheAddresses = async () => {
-    if (!this.ganacheProvider) {
-      this.ganacheProvider = getGanacheWeb3();
-    }
-    if (this.ganacheProvider) {
-      return await this.ganacheProvider.eth.getAccounts();
-    }
-    return [];
   }
 
   componentDidMount = async () => {
@@ -117,7 +104,7 @@ class App extends Component {
             <Route path="/publish" component={Publish}/>
             <Route path="/my-photos" component={MyPhotos}/>
             <Route path="/photo-marketplace" component={PhotoMarketplace}/>
-            <Route path="/item-details/:address" component={ItemDetails}/>
+            <Route path="/item-details/:id" component={ItemDetails}/>
           </Switch>
         <Footer />
       </Router>
