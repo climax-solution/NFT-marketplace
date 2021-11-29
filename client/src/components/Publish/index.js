@@ -25,6 +25,7 @@ class Publish extends Component {
           valueNFTName: "",
           valueNFTSymbol: "",
           valuePhotoPrice: "",
+          valueNFTCategory: "music",
           photoNFT: null,
 
           /////// Ipfs Upload
@@ -36,7 +37,7 @@ class Publish extends Component {
         this.handleNFTName = this.handleNFTName.bind(this);
         this.handleNFTDesc = this.handleNFTDesc.bind(this);
         this.handlePhotoPrice = this.handlePhotoPrice.bind(this);
-
+        this.handleNFTCategory = this.handleNFTCategory.bind(this);
         /////// Ipfs Upload
         this.captureFile = this.captureFile.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
@@ -62,6 +63,10 @@ class Publish extends Component {
         this.setState({ valuePhotoPrice: event.target.value });
     }
 
+    handleNFTCategory(event) {
+        this.setState({ valueNFTCategory: event.target.value });
+    }
+
     captureFile(event) {
         event.preventDefault()
         const file = event.target.files[0]
@@ -80,7 +85,8 @@ class Publish extends Component {
           PhotoNFT,
           valueNFTName,
           NFTDesc,
-          isMetaMask
+          isMetaMask,
+          valueNFTCategory
         } = this.state;
 
         event.preventDefault();
@@ -96,7 +102,8 @@ class Publish extends Component {
             nftName: valueNFTName,
             image: imageHash,
             nftDesc: NFTDesc,
-            createdAt: new Date()
+            createdAt: new Date(),
+            category: valueNFTCategory
         };
         
         const cid = await ipfs.files.add(
@@ -234,6 +241,7 @@ class Publish extends Component {
 
     render()  {
         const { isMetaMask } = this.state;
+        console.log(this.state.valueNFTCategory);
         return (
           <>
             <Breadcrumb img="mint"/>
@@ -254,7 +262,12 @@ class Publish extends Component {
                                         onChange={this.handleNFTName}
                                     />
                                 </Field>
-
+                                <Field label="Token Item Category" className="form-group">
+                                    <select value={this.state.valueNFTCategory} onChange={this.handleNFTCategory}>
+                                        <option value="music">Music</option>
+                                        <option value="art">Art</option>
+                                    </select>
+                                </Field>
                                 <Field label="Art for NFT" className="form-group">
                                     <input
                                         type="file"
