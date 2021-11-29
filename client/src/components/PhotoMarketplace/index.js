@@ -325,7 +325,7 @@ class PhotoMarketplace extends Component {
                             );
                         })}
                         {
-                            !isExist && <h3 className="text-center text-muted">No items.</h3>
+                            !isExist && <h4 className="text-center text-muted">No items.</h4>
                         }
                     </div>
                 </div>

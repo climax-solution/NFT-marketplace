@@ -354,10 +354,10 @@ class MyPhotos extends Component {
                         else return <></>;
                     })}
                     {
-                        (isMetaMask && currentAccount && !assets.length) && <h3 className="text-center text-muted ml-2">No items.</h3>
+                        (isMetaMask && currentAccount && !assets.length) && <h4 className="text-center text-muted ml-2">No items.</h4>
                     }
                     {
-                      (!isMetaMask || !currentAccount) && <h3 className="text-center text-muted ml-2">Connect Metamask.</h3>
+                      (!isMetaMask || !currentAccount) && <h4 className="text-center text-muted ml-2">Connect Metamask.</h4>
                     }
                 </div>
             }

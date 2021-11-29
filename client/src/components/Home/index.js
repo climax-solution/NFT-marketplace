@@ -255,7 +255,7 @@ class Home extends Component {
                       })
                     }
                     {
-                      !List.length && <h3 className="text-center text-muted">No items.</h3>
+                      !List.length && <h4 className="text-center text-muted">No items.</h4>
                     }
                 </div>
             </>
