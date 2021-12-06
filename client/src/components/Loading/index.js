@@ -1,3 +1,5 @@
+import React from "react";
+
 import { AtomSpinner } from "react-epic-spinners";
 import "./style.css";
 
