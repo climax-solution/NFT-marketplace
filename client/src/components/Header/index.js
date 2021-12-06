@@ -89,9 +89,6 @@ class Header extends Component{
                                 <a href="/photo-marketplace" className="nav-link">Marketplace</a>
                             </li>
                             <li className="nav-item">
-                                <a href="/publish" className="nav-link">Mint</a>
-                            </li>
-                            <li className="nav-item">
                                 <a href="/my-photos" className="nav-link">My Assets</a>
                             </li>
                         </ul>

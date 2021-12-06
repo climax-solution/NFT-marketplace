@@ -14,7 +14,6 @@ class Footer extends Component {
         widgetData_1: [
             {id: 1, text: 'Home', to: '/'},
             {id: 1, text: 'Marketplace', to: '/photo-marketplace'},
-            {id: 1, text: 'Mint', to: '/publish'},
             {id: 1, text: 'Assets', to: '/my-photos'},
         ],
         widgetData_2: []
