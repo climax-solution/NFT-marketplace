@@ -15,10 +15,11 @@ class Home extends Component {
         this.state = {
             web3: null,
             accounts: null,
-            currentAccount: null,
+            currentAccount: null,          
             allPhotos: [],
             coin: null,
             isLoading: false,
+            itemLoading: true,
             isMetaMask: false,
             PhotoMarketplace: {},
             PhotoNFT: {}
@@ -28,7 +29,7 @@ class Home extends Component {
     }
     
     buyPhotoNFT = async (id) => {
-        const { accounts, PhotoMarketplace, isMetaMask, coin, marketplaceAddress } = this.state;
+        const { accounts, PhotoMarketplace, isMetaMask, coin } = this.state;
         
         if (!isMetaMask) {
           NotificationManager.warning("Metamask is not connected!", "Warning");
@@ -37,10 +38,20 @@ class Home extends Component {
 
         const photo = await PhotoMarketplace.methods.getPhoto(id).call();
         const buyAmount = photo.marketData.price;
+        this.setState({ isLoading: true });
 
-        await coin.methods.approve(marketplaceAddress, buyAmount).send({ from: accounts[0] });
-        await PhotoMarketplace.methods.buyNFT(id, buyAmount).send({ from: accounts[0] });
-        await this.getAllPhotos();
+        try {
+            await coin.methods.approve(marketplace_addr, buyAmount).send({ from: accounts[0] })
+            .on('receipt', async(receipt) => {
+                await PhotoMarketplace.methods.buyNFT(id, buyAmount).send({ from: accounts[0] });
+                await this.getAllPhotos();
+                NotificationManager.success("Success");
+                this.setState({ isLoading: false });
+            });
+        } catch(err) {
+            NotificationManager.error("Failed");
+            this.setState({ isLoading: false });
+        }
     }
     
     getAllPhotos = async () => {

@@ -1,14 +1,14 @@
 import React, { Component } from "react";
-import getWeb3 from "../../utils/getWeb3";
-
-import { Button } from 'rimble-ui';
-import { zeppelinSolidityHotLoaderOptions } from '../../../config/webpack';
-
-import { connect } from "react-redux";
-import Breadcrumb from "../Breadcrumb/Breadcrumb";
 import Swal from "sweetalert2";
-import "./custom.css";
+import { Button } from 'rimble-ui';
+import { connect } from "react-redux";
+import { NotificationManager } from "react-notifications";
+import Breadcrumb from "../Breadcrumb/Breadcrumb";
 import addresses from "../../config/address.json";
+import getWeb3 from "../../utils/getWeb3";
+import ScreenLoading from "../Loading/screenLoading";
+import ItemLoading  from "../Loading/itemLoading";
+import "./custom.css";
 
 const { marketplace_addr, nft_addr, token_addr } = addresses;
 
@@ -22,10 +22,10 @@ class MyPhotos extends Component {
           allPhotos: [],
           coin: null,
           isLoading: false,
+          itemLoading: true,
           isMetaMask: false,
           PhotoMarketplace: {},
-          PhotoNFT: {}
-
+          PhotoNFT: {},
         };
 
         this.putOnSale = this.putOnSale.bind(this);
@@ -50,57 +50,116 @@ class MyPhotos extends Component {
         allowOutsideClick: () => !Swal.isLoading()
       }).then(async(result) => {
         if (result.isConfirmed) {
-          const { web3, accounts, PhotoMarketplace, PhotoNFT, marketplaceAddress, coin } = this.state;
-
-          const photoPrice = web3.utils.toWei((result.value).toString(), 'gwei');
-          await PhotoNFT.methods.approve(marketplaceAddress, id).send({from : accounts[0]});
-          await coin.methods.approve(marketplaceAddress, photoPrice).send({ from: accounts[0] });
-          await PhotoMarketplace.methods.openTrade(id, photoPrice).send({ from: accounts[0] })
-          .then( async(res) => {
-            await this.getAllPhotos();
+          alert();
+          const { web3, accounts, PhotoMarketplace, PhotoNFT, coin } = this.state;
+          this.setState({
+            isLoading: true
           })
+
+          try {
+            const photoPrice = web3.utils.toWei((result.value).toString(), 'gwei');
+            await PhotoNFT.methods.approve(marketplace_addr, id).send({from : accounts[0]});
+            await coin.methods.approve(marketplace_addr, photoPrice).send({ from: accounts[0] });
+            await PhotoMarketplace.methods.openTrade(id, photoPrice).send({ from: accounts[0] })
+            .then( async(res) => {
+              this.setState({
+                isLoading: false
+              })
+              NotificationManager.success("Success");
+              await this.getAllPhotos();
+            })
+          } catch(err) {
+            NotificationManager.error("Failed");
+            this.setState({
+              isLoading: false
+            })
+          }
         }
       })
         
     }
 
     cancelOnSale = async (id) => {
-        const { coin, accounts, PhotoMarketplace, marketplaceAddress } = this.state;
-
-        const photo = await PhotoMarketplace.methods.getPhoto(id).call();
-        const buyAmount = photo.marketData.price;
-        await coin.methods.approve(marketplaceAddress, buyAmount).send({ from: accounts[0] });
-        await PhotoMarketplace.methods.cancelTrade(id, buyAmount).
-        send({ from: accounts[0] }).
-        then(async(result) => {
-          await this.getAllPhotos();
-        });
+        const { coin, accounts, PhotoMarketplace } = this.state;
+        this.setState({
+          isLoading: true
+        })
+        try {
+          const photo = await PhotoMarketplace.methods.getPhoto(id).call();
+          const buyAmount = photo.marketData.price;
+          await coin.methods.approve(marketplace_addr, buyAmount).send({ from: accounts[0] });
+          await PhotoMarketplace.methods.cancelTrade(id, buyAmount).
+          send({ from: accounts[0] }).
+          then(async(result) => {
+            this.setState({
+              isLoading: false
+            })
+            NotificationManager.success("Success");
+            await this.getAllPhotos();
+          });
+        } catch(err) {
+          NotificationManager.error("Failed");
+          this.setState({
+            isLoading: false
+          })
+        }
     }
 
     putOnPremium = async (id) => {
-        const { accounts, PhotoMarketplace, coin, marketplaceAddress } = this.state;
-        const photo = await PhotoMarketplace.methods.getPhoto(id).call();
-        const tax = photo.marketData.price / 20;
-        await coin.methods.approve(marketplaceAddress, tax).send({ from: accounts[0] })
-        .on('receipt', async(res) => {
-          await PhotoMarketplace.methods.updatePremiumStatus(id, true, tax).send({ from: accounts[0]});
-          await this.getAllPhotos();
-        });
+        const { accounts, PhotoMarketplace, coin } = this.state;
+        this.setState({
+          isLoading: true
+        })
+        try {
+          const photo = await PhotoMarketplace.methods.getPhoto(id).call();
+          const tax = photo.marketData.price / 20;
+          await coin.methods.approve(marketplace_addr, tax).send({ from: accounts[0] })
+          .on('receipt', async(res) => {
+            await PhotoMarketplace.methods.updatePremiumStatus(id, true, tax).send({ from: accounts[0]});
+            this.setState({
+              isLoading: false
+            })
+            NotificationManager.success("Success");
+            await this.getAllPhotos();
+          });
+        } catch(err) {
+          NotificationManager.error("Failed");
+          this.setState({
+            isLoading: false
+          })
+        }
     }
 
     putOnNormal = async (id) => {
-        const { accounts, PhotoMarketplace, coin, marketplaceAddress } = this.state;
-        const photo = await PhotoMarketplace.methods.getPhoto(id).call();
-        const tax = photo.marketData.price / 20;
-        await coin.methods.approve(marketplaceAddress, tax).send({ from: accounts[0] })
-        .on('receipt', async(res) => {
-          await PhotoMarketplace.methods.updatePremiumStatus(id, false, tax).send({ from: accounts[0]});
-          await this.getAllPhotos();
-        });
+        const { accounts, PhotoMarketplace, coin } = this.state;
+        this.setState({
+          isLoading: true
+        })
+        try {
+          const photo = await PhotoMarketplace.methods.getPhoto(id).call();
+          const tax = photo.marketData.price / 20;
+          await coin.methods.approve(marketplace_addr, tax).send({ from: accounts[0] })
+          .on('receipt', async(res) => {
+            await PhotoMarketplace.methods.updatePremiumStatus(id, false, tax).send({ from: accounts[0]});
+            this.setState({
+              isLoading: false
+            })
+            NotificationManager.success("Success");
+            await this.getAllPhotos();
+          });
+        } catch(err) {
+          NotificationManager.error("Failed");
+          this.setState({
+            isLoading: false
+          })
+        }
     }
 
     getAllPhotos = async () => {
       const { PhotoMarketplace} = this.state;
+      this.setState({
+        itemLoading: true
+      });
       const allPhotos = await PhotoMarketplace.methods.getAllPhotos().call();
       console.log("=== allPhotos ===", allPhotos);
       const finalResult = await Promise.all(allPhotos.map(async (item) => {
@@ -114,6 +173,9 @@ class MyPhotos extends Component {
       }) );
 
       this.checkAssets(finalResult);
+      this.setState({
+        itemLoading: false
+      })
     }
 
     componentDidMount = async () => {
@@ -232,11 +294,14 @@ class MyPhotos extends Component {
       })
     }
     render() {
-        const { web3, assets, currentAccount, isMetaMask } = this.state;
+        const { web3, assets, currentAccount, isMetaMask, isLoading, itemLoading } = this.state;
         return (
           <>
+            { isLoading && <ScreenLoading/> }
             <Breadcrumb img="assets"/>
+            { itemLoading && <ItemLoading/> }
             {
+              !itemLoading &&
                 <div className="row items" style={{padding: '30px 0'}}>
                     {assets.map((item, idx) => {
                         if (!isMetaMask && currentAccount == item.nftData.owner) return <></>;

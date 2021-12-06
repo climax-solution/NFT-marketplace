@@ -5,3 +5,12 @@
 	border-radius: 50%;
 	display: inline-block; 
 }
+
+.explore-area .explore-menu .btn::after {
+	position: static !important;
+}
+
+.category-btn {
+	border: 1px solid !important;
+	border-radius: 25px !important;
+}

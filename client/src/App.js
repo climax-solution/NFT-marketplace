@@ -1,22 +1,18 @@
 import React, { Component } from "react";
 import { NotificationContainer } from "react-notifications";
-import getWeb3 from "./utils/getWeb3";
 import Header from "./components/Header/index.js";
 import Footer from "./components/Footer/index.js";
-import Publish from "./components/Publish/index.js";
 import MyPhotos from "./components/MyPhotos/index.js";
 import PhotoMarketplace from "./components/PhotoMarketplace/index.js";
 import ItemDetails from "./components/ItemDetails/ItemDetails";
-import ipfs from './components/ipfs/ipfsApi.js'
 
-import { Loader, Button, Card, Input, Heading, Table, Form, Flex, Box, Image } from 'rimble-ui';
-import { zeppelinSolidityHotLoaderOptions } from '../config/webpack';
-import { BrowserRouter as Router, Switch, Route, Redirect} from "react-router-dom";
+import { Loader } from 'rimble-ui';
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Home from "./components/Home";
 import 'react-notifications/lib/notifications.css';
 
 import styles from './App.module.scss';
-//import './App.css';
+import './App.css';
 
 
 class App extends Component {
@@ -28,23 +24,8 @@ class App extends Component {
       storageValue: 0,
       web3: null,
       accounts: null,
-      route: window.location.pathname.replace("/", ""),
     };
   }
-
-  componentDidMount = async () => {
-    const hotLoaderDisabled = zeppelinSolidityHotLoaderOptions.disabled;
- 
-    try {
-      /// [Todo]:
-    } catch (error) {
-      // Catch any errors for any of the above operations.
-      // alert(
-      //   `Failed to load web3, accounts, or contract. Check console for details.`,
-      // );
-      // console.error(error);
-    }
-  };
 
   renderLoader() {
     return (
@@ -70,29 +51,6 @@ class App extends Component {
     );
   }
 
-  renderPublish() {
-    return (
-      <div className={styles.wrapper}>
-        <Publish />
-      </div>
-    );
-  }
-
-  renderMyPhotos() {
-    return (
-      <div className={styles.wrapper}>
-        <MyPhotos />
-      </div>
-    );
-  }
-
-  renderPhotoMarketPlace() {
-    return (
-      <div className={styles.wrapper}>
-        <PhotoMarketplace />
-      </div>    
-    );
-  }
 
   render() {
     return (
@@ -101,7 +59,6 @@ class App extends Component {
         <NotificationContainer/>
           <Switch>
             <Route exact path="/" component={Home}/>
-            <Route path="/publish" component={Publish}/>
             <Route path="/my-photos" component={MyPhotos}/>
             <Route path="/photo-marketplace" component={PhotoMarketplace}/>
             <Route path="/item-details/:id" component={ItemDetails}/>

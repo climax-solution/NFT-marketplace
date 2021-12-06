@@ -5,7 +5,8 @@ import { NotificationManager } from "react-notifications";
 import getWeb3 from "../../utils/getWeb3";
 import styles from '../../App.module.scss';
 import Breadcrumb from "../Breadcrumb/Breadcrumb";
-import Loading from "../Loading";
+import ScreenLoading from "../Loading/screenLoading";
+import ItemLoading  from "../Loading/itemLoading";
 import addresses from "../../config/address.json";
 
 const { marketplace_addr, nft_addr, token_addr } = addresses;
@@ -20,9 +21,11 @@ class PhotoMarketplace extends Component {
           allPhotos: [],
           coin: null,
           isLoading: false,
+          itemLoading: true,
           isMetaMask: false,
           PhotoMarketplace: {},
-          PhotoNFT: {}
+          PhotoNFT: {},
+          activeCategory: null
         };
 
         this.buyPhotoNFT = this.buyPhotoNFT.bind(this);
@@ -45,18 +48,23 @@ class PhotoMarketplace extends Component {
             .on('receipt', async(receipt) => {
                 await PhotoMarketplace.methods.buyNFT(id, buyAmount).send({ from: accounts[0] });
                 await this.getAllPhotos();
+                NotificationManager.success("Success");
                 this.setState({ isLoading: false });
             });
         } catch(err) {
+            NotificationManager.error("Failed");
             this.setState({ isLoading: false });
         }
     }
     
     getAllPhotos = async () => {
-      const { PhotoMarketplace } = this.state;
+      const { PhotoMarketplace, activeCategory } = this.state;
+      this.setState({
+          itemLoading: true
+      })
       const allPhotos = await PhotoMarketplace.methods.getAllPhotos().call();
       console.log('allPhotos => ',PhotoMarketplace);
-      const finalResult = await Promise.all(allPhotos.map(async (item) => {
+      let finalResult = await Promise.all(allPhotos.map(async (item) => {
           const response = await fetch(`http://localhost:8080/ipfs/${item.nftData.tokenURI}`);
           if(!response.ok)
               throw new Error(response.statusText);
@@ -66,8 +74,19 @@ class PhotoMarketplace extends Component {
           return {...item, ...json}
       }) );
 
-      //console.log('async result', finalResult)
-      this.setState({ allPhotos: finalResult });
+      switch(activeCategory) {
+          case "physical":
+              finalResult = finalResult.filter(item => item.category == activeCategory);
+              break;
+            case "digital":
+                finalResult = finalResult.filter(item => item.category == activeCategory);
+                break;
+      }
+
+      this.setState({
+          allPhotos: finalResult,
+          itemLoading: false
+      });
     }
 
     componentDidMount = async () => {
@@ -151,7 +170,7 @@ class PhotoMarketplace extends Component {
     }
 
     async componentDidUpdate(preprops, prevState) {
-      const { web3 } = this.state;
+      const { web3, activeCategory } = this.state;
 
       if (preprops != this.props) {
         this.setState({
@@ -161,11 +180,14 @@ class PhotoMarketplace extends Component {
             await this.getAllPhotos();
         }
       }
+
+      if (prevState.activeCategory != activeCategory) {
+        await this.getAllPhotos();
+      }
     }
 
     render() {
-        const { web3, allPhotos, currentAccount, isMetaMask } = this.state;
-        console.log('allPhotos', allPhotos, isMetaMask, currentAccount);
+        const { web3, allPhotos, currentAccount, isMetaMask, isLoading, itemLoading } = this.state;
         let premiumNFT, normalNFT;
         let isExist = true;
         if (isMetaMask) {
@@ -178,120 +200,127 @@ class PhotoMarketplace extends Component {
           normalNFT = allPhotos.filter(item => !item.marketData.premiumStatus && item.marketData.marketStatus);
           if (premiumNFT.length + normalNFT.length == 0) isExist = false;
         }
+
         return (
             <>
+                { isLoading && <ScreenLoading/> }
                 <Breadcrumb img="marketplace"/>
                 <div className="explore-area">
                     <div className="row justify-content-center text-center mt-3">
                         <div className="col-12">
                             {/* Explore Menu */}
                             <div className="explore-menu btn-group btn-group-toggle flex-wrap justify-content-center text-center mb-4" data-toggle="buttons">
-                                <label className="btn active d-table text-uppercase p-2">
+                                <label
+                                    className="btn active d-table text-uppercase p-2 category-btn border-radius"
+                                    onClick={() => this.setState({ activeCategory: "all" })}
+                                >
                                     <input type="radio" defaultValue="all" defaultChecked className="explore-btn" />
                                     <span>ALL</span>
                                 </label>
-                                <label className="btn d-table text-uppercase p-2">
-                                    <input type="radio" defaultValue="art" className="explore-btn" />
-                                    <span>ART</span>
+                                <label
+                                    className="btn d-table text-uppercase p-2 ml-2 category-btn border-radius"
+                                    onClick={() => this.setState({ activeCategory: "physical" })}
+                                >
+                                    <input type="radio" defaultValue="physical" className="explore-btn" />
+                                    <span>PHYSIC ASSETS</span>
                                 </label>
-                                <label className="btn d-table text-uppercase p-2">
-                                    <input type="radio" defaultValue="music" className="explore-btn" />
-                                    <span>MUSIC</span>
-                                </label>
-                                <label className="btn d-table text-uppercase p-2">
-                                    <input type="radio" defaultValue="collectibles" className="explore-btn" />
-                                    <span>COLLECTION</span>
-                                </label>
-                                <label className="btn d-table text-uppercase p-2">
-                                    <input type="radio" defaultValue="sports" className="explore-btn" />
-                                    <span>SPORTS</span>
+                                <label
+                                    className="btn d-table text-uppercase p-2 ml-2 category-btn border-radius"
+                                    onClick={() => this.setState({ activeCategory: "digital" })}
+                                >
+                                    <input type="radio" defaultValue="digital" className="explore-btn" />
+                                    <span>DIGITAL ASSETS</span>
                                 </label>
                             </div>
                         </div>
                     </div>
-                    <div className="row items" style={{minHeight: '300px'}}>
-                        {premiumNFT.map((item, idx) => {
-                            let ItemPrice = web3.utils.fromWei(`${item.marketData.price}`,"gwei");
-                            const pidx = ItemPrice.indexOf('.');
-                            const pLen = ItemPrice.length;
-                            if (pidx > 0) {
+                    { itemLoading && <ItemLoading/> }
+                    {
+                        !itemLoading &&
+                        <div className="row items" style={{minHeight: '300px'}}>
+                            {premiumNFT.map((item, idx) => {
+                                let ItemPrice = web3.utils.fromWei(`${item.marketData.price}`,"gwei");
+                                const pidx = ItemPrice.indexOf('.');
+                                const pLen = ItemPrice.length;
+                                if (pidx > 0) {
+                                    if (pLen - pidx > 3) {
+                                        ItemPrice = ItemPrice.substr(0, pidx + 4);
+                                    }
+                                }
+                                return (
+                                    <div className="col-12 col-sm-6 col-lg-3 item" key={idx} data-groups={item.category}>
+                                        <div className="card">
+                                            <div className="image-over">
+                                                <img className="card-img-top" src={`${process.env.REACT_APP_IPFS}/ipfs/${item.image}`} alt="" />
+                                            </div>
+                                            {/* Card Caption */}
+                                            <div className="card-caption col-12 p-0">
+                                                {/* Card Body */}
+                                                <div className="card-body">
+                                                    <div className="card-bottom d-flex justify-content-between">
+                                                        <span>Token Name</span>
+                                                        <span>Price</span>
+                                                    </div>
+                                                    <div className="card-bottom d-flex justify-content-between">
+                                                        <span>{item.nftName}</span>
+                                                        <span>{ItemPrice} NFD</span>
+                                                    </div>
+                                                    <Button
+                                                        size={'medium'}
+                                                        width={1}
+                                                        onClick={() => this.buyPhotoNFT(item.nftData.tokenID)}
+                                                        className="btn"
+                                                    > Buy </Button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                            {normalNFT.map((item, idx) => {
+                                let ItemPrice = web3.utils.fromWei(`${item.marketData.price}`,"gwei");
+                                const pidx = ItemPrice.indexOf('.');
+                                const pLen = ItemPrice.length;
+                                if (pidx > 0) {
                                 if (pLen - pidx > 3) {
                                     ItemPrice = ItemPrice.substr(0, pidx + 4);
                                 }
-                            }
-                            return (
-                                <div className="col-12 col-sm-6 col-lg-3 item" key={idx} data-groups={item.category}>
-                                    <div className="card">
-                                        <div className="image-over">
-                                            <img className="card-img-top" src={`${process.env.REACT_APP_IPFS}/ipfs/${item.image}`} alt="" />
-                                        </div>
-                                        {/* Card Caption */}
-                                        <div className="card-caption col-12 p-0">
-                                            {/* Card Body */}
-                                            <div className="card-body">
-                                                <div className="card-bottom d-flex justify-content-between">
-                                                    <span>Token Name</span>
-                                                    <span>Price</span>
+                                }
+                                return (
+                                    <div className="col-12 col-sm-6 col-lg-3 item" key={idx} data-groups={item.category}>
+                                        <div className="card">
+                                            <div className="image-over">
+                                                <img className="card-img-top" src={`${process.env.REACT_APP_IPFS}/ipfs/${item.image}`} alt="" />
+                                            </div>
+                                            {/* Card Caption */}
+                                            <div className="card-caption col-12 p-0">
+                                                {/* Card Body */}
+                                                <div className="card-body">
+                                                    <div className="card-bottom d-flex justify-content-between">
+                                                        <span>Token Name</span>
+                                                        <span>Price</span>
+                                                    </div>
+                                                    <div className="card-bottom d-flex justify-content-between">
+                                                        <span>{item.nftName}</span>
+                                                        <span>{ItemPrice} NFD</span>
+                                                    </div>
+                                                    <Button
+                                                        size={'medium'}
+                                                        width={1}
+                                                        onClick={() => this.buyPhotoNFT(item.nftData.tokenID)}
+                                                        className="btn"
+                                                    > Buy </Button>
                                                 </div>
-                                                <div className="card-bottom d-flex justify-content-between">
-                                                    <span>{item.nftName}</span>
-                                                    <span>{ItemPrice} NFD</span>
-                                                </div>
-                                                <Button
-                                                    size={'medium'}
-                                                    width={1}
-                                                    onClick={() => this.buyPhotoNFT(item.nftData.tokenID)}
-                                                    className="btn"
-                                                > Buy </Button>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            );
-                        })}
-                        {normalNFT.map((item, idx) => {
-                            let ItemPrice = web3.utils.fromWei(`${item.marketData.price}`,"gwei");
-                            const pidx = ItemPrice.indexOf('.');
-                            const pLen = ItemPrice.length;
-                            if (pidx > 0) {
-                            if (pLen - pidx > 3) {
-                                ItemPrice = ItemPrice.substr(0, pidx + 4);
+                                );
+                            })}
+                            {
+                                !isExist && <h4 className="text-center text-muted">No items.</h4>
                             }
-                            }
-                            return (
-                                <div className="col-12 col-sm-6 col-lg-3 item" key={idx}>
-                                    <div className="card">
-                                        <div className="image-over">
-                                            <img className="card-img-top" src={`${process.env.REACT_APP_IPFS}/ipfs/${item.image}`} alt="" />
-                                        </div>
-                                        {/* Card Caption */}
-                                        <div className="card-caption col-12 p-0">
-                                            {/* Card Body */}
-                                            <div className="card-body">
-                                                <div className="card-bottom d-flex justify-content-between">
-                                                    <span>Token Name</span>
-                                                    <span>Price</span>
-                                                </div>
-                                                <div className="card-bottom d-flex justify-content-between">
-                                                    <span>{item.nftName}</span>
-                                                    <span>{ItemPrice} NFD</span>
-                                                </div>
-                                                <Button
-                                                    size={'medium'}
-                                                    width={1}
-                                                    onClick={() => this.buyPhotoNFT(item.nftData.tokenID)}
-                                                    className="btn"
-                                                > Buy </Button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            );
-                        })}
-                        {
-                            !isExist && <h4 className="text-center text-muted">No items.</h4>
-                        }
-                    </div>
+                        </div>
+                    }
                 </div>
                     
             </>
