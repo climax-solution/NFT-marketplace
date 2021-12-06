@@ -8,10 +8,9 @@ import { connect } from "react-redux";
 import Breadcrumb from "../Breadcrumb/Breadcrumb";
 import Swal from "sweetalert2";
 import "./custom.css";
+import addresses from "../../config/address.json";
 
-const marketplace_addr = process.env.REACT_APP_NFT_ADDR;
-const nft_addr = process.env.REACT_APP_NFT_ADDR;
-const token_addr = process.env.REACT_APP_TOKEN_ADDR;
+const { marketplace_addr, nft_addr, token_addr } = addresses;
 
 class MyPhotos extends Component {
     constructor(props) {    

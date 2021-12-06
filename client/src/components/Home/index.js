@@ -5,10 +5,9 @@ import { zeppelinSolidityHotLoaderOptions } from '../../../config/webpack';
 import Breadcrumb from "../Breadcrumb/Breadcrumb";
 import {  Button } from 'rimble-ui';
 import { NotificationManager } from "react-notifications";
+import addresses from "../../config/address.json";
 
-const marketplace_addr = process.env.REACT_APP_NFT_ADDR;
-const nft_addr = process.env.REACT_APP_NFT_ADDR;
-const token_addr = process.env.REACT_APP_TOKEN_ADDR;
+const { marketplace_addr, nft_addr, token_addr } = addresses;
 
 class Home extends Component {
     constructor(props) {

@@ -2,15 +2,13 @@ import React, { Component } from "react";
 import { Button} from 'rimble-ui';
 import { connect } from "react-redux";
 import { NotificationManager } from "react-notifications";
-import { zeppelinSolidityHotLoaderOptions } from '../../../config/webpack';
-import getWeb3, { getGanacheWeb3, Web3 } from "../../utils/getWeb3";
+import getWeb3 from "../../utils/getWeb3";
 import styles from '../../App.module.scss';
 import Breadcrumb from "../Breadcrumb/Breadcrumb";
 import Loading from "../Loading";
+import addresses from "../../config/address.json";
 
-const marketplace_addr = process.env.REACT_APP_NFT_ADDR;
-const nft_addr = process.env.REACT_APP_NFT_ADDR;
-const token_addr = process.env.REACT_APP_TOKEN_ADDR;
+const { marketplace_addr, nft_addr, token_addr } = addresses;
 
 class PhotoMarketplace extends Component {
     constructor(props) {    
@@ -57,6 +55,7 @@ class PhotoMarketplace extends Component {
     getAllPhotos = async () => {
       const { PhotoMarketplace } = this.state;
       const allPhotos = await PhotoMarketplace.methods.getAllPhotos().call();
+      console.log('allPhotos => ',PhotoMarketplace);
       const finalResult = await Promise.all(allPhotos.map(async (item) => {
           const response = await fetch(`http://localhost:8080/ipfs/${item.nftData.tokenURI}`);
           if(!response.ok)
@@ -80,7 +79,7 @@ class PhotoMarketplace extends Component {
           PhotoNFT = require("../../../../build/contracts/PhotoNFT.json");
           PhotoMarketplace = require("../../../../build/contracts/PhotoMarketplace.json");
           COIN = require("../../../../build/contracts/MSDOGE.json");
-          console.log(PhotoNFT, PhotoMarketplace);
+          console.log(marketplace_addr, PhotoMarketplace);
       } catch (e) {
           //console.log(e);
       }
