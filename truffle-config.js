@@ -3,7 +3,7 @@ require('dotenv').config();
 const HDWalletProvider = require('@truffle/hdwallet-provider');  // @notice - Should use new module.
 const mnemonic = ''; // process.env.;
 
-const INFURA_API_KEY="";
+const INFURA_API_KEY="e5f6b05589544b1bb8526dc3c034c63e";
 
 process.env.INFURA_KEY = INFURA_API_KEY
 //console.log('https://ropsten.infura.io/v3/' + process.env.INFURA_KEY);
@@ -16,7 +16,8 @@ module.exports = {
         'truffle-plugin-verify'
     ],
     api_keys: {
-        bscscan: "D66C8M35HQSFITQJJT4ZIKHKPVUAA8I4YJ"
+        bscscan: "D66C8M35HQSFITQJJT4ZIKHKPVUAA8I4YJ",
+        etherscan: "5Z1RRTM3R1VF8U9BS6DVBZZEACU5XUN59Q"
     },
   networks: {
     ropsten: {

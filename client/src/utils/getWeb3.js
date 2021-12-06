@@ -14,11 +14,14 @@ const getWeb3 = () => {
   // Fallback to localhost; use dev console port by default...
   else {
     const provider = new Web3.providers.HttpProvider(
-      'https://bsc-dataseed1.binance.org'
+      'https://ropsten.infura.io/v3/e5f6b05589544b1bb8526dc3c034c63e'
     );
     web3 = new Web3(provider);
     //console.log("No web3 instance injected, using Infura/Local web3.");
   }
+
+  console.log(web3);
+  
   return web3;
 }
 
