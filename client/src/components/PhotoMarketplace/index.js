@@ -9,6 +9,8 @@ import { connect } from "react-redux";
 import Breadcrumb from "../Breadcrumb/Breadcrumb";
 import { NotificationManager } from "react-notifications";
 
+const marketplace_addr = "0xE6D5DdA804e7F4B5f15dC422d9C92AE4A70a7484";
+
 class PhotoMarketplace extends Component {
     constructor(props) {    
         super(props);
@@ -19,6 +21,7 @@ class PhotoMarketplace extends Component {
           currentAccount: null,          
           route: window.location.pathname.replace("/", ""),
           allPhotos: [],
+          coin: null
         };
 
         this.buyPhotoNFT = this.buyPhotoNFT.bind(this);
@@ -28,7 +31,7 @@ class PhotoMarketplace extends Component {
     /// Functions of buying a photo NFT 
     ///---------------------------------
     buyPhotoNFT = async (id) => {
-        const { accounts, PhotoMarketplace, isMetaMask } = this.state;
+        const { accounts, PhotoMarketplace, isMetaMask, coin } = this.state;
         
         if (!isMetaMask) {
           NotificationManager.warning("Metamask is not connected!", "Warning");
@@ -36,7 +39,9 @@ class PhotoMarketplace extends Component {
         }
         const photo = await PhotoMarketplace.methods.getPhoto(id).call();
         const buyAmount = photo.marketData.price;
-        const txReceipt1 = await PhotoMarketplace.methods.buyNFT(id).send({ from: accounts[0], value: buyAmount });
+        await coin.methods.approve(marketplace_addr, buyAmount).send({ from: accounts[0] });
+
+        const txReceipt1 = await PhotoMarketplace.methods.buyNFT(id, buyAmount).send({ from: accounts[0] });
         await this.getAllPhotos();
         //console.log('=== response of buyPhotoNFT ===', txReceipt1);
     }
@@ -72,16 +77,19 @@ class PhotoMarketplace extends Component {
 
       let PhotoNFT = {};
       let PhotoMarketplace = {};
+      let COIN = [];
       try {
           PhotoNFT = require("../../../../build/contracts/PhotoNFT.json");
           PhotoMarketplace = require("../../../../build/contracts/PhotoMarketplace.json");
+          COIN = require("../../../../build/contracts/MSDOGE.json");
+          console.log(PhotoNFT, PhotoMarketplace);
       } catch (e) {
           //console.log(e);
       }
 
       try {
           const isProd = process.env.NODE_ENV === "production";
-          if (isProd) {
+          if (!isProd) {
               // Get network provider and web3 instance.
               const web3 = await getWeb3();
               // Use web3 to get the user's accounts.
@@ -102,9 +110,12 @@ class PhotoMarketplace extends Component {
               let deployedNetwork = null;
 
               let instancePhotoMarketplace = null;
-
+              let instanceCoin = null;
               let marketplaceAddress = null;
 
+              instanceCoin = new web3.eth.Contract(
+                  COIN, "0xd2799A6a36CF2994c977005F7632Ff0882505370"
+              );
               // Create instance of contracts
               if (PhotoNFT.networks) {
                   deployedNetwork = PhotoNFT.networks[networkId.toString()];
@@ -139,11 +150,11 @@ class PhotoMarketplace extends Component {
                           networkId,
                           networkType,
                           hotLoaderDisabled,
-                          isMetaMask,
                           PhotoNFT: instancePhotoNFT,
                           PhotoMarketplace: instancePhotoMarketplace,
                           marketplaceAddress,
-                          currentAccount
+                          currentAccount,
+                          coin: instanceCoin
                       },
                       () => {
                           this.refreshValues(instancePhotoNFT);
@@ -160,8 +171,8 @@ class PhotoMarketplace extends Component {
                       networkId,
                       networkType,
                       hotLoaderDisabled,
-                      isMetaMask,
-                      currentAccount
+                      currentAccount,
+                      coin: instanceCoin
                   });
               }
           }
@@ -201,7 +212,7 @@ class PhotoMarketplace extends Component {
 
     render() {
         const { web3, allPhotos, currentAccount, isMetaMask } = this.state;
-        console.log('allPhotos', allPhotos, isMetaMask);
+        console.log('allPhotos', allPhotos, isMetaMask, currentAccount);
         let premiumNFT, normalNFT;
         let isExist = true;
         if (isMetaMask) {
@@ -247,7 +258,7 @@ class PhotoMarketplace extends Component {
                     </div>
                     <div className="row items" style={{minHeight: '300px'}}>
                         {premiumNFT.map((item, idx) => {
-                            let ItemPrice = web3.utils.fromWei(`${item.marketData.price}`,"ether");
+                            let ItemPrice = web3.utils.fromWei(`${item.marketData.price}`,"gwei");
                             const pidx = ItemPrice.indexOf('.');
                             const pLen = ItemPrice.length;
                             if (pidx > 0) {
@@ -271,7 +282,7 @@ class PhotoMarketplace extends Component {
                                                 </div>
                                                 <div className="card-bottom d-flex justify-content-between">
                                                     <span>{item.nftName}</span>
-                                                    <span>{ItemPrice}</span>
+                                                    <span>{ItemPrice} NFD</span>
                                                 </div>
                                                 <Button
                                                     size={'medium'}
@@ -286,7 +297,7 @@ class PhotoMarketplace extends Component {
                             );
                         })}
                         {normalNFT.map((item, idx) => {
-                            let ItemPrice = web3.utils.fromWei(`${item.marketData.price}`,"ether");
+                            let ItemPrice = web3.utils.fromWei(`${item.marketData.price}`,"gwei");
                             const pidx = ItemPrice.indexOf('.');
                             const pLen = ItemPrice.length;
                             if (pidx > 0) {
@@ -310,7 +321,7 @@ class PhotoMarketplace extends Component {
                                                 </div>
                                                 <div className="card-bottom d-flex justify-content-between">
                                                     <span>{item.nftName}</span>
-                                                    <span>{ItemPrice}</span>
+                                                    <span>{ItemPrice} NFD</span>
                                                 </div>
                                                 <Button
                                                     size={'medium'}
