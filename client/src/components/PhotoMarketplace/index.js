@@ -25,7 +25,6 @@ class PhotoMarketplace extends Component {
           isMetaMask: false,
           PhotoMarketplace: {},
           PhotoNFT: {}
-
         };
 
         this.buyPhotoNFT = this.buyPhotoNFT.bind(this);
@@ -105,7 +104,6 @@ class PhotoMarketplace extends Component {
               let instanceCoin = null;
 
               instanceCoin = new web3.eth.Contract(COIN, token_addr);
-              // Create instance of contracts
               if (PhotoNFT) {
                     instancePhotoNFT = new web3.eth.Contract(PhotoNFT, nft_addr);
               }
