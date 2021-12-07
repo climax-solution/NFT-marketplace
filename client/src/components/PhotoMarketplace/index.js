@@ -44,13 +44,10 @@ class PhotoMarketplace extends Component {
         this.setState({ isLoading: true });
 
         try {
-            await coin.methods.approve(marketplace_addr, buyAmount).send({ from: accounts[0] })
-            .on('receipt', async(receipt) => {
-                await PhotoMarketplace.methods.buyNFT(id, buyAmount).send({ from: accounts[0] });
-                await this.getAllPhotos();
-                NotificationManager.success("Success");
-                this.setState({ isLoading: false });
-            });
+            await PhotoMarketplace.methods.buyNFT(id, buyAmount).send({ from: accounts[0] });
+            await this.getAllPhotos();
+            NotificationManager.success("Success");
+            this.setState({ isLoading: false });
         } catch(err) {
             NotificationManager.error("Failed");
             this.setState({ isLoading: false });
