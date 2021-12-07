@@ -33,10 +33,10 @@ contract PhotoMarketplace  {
         PhotoMarketData marketData;
     }
 
-    constructor(PhotoNFT _photoNFT, address owner, address _whiteUser) {
+    constructor(address _photoNFT, address owner, address _whiteUser) {
         // photoNFTData = _photoNFTData;
         // address payable PHOTO_NFT_MARKETPLACE = payable(address(this));
-        photoNFT = _photoNFT;
+        photoNFT = PhotoNFT(_photoNFT);
         _market_owner = owner;
         white_user = _whiteUser;
     }
@@ -82,7 +82,7 @@ contract PhotoMarketplace  {
         });
     }
 
-    function getPhoto(uint index) public view returns (PhotoData memory _photo) {
+    function getPhoto(uint index) public view returns (PhotoData memory) {
         PhotoData memory photoData = PhotoData ({
             nftData : photoNFT.getPhoto(index), 
             marketData : getMarketData(index)
@@ -91,7 +91,7 @@ contract PhotoMarketplace  {
         return photoData;
     }
 
-    function getAllPhotos() public view returns (PhotoData[] memory _photos) {
+    function getAllPhotos() public view returns (PhotoData[] memory) {
         PhotoData[] memory result = new PhotoData[](photoNFT.currentPhotoId());
         for (uint i = 0; i < photoNFT.currentPhotoId(); i++) {
             // Photo memory photo = getPhoto(i);
@@ -101,12 +101,7 @@ contract PhotoMarketplace  {
     }
 
     function updatePremiumStatus(uint256 _photoId, bool _newState) public payable{
-        address owner = photoNFT.ownerOf(_photoId);
-        require(
-            msg.sender == owner,
-            "Trade can be open only by seller."
-        );
-
+        require(msg.sender == photoNFT.ownerOf(_photoId), "Message Sender should be the owner of token");
         if (white_user == msg.sender) payable(white_user).transfer(msg.value); //white user
         else getOwnerPayableAddress().transfer(msg.value); //send fee
         _photoData[_photoId].premiumStatus = _newState;
@@ -116,9 +111,9 @@ contract PhotoMarketplace  {
         // emit NFTPremiumStatusChanged(_photoId, _newState, block.timestamp);
     }
 
-    function getMarketData(uint tokenId) public view returns (PhotoMarketData memory _marketData) {
+    function getMarketData(uint tokenId) public view returns (PhotoMarketData memory) {
         PhotoMarketData memory marketData = _photoData[tokenId];
-        if ((marketData.premiumStatus) && (marketData.premiumTimestamp + premiumLimit > block.timestamp)) {
+        if ((marketData.premiumStatus) && (block.timestamp - marketData.premiumTimestamp > premiumLimit)) {
             marketData.premiumStatus = false;
             marketData.premiumTimestamp = 0;
         }
