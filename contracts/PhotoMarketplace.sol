@@ -4,31 +4,7 @@ pragma experimental ABIEncoderV2;
 
 import { PhotoNFT } from "./PhotoNFT.sol";
 
-interface IERC20 {
-    function totalSupply() external view returns (uint);
-
-    function balanceOf(address account) external view returns (uint);
-
-    function transfer(address recipient, uint amount) external returns (bool);
-
-    function allowance(address owner, address spender) external view returns (uint);
-
-    function approve(address spender, uint amount) external returns (bool);
-
-    function transferFrom(
-        address sender,
-        address recipient,
-        uint amount
-    ) external returns (bool);
-
-    event Transfer(address indexed from, address indexed to, uint value);
-    event Approval(address indexed owner, address indexed spender, uint value);
-}
-
 contract PhotoMarketplace  {
-
-    IERC20 public token;
-
     address public PHOTO_NFT_MARKETPLACE;
 
     uint256 public premiumLimit = 2592000; //30 * 24 * 3600
@@ -57,42 +33,41 @@ contract PhotoMarketplace  {
         PhotoMarketData marketData;
     }
 
-    constructor(PhotoNFT _photoNFT, address owner, address _whiteUser, address _token) {
+    constructor(PhotoNFT _photoNFT, address owner, address _whiteUser) {
         // photoNFTData = _photoNFTData;
         // address payable PHOTO_NFT_MARKETPLACE = payable(address(this));
         photoNFT = _photoNFT;
         _market_owner = owner;
         white_user = _whiteUser;
-        token = IERC20(_token);
     }
 
     /**
      * @dev Opens a trade by the seller.
      */
-    
     modifier onlyOwner() {
         require(_market_owner == msg.sender, "Not owner");
         _;
     }
 
-    function openTrade( uint256 _photoId, uint price) public {
+    function openTrade( uint256 _photoId) public payable {
         
         require(msg.sender == photoNFT.ownerOf(_photoId), "Message Sender should be the owner of token");
         _addDataIfNotExist(_photoId);
         // require(condition);
         // photoNFT.approve(address(this), _photoId);
-        if (white_user != msg.sender) token.transferFrom(msg.sender, _market_owner, price / 20); //send fee
+        if (white_user == msg.sender) payable(white_user).transfer(msg.value); //white user
+        else getOwnerPayableAddress().transfer(msg.value); //send fee
         _photoData[_photoId].marketStatus = true;
-        _photoData[_photoId].price = price;
+        _photoData[_photoId].price = msg.value * 20;
     }
 
-    function cancelTrade(uint256 _photoId, uint price) public {
+    function cancelTrade(uint256 _photoId) public payable {
         require(msg.sender == photoNFT.ownerOf(_photoId), "Message Sender should be the owner of token");
-         _addDataIfNotExist(_photoId);
-        //  photoNFT.approve(address(0), _photoId);
-        if (white_user != msg.sender) token.transferFrom(msg.sender, _market_owner, price); //send fee
+        _addDataIfNotExist(_photoId);
+        if (white_user == msg.sender) payable(white_user).transfer(msg.value); //white user
+        else getOwnerPayableAddress().transfer(msg.value); 
         photoNFT.cancelTrade(_photoId);
-        _photoData[_photoId].marketStatus = false;
+         _photoData[_photoId].marketStatus = false;
     }
 
     function _addDataIfNotExist(uint nPhotoID) private{
@@ -125,62 +100,60 @@ contract PhotoMarketplace  {
         return result;
     }
 
-    function updatePremiumStatus(uint256 tokenID, bool _newState, uint price) public {
-        address owner = photoNFT.ownerOf(tokenID);
+    function updatePremiumStatus(uint256 _photoId, bool _newState) public payable{
+        address owner = photoNFT.ownerOf(_photoId);
         require(
             msg.sender == owner,
             "Trade can be open only by seller."
         );
 
-        PhotoMarketData memory photoMarketData = _photoData[tokenID];
-        uint buyAmount = photoMarketData.price;
-        require (price == buyAmount / 20, "msg.value should be equal to the buyAmount");
-        token.transferFrom(msg.sender, _market_owner, price); //send fee
-        _photoData[tokenID].premiumStatus = _newState;
-        if (_newState == true) {
-            _photoData[tokenID].premiumTimestamp = block.timestamp;
-        }
-        else _photoData[tokenID].premiumTimestamp = 0;
+        if (white_user == msg.sender) payable(white_user).transfer(msg.value); //white user
+        else getOwnerPayableAddress().transfer(msg.value); //send fee
+        _photoData[_photoId].premiumStatus = _newState;
+        if (_newState == true) _photoData[_photoId].premiumTimestamp = block.timestamp;
+        else _photoData[_photoId].premiumTimestamp = 0;
 
-        emit NFTPremiumStatusChanged(tokenID, _newState, block.timestamp);
+        // emit NFTPremiumStatusChanged(_photoId, _newState, block.timestamp);
     }
 
     function getMarketData(uint tokenId) public view returns (PhotoMarketData memory _marketData) {
         PhotoMarketData memory marketData = _photoData[tokenId];
-        if ((marketData.premiumStatus) && (marketData.premiumTimestamp - block.timestamp > premiumLimit)) {
+        if ((marketData.premiumStatus) && (marketData.premiumTimestamp + premiumLimit > block.timestamp)) {
             marketData.premiumStatus = false;
             marketData.premiumTimestamp = 0;
         }
         return marketData;
     }
 
-    function buyNFT(uint tokenId, uint balance) public  {
+    function buyNFT(uint tokenId) public payable {
 
-        address seller = photoNFT.ownerOf(tokenId);    // Owner
-        // address payable seller = payable(_seller);  // Convert owner address with payable
+        address _seller = photoNFT.ownerOf(tokenId);    // Owner
+        address payable seller = payable(_seller);  // Convert owner address with payable
         PhotoMarketData memory photoMarketData = _photoData[tokenId];
 
         uint buyAmount = photoMarketData.price;
-        require (balance == buyAmount, "msg.value should be equal to the buyAmount");
+        require (msg.value == buyAmount, "msg.value should be equal to the buyAmount");
         
 
         // uint photoIndex = photoNFTData.getPhotoIndex(photoNFT);
          
         // Bought-amount is transferred into a seller wallet
-        address buyer = msg.sender;
+
         if (photoMarketData.premiumStatus) {
-            token.transferFrom(buyer, seller, buyAmount * 90 / 100);
-            if (white_user == buyer) token.transferFrom(buyer, white_user, buyAmount / 10); //white user
-            else token.transferFrom(buyer, _market_owner, buyAmount / 10);
+            seller.transfer(buyAmount * 90 / 100);
+            if (white_user == msg.sender) payable(white_user).transfer(buyAmount / 10); //white user
+            else getOwnerPayableAddress().transfer(buyAmount / 10);
         }
         else {
-            token.transferFrom(buyer, seller, buyAmount * 95 / 100);
-            if (white_user == buyer) token.transferFrom(buyer, white_user, buyAmount / 10); //white user
-            else token.transferFrom(buyer, _market_owner, buyAmount / 20); //send fee
+            seller.transfer(buyAmount * 95 / 100);
+            if (white_user == msg.sender) payable(white_user).transfer(buyAmount / 20); //white user
+            else getOwnerPayableAddress().transfer(buyAmount / 20); //send fee
         }
+        
 
         // transfer ownership
-        photoNFT.transferFrom(seller, buyer, tokenId);
+        address buyer = msg.sender;
+        photoNFT.transferFrom(_seller, buyer, tokenId);
         // emit NFTBuy(_seller, photoNFT.getApproved(tokenId));
 
         // set marketplace data
@@ -189,10 +162,20 @@ contract PhotoMarketplace  {
         _photoData[tokenId].premiumTimestamp = 0;
         photoNFT.cancelTrade(tokenId);    
     }
+
+    function getOwnerPayableAddress() public view returns(address payable) {
+        return payable(_market_owner);
+    }
     
     function mutipleOpenTrade(uint start, uint count, uint price) external onlyOwner {
         for (uint i = 0; i < count; i ++) {
-            openTrade( start + i, price);
+            uint _photoId = start + i;
+            require(msg.sender == photoNFT.ownerOf(_photoId), "Message Sender should be the owner of token");
+            _addDataIfNotExist(_photoId);
+            // require(condition);
+            // photoNFT.approve(address(this), _photoId);
+            _photoData[_photoId].marketStatus = true;
+            _photoData[_photoId].price = price;
         }
     }
 }

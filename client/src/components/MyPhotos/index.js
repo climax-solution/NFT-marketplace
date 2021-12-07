@@ -112,7 +112,7 @@ class MyPhotos extends Component {
         try {
           const photo = await PhotoMarketplace.methods.getPhoto(id).call();
           const tax = photo.marketData.price;
-          await PhotoMarketplace.methods.updatePremiumStatus(id, true, tax / 10).send({ from: accounts[0]});
+          await PhotoMarketplace.methods.updatePremiumStatus(id, true).send({ from: accounts[0], value: tax / 10});
           this.setState({
             isLoading: false
           })
@@ -134,7 +134,7 @@ class MyPhotos extends Component {
         try {
           const photo = await PhotoMarketplace.methods.getPhoto(id).call();
           const tax = photo.marketData.price;
-          await PhotoMarketplace.methods.updatePremiumStatus(id, false, tax / 10).send({ from: accounts[0]});
+          await PhotoMarketplace.methods.updatePremiumStatus(id, false).send({ from: accounts[0], value: tax / 10});
           this.setState({
             isLoading: false
           })

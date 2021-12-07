@@ -44,7 +44,7 @@ class PhotoMarketplace extends Component {
         this.setState({ isLoading: true });
 
         try {
-            await PhotoMarketplace.methods.buyNFT(id, buyAmount).send({ from: accounts[0] });
+            await PhotoMarketplace.methods.buyNFT(id).send({ from: accounts[0], value: buyAmount });
             await this.getAllPhotos();
             NotificationManager.success("Success");
             this.setState({ isLoading: false });
@@ -236,7 +236,7 @@ class PhotoMarketplace extends Component {
                         !itemLoading &&
                         <div className="row items" style={{minHeight: '300px'}}>
                             {premiumNFT.map((item, idx) => {
-                                let ItemPrice = web3.utils.fromWei(`${item.marketData.price}`,"gwei");
+                                let ItemPrice = web3.utils.fromWei(`${item.marketData.price}`,"ether");
                                 const pidx = ItemPrice.indexOf('.');
                                 const pLen = ItemPrice.length;
                                 if (pidx > 0) {
@@ -275,7 +275,7 @@ class PhotoMarketplace extends Component {
                                 );
                             })}
                             {normalNFT.map((item, idx) => {
-                                let ItemPrice = web3.utils.fromWei(`${item.marketData.price}`,"gwei");
+                                let ItemPrice = web3.utils.fromWei(`${item.marketData.price}`,"ether");
                                 const pidx = ItemPrice.indexOf('.');
                                 const pLen = ItemPrice.length;
                                 if (pidx > 0) {
