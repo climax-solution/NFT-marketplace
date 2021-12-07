@@ -55,7 +55,7 @@ class Home extends Component {
       const {  PhotoMarketplace } = this.state;
       const allPhotos = await PhotoMarketplace.methods.getAllPhotos().call();
       let finalResult = await Promise.all(allPhotos.map(async (item) => {
-          const response = await fetch(`http://localhost:8080/ipfs/${item.nftData.tokenURI}`);
+          const response = await fetch(`${process.env.REACT_APP_IPFS}/ipfs/${item.nftData.tokenURI}`);
           if(!response.ok)
               throw new Error(response.statusText);
           const json = await response.json();

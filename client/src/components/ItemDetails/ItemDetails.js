@@ -82,7 +82,7 @@ class ItemDetails extends Component {
                 });
             }
             const item = await instancePhotoMarketplace.methods.getPhoto(id).call();
-            const response = await fetch(`http://localhost:8080/ipfs/${item.nftData.tokenURI}`);
+            const response = await fetch(`${process.env.REACT_APP_IPFS}/ipfs/${item.nftData.tokenURI}`);
             const result = await response.json();
             this.setState({ itemData: { ...item, ...result }})
             
