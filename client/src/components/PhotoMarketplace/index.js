@@ -222,7 +222,7 @@ class PhotoMarketplace extends Component {
                                     onClick={() => this.setState({ activeCategory: "physical" })}
                                 >
                                     <input type="radio" defaultValue="physical" className="explore-btn" />
-                                    <span>PHYSIC ASSETS</span>
+                                    <span>PHYSICAL ASSETS</span>
                                 </label>
                                 <label
                                     className="btn d-table text-uppercase p-2 ml-2 category-btn border-radius"
@@ -251,7 +251,7 @@ class PhotoMarketplace extends Component {
                                     <div className="col-12 col-sm-6 col-lg-3 item" key={idx} data-groups={item.category}>
                                         <div className="card">
                                             <div className="image-over">
-                                                <img className="card-img-top" src={`${process.env.REACT_APP_IPFS}/ipfs/${item.image}`} alt="" />
+                                            <a href={`/item-details/${item.nftData.tokenID}`}><img className="card-img-top" src={`${process.env.REACT_APP_IPFS}/ipfs/${item.image}`} alt="" /></a>
                                             </div>
                                             {/* Card Caption */}
                                             <div className="card-caption col-12 p-0">
@@ -290,7 +290,7 @@ class PhotoMarketplace extends Component {
                                     <div className="col-12 col-sm-6 col-lg-3 item" key={idx} data-groups={item.category}>
                                         <div className="card">
                                             <div className="image-over">
-                                                <img className="card-img-top" src={`${process.env.REACT_APP_IPFS}/ipfs/${item.image}`} alt="" />
+                                            <a href={`/item-details/${item.nftData.tokenID}`}><img className="card-img-top" src={`${process.env.REACT_APP_IPFS}/ipfs/${item.image}`} alt="" /></a>
                                             </div>
                                             {/* Card Caption */}
                                             <div className="card-caption col-12 p-0">

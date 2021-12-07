@@ -50,17 +50,16 @@ class MyPhotos extends Component {
         allowOutsideClick: () => !Swal.isLoading()
       }).then(async(result) => {
         if (result.isConfirmed) {
-          alert();
           const { web3, accounts, PhotoMarketplace, PhotoNFT, coin } = this.state;
           this.setState({
             isLoading: true
           })
 
           try {
-            const photoPrice = web3.utils.toWei((result.value).toString(), 'gwei');
+            const photoPrice = web3.utils.toWei((result.value).toString(), 'ether');
             await PhotoNFT.methods.approve(marketplace_addr, id).send({from : accounts[0]});
-            await coin.methods.approve(marketplace_addr, photoPrice).send({ from: accounts[0] });
-            await PhotoMarketplace.methods.openTrade(id, photoPrice).send({ from: accounts[0] })
+            // await coin.methods.approve(marketplace_addr, photoPrice).send({ from: accounts[0] });
+            await PhotoMarketplace.methods.openTrade(id).send({ from: accounts[0], value: photoPrice / 20 })
             .then( async(res) => {
               this.setState({
                 isLoading: false
@@ -87,9 +86,9 @@ class MyPhotos extends Component {
         try {
           const photo = await PhotoMarketplace.methods.getPhoto(id).call();
           const buyAmount = photo.marketData.price;
-          await coin.methods.approve(marketplace_addr, buyAmount).send({ from: accounts[0] });
-          await PhotoMarketplace.methods.cancelTrade(id, buyAmount).
-          send({ from: accounts[0] }).
+          // await coin.methods.approve(marketplace_addr, buyAmount).send({ from: accounts[0] });
+          await PhotoMarketplace.methods.cancelTrade(id).
+          send({ from: accounts[0], value: buyAmount / 20 }).
           then(async(result) => {
             this.setState({
               isLoading: false
@@ -112,16 +111,13 @@ class MyPhotos extends Component {
         })
         try {
           const photo = await PhotoMarketplace.methods.getPhoto(id).call();
-          const tax = photo.marketData.price / 20;
-          await coin.methods.approve(marketplace_addr, tax).send({ from: accounts[0] })
-          .on('receipt', async(res) => {
-            await PhotoMarketplace.methods.updatePremiumStatus(id, true, tax).send({ from: accounts[0]});
-            this.setState({
-              isLoading: false
-            })
-            NotificationManager.success("Success");
-            await this.getAllPhotos();
-          });
+          const tax = photo.marketData.price;
+          await PhotoMarketplace.methods.updatePremiumStatus(id, true, tax / 10).send({ from: accounts[0]});
+          this.setState({
+            isLoading: false
+          })
+          NotificationManager.success("Success");
+          await this.getAllPhotos();
         } catch(err) {
           NotificationManager.error("Failed");
           this.setState({
@@ -137,16 +133,13 @@ class MyPhotos extends Component {
         })
         try {
           const photo = await PhotoMarketplace.methods.getPhoto(id).call();
-          const tax = photo.marketData.price / 20;
-          await coin.methods.approve(marketplace_addr, tax).send({ from: accounts[0] })
-          .on('receipt', async(res) => {
-            await PhotoMarketplace.methods.updatePremiumStatus(id, false, tax).send({ from: accounts[0]});
-            this.setState({
-              isLoading: false
-            })
-            NotificationManager.success("Success");
-            await this.getAllPhotos();
-          });
+          const tax = photo.marketData.price;
+          await PhotoMarketplace.methods.updatePremiumStatus(id, false, tax / 10).send({ from: accounts[0]});
+          this.setState({
+            isLoading: false
+          })
+          NotificationManager.success("Success");
+          await this.getAllPhotos();
         } catch(err) {
           NotificationManager.error("Failed");
           this.setState({
@@ -305,7 +298,7 @@ class MyPhotos extends Component {
                 <div className="row items" style={{padding: '30px 0'}}>
                     {assets.map((item, idx) => {
                         if (!isMetaMask && currentAccount == item.nftData.owner) return <></>;
-                        let ItemPrice = web3.utils.fromWei(`${item.marketData.price}`,"gwei");
+                        let ItemPrice = web3.utils.fromWei(`${item.marketData.price}`,"ether");
                         const pidx = ItemPrice.indexOf('.');
                         const pLen = ItemPrice.length;
                         if (pidx > 0) {

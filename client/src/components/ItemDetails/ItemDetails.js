@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import getWeb3 from '../../utils/getWeb3';
 import { zeppelinSolidityHotLoaderOptions } from '../../../config/webpack';
 import Breadcrumb from '../Breadcrumb/Breadcrumb';
+import addresses from "../../config/address.json";
+
+const { marketplace_addr, nft_addr, token_addr } = addresses;
 
 class ItemDetails extends Component {
 
@@ -13,93 +16,83 @@ class ItemDetails extends Component {
         }
     }
 
-    async componentDidMount() {
+    componentDidMount = async () => {
         const { id } = this.props.match.params;
-        const hotLoaderDisabled = zeppelinSolidityHotLoaderOptions.disabled;
         let PhotoNFT = {};
         let PhotoMarketplace = {};
+        let COIN = [];
         try {
-          PhotoMarketplace = require("../../../../build/contracts/PhotoMarketplace.json");
+            PhotoNFT = require("../../../../build/contracts/PhotoNFT.json");
+            PhotoMarketplace = require("../../../../build/contracts/PhotoMarketplace.json");
+            COIN = require("../../../../build/contracts/MSDOGE.json");
+            console.log(marketplace_addr, PhotoMarketplace);
         } catch (e) {
-          //console.log(e);
+            //console.log(e);
         }
-
+  
         try {
-          const isProd = process.env.NODE_ENV === 'production';
-          if (!isProd) {
-            // Get network provider and web3 instance.
-            const web3 = await getWeb3();
-
-            // Use web3 to get the user's accounts.
-            const accounts = await web3.eth.getAccounts();
-            const currentAccount = accounts[0];
-            // Get the contract instance.
-            const networkId = await web3.eth.net.getId();
-            const networkType = await web3.eth.net.getNetworkType();
-            const isMetaMask = web3.currentProvider.isMetaMask;
-            let balance =
-                accounts.length > 0
-                    ? await web3.eth.getBalance(accounts[0])
-                    : web3.utils.toWei("0");
-            balance = web3.utils.fromWei(balance, "ether");
-
-            let instancePhotoNFT = null;
-            let deployedNetwork = null;
-            let instancePhotoMarketplace = null;
-            let marketplaceAddress = null;
-
-            // Create instance of contracts
-            if (PhotoMarketplace.networks) {
-                deployedNetwork = PhotoMarketplace.networks[networkId.toString()];
-                if (deployedNetwork) {
-                    instancePhotoMarketplace = new web3.eth.Contract(
-                        PhotoMarketplace.abi,
-                        deployedNetwork && deployedNetwork.address
-                    );
-                    marketplaceAddress = deployedNetwork.address;
+            const isProd = process.env.NODE_ENV === "production";
+            if (!isProd) {
+                const web3 = await getWeb3();
+                const accounts = await web3.eth.getAccounts();
+                const currentAccount = accounts[0];
+  
+                const networkType = await web3.eth.net.getNetworkType();
+                let balance =
+                    accounts.length > 0
+                        ? await web3.eth.getBalance(accounts[0])
+                        : web3.utils.toWei("0");
+                balance = web3.utils.fromWei(balance, "ether");
+  
+                let instancePhotoNFT = null;
+                let instancePhotoMarketplace = null;
+                let instanceCoin = null;
+  
+                instanceCoin = new web3.eth.Contract(COIN, token_addr);
+                if (PhotoNFT) {
+                      instancePhotoNFT = new web3.eth.Contract(PhotoNFT, nft_addr);
                 }
-            }
-
-            
-            if (instancePhotoNFT && instancePhotoMarketplace) {
-                // Set web3, accounts, and contract to the state, and then proceed with an
-                // example of interacting with the contract's methods.
-                this.setState(
-                    {
+  
+                if (PhotoMarketplace) {
+                      instancePhotoMarketplace = new web3.eth.Contract(PhotoMarketplace, marketplace_addr);
+                }
+  
+                if (instancePhotoNFT && instancePhotoMarketplace) {
+                    // Set web3, accounts, and contract to the state, and then proceed with an
+                    // example of interacting with the contract's methods.
+                    this.setState(
+                        {
+                            web3,
+                            accounts,
+                            balance,
+                            networkType,
+                            PhotoNFT: instancePhotoNFT,
+                            PhotoMarketplace: instancePhotoMarketplace,
+                            currentAccount,
+                            coin: instanceCoin
+                        }
+                    );
+                } else {
+                    this.setState({
                         web3,
                         accounts,
                         balance,
-                        networkId,
                         networkType,
-                        hotLoaderDisabled,
-                        isMetaMask,
-                        PhotoMarketplace : instancePhotoMarketplace, 
-                        currentAccount, 
-                        marketplaceAddress
-                     });
-            } else {
-                this.setState({
-                    web3,
-                    accounts,
-                    balance,
-                    networkId,
-                    networkType,
-                    hotLoaderDisabled,
-                    isMetaMask,
-                });
+                        currentAccount,
+                        coin: instanceCoin
+                    });
+                }
+                const item = await instancePhotoMarketplace.methods.getPhoto(id).call();
+                const response = await fetch(`http://localhost:8080/ipfs/${item.nftData.tokenURI}`);
+                const result = await response.json();
+                this.setState({ itemData: { ...item, ...result }})
             }
-
-            const item = await instancePhotoMarketplace.methods.getPhoto(id).call();
-            const response = await fetch(`http://localhost:8080/ipfs/${item.nftData.tokenURI}`);
-            const result = await response.json();
-            this.setState({
-                itemData: { ...item, ...result }
-            })
-          }
+            
         } catch (error) {
-          console.error('error=>',error);
+            console.error(error);
         }
-    }
+      };
+
     render() {
         const { itemData, web3 } = this.state;
         return (
