@@ -40,7 +40,7 @@ contract PhotoMarketplace  {
     PhotoNFT public photoNFT;
     mapping(uint => PhotoMarketData) private _photoData;
 
-    event NFTPremiumStatusChanged(uint tokenId, bool newState, uint timeStamp);
+    event NFTPremiumStatusChanged(uint256 tokenId, bool newState, uint timeStamp);
     event NFTBuy(address owner, address operator);
 
     struct PhotoMarketData {
@@ -125,21 +125,24 @@ contract PhotoMarketplace  {
         return result;
     }
 
-    function updatePremiumStatus(uint256 _photoId, bool _newState, uint price) public {
-        address owner = photoNFT.ownerOf(_photoId);
+    function updatePremiumStatus(uint256 tokenID, bool _newState, uint price) public {
+        address owner = photoNFT.ownerOf(tokenID);
         require(
             msg.sender == owner,
             "Trade can be open only by seller."
         );
 
-        if (white_user != msg.sender) token.transferFrom(msg.sender, _market_owner, price); //send fee
-        _photoData[_photoId].premiumStatus = _newState;
+        PhotoMarketData memory photoMarketData = _photoData[tokenID];
+        uint buyAmount = photoMarketData.price;
+        require (price == buyAmount / 20, "msg.value should be equal to the buyAmount");
+        token.transferFrom(msg.sender, _market_owner, price); //send fee
+        _photoData[tokenID].premiumStatus = _newState;
         if (_newState == true) {
-            _photoData[_photoId].premiumTimestamp = block.timestamp;
+            _photoData[tokenID].premiumTimestamp = block.timestamp;
         }
-        else _photoData[_photoId].premiumTimestamp = 0;
+        else _photoData[tokenID].premiumTimestamp = 0;
 
-        emit NFTPremiumStatusChanged(_photoId, _newState, block.timestamp);
+        emit NFTPremiumStatusChanged(tokenID, _newState, block.timestamp);
     }
 
     function getMarketData(uint tokenId) public view returns (PhotoMarketData memory _marketData) {
