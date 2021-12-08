@@ -49,11 +49,11 @@ $( document ).ready(function() {
 
         function navResponsive() {
 
-            let navbar = $('.navbar .items');
+            let navbar = $('.navbar .main-nav');
             let menu = $('#menu .items');
 
-            menu.html('');
-            navbar.clone().appendTo(menu);
+            menu.html(navbar.clone());
+            console.log(navbar);
 
             $('.menu .icon-arrow-right').removeClass('icon-arrow-right').addClass('icon-arrow-down');
         }
@@ -389,39 +389,6 @@ $( document ).ready(function() {
             }
 
         });
-    }(jQuery));
-
-    /*----------------------------------------------
-    6. Shuffle
-    ----------------------------------------------*/
-    (function ($) {
-
-        'use strict';
-
-        $('.explore-area').each(function(index) {
-
-            var count = index + 1;
-
-            $(this).find('.explore-items').removeClass('explore-items').addClass('explore-items-'+count);
-            $(this).find('.explore-item').removeClass('explore-item').addClass('explore-item-'+count);
-            $(this).find('.explore-btn').removeClass('explore-btn').addClass('explore-btn-'+count);
-            
-            var Shuffle = window.Shuffle;
-            var Filter  = new Shuffle(document.querySelector('.explore-items-'+count), {
-                itemSelector: '.explore-item-'+count,
-                buffer: 1,
-            })
-
-            $('.explore-btn-'+count).on('change', function (e) {
-
-                var input = e.currentTarget;
-                
-                if (input.checked) {
-                    Filter.filter(input.value);
-                }
-            })
-        });
-
     }(jQuery));
 
     /*----------------------------------------------
