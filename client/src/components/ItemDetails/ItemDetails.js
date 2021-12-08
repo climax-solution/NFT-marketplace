@@ -25,9 +25,9 @@ class ItemDetails extends Component {
             PhotoNFT = require("../../../../build/contracts/PhotoNFT.json");
             PhotoMarketplace = require("../../../../build/contracts/PhotoMarketplace.json");
             COIN = require("../../../../build/contracts/MSDOGE.json");
-            console.log(marketplace_addr, PhotoMarketplace);
+            //console.log(marketplace_addr, PhotoMarketplace);
         } catch (e) {
-            //console.log(e);
+            ////console.log(e);
         }
   
         try {

@@ -79,9 +79,9 @@ class Home extends Component {
             PhotoNFT = require("../../../../build/contracts/PhotoNFT.json");
             PhotoMarketplace = require("../../../../build/contracts/PhotoMarketplace.json");
             COIN = require("../../../../build/contracts/MSDOGE.json");
-            console.log(PhotoNFT, PhotoMarketplace);
+            //console.log(PhotoNFT, PhotoMarketplace);
         } catch (e) {
-            //console.log(e);
+            ////console.log(e);
         }
   
         try {
@@ -150,7 +150,7 @@ class Home extends Component {
 
     async componentDidUpdate(preprops, prevState) {
       const { web3 } = this.state;
-      //console.log('truetrue', preprops != this.props, this.props.connected);
+      ////console.log('truetrue', preprops != this.props, this.props.connected);
 
       if (preprops != this.props) {
         this.setState({
@@ -175,7 +175,7 @@ class Home extends Component {
     render() {
         const { web3, allPhotos, currentAccount, isMetaMask } = this.state;
         let List = allPhotos.filter(item => item.nftData.owner != currentAccount || !isMetaMask);
-        console.log(List);
+        //console.log(List);
         return(
             <>
                 <Breadcrumb img="home"/>

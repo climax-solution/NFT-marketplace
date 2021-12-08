@@ -60,7 +60,7 @@ class PhotoMarketplace extends Component {
           itemLoading: true
       })
       const allPhotos = await PhotoMarketplace.methods.getAllPhotos().call();
-      console.log('allPhotos => ',PhotoMarketplace);
+      //console.log('allPhotos => ',PhotoMarketplace);
       let finalResult = await Promise.all(allPhotos.map(async (item) => {
           const response = await fetch(`${process.env.REACT_APP_IPFS}/ipfs/${item.nftData.tokenURI}`);
           if(!response.ok)
@@ -95,9 +95,9 @@ class PhotoMarketplace extends Component {
           PhotoNFT = require("../../../../build/contracts/PhotoNFT.json");
           PhotoMarketplace = require("../../../../build/contracts/PhotoMarketplace.json");
           COIN = require("../../../../build/contracts/MSDOGE.json");
-          console.log(marketplace_addr, PhotoMarketplace);
+          //console.log(marketplace_addr, PhotoMarketplace);
       } catch (e) {
-          //console.log(e);
+          ////console.log(e);
       }
 
       try {

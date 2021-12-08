@@ -20,7 +20,7 @@ const getWeb3 = () => {
     //console.log("No web3 instance injected, using Infura/Local web3.");
   }
 
-  console.log(web3);
+  //console.log(web3);
   
   return web3;
 }

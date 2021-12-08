@@ -45,7 +45,7 @@ class Header extends Component{
             await window.ethereum.enable();
             const accounts = await web3.eth.getAccounts();
             const isMetaMask = accounts.length ? true : false;
-            //console.log('isMetaMask+',isMetaMask);
+            ////console.log('isMetaMask+',isMetaMask);
             window.localStorage.setItem("nftdevelopments",JSON.stringify({connected: isMetaMask}));
             await this.props.WalletConnect();
             this.setState({
@@ -53,7 +53,7 @@ class Header extends Component{
             })
         } catch(err) {
             if (err.code == 4001) {
-                //console.log(err.message);
+                ////console.log(err.message);
                 NotificationManager.error(err.message, "Error");
             }
             else {
@@ -81,7 +81,7 @@ class Header extends Component{
                         </a>
                         <div className="ml-auto" />
                         {/* Navbar */}
-                        <ul className="navbar-nav items ml-auto">
+                        <ul className="navbar-nav items ml-auto main-nav">
                             <li className="nav-item">
                                 <a href="/" className="nav-link" >Home</a>
                             </li>

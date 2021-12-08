@@ -154,7 +154,7 @@ class MyPhotos extends Component {
         itemLoading: true
       });
       const allPhotos = await PhotoMarketplace.methods.getAllPhotos().call();
-      console.log("=== allPhotos ===", allPhotos);
+      //console.log("=== allPhotos ===", allPhotos);
       const finalResult = await Promise.all(allPhotos.map(async (item) => {
           const response = await fetch(`${process.env.REACT_APP_IPFS}/ipfs/${item.nftData.tokenURI}`);
           if(!response.ok)
@@ -180,9 +180,9 @@ class MyPhotos extends Component {
           PhotoNFT = require("../../../../build/contracts/PhotoNFT.json");
           PhotoMarketplace = require("../../../../build/contracts/PhotoMarketplace.json");
           COIN = require("../../../../build/contracts/MSDOGE.json");
-          console.log(PhotoNFT, PhotoMarketplace);
+          //console.log(PhotoNFT, PhotoMarketplace);
       } catch (e) {
-          //console.log(e);
+          ////console.log(e);
       }
 
       try {
@@ -250,7 +250,7 @@ class MyPhotos extends Component {
 
     async componentDidUpdate(preprops, prevState) {
       const { web3 } = this.state;
-      //console.log('truetrue', preprops != this.props, this.props.connected);
+      ////console.log('truetrue', preprops != this.props, this.props.connected);
 
       if (preprops != this.props) {
         this.setState({
@@ -303,7 +303,7 @@ class MyPhotos extends Component {
                             ItemPrice = ItemPrice.substr(0, pidx + 4);
                           }
                         }
-                        //console.log('isMetaMask=>',currentAccount);
+                        ////console.log('isMetaMask=>',currentAccount);
                         if (currentAccount == item.nftData.owner) {
                             return (
                                 <div className="col-12 col-sm-6 col-lg-3 item" key={idx}>
