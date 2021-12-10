@@ -1,4 +1,3 @@
-import getWeb3, { getGanacheWeb3, Web3 } from "../../utils/getWeb3";
 import {WALLET_CONNECT} from './types';
 
 export const WalletConnect = () => async dispatch => {

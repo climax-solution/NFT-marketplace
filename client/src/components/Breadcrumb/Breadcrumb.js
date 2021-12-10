@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import styles from '../../App.module.scss';
+import '../../App.module.scss';
 
 class Breadcrumb extends Component {
     render() {
@@ -10,7 +10,7 @@ class Breadcrumb extends Component {
                         <div className="col-12">
                             {/* Breamcrumb Content */}
                             <div className="breadcrumb-content text-center">
-                                { this.props.img && <img src={`/img/${this.props.img}-ban-image.png`} style={{width: "150px"}}/> }
+                                { this.props.img && <img src={`/img/${this.props.img}-ban-image.png`} style={{width: "150px"}} alt="Banner image"/> }
                             </div>
                         </div>
                     </div>

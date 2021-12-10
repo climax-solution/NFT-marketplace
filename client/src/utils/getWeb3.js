@@ -5,7 +5,6 @@ const getWeb3 = async() => {
   if (window.ethereum) {
     web3 = new Web3(window.ethereum);
     const networkId = await web3.eth.net.getId();
-    console.log(networkId);
     if (networkId != 3) {
       const provider = new Web3.providers.HttpProvider(
         'https://ropsten.infura.io/v3/e5f6b05589544b1bb8526dc3c034c63e'

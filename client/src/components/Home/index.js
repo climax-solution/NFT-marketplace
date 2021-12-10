@@ -52,22 +52,30 @@ class Home extends Component {
     }
     
     getAllPhotos = async () => {
-      const {  PhotoMarketplace } = this.state;
-      const allPhotos = await PhotoMarketplace.methods.getAllPhotos().call();
-      let finalResult = await Promise.all(allPhotos.map(async (item) => {
-          const response = await fetch(`${process.env.REACT_APP_IPFS}/ipfs/${item.nftData.tokenURI}`);
-          if(!response.ok)
-              throw new Error(response.statusText);
-          const json = await response.json();
-          return {...item, ...json}
-      }) );
+        const {  PhotoMarketplace } = this.state;
+        const allPhotos = await PhotoMarketplace.methods.getAllPhotos().call();
+        let mainList = []; let index = 0;
+        //console.log('allPhotos => ',PhotoMarketplace);
+        await Promise.all(allPhotos.map(async (item, idx) => {
+            try {
+                const response = await fetch(`${process.env.REACT_APP_IPFS}/ipfs/${item.nftData.tokenURI}`);
+                if(response.ok) {
+                    const json = await response.json();
+                    mainList[index] = {};
+                    mainList[index] = { ...item, ...json };
+                    index ++;
+                }
+            } catch (err) {
+            }
+            return item;
+        }) );
 
-      finalResult = finalResult.filter(item => item.marketData.premiumStatus && item.marketData.marketStatus );
-      finalResult.sort((before, after) => {
+      mainList = mainList.filter(item => item.marketData.premiumStatus && item.marketData.marketStatus );
+      mainList.sort((before, after) => {
         return before.marketData.premiumTimestamp - after.marketData.premiumTimestamp;
       })
 
-      this.setState({ allPhotos: finalResult });
+      this.setState({ allPhotos: mainList });
     }
 
     componentDidMount = async () => {
@@ -78,8 +86,6 @@ class Home extends Component {
         try {
             PhotoNFT = require("../../abi/PhotoNFT.json");
             PhotoMarketplace = require("../../abi/PhotoMarketplace.json");
-            
-            console.log(PhotoNFT, PhotoMarketplace, nft_addr, marketplace_addr);
         } catch (e) {
             ////console.log(e);
         }
@@ -87,7 +93,6 @@ class Home extends Component {
         try {
             const isProd = process.env.NODE_ENV === "production";
             const web3 = await getWeb3();
-            console.log(web3);
             const accounts = await web3.eth.getAccounts();
             const currentAccount = accounts[0];
 
@@ -108,7 +113,7 @@ class Home extends Component {
             }
 
             if (PhotoMarketplace) {
-                    instancePhotoMarketplace = new web3.eth.Contract(PhotoMarketplace, marketplace_addr);
+                instancePhotoMarketplace = new web3.eth.Contract(PhotoMarketplace, marketplace_addr);
             }
 
             if (instancePhotoNFT && instancePhotoMarketplace) {

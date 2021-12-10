@@ -10,7 +10,7 @@ import ScreenLoading from "../Loading/screenLoading";
 import ItemLoading  from "../Loading/itemLoading";
 import "./custom.css";
 
-const { marketplace_addr, nft_addr, token_addr } = addresses;
+const { marketplace_addr, nft_addr } = addresses;
 
 class MyPhotos extends Component {
     constructor(props) {    
@@ -26,6 +26,7 @@ class MyPhotos extends Component {
           isMetaMask: false,
           PhotoMarketplace: {},
           PhotoNFT: {},
+          assets: []
         };
 
         this.putOnSale = this.putOnSale.bind(this);
@@ -150,10 +151,10 @@ class MyPhotos extends Component {
 
     getAllPhotos = async () => {
       const { PhotoMarketplace, isMetaMask } = this.state;
-      this.setState({
-        itemLoading: true
-      });
       if (isMetaMask) {
+        this.setState({
+          itemLoading: true
+        });
         const allPhotos = await PhotoMarketplace.methods.getAllPhotos().call();
         //console.log("=== allPhotos ===", allPhotos);
         let mainList = []; let index = 0;
@@ -174,7 +175,6 @@ class MyPhotos extends Component {
   
         this.checkAssets(mainList);
       }
-      
       this.setState({
         itemLoading: false
       })
