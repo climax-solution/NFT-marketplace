@@ -60,28 +60,33 @@ class PhotoMarketplace extends Component {
           itemLoading: true
       })
       const allPhotos = await PhotoMarketplace.methods.getAllPhotos().call();
+      let mainList = []; let index = 0;
       //console.log('allPhotos => ',PhotoMarketplace);
-      let finalResult = await Promise.all(allPhotos.map(async (item) => {
-          const response = await fetch(`${process.env.REACT_APP_IPFS}/ipfs/${item.nftData.tokenURI}`);
-          if(!response.ok)
-              throw new Error(response.statusText);
-
-          const json = await response.json();
-          
-          return {...item, ...json}
+      await Promise.all(allPhotos.map(async (item, idx) => {
+          try {
+            const response = await fetch(`${process.env.REACT_APP_IPFS}/ipfs/${item.nftData.tokenURI}`);
+            if(response.ok) {
+                const json = await response.json();
+                mainList[index] = {};
+                mainList[index] = { ...item, ...json };
+                index ++;
+            }
+          } catch (err) {
+          }
+          return item;
       }) );
 
       switch(activeCategory) {
           case "physical":
-              finalResult = finalResult.filter(item => item.category == activeCategory);
+              mainList = mainList.filter(item => item.category == activeCategory);
               break;
             case "digital":
-                finalResult = finalResult.filter(item => item.category == activeCategory);
+                mainList = mainList.filter(item => item.category == activeCategory);
                 break;
       }
 
       this.setState({
-          allPhotos: finalResult,
+          allPhotos: mainList,
           itemLoading: false
       });
     }

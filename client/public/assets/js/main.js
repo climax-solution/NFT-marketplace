@@ -53,7 +53,6 @@ $( document ).ready(function() {
             let menu = $('#menu .items');
 
             menu.html(navbar.clone());
-            console.log(navbar);
 
             $('.menu .icon-arrow-right').removeClass('icon-arrow-right').addClass('icon-arrow-down');
         }

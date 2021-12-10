@@ -5,6 +5,7 @@ import getWeb3 from "../../utils/getWeb3";
 import { ModalMenu, WalletMenu } from '../Modal';
 import { NotificationManager } from "react-notifications";
 import styles from "./header.module.scss";
+import Web3 from 'web3';
 
 class Header extends Component{
     constructor(props) {
@@ -41,15 +42,19 @@ class Header extends Component{
     }
     async connectWallet() {
         try {
-            const web3 = await getWeb3('click');
+            const web3 = await getWeb3();
             await window.ethereum.enable();
             const accounts = await web3.eth.getAccounts();
+            const mWeb3 = new Web3(window.ethereum);
+            const fakeId = await web3.eth.net.getId();
+            const networkId = await mWeb3.eth.net.getId();
             const isMetaMask = accounts.length ? true : false;
+            if (networkId != fakeId) isMetaMask = false;
             ////console.log('isMetaMask+',isMetaMask);
             window.localStorage.setItem("nftdevelopments",JSON.stringify({connected: isMetaMask}));
             await this.props.WalletConnect();
             this.setState({
-                account: accounts[0]
+                account: isMetaMask ? accounts[0] : ''
             })
         } catch(err) {
             if (err.code == 4001) {
@@ -57,17 +62,20 @@ class Header extends Component{
                 NotificationManager.error(err.message, "Error");
             }
             else {
-                NotificationManager.error("Metamask is not installed.", "Error");
+                if (window.ethereum) 
+                    NotificationManager.error("Pleaes select Ropsten network in metamask.", "Error");
+                else NotificationManager.error("Metamask is not installed.", "Error");
             }
         }
     }
 
     async disconnectWallet() {
-        const web3 = await getWeb3('click');
+        const web3 = await getWeb3();
         const accounts = await web3.eth.getAccounts();
         window.localStorage.setItem("nftdevelopments",JSON.stringify({connected: false}));
         await this.props.WalletConnect();
     }
+
     render() {
         const { wallet_connect, account } = this.state;
         return (

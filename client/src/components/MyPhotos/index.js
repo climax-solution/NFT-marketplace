@@ -149,23 +149,32 @@ class MyPhotos extends Component {
     }
 
     getAllPhotos = async () => {
-      const { PhotoMarketplace} = this.state;
+      const { PhotoMarketplace, isMetaMask } = this.state;
       this.setState({
         itemLoading: true
       });
-      const allPhotos = await PhotoMarketplace.methods.getAllPhotos().call();
-      //console.log("=== allPhotos ===", allPhotos);
-      const finalResult = await Promise.all(allPhotos.map(async (item) => {
-          const response = await fetch(`${process.env.REACT_APP_IPFS}/ipfs/${item.nftData.tokenURI}`);
-          if(!response.ok)
-              throw new Error(response.statusText);
-
-          const json = await response.json();
-          
-          return {...item, ...json}
-      }) );
-
-      this.checkAssets(finalResult);
+      if (isMetaMask) {
+        const allPhotos = await PhotoMarketplace.methods.getAllPhotos().call();
+        //console.log("=== allPhotos ===", allPhotos);
+        let mainList = []; let index = 0;
+        //console.log('allPhotos => ',PhotoMarketplace);
+        await Promise.all(allPhotos.map(async (item, idx) => {
+            try {
+              const response = await fetch(`${process.env.REACT_APP_IPFS}/ipfs/${item.nftData.tokenURI}`);
+              if(response.ok) {
+                  const json = await response.json();
+                  mainList[index] = {};
+                  mainList[index] = { ...item, ...json };
+                  index ++;
+              }
+            } catch (err) {
+            }
+            return item;
+        }) );
+  
+        this.checkAssets(mainList);
+      }
+      
       this.setState({
         itemLoading: false
       })
