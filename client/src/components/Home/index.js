@@ -76,10 +76,10 @@ class Home extends Component {
         let PhotoMarketplace = {};
         let COIN = [];
         try {
-            PhotoNFT = require("../../../../build/contracts/PhotoNFT.json");
-            PhotoMarketplace = require("../../../../build/contracts/PhotoMarketplace.json");
-            COIN = require("../../../../build/contracts/MSDOGE.json");
-            //console.log(PhotoNFT, PhotoMarketplace);
+            PhotoNFT = require("../../abi/PhotoNFT.json");
+            PhotoMarketplace = require("../../abi/PhotoMarketplace.json");
+            
+            console.log(PhotoNFT, PhotoMarketplace, nft_addr, marketplace_addr);
         } catch (e) {
             ////console.log(e);
         }
@@ -87,6 +87,7 @@ class Home extends Component {
         try {
             const isProd = process.env.NODE_ENV === "production";
             const web3 = await getWeb3();
+            console.log(web3);
             const accounts = await web3.eth.getAccounts();
             const currentAccount = accounts[0];
 
@@ -99,11 +100,11 @@ class Home extends Component {
 
             let instancePhotoNFT = null;
             let instancePhotoMarketplace = null;
-            let instanceCoin = null;
+            
 
-            instanceCoin = new web3.eth.Contract(COIN, token_addr);
+            
             if (PhotoNFT) {
-                    instancePhotoNFT = new web3.eth.Contract(PhotoNFT, nft_addr);
+                instancePhotoNFT = new web3.eth.Contract(PhotoNFT, nft_addr);
             }
 
             if (PhotoMarketplace) {
@@ -122,7 +123,6 @@ class Home extends Component {
                         PhotoNFT: instancePhotoNFT,
                         PhotoMarketplace: instancePhotoMarketplace,
                         currentAccount,
-                        coin: instanceCoin
                     }
                 );
             } else {
@@ -132,7 +132,6 @@ class Home extends Component {
                     balance,
                     networkType,
                     currentAccount,
-                    coin: instanceCoin
                 });
             }
             

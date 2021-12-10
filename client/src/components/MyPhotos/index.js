@@ -175,11 +175,9 @@ class MyPhotos extends Component {
     
       let PhotoNFT = {};
       let PhotoMarketplace = {};
-      let COIN = [];
       try {
-          PhotoNFT = require("../../../../build/contracts/PhotoNFT.json");
-          PhotoMarketplace = require("../../../../build/contracts/PhotoMarketplace.json");
-          COIN = require("../../../../build/contracts/MSDOGE.json");
+          PhotoNFT = require("../../abi/PhotoNFT.json");
+          PhotoMarketplace = require("../../abi/PhotoMarketplace.json");
           //console.log(PhotoNFT, PhotoMarketplace);
       } catch (e) {
           ////console.log(e);
@@ -200,9 +198,7 @@ class MyPhotos extends Component {
 
           let instancePhotoNFT = null;
           let instancePhotoMarketplace = null;
-          let instanceCoin = null;
-
-          instanceCoin = new web3.eth.Contract(COIN, token_addr);
+          
           if (PhotoNFT) {
                 instancePhotoNFT = new web3.eth.Contract(PhotoNFT, nft_addr);
           }
@@ -223,7 +219,6 @@ class MyPhotos extends Component {
                       PhotoNFT: instancePhotoNFT,
                       PhotoMarketplace: instancePhotoMarketplace,
                       currentAccount,
-                      coin: instanceCoin
                   }
               );
           } else {
@@ -233,7 +228,6 @@ class MyPhotos extends Component {
                   balance,
                   networkType,
                   currentAccount,
-                  coin: instanceCoin
               });
           }
           await this.getAllPhotos();
