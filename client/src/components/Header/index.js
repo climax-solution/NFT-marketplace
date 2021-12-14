@@ -18,7 +18,6 @@ class Header extends Component{
     async componentDidMount() {
         try {
             const web3 = await getWeb3();
-            await window.ethereum.enable();
             const accounts = await web3.eth.getAccounts();
             const mWeb3 = new Web3(window.ethereum);
             const fakeId = await web3.eth.net.getId();
@@ -28,7 +27,7 @@ class Header extends Component{
             this.setState({
                 account: isMetaMask ? accounts[0] : ''
             })
-
+            window.localStorage.setItem("nftdevelopments",JSON.stringify({connected: isMetaMask}));
             await this.props.WalletConnect();
         } catch(err) {
 

@@ -6,12 +6,10 @@ import { PhotoNFT } from "./PhotoNFT.sol";
 
 contract PhotoMarketplace  {
     address public PHOTO_NFT_MARKETPLACE;
-
-    uint256 public premiumLimit = 2592000; //30 * 24 * 3600
-
-    // address private _market_owner;
     address private _market_owner;
     address private white_user;
+    uint256 public premiumLimit = 2592000; //30 * 24 * 3600
+
 
     PhotoNFT public photoNFT;
     mapping(uint => PhotoMarketData) private _photoData;
@@ -32,6 +30,13 @@ contract PhotoMarketplace  {
         PhotoNFT.Photo nftData;
         PhotoMarketData marketData;
     }
+
+    struct FolderList {
+        string folder;
+        uint[] wide;
+    }
+
+    FolderList[] public sub_folders;
 
     constructor(address _photoNFT, address owner, address _whiteUser) {
         // photoNFTData = _photoNFTData;
@@ -82,25 +87,14 @@ contract PhotoMarketplace  {
         });
     }
 
-    function getPhoto(uint index) public view returns (PhotoData memory) {
-        PhotoData memory photoData = PhotoData ({
+    function getPhoto(uint index) public view returns (PhotoData memory photoData) {
+        photoData = PhotoData ({
             nftData : photoNFT.getPhoto(index), 
             marketData : getMarketData(index)
         });
-
-        return photoData;
     }
 
-    function getAllPhotos() public view returns (PhotoData[] memory) {
-        PhotoData[] memory result = new PhotoData[](photoNFT.currentPhotoId());
-        for (uint i = 0; i < photoNFT.currentPhotoId(); i++) {
-            // Photo memory photo = getPhoto(i);
-            result[i] = getPhoto(i);
-        }
-        return result;
-    }
-
-    function updatePremiumStatus(uint256 _photoId, bool _newState) public payable{
+    function updatePremiumStatus(uint256 _photoId, bool _newState) public payable {
         require(msg.sender == photoNFT.ownerOf(_photoId), "Message Sender should be the owner of token");
         if (white_user == msg.sender) payable(white_user).transfer(msg.value); //white user
         else getOwnerPayableAddress().transfer(msg.value); //send fee
@@ -111,8 +105,8 @@ contract PhotoMarketplace  {
         // emit NFTPremiumStatusChanged(_photoId, _newState, block.timestamp);
     }
 
-    function getMarketData(uint tokenId) public view returns (PhotoMarketData memory) {
-        PhotoMarketData memory marketData = _photoData[tokenId];
+    function getMarketData(uint tokenId) public view returns (PhotoMarketData memory marketData) {
+        marketData = _photoData[tokenId];
         if ((marketData.premiumStatus) && (block.timestamp - marketData.premiumTimestamp > premiumLimit)) {
             marketData.premiumStatus = false;
             marketData.premiumTimestamp = 0;
@@ -162,15 +156,39 @@ contract PhotoMarketplace  {
         return payable(_market_owner);
     }
     
-    function mutipleOpenTrade(uint start, uint count, uint price) external onlyOwner {
-        for (uint i = 0; i < count; i ++) {
-            uint _photoId = start + i;
-            require(msg.sender == photoNFT.ownerOf(_photoId), "Message Sender should be the owner of token");
-            _addDataIfNotExist(_photoId);
-            // require(condition);
-            // photoNFT.approve(address(this), _photoId);
-            _photoData[_photoId].marketStatus = true;
-            _photoData[_photoId].price = price;
+    function mutipleOpenTrade(uint start, uint count, uint price, string memory group) external onlyOwner {
+        bool existance = false;
+        for (uint i = 0; i < sub_folders.length; i ++) {
+            if (keccak256(abi.encodePacked(sub_folders[i].folder)) == keccak256(abi.encodePacked(group))) existance = true;
+        }
+        if (!existance) {
+            for (uint i = 0; i < count; i ++) {
+                uint _photoId = start + i;
+                require(msg.sender == photoNFT.ownerOf(_photoId), "Message Sender should be the owner of token");
+                _addDataIfNotExist(_photoId);
+                _photoData[_photoId].marketStatus = true;
+                _photoData[_photoId].price = price;
+            }
+            uint[] memory wides = new uint[](2);
+            wides[0] = start; wides[1] = count;
+            sub_folders.push(FolderList({
+                folder: group,
+                wide: wides
+            }));
+        }
+
+    }
+
+    function getFolderList() public view returns(FolderList[] memory list) {
+        list  = sub_folders;
+    }
+
+    function getSubFolderItem(string memory itemFolder, uint idx) public view returns(PhotoData[] memory list) {
+        FolderList memory item = sub_folders[idx];
+        if (keccak256(abi.encodePacked(item.folder)) == keccak256(abi.encodePacked(itemFolder))) {
+            for (uint i = 0; i < item.wide[1]; i ++ ) {
+                list[i] = getPhoto(item.wide[0] + i);
+            }
         }
     }
 }

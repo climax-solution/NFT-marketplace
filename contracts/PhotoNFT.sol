@@ -22,8 +22,7 @@ contract PhotoNFT is ERC721URIStorage {
     event NFTMinted(uint tokenId);
 
     
-    constructor(address owner) public ERC721("NFT DEVELOPMENTS", "NFT DEVELOPMENTS") 
-    {
+    constructor(address owner) ERC721("NFT DEVELOPMENTS", "NFT DEVELOPMENTS") {
         _owner = owner;
     }
 
@@ -69,5 +68,4 @@ contract PhotoNFT is ERC721URIStorage {
             approve(to, start + i);
         }
     }
-    
 }
