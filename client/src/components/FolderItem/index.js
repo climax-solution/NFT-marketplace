@@ -11,7 +11,7 @@ import addresses from "../../config/address.json";
 
 const { marketplace_addr, nft_addr, token_addr } = addresses;
 
-class PhotoMarketplace extends Component {
+class FolderItem extends Component {
     constructor(props) {    
         super(props);
         this.state = {
@@ -56,18 +56,16 @@ class PhotoMarketplace extends Component {
     }
     
     getAllPhotos = async () => {
-        
         const { PhotoMarketplace, activeCategory } = this.state;
         this.setState({
             itemLoading: true
         })
-        const folderList = await PhotoMarketplace.methods.getFolderList().call();
+        const { id } = this.props.match.params;
+        const folderList = await PhotoMarketplace.methods.getSubFolderItem(id).call();
         let mainList = []; let index = 0;
         await Promise.all(folderList.map(async(item) => {
-            const res = await PhotoMarketplace.methods.getPhoto(item.wide[0]).call();
-            console.log(res);
             try {
-            const response = await fetch(`${process.env.REACT_APP_IPFS}/ipfs/${res.nftData.tokenURI}`);
+            const response = await fetch(`${process.env.REACT_APP_IPFS}/ipfs/${item.nftData.tokenURI}`);
             if(response.ok) {
                 const json = await response.json();
                 mainList[index] = {};
@@ -186,66 +184,101 @@ class PhotoMarketplace extends Component {
     }
 
     render() {
-        const { allPhotos, isLoading, itemLoading } = this.state;
+        const { web3, allPhotos, currentAccount, isMetaMask, isLoading, itemLoading } = this.state;
+        let premiumNFT, normalNFT;
+        let isExist = true;
+        if (isMetaMask) {
+          premiumNFT = allPhotos.filter(item => item.marketData.premiumStatus && item.nftData.owner != currentAccount && item.marketData.marketStatus);
+          normalNFT = allPhotos.filter(item => !item.marketData.premiumStatus && item.nftData.owner != currentAccount && item.marketData.marketStatus);
+          if (premiumNFT.length + normalNFT.length == 0) isExist = false;
+        }
+        else {
+          premiumNFT = allPhotos.filter(item => item.marketData.premiumStatus && item.marketData.marketStatus );
+          normalNFT = allPhotos.filter(item => !item.marketData.premiumStatus && item.marketData.marketStatus);
+          if (premiumNFT.length + normalNFT.length == 0) isExist = false;
+        }
 
         return (
             <>
                 { isLoading && <ScreenLoading/> }
                 <Breadcrumb img="marketplace"/>
                 <div className="explore-area">
-                    <div className="row justify-content-center text-center mt-3">
-                        <div className="col-12">
-                            {/* Explore Menu */}
-                            <div className="explore-menu btn-group btn-group-toggle flex-wrap justify-content-center text-center mb-4" data-toggle="buttons">
-                                <label
-                                    className="btn active d-table text-uppercase p-2 category-btn border-radius"
-                                    onClick={() => this.setState({ activeCategory: "all" })}
-                                >
-                                    <input type="radio" defaultValue="all" defaultChecked className="explore-btn" />
-                                    <span>ALL</span>
-                                </label>
-                                <label
-                                    className="btn d-table text-uppercase p-2 ml-2 category-btn border-radius"
-                                    onClick={() => this.setState({ activeCategory: "physical" })}
-                                >
-                                    <input type="radio" defaultValue="physical" className="explore-btn" />
-                                    <span>PHYSICAL ASSETS</span>
-                                </label>
-                                <label
-                                    className="btn d-table text-uppercase p-2 ml-2 category-btn border-radius"
-                                    onClick={() => this.setState({ activeCategory: "digital" })}
-                                >
-                                    <input type="radio" defaultValue="digital" className="explore-btn" />
-                                    <span>DIGITAL ASSETS</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
                     { itemLoading && <ItemLoading/> }
                     {
-                        // !itemLoading &&
+                        !itemLoading &&
                         <div className="row items" style={{minHeight: '300px'}}>
-                            {allPhotos.map((item, idx) => {
+                            {premiumNFT.map((item, idx) => {
+                                let ItemPrice = web3.utils.fromWei(`${item.marketData.price}`,"ether");
+                                const pidx = ItemPrice.indexOf('.');
+                                const pLen = ItemPrice.length;
+                                if (pidx > 0) {
+                                    if (pLen - pidx > 3) {
+                                        ItemPrice = ItemPrice.substr(0, pidx + 4);
+                                    }
+                                }
                                 return (
                                     <div className="col-12 col-sm-6 col-lg-3 item" key={idx} data-groups={item.category}>
                                         <div className="card">
                                             <div className="image-over">
-                                            <img className="card-img-top" src={`${process.env.REACT_APP_IPFS}/ipfs/${item.image}`} alt="" />
+                                            <a href={`/item-details/${item.nftData.tokenID}`}><img className="card-img-top" src={`${process.env.REACT_APP_IPFS}/ipfs/${item.image}`} alt="" /></a>
                                             </div>
                                             {/* Card Caption */}
-                                            <div className="card-caption col-12 p-0 text-center">
+                                            <div className="card-caption col-12 p-0">
                                                 {/* Card Body */}
                                                 <div className="card-body">
-                                                    <div className="card-bottom d-flex justify-content-center">
-                                                        <span className="pb-2">Cups</span>
+                                                    <div className="card-bottom d-flex justify-content-between">
+                                                        <span>Token Name</span>
+                                                        <span>Price</span>
                                                     </div>
-                                                    <a
-                                                        href={`/folder-item/${idx}`}
+                                                    <div className="card-bottom d-flex justify-content-between">
+                                                        <span>{item.nftName}</span>
+                                                        <span>{ItemPrice} NFD</span>
+                                                    </div>
+                                                    <Button
                                                         size={'medium'}
                                                         width={1}
-                                                        // onClick={() => this.buyPhotoNFT(item.nftData.tokenID)}
-                                                        className="btn w-100"
-                                                    > Go to group </a>
+                                                        onClick={() => this.buyPhotoNFT(item.nftData.tokenID)}
+                                                        className="btn"
+                                                    > Buy </Button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                            {normalNFT.map((item, idx) => {
+                                let ItemPrice = web3.utils.fromWei(`${item.marketData.price}`,"ether");
+                                const pidx = ItemPrice.indexOf('.');
+                                const pLen = ItemPrice.length;
+                                if (pidx > 0) {
+                                if (pLen - pidx > 3) {
+                                    ItemPrice = ItemPrice.substr(0, pidx + 4);
+                                }
+                                }
+                                return (
+                                    <div className="col-12 col-sm-6 col-lg-3 item" key={idx} data-groups={item.category}>
+                                        <div className="card">
+                                            <div className="image-over">
+                                            <a href={`/item-details/${item.nftData.tokenID}`}><img className="card-img-top" src={`${process.env.REACT_APP_IPFS}/ipfs/${item.image}`} alt="" /></a>
+                                            </div>
+                                            {/* Card Caption */}
+                                            <div className="card-caption col-12 p-0">
+                                                {/* Card Body */}
+                                                <div className="card-body">
+                                                    <div className="card-bottom d-flex justify-content-between">
+                                                        <span>Token Name</span>
+                                                        <span>Price</span>
+                                                    </div>
+                                                    <div className="card-bottom d-flex justify-content-between">
+                                                        <span>{item.nftName}</span>
+                                                        <span>{ItemPrice} NFD</span>
+                                                    </div>
+                                                    <Button
+                                                        size={'medium'}
+                                                        width={1}
+                                                        onClick={() => this.buyPhotoNFT(item.nftData.tokenID)}
+                                                        className="btn"
+                                                    > Buy </Button>
                                                 </div>
                                             </div>
                                         </div>
@@ -253,7 +286,7 @@ class PhotoMarketplace extends Component {
                                 );
                             })}
                             {
-                                !allPhotos.length && !itemLoading && <h4 className="text-center text-muted">No items.</h4>
+                                !isExist && <h4 className="text-center text-muted">No items.</h4>
                             }
                         </div>
                     }
@@ -268,4 +301,4 @@ const mapToStateProps = ({wallet}) => ({
   connected: wallet.wallet_connected
 })
 
-export default connect(mapToStateProps, null)(PhotoMarketplace);
+export default connect(mapToStateProps, null)(FolderItem);

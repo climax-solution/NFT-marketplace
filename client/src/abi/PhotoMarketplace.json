@@ -115,9 +115,9 @@
             "type": "string"
           },
           {
-            "internalType": "uint256[]",
+            "internalType": "uint256[2]",
             "name": "wide",
-            "type": "uint256[]"
+            "type": "uint256[2]"
           }
         ],
         "internalType": "struct PhotoMarketplace.FolderList[]",
@@ -187,6 +187,80 @@
         "internalType": "address payable",
         "name": "",
         "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getPersonalNFTList",
+    "outputs": [
+      {
+        "components": [
+          {
+            "components": [
+              {
+                "internalType": "uint256",
+                "name": "tokenID",
+                "type": "uint256"
+              },
+              {
+                "internalType": "string",
+                "name": "tokenURI",
+                "type": "string"
+              },
+              {
+                "internalType": "address",
+                "name": "owner",
+                "type": "address"
+              }
+            ],
+            "internalType": "struct PhotoNFT.Photo",
+            "name": "nftData",
+            "type": "tuple"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint256",
+                "name": "tokenID",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "price",
+                "type": "uint256"
+              },
+              {
+                "internalType": "bool",
+                "name": "marketStatus",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "existance",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "premiumStatus",
+                "type": "bool"
+              },
+              {
+                "internalType": "uint256",
+                "name": "premiumTimestamp",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct PhotoMarketplace.PhotoMarketData",
+            "name": "marketData",
+            "type": "tuple"
+          }
+        ],
+        "internalType": "struct PhotoMarketplace.PhotoData[]",
+        "name": "",
+        "type": "tuple[]"
       }
     ],
     "stateMutability": "view",
@@ -339,7 +413,7 @@
           }
         ],
         "internalType": "struct PhotoMarketplace.PhotoData[]",
-        "name": "list",
+        "name": "",
         "type": "tuple[]"
       }
     ],
@@ -348,11 +422,6 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "string",
-        "name": "itemFolder",
-        "type": "string"
-      },
       {
         "internalType": "uint256",
         "name": "idx",
@@ -424,7 +493,7 @@
           }
         ],
         "internalType": "struct PhotoMarketplace.PhotoData[]",
-        "name": "list",
+        "name": "",
         "type": "tuple[]"
       }
     ],
