@@ -10,7 +10,6 @@ contract PhotoMarketplace  {
     address private white_user;
     uint256 public premiumLimit = 2592000; //30 * 24 * 3600
 
-
     PhotoNFT public photoNFT;
     mapping(uint => PhotoMarketData) private _photoData;
 
@@ -33,7 +32,7 @@ contract PhotoMarketplace  {
 
     struct FolderList {
         string folder;
-        uint[] wide;
+        uint[2] wide;
     }
 
     FolderList[] public sub_folders;
@@ -156,6 +155,24 @@ contract PhotoMarketplace  {
         return payable(_market_owner);
     }
     
+    function getPremiumNFTList() public view returns(PhotoData[] memory) {
+        uint idx = 0;
+        PhotoData[] memory list = new PhotoData[](photoNFT.currentPhotoId());
+        for (uint i = 0; i < photoNFT.currentPhotoId(); i ++ ) {
+            if (_photoData[i].premiumStatus) list[idx++] = getPhoto(i);
+        }
+        return list;
+    }
+
+    function getPersonalNFTList() public view returns(PhotoData[] memory) {
+        uint idx = 0;
+        PhotoData[] memory list = new PhotoData[](photoNFT.currentPhotoId());
+        for (uint i = 0; i < photoNFT.currentPhotoId(); i ++ ) {
+            if (photoNFT.ownerOf(i) ==  msg.sender) list[idx++] = getPhoto(i);
+        }
+        return list;
+    }
+
     function mutipleOpenTrade(uint start, uint count, uint price, string memory group) external onlyOwner {
         bool existance = false;
         for (uint i = 0; i < sub_folders.length; i ++) {
@@ -169,11 +186,9 @@ contract PhotoMarketplace  {
                 _photoData[_photoId].marketStatus = true;
                 _photoData[_photoId].price = price;
             }
-            uint[] memory wides = new uint[](2);
-            wides[0] = start; wides[1] = count;
             sub_folders.push(FolderList({
                 folder: group,
-                wide: wides
+                wide: [start, count]
             }));
         }
 
@@ -183,12 +198,12 @@ contract PhotoMarketplace  {
         list  = sub_folders;
     }
 
-    function getSubFolderItem(string memory itemFolder, uint idx) public view returns(PhotoData[] memory list) {
+    function getSubFolderItem(uint idx) public view returns(PhotoData[] memory) {
         FolderList memory item = sub_folders[idx];
-        if (keccak256(abi.encodePacked(item.folder)) == keccak256(abi.encodePacked(itemFolder))) {
-            for (uint i = 0; i < item.wide[1]; i ++ ) {
-                list[i] = getPhoto(item.wide[0] + i);
-            }
+        PhotoData[] memory list = new PhotoData[](item.wide[1]);
+        for (uint i = 0; i < item.wide[1]; i ++ ) {
+            list[i] = getPhoto(item.wide[0] + i);
         }
+        return list;
     }
 }

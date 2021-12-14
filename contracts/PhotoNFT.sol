@@ -31,7 +31,7 @@ contract PhotoNFT is ERC721URIStorage {
         _;
     }
 
-    function bulkMint(string[] memory tokenURIs) public onlyOwner() {
+    function bulkMint(string[] memory tokenURIs) public onlyOwner {
         for (uint i; i < tokenURIs.length; i ++) {
             _mint(msg.sender, currentPhotoId);
             _setTokenURI(currentPhotoId, tokenURIs[i]);
@@ -41,19 +41,16 @@ contract PhotoNFT is ERC721URIStorage {
     }
 
     function getPhoto(uint index) public view returns (Photo memory _photo) {
-        Photo memory photo = Photo ({
+        _photo = Photo ({
             tokenID: index, 
             tokenURI : tokenURI (index), 
             owner : ownerOf(index)
         });
-
-        return photo;
     }
 
-    function getAllPhotos() public view returns (Photo[] memory _photos) {
+    function getAllPhotos() public view returns (Photo[] memory) {
         Photo[] memory result = new Photo[](currentPhotoId);
         for (uint i = 0; i < currentPhotoId; i++) {
-            // Photo memory photo = getPhoto(i);
             result[i] = getPhoto(i);
         }
         return result;
@@ -63,7 +60,7 @@ contract PhotoNFT is ERC721URIStorage {
         _approve(address(0), tokenID);
     }
 
-    function bulkApprove(address to, uint start, uint count) public onlyOwner() {
+    function bulkApprove(address to, uint start, uint count) public onlyOwner {
         for (uint i; i < count; i ++) {
             approve(to, start + i);
         }
