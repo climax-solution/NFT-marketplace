@@ -223,8 +223,8 @@ class PhotoMarketplace extends Component {
                     </div>
                     { itemLoading && <ItemLoading/> }
                     {
-                        // !itemLoading &&
-                        <div className="row items" style={{minHeight: '300px'}}>
+                        !itemLoading &&
+                        <div className="row items">
                             {allPhotos.map((item, idx) => {
                                 return (
                                     <div className="col-12 col-sm-6 col-lg-3 item" key={idx} data-groups={item.category}>
