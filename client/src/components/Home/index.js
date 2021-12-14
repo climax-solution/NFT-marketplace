@@ -53,9 +53,8 @@ class Home extends Component {
     
     getAllPhotos = async () => {
         const {  PhotoMarketplace } = this.state;
-        const allPhotos = await PhotoMarketplace.methods.getAllPhotos().call();
+        const allPhotos = await PhotoMarketplace.methods.getPremiumNFTList().call();
         let mainList = []; let index = 0;
-        //console.log('allPhotos => ',PhotoMarketplace);
         await Promise.all(allPhotos.map(async (item, idx) => {
             try {
                 const response = await fetch(`${process.env.REACT_APP_IPFS}/ipfs/${item.nftData.tokenURI}`);
@@ -70,10 +69,10 @@ class Home extends Component {
             return item;
         }) );
 
-      mainList = mainList.filter(item => item.marketData.premiumStatus && item.marketData.marketStatus );
-      mainList.sort((before, after) => {
+        mainList = mainList.filter(item => item.marketData.premiumStatus && item.marketData.marketStatus );
+        mainList.sort((before, after) => {
         return before.marketData.premiumTimestamp - after.marketData.premiumTimestamp;
-      })
+        })
 
       this.setState({ allPhotos: mainList });
     }
