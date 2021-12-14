@@ -232,7 +232,7 @@ class FolderItem extends Component {
                                                     </div>
                                                     <div className="card-bottom d-flex justify-content-between">
                                                         <span>{item.nftName}</span>
-                                                        <span>{ItemPrice} NFD</span>
+                                                        <span>{ItemPrice} BNB</span>
                                                     </div>
                                                     <Button
                                                         size={'medium'}
@@ -271,7 +271,7 @@ class FolderItem extends Component {
                                                     </div>
                                                     <div className="card-bottom d-flex justify-content-between">
                                                         <span>{item.nftName}</span>
-                                                        <span>{ItemPrice} NFD</span>
+                                                        <span>{ItemPrice} BNB</span>
                                                     </div>
                                                     <Button
                                                         size={'medium'}

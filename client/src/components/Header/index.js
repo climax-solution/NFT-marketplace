@@ -27,7 +27,6 @@ class Header extends Component{
             this.setState({
                 account: isMetaMask ? accounts[0] : ''
             })
-            window.localStorage.setItem("nftdevelopments",JSON.stringify({connected: isMetaMask}));
             await this.props.WalletConnect();
         } catch(err) {
 

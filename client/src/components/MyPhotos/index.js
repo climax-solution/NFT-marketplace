@@ -150,15 +150,14 @@ class MyPhotos extends Component {
     }
 
     getAllPhotos = async () => {
-      const { PhotoMarketplace, isMetaMask } = this.state;
-      if (isMetaMask) {
+      const { PhotoMarketplace, isMetaMask, currentAccount } = this.state;
+      if (isMetaMask && currentAccount) {
         this.setState({
           itemLoading: true
         });
-        const allPhotos = await PhotoMarketplace.methods.getAllPhotos().call();
-        //console.log("=== allPhotos ===", allPhotos);
+        let allPhotos = await PhotoMarketplace.methods.getPersonalNFTList().call({ from: currentAccount });
+        allPhotos = allPhotos.filter(item => item.marketData.existance);
         let mainList = []; let index = 0;
-        //console.log('allPhotos => ',PhotoMarketplace);
         await Promise.all(allPhotos.map(async (item, idx) => {
             try {
               const response = await fetch(`${process.env.REACT_APP_IPFS}/ipfs/${item.nftData.tokenURI}`);
@@ -324,7 +323,7 @@ class MyPhotos extends Component {
                                                 </div>
                                                 <div className="card-bottom d-flex justify-content-between">
                                                     <span>{item.nftName}</span>
-                                                    <span>{ItemPrice} NFTD</span>
+                                                    <span>{ItemPrice} BNB</span>
                                                 </div>
                                                 { !item.marketData.marketStatus ? 
                                                     <Button
