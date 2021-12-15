@@ -13,7 +13,10 @@ class ItemDetails extends Component {
         this.state = {
           web3: null,
           itemData: {},
-          isLoading: true
+          isLoading: true,
+          accounts: null,
+          PhotoMarketplace: {},
+          PhotoNFT: {},
         }
     }
 
@@ -21,39 +24,27 @@ class ItemDetails extends Component {
         const { id } = this.props.match.params;
         let PhotoNFT = {};
         let PhotoMarketplace = {};
-        let COIN = [];
         try {
             PhotoNFT = require("../../abi/PhotoNFT.json");
             PhotoMarketplace = require("../../abi/PhotoMarketplace.json");
-            
-            //console.log(marketplace_addr, PhotoMarketplace);
-        } catch (e) {
-            ////console.log(e);
-        }
+        } catch (e) {}
   
         try {
-            const isProd = process.env.NODE_ENV === "production";
+            
             const web3 = await getWeb3();
             const accounts = await web3.eth.getAccounts();
             const currentAccount = accounts[0];
 
             const networkType = await web3.eth.net.getNetworkType();
-            let balance =
-                accounts.length > 0
-                    ? await web3.eth.getBalance(accounts[0])
-                    : web3.utils.toWei("0");
-            balance = web3.utils.fromWei(balance, "ether");
-
             let instancePhotoNFT = null;
             let instancePhotoMarketplace = null;
             
-            
             if (PhotoNFT) {
-                    instancePhotoNFT = new web3.eth.Contract(PhotoNFT, nft_addr);
+                instancePhotoNFT = new web3.eth.Contract(PhotoNFT, nft_addr);
             }
 
             if (PhotoMarketplace) {
-                    instancePhotoMarketplace = new web3.eth.Contract(PhotoMarketplace, marketplace_addr);
+                instancePhotoMarketplace = new web3.eth.Contract(PhotoMarketplace, marketplace_addr);
             }
 
             if (instancePhotoNFT && instancePhotoMarketplace) {
@@ -63,7 +54,6 @@ class ItemDetails extends Component {
                     {
                         web3,
                         accounts,
-                        balance,
                         networkType,
                         PhotoNFT: instancePhotoNFT,
                         PhotoMarketplace: instancePhotoMarketplace,
@@ -74,7 +64,6 @@ class ItemDetails extends Component {
                 this.setState({
                     web3,
                     accounts,
-                    balance,
                     networkType,
                     currentAccount,
                 });

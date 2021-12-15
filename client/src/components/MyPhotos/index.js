@@ -192,7 +192,7 @@ class MyPhotos extends Component {
       }
 
       try {
-          const isProd = process.env.NODE_ENV === "production";
+          
           const web3 = await getWeb3();
           const accounts = await web3.eth.getAccounts();
           const currentAccount = accounts[0];

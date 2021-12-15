@@ -1,15 +1,14 @@
 import React, { Component } from "react";
-import { Button, Mail} from 'rimble-ui';
 import { connect } from "react-redux";
 import { NotificationManager } from "react-notifications";
 import getWeb3 from "../../utils/getWeb3";
-import styles from '../../App.module.scss';
+import '../../App.module.scss';
 import Breadcrumb from "../Breadcrumb/Breadcrumb";
 import ScreenLoading from "../Loading/screenLoading";
 import ItemLoading  from "../Loading/itemLoading";
 import addresses from "../../config/address.json";
 
-const { marketplace_addr, nft_addr, token_addr } = addresses;
+const { marketplace_addr, nft_addr } = addresses;
 
 class PhotoMarketplace extends Component {
     constructor(props) {    
@@ -108,7 +107,7 @@ class PhotoMarketplace extends Component {
       }
 
       try {
-        const isProd = process.env.NODE_ENV === "production";
+        
         const web3 = await getWeb3();
         const accounts = await web3.eth.getAccounts();
         const currentAccount = accounts[0];
@@ -237,7 +236,7 @@ class PhotoMarketplace extends Component {
                                                 {/* Card Body */}
                                                 <div className="card-body">
                                                     <div className="card-bottom d-flex justify-content-center">
-                                                        <span className="pb-2">Cups</span>
+                                                        <span className="pb-2">{item.folder}</span>
                                                     </div>
                                                     <a
                                                         href={`/folder-item/${idx}`}
