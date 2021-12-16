@@ -9,7 +9,7 @@ import ScreenLoading from "../Loading/screenLoading";
 import ItemLoading  from "../Loading/itemLoading";
 import addresses from "../../config/address.json";
 
-const { marketplace_addr, nft_addr, token_addr } = addresses;
+const { marketplace_addr, nft_addr } = addresses;
 
 class FolderItem extends Component {
     constructor(props) {    
@@ -33,7 +33,7 @@ class FolderItem extends Component {
     }
 
     buyPhotoNFT = async (id) => {
-        const { accounts, PhotoMarketplace, isMetaMask, coin } = this.state;
+        const { accounts, PhotoMarketplace, isMetaMask } = this.state;
         
         if (!isMetaMask) {
           NotificationManager.warning("Metamask is not connected!", "Warning");
@@ -60,8 +60,8 @@ class FolderItem extends Component {
         this.setState({
             itemLoading: true
         })
-        const { id } = this.props.match.params;
-        const folderList = await PhotoMarketplace.methods.getSubFolderItem(id).call();
+        // const { id } = this.props.match.params;
+        const folderList = await PhotoMarketplace.methods.getSubFolderItem(0).call();
         let mainList = []; let index = 0;
         await Promise.all(folderList.map(async(item) => {
             try {

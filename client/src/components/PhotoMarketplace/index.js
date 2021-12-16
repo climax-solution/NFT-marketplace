@@ -244,7 +244,7 @@ class PhotoMarketplace extends Component {
                                                         width={1}
                                                         // onClick={() => this.buyPhotoNFT(item.nftData.tokenID)}
                                                         className="btn w-100"
-                                                    > Go to group </a>
+                                                    > View Available NFT Collection </a>
                                                 </div>
                                             </div>
                                         </div>
