@@ -64,7 +64,7 @@ class Header extends Component{
             }
             else {
                 if (window.ethereum) 
-                    NotificationManager.error("Pleaes select Ropsten network in metamask.", "Error");
+                    NotificationManager.error("Please select Binance Smart Chain network in metamask.", "Error");
                 else NotificationManager.error("Metamask is not installed.", "Error");
             }
         }

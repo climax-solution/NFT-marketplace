@@ -32,8 +32,14 @@
       {
         "indexed": false,
         "internalType": "address",
-        "name": "operator",
+        "name": "buyer",
         "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
       }
     ],
     "name": "NFTBuy",
@@ -66,29 +72,65 @@
   },
   {
     "inputs": [],
-    "name": "PHOTO_NFT_MARKETPLACE",
+    "name": "photoNFT",
     "outputs": [
       {
-        "internalType": "address",
+        "internalType": "contract PhotoNFT",
         "name": "",
         "type": "address"
       }
     ],
     "stateMutability": "view",
-    "type": "function"
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [],
+    "name": "premiumLimit",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
   },
   {
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "tokenId",
+        "name": "",
         "type": "uint256"
       }
     ],
-    "name": "buyNFT",
+    "name": "sub_folders",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "folder",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_photoId",
+        "type": "uint256"
+      }
+    ],
+    "name": "openTrade",
     "outputs": [],
     "stateMutability": "payable",
-    "type": "function"
+    "type": "function",
+    "payable": true
   },
   {
     "inputs": [
@@ -101,170 +143,8 @@
     "name": "cancelTrade",
     "outputs": [],
     "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getFolderList",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "string",
-            "name": "folder",
-            "type": "string"
-          },
-          {
-            "internalType": "uint256[2]",
-            "name": "wide",
-            "type": "uint256[2]"
-          }
-        ],
-        "internalType": "struct PhotoMarketplace.FolderList[]",
-        "name": "list",
-        "type": "tuple[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "tokenId",
-        "type": "uint256"
-      }
-    ],
-    "name": "getMarketData",
-    "outputs": [
-      {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "tokenID",
-            "type": "uint256"
-          },
-          {
-            "internalType": "uint256",
-            "name": "price",
-            "type": "uint256"
-          },
-          {
-            "internalType": "bool",
-            "name": "marketStatus",
-            "type": "bool"
-          },
-          {
-            "internalType": "bool",
-            "name": "existance",
-            "type": "bool"
-          },
-          {
-            "internalType": "bool",
-            "name": "premiumStatus",
-            "type": "bool"
-          },
-          {
-            "internalType": "uint256",
-            "name": "premiumTimestamp",
-            "type": "uint256"
-          }
-        ],
-        "internalType": "struct PhotoMarketplace.PhotoMarketData",
-        "name": "marketData",
-        "type": "tuple"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getOwnerPayableAddress",
-    "outputs": [
-      {
-        "internalType": "address payable",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getPersonalNFTList",
-    "outputs": [
-      {
-        "components": [
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "tokenID",
-                "type": "uint256"
-              },
-              {
-                "internalType": "string",
-                "name": "tokenURI",
-                "type": "string"
-              },
-              {
-                "internalType": "address",
-                "name": "owner",
-                "type": "address"
-              }
-            ],
-            "internalType": "struct PhotoNFT.Photo",
-            "name": "nftData",
-            "type": "tuple"
-          },
-          {
-            "components": [
-              {
-                "internalType": "uint256",
-                "name": "tokenID",
-                "type": "uint256"
-              },
-              {
-                "internalType": "uint256",
-                "name": "price",
-                "type": "uint256"
-              },
-              {
-                "internalType": "bool",
-                "name": "marketStatus",
-                "type": "bool"
-              },
-              {
-                "internalType": "bool",
-                "name": "existance",
-                "type": "bool"
-              },
-              {
-                "internalType": "bool",
-                "name": "premiumStatus",
-                "type": "bool"
-              },
-              {
-                "internalType": "uint256",
-                "name": "premiumTimestamp",
-                "type": "uint256"
-              }
-            ],
-            "internalType": "struct PhotoMarketplace.PhotoMarketData",
-            "name": "marketData",
-            "type": "tuple"
-          }
-        ],
-        "internalType": "struct PhotoMarketplace.PhotoData[]",
-        "name": "",
-        "type": "tuple[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
+    "type": "function",
+    "payable": true
   },
   {
     "inputs": [
@@ -344,7 +224,107 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function"
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_photoId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "_newState",
+        "type": "bool"
+      }
+    ],
+    "name": "updatePremiumStatus",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function",
+    "payable": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getMarketData",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "uint256",
+            "name": "tokenID",
+            "type": "uint256"
+          },
+          {
+            "internalType": "uint256",
+            "name": "price",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bool",
+            "name": "marketStatus",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "existance",
+            "type": "bool"
+          },
+          {
+            "internalType": "bool",
+            "name": "premiumStatus",
+            "type": "bool"
+          },
+          {
+            "internalType": "uint256",
+            "name": "premiumTimestamp",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct PhotoMarketplace.PhotoMarketData",
+        "name": "marketData",
+        "type": "tuple"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "buyNFT",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function",
+    "payable": true
+  },
+  {
+    "inputs": [],
+    "name": "getOwnerPayableAddress",
+    "outputs": [
+      {
+        "internalType": "address payable",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
   },
   {
     "inputs": [],
@@ -418,7 +398,137 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [],
+    "name": "getPersonalNFTList",
+    "outputs": [
+      {
+        "components": [
+          {
+            "components": [
+              {
+                "internalType": "uint256",
+                "name": "tokenID",
+                "type": "uint256"
+              },
+              {
+                "internalType": "string",
+                "name": "tokenURI",
+                "type": "string"
+              },
+              {
+                "internalType": "address",
+                "name": "owner",
+                "type": "address"
+              }
+            ],
+            "internalType": "struct PhotoNFT.Photo",
+            "name": "nftData",
+            "type": "tuple"
+          },
+          {
+            "components": [
+              {
+                "internalType": "uint256",
+                "name": "tokenID",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "price",
+                "type": "uint256"
+              },
+              {
+                "internalType": "bool",
+                "name": "marketStatus",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "existance",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "premiumStatus",
+                "type": "bool"
+              },
+              {
+                "internalType": "uint256",
+                "name": "premiumTimestamp",
+                "type": "uint256"
+              }
+            ],
+            "internalType": "struct PhotoMarketplace.PhotoMarketData",
+            "name": "marketData",
+            "type": "tuple"
+          }
+        ],
+        "internalType": "struct PhotoMarketplace.PhotoData[]",
+        "name": "",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "start",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "count",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "price",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "group",
+        "type": "string"
+      }
+    ],
+    "name": "mutipleOpenTrade",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "getFolderList",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "string",
+            "name": "folder",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256[2]",
+            "name": "wide",
+            "type": "uint256[2]"
+          }
+        ],
+        "internalType": "struct PhotoMarketplace.FolderList[]",
+        "name": "list",
+        "type": "tuple[]"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function",
+    "constant": true
   },
   {
     "inputs": [
@@ -498,110 +608,7 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "start",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "count",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "price",
-        "type": "uint256"
-      },
-      {
-        "internalType": "string",
-        "name": "group",
-        "type": "string"
-      }
-    ],
-    "name": "mutipleOpenTrade",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_photoId",
-        "type": "uint256"
-      }
-    ],
-    "name": "openTrade",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "photoNFT",
-    "outputs": [
-      {
-        "internalType": "contract PhotoNFT",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "premiumLimit",
-    "outputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }
-    ],
-    "name": "sub_folders",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "folder",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_photoId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bool",
-        "name": "_newState",
-        "type": "bool"
-      }
-    ],
-    "name": "updatePremiumStatus",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
+    "type": "function",
+    "constant": true
   }
 ]
