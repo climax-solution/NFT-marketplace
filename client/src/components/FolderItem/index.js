@@ -60,8 +60,8 @@ class FolderItem extends Component {
         this.setState({
             itemLoading: true
         })
-        // const { id } = this.props.match.params;
-        const folderList = await PhotoMarketplace.methods.getSubFolderItem(0).call();
+        const { id } = this.props.match.params;
+        const folderList = await PhotoMarketplace.methods.getSubFolderItem(id).call();
         let mainList = []; let index = 0;
         await Promise.all(folderList.map(async(item) => {
             try {

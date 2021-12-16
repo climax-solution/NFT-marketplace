@@ -5,7 +5,7 @@ const getWeb3 = async() => {
   if (window.ethereum) {
     web3 = new Web3(window.ethereum);
     const networkId = await web3.eth.net.getId();
-    if (networkId != 97) {
+    if (networkId != 56) {
       const provider = new Web3.providers.HttpProvider(
         'https://bsc-dataseed1.ninicoin.io'
       );
