@@ -5,7 +5,6 @@ pragma experimental ABIEncoderV2;
 import { PhotoNFT } from "./PhotoNFT.sol";
 
 contract PhotoMarketplace  {
-    address public PHOTO_NFT_MARKETPLACE;
     address private _market_owner;
     address private white_user;
     uint256 public premiumLimit = 2592000; //30 * 24 * 3600
@@ -14,7 +13,7 @@ contract PhotoMarketplace  {
     mapping(uint => PhotoMarketData) private _photoData;
 
     event NFTPremiumStatusChanged(uint256 tokenId, bool newState, uint timeStamp);
-    event NFTBuy(address owner, address operator);
+    event NFTBuy(address owner, address buyer, uint tokenId);
 
     struct PhotoMarketData {
         uint tokenID;
@@ -38,16 +37,11 @@ contract PhotoMarketplace  {
     FolderList[] public sub_folders;
 
     constructor(address _photoNFT, address owner, address _whiteUser) {
-        // photoNFTData = _photoNFTData;
-        // address payable PHOTO_NFT_MARKETPLACE = payable(address(this));
         photoNFT = PhotoNFT(_photoNFT);
         _market_owner = owner;
         white_user = _whiteUser;
     }
-
-    /**
-     * @dev Opens a trade by the seller.
-     */
+    
     modifier onlyOwner() {
         require(_market_owner == msg.sender, "Not owner");
         _;
@@ -101,7 +95,7 @@ contract PhotoMarketplace  {
         if (_newState == true) _photoData[_photoId].premiumTimestamp = block.timestamp;
         else _photoData[_photoId].premiumTimestamp = 0;
 
-        // emit NFTPremiumStatusChanged(_photoId, _newState, block.timestamp);
+        emit NFTPremiumStatusChanged(_photoId, _newState, block.timestamp);
     }
 
     function getMarketData(uint tokenId) public view returns (PhotoMarketData memory marketData) {
@@ -121,11 +115,6 @@ contract PhotoMarketplace  {
 
         uint buyAmount = photoMarketData.price;
         require (msg.value == buyAmount, "msg.value should be equal to the buyAmount");
-        
-
-        // uint photoIndex = photoNFTData.getPhotoIndex(photoNFT);
-         
-        // Bought-amount is transferred into a seller wallet
 
         if (photoMarketData.premiumStatus) {
             seller.transfer(buyAmount * 90 / 100);
@@ -138,17 +127,15 @@ contract PhotoMarketplace  {
             else getOwnerPayableAddress().transfer(buyAmount / 20); //send fee
         }
         
-
         // transfer ownership
         address buyer = msg.sender;
         photoNFT.transferFrom(_seller, buyer, tokenId);
-        // emit NFTBuy(_seller, photoNFT.getApproved(tokenId));
-
         // set marketplace data
         _photoData[tokenId].premiumStatus = false;
         _photoData[tokenId].marketStatus = false;
         _photoData[tokenId].premiumTimestamp = 0;
-        photoNFT.cancelTrade(tokenId);    
+        photoNFT.cancelTrade(tokenId);
+        emit NFTBuy(_seller, buyer, tokenId);
     }
 
     function getOwnerPayableAddress() public view returns(address payable) {
@@ -191,7 +178,6 @@ contract PhotoMarketplace  {
                 wide: [start, count]
             }));
         }
-
     }
 
     function getFolderList() public view returns(FolderList[] memory list) {
