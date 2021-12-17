@@ -64,7 +64,6 @@ class PhotoMarketplace extends Component {
         let mainList = []; let index = 0;
         await Promise.all(folderList.map(async(item) => {
             const res = await PhotoMarketplace.methods.getPhoto(item.wide[0]).call();
-            console.log(res);
             try {
             const response = await fetch(`${process.env.REACT_APP_IPFS}/ipfs/${res.nftData.tokenURI}`);
             if(response.ok) {
@@ -76,7 +75,6 @@ class PhotoMarketplace extends Component {
             } catch (err) { }
         }))
 
-        console.log(mainList);
         switch(activeCategory) {
             case "physical":
                 mainList = mainList.filter(item => item.category == activeCategory);
@@ -157,7 +155,6 @@ class PhotoMarketplace extends Component {
         }
         await this.getAllPhotos();
       } catch (error) {
-          console.error(error);
       }
     };
 

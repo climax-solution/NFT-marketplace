@@ -63,7 +63,7 @@ class FolderItem extends Component {
         const { id } = this.props.match.params;
         const folderList = await PhotoMarketplace.methods.getSubFolderItem(id).call();
         let mainList = []; let index = 0;
-        await Promise.all(folderList.map(async(item) => {
+         await Promise.all(folderList.map(async(item) => {
             try {
             const response = await fetch(`${process.env.REACT_APP_IPFS}/ipfs/${item.nftData.tokenURI}`);
             if(response.ok) {
@@ -75,7 +75,6 @@ class FolderItem extends Component {
             } catch (err) { }
         }))
 
-        console.log(mainList);
         switch(activeCategory) {
             case "physical":
                 mainList = mainList.filter(item => item.category == activeCategory);
