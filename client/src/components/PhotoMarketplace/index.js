@@ -240,7 +240,6 @@ class PhotoMarketplace extends Component {
                                                         href={`/folder-item/${item.idx}`}
                                                         size={'medium'}
                                                         width={1}
-                                                        // onClick={() => this.buyPhotoNFT(item.nftData.tokenID)}
                                                         className="btn w-100"
                                                     > View Available NFT Collection </a>
                                                 </div>

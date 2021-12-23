@@ -179,16 +179,15 @@ class MyPhotos extends Component {
       })
     }
 
-    componentDidMount = async () => {
+    init = async () => {
     
       let PhotoNFT = {};
       let PhotoMarketplace = {};
       try {
           PhotoNFT = require("../../abi/PhotoNFT.json");
           PhotoMarketplace = require("../../abi/PhotoMarketplace.json");
-          //console.log(PhotoNFT, PhotoMarketplace);
       } catch (e) {
-          ////console.log(e);
+          //console.log(e);
       }
 
       try {
@@ -208,16 +207,14 @@ class MyPhotos extends Component {
           let instancePhotoMarketplace = null;
           
           if (PhotoNFT) {
-                instancePhotoNFT = new web3.eth.Contract(PhotoNFT, nft_addr);
+              instancePhotoNFT = new web3.eth.Contract(PhotoNFT, nft_addr);
           }
 
           if (PhotoMarketplace) {
-                instancePhotoMarketplace = new web3.eth.Contract(PhotoMarketplace, marketplace_addr);
+              instancePhotoMarketplace = new web3.eth.Contract(PhotoMarketplace, marketplace_addr);
           }
 
           if (instancePhotoNFT && instancePhotoMarketplace) {
-              // Set web3, accounts, and contract to the state, and then proceed with an
-              // example of interacting with the contract's methods.
               this.setState(
                   {
                       web3,
@@ -238,19 +235,18 @@ class MyPhotos extends Component {
                   currentAccount,
               });
           }
+          
           await this.getAllPhotos();
       } catch (error) {
           console.error(error);
       }
     };
 
-    componentWillUnmount() {
-        if (this.interval) {
-          clearInterval(this.interval);
-        }
+    async componentDidMount() {
+        await this.init();
     }
-
-    async componentDidUpdate(preprops, prevState) {
+    
+    async componentDidUpdate(preprops) {
       const { web3 } = this.state;
       ////console.log('truetrue', preprops != this.props, this.props.connected);
 
@@ -258,6 +254,7 @@ class MyPhotos extends Component {
         this.setState({
           isMetaMask: this.props.connected,
         })
+        await this.init();
         if (web3 != null) {
           const accounts = await web3.eth.getAccounts();
           this.setState({
@@ -266,16 +263,6 @@ class MyPhotos extends Component {
           await this.getAllPhotos();
         }
       }
-
-      if (web3 != prevState.web3) {
-        if (web3 != null) {
-          const accounts = await web3.eth.getAccounts();
-          this.setState({
-            currentAccount: this.props.connected ? accounts[0] : ''
-          })
-          await this.getAllPhotos();
-        }
-      } 
     }
 
     checkAssets(allPhotos) {
