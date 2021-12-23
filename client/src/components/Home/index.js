@@ -1,13 +1,14 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import getWeb3 from "../../utils/getWeb3";
-import { zeppelinSolidityHotLoaderOptions } from '../../../config/webpack';
 import Breadcrumb from "../Breadcrumb/Breadcrumb";
 import {  Button } from 'rimble-ui';
 import { NotificationManager } from "react-notifications";
 import addresses from "../../config/address.json";
+import ItemLoading  from "../Loading/itemLoading";
+import ScreenLoading from "../Loading/screenLoading";
 
-const { marketplace_addr, nft_addr, token_addr } = addresses;
+const { marketplace_addr, nft_addr } = addresses;
 
 class Home extends Component {
     constructor(props) {
@@ -29,19 +30,18 @@ class Home extends Component {
     }
     
     buyPhotoNFT = async (id) => {
-        const { accounts, PhotoMarketplace, isMetaMask, coin } = this.state;
+        const { accounts, PhotoMarketplace, isMetaMask } = this.state;
         
         if (!isMetaMask) {
           NotificationManager.warning("Metamask is not connected!", "Warning");
           return;
         }
 
+        this.setState({ isLoading: true });
         const photo = await PhotoMarketplace.methods.getPhoto(id).call();
         const buyAmount = photo.marketData.price;
-        this.setState({ isLoading: true });
-
         try {
-            await PhotoMarketplace.methods.buyNFT(id, buyAmount).send({ from: accounts[0] });
+            await PhotoMarketplace.methods.buyNFT(id).send({ from: accounts[0], value: buyAmount });
             await this.getAllPhotos();
             NotificationManager.success("Success");
             this.setState({ isLoading: false });
@@ -49,10 +49,14 @@ class Home extends Component {
             NotificationManager.error("Failed");
             this.setState({ isLoading: false });
         }
+        this.setState({ isLoading: false });
     }
     
     getAllPhotos = async () => {
         const {  PhotoMarketplace } = this.state;
+        this.setState({
+            itemLoading: true
+        })
         let allPhotos = await PhotoMarketplace.methods.getPremiumNFTList().call();
         let mainList = []; let index = 0;
         allPhotos = allPhotos.filter(item => item.marketData.premiumStatus && item.marketData.marketStatus );
@@ -72,8 +76,10 @@ class Home extends Component {
         mainList.sort((before, after) => {
             return before.marketData.premiumTimestamp - after.marketData.premiumTimestamp;
         })
-
-      this.setState({ allPhotos: mainList });
+        this.setState({
+            allPhotos: mainList,
+            itemLoading: false
+        });
     }
 
     init = async () => {
@@ -158,11 +164,12 @@ class Home extends Component {
     }
 
     render() {
-        const { web3, allPhotos, currentAccount, isMetaMask } = this.state;
+        const { web3, allPhotos, currentAccount, isMetaMask, itemLoading, isLoading } = this.state;
         let List = allPhotos.filter(item => item.nftData.owner != currentAccount || !isMetaMask);
         //console.log(List);
         return(
             <>
+                { isLoading && <ScreenLoading/> }
                 <Breadcrumb img="home"/>
                 <div className="row mt-3">
                     <div className="col-12">
@@ -174,44 +181,48 @@ class Home extends Component {
                         </div>
                     </div>
                 </div>
-                <div className="row items" style={{minHeight: '300px'}}>
-                    {
-                      List.map((item, idx) => {
-                          return (
-                            <div className="col-12 col-sm-6 col-lg-3 item" key={idx}>
-                                  <div className="card">
-                                      <div className="image-over">
-                                          <a href={`/item-details/${item.nftData.tokenID}`}><img className="card-img-top" src={`${item.image}`} alt="" /></a>
-                                      </div>
-                                      {/* Card Caption */}
-                                      <div className="card-caption col-12 p-0">
-                                          {/* Card Body */}
-                                          <div className="card-body">
-                                              <div className="card-bottom d-flex justify-content-between">
-                                                  <span>Token Name</span>
-                                                  <span>Price</span>
-                                              </div>
-                                              <div className="card-bottom d-flex justify-content-between">
-                                                  <span>{item.nftName}</span>
-                                                  <span>{web3.utils.fromWei(item.marketData.price)}</span>
-                                              </div>
-                                              <Button
-                                                size={'medium'}
-                                                width={1}
-                                                onClick={() => this.buyPhotoNFT(item.nftData.tokenID)}
-                                                className="btn"
-                                              > Buy </Button>
-                                          </div>
-                                      </div>
-                                  </div>
-                              </div>
-                          )
-                      })
-                    }
-                    {
-                      !List.length && <h4 className="text-center text-muted">No items.</h4>
-                    }
-                </div>
+                { itemLoading && <ItemLoading/> }
+                {
+                    !itemLoading &&
+                    <div className="row items" style={{minHeight: '300px'}}>
+                        {
+                        List.map((item, idx) => {
+                            return (
+                                <div className="col-12 col-sm-6 col-lg-3 item" key={idx}>
+                                    <div className="card">
+                                        <div className="image-over">
+                                            <a href={`/item-details/${item.nftData.tokenID}`}><img className="card-img-top" src={`${item.image}`} alt="" /></a>
+                                        </div>
+                                        {/* Card Caption */}
+                                        <div className="card-caption col-12 p-0">
+                                            {/* Card Body */}
+                                            <div className="card-body">
+                                                <div className="card-bottom d-flex justify-content-between">
+                                                    <span>Token Name</span>
+                                                    <span>Price</span>
+                                                </div>
+                                                <div className="card-bottom d-flex justify-content-between">
+                                                    <span>{item.nftName}</span>
+                                                    <span>{web3.utils.fromWei(item.marketData.price)}</span>
+                                                </div>
+                                                <Button
+                                                    size={'medium'}
+                                                    width={1}
+                                                    onClick={() => this.buyPhotoNFT(item.nftData.tokenID)}
+                                                    className="btn"
+                                                > Buy </Button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                        })
+                        }
+                        {
+                        !List.length && <h4 className="text-center text-muted">No items.</h4>
+                        }
+                    </div>
+                }
             </>
         )
     }

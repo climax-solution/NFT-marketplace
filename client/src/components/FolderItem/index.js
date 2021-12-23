@@ -75,16 +75,7 @@ class FolderItem extends Component {
             }
             } catch (err) { }
         }))
-
-        switch(activeCategory) {
-            case "physical":
-                mainList = mainList.filter(item => item.category == activeCategory);
-                break;
-            case "digital":
-                mainList = mainList.filter(item => item.category == activeCategory);
-                break;
-        }
-
+        
         this.setState({
             allPhotos: mainList,
             itemLoading: false

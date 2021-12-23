@@ -63,14 +63,14 @@ class PhotoMarketplace extends Component {
         })
         const folderList = await PhotoMarketplace.methods.getFolderList().call();
         let mainList = []; let index = 0;
-        await Promise.all(folderList.map(async(item) => {
+        await Promise.all(folderList.map(async(item, idx) => {
             const res = await PhotoMarketplace.methods.getPhoto(item.wide[0]).call();
             try {
             const response = await fetch(`${res.nftData.tokenURI}`);
             if(response.ok) {
                 const json = await response.json();
                 mainList[index] = {};
-                mainList[index] = { ...item, ...json };
+                mainList[index] = { ...item, ...json, idx: idx };
                 index ++;
             }
             } catch (err) { }
@@ -237,7 +237,7 @@ class PhotoMarketplace extends Component {
                                                         <span className="pb-2">{item.folder}</span>
                                                     </div>
                                                     <a
-                                                        href={`/folder-item/${idx}`}
+                                                        href={`/folder-item/${item.idx}`}
                                                         size={'medium'}
                                                         width={1}
                                                         // onClick={() => this.buyPhotoNFT(item.nftData.tokenID)}
