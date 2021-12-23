@@ -62,22 +62,23 @@ class PhotoMarketplace extends Component {
             itemLoading: true
         })
         const folderList = await PhotoMarketplace.methods.getFolderList().call();
-        let mainList = []; let index = 0;
-        await Promise.all(folderList.map(async(item, idx) => {
+        let mainList = [];
+        folderList.map(async(item, idx) => {
+            item.idx = idx;
+        })
+
+        for await (let item of folderList) {
             const res = await PhotoMarketplace.methods.getPhoto(item.wide[0]).call();
             try {
-            const response = await fetch(`${res.nftData.tokenURI}`);
-            if(response.ok) {
-                const json = await response.json();
-                mainList[index] = {};
-                mainList[index] = { ...item, ...json, idx: idx };
-                index ++;
-            }
+                const response = await fetch(`${res.nftData.tokenURI}`);
+                // console.log("mainList",response, item, idx);
+                if(response.ok) {
+                    const json = await response.json();
+                    mainList.push({ ...item, ...json });
+                }
             } catch (err) { }
-        }))
-
-        console.log(mainList);
-
+        }
+        
         switch(activeCategory) {
             case "physical":
                 mainList = mainList.filter(item => item.category == activeCategory);

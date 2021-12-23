@@ -60,7 +60,7 @@ class MyPhotos extends Component {
             const photoPrice = web3.utils.toWei((result.value).toString(), 'ether');
             await PhotoNFT.methods.approve(marketplace_addr, id).send({from : accounts[0]});
             // await coin.methods.approve(marketplace_addr, photoPrice).send({ from: accounts[0] });
-            await PhotoMarketplace.methods.openTrade(id).send({ from: accounts[0], value: photoPrice / 20 })
+            await PhotoMarketplace.methods.openTrade(id).send({ from: accounts[0], value: photoPrice / 40 })
             .then( async(res) => {
               this.setState({
                 isLoading: false
@@ -88,8 +88,7 @@ class MyPhotos extends Component {
           const photo = await PhotoMarketplace.methods.getPhoto(id).call();
           const buyAmount = photo.marketData.price;
           // await coin.methods.approve(marketplace_addr, buyAmount).send({ from: accounts[0] });
-          await PhotoMarketplace.methods.cancelTrade(id).
-          send({ from: accounts[0], value: buyAmount / 20 }).
+          await PhotoMarketplace.methods.cancelTrade(id).send({ from: accounts[0], value: buyAmount / 40 }).
           then(async(result) => {
             this.setState({
               isLoading: false
@@ -113,7 +112,7 @@ class MyPhotos extends Component {
         try {
           const photo = await PhotoMarketplace.methods.getPhoto(id).call();
           const tax = photo.marketData.price;
-          await PhotoMarketplace.methods.updatePremiumStatus(id, true).send({ from: accounts[0], value: tax / 10});
+          await PhotoMarketplace.methods.updatePremiumStatus(id, true).send({ from: accounts[0], value: tax / 20});
           this.setState({
             isLoading: false
           })
@@ -135,7 +134,7 @@ class MyPhotos extends Component {
         try {
           const photo = await PhotoMarketplace.methods.getPhoto(id).call();
           const tax = photo.marketData.price;
-          await PhotoMarketplace.methods.updatePremiumStatus(id, false).send({ from: accounts[0], value: tax / 10});
+          await PhotoMarketplace.methods.updatePremiumStatus(id, false).send({ from: accounts[0], value: tax / 20});
           this.setState({
             isLoading: false
           })
