@@ -160,7 +160,7 @@ class MyPhotos extends Component {
         let mainList = []; let index = 0;
         await Promise.all(allPhotos.map(async (item, idx) => {
             try {
-              const response = await fetch(`${process.env.REACT_APP_IPFS}/ipfs/${item.nftData.tokenURI}`);
+              const response = await fetch(`${item.nftData.tokenURI}`);
               if(response.ok) {
                   const json = await response.json();
                   mainList[index] = {};
@@ -311,7 +311,7 @@ class MyPhotos extends Component {
                                 <div className="col-12 col-sm-6 col-lg-3 item" key={idx}>
                                     <div className="card">
                                         <div className="image-over">
-                                            <a href={`/item-details/${item.nftData.tokenID}`}><img className="card-img-top" src={`${process.env.REACT_APP_IPFS}/ipfs/${item.image}`} alt="" /></a>
+                                            <a href={`/item-details/${item.nftData.tokenID}`}><img className="card-img-top" src={`${item.image}`} alt="" /></a>
                                         </div>
                                         {/* Card Caption */}
                                         <div className="card-caption col-12 p-0">

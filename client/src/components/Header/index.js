@@ -24,6 +24,8 @@ class Header extends Component{
             const networkId = await mWeb3.eth.net.getId();
             const isMetaMask = accounts.length ? true : false;
             if (networkId != fakeId) isMetaMask = false;
+            window.localStorage.setItem("nftdevelopments",JSON.stringify({connected: isMetaMask}));
+            await this.props.WalletConnect();
             this.setState({
                 account: isMetaMask ? accounts[0] : ''
             })

@@ -69,7 +69,7 @@ class ItemDetails extends Component {
                 });
             }
             const item = await instancePhotoMarketplace.methods.getPhoto(id).call();
-            const response = await fetch(`${process.env.REACT_APP_IPFS}/ipfs/${item.nftData.tokenURI}`);
+            const response = await fetch(`${item.nftData.tokenURI}`);
             const result = await response.json();
             this.setState({ itemData: { ...item, ...result }})
             
@@ -94,7 +94,7 @@ class ItemDetails extends Component {
                                 <div className="col-12 col-lg-5">
                                     <div className="item-info">
                                         <div className="item-thumb text-center p-md-4 p-3" style={{background: "rgba(255,255,255,0.1)"}}>
-                                            <img src={`${process.env.REACT_APP_IPFS}/ipfs/${itemData.image}`} alt="" />
+                                            <img src={`${itemData.image}`} alt="" />
                                         </div>
                                     </div>
                                 </div>

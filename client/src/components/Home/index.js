@@ -58,7 +58,7 @@ class Home extends Component {
         allPhotos = allPhotos.filter(item => item.marketData.premiumStatus && item.marketData.marketStatus );
         await Promise.all(allPhotos.map(async (item, idx) => {
             try {
-                const response = await fetch(`${process.env.REACT_APP_IPFS}/ipfs/${item.nftData.tokenURI}`);
+                const response = await fetch(`${item.nftData.tokenURI}`);
                 if(response.ok) {
                     const json = await response.json();
                     mainList[index] = {};
@@ -76,16 +76,15 @@ class Home extends Component {
       this.setState({ allPhotos: mainList });
     }
 
-    componentDidMount = async () => {
+    init = async () => {
     
         let PhotoNFT = {};
         let PhotoMarketplace = {};
-        let COIN = [];
         try {
             PhotoNFT = require("../../abi/PhotoNFT.json");
             PhotoMarketplace = require("../../abi/PhotoMarketplace.json");
         } catch (e) {
-            ////console.log(e);
+            //console.log(e);
         }
   
         try {
@@ -104,8 +103,6 @@ class Home extends Component {
             let instancePhotoNFT = null;
             let instancePhotoMarketplace = null;
             
-
-            
             if (PhotoNFT) {
                 instancePhotoNFT = new web3.eth.Contract(PhotoNFT, nft_addr);
             }
@@ -115,8 +112,6 @@ class Home extends Component {
             }
 
             if (instancePhotoNFT && instancePhotoMarketplace) {
-                // Set web3, accounts, and contract to the state, and then proceed with an
-                // example of interacting with the contract's methods.
                 this.setState(
                     {
                         web3,
@@ -144,34 +139,22 @@ class Home extends Component {
         }
     };
 
-    componentWillUnmount() {
-        if (this.interval) {
-          clearInterval(this.interval);
-        }
+    async componentDidMount() {
+        await this.init();
     }
 
-    async componentDidUpdate(preprops, prevState) {
-      const { web3 } = this.state;
-      ////console.log('truetrue', preprops != this.props, this.props.connected);
+    async componentDidUpdate(preprops) {
 
-      if (preprops != this.props) {
-        this.setState({
-          isMetaMask: this.props.connected,
-        })
-        if (web3 != null) {
-          await this.getAllPhotos();
+        if (preprops != this.props) {
+            await this.init();
+            this.setState({
+                isMetaMask: this.props.connected,
+            })
+            const { web3 } = this.state;
+            if (web3 != null) {
+                await this.getAllPhotos();
+            }
         }
-      }
-
-      if (web3 != prevState.web3) {
-        if (web3 != null) {
-          const accounts = await web3.eth.getAccounts();
-          this.setState({
-            currentAccount: this.props.connected ? accounts[0] : ''
-          })
-          await this.getAllPhotos();
-        }
-      } 
     }
 
     render() {
@@ -198,7 +181,7 @@ class Home extends Component {
                             <div className="col-12 col-sm-6 col-lg-3 item" key={idx}>
                                   <div className="card">
                                       <div className="image-over">
-                                          <a href={`/item-details/${item.nftData.tokenID}`}><img className="card-img-top" src={`${process.env.REACT_APP_IPFS}/ipfs/${item.image}`} alt="" /></a>
+                                          <a href={`/item-details/${item.nftData.tokenID}`}><img className="card-img-top" src={`${item.image}`} alt="" /></a>
                                       </div>
                                       {/* Card Caption */}
                                       <div className="card-caption col-12 p-0">

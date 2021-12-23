@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import { Button, Mail} from 'rimble-ui';
+import { Button } from 'rimble-ui';
 import { connect } from "react-redux";
 import { NotificationManager } from "react-notifications";
 import getWeb3 from "../../utils/getWeb3";
-import styles from '../../App.module.scss';
+import '../../App.module.scss';
 import Breadcrumb from "../Breadcrumb/Breadcrumb";
 import ScreenLoading from "../Loading/screenLoading";
 import ItemLoading  from "../Loading/itemLoading";
@@ -50,6 +50,7 @@ class FolderItem extends Component {
             NotificationManager.success("Success");
             this.setState({ isLoading: false });
         } catch(err) {
+            console.log(err);
             NotificationManager.error("Failed");
             this.setState({ isLoading: false });
         }
@@ -65,7 +66,7 @@ class FolderItem extends Component {
         let mainList = []; let index = 0;
          await Promise.all(folderList.map(async(item) => {
             try {
-            const response = await fetch(`${process.env.REACT_APP_IPFS}/ipfs/${item.nftData.tokenURI}`);
+            const response = await fetch(`${item.nftData.tokenURI}`);
             if(response.ok) {
                 const json = await response.json();
                 mainList[index] = {};
@@ -90,11 +91,10 @@ class FolderItem extends Component {
         });
     }
 
-    componentDidMount = async () => {
+    init = async () => {
     
       let PhotoNFT = {};
       let PhotoMarketplace = {};
-      let COIN = [];
       try {
           PhotoNFT = require("../../abi/PhotoNFT.json");
           PhotoMarketplace = require("../../abi/PhotoMarketplace.json");
@@ -119,8 +119,6 @@ class FolderItem extends Component {
 
         let instancePhotoNFT = null;
         let instancePhotoMarketplace = null;
-        
-
         
         if (PhotoNFT) {
             instancePhotoNFT = new web3.eth.Contract(PhotoNFT, nft_addr);
@@ -159,27 +157,27 @@ class FolderItem extends Component {
       }
     };
 
+    async componentDidMount() {
+        await this.init();
+    }
+
     componentWillUnmount() {
         if (this.interval) {
           clearInterval(this.interval);
         }
     }
 
-    async componentDidUpdate(preprops, prevState) {
-      const { web3, activeCategory } = this.state;
-
-      if (preprops != this.props) {
-        this.setState({
-          isMetaMask: this.props.connected,
-        })
-        if (web3 != null) {
-            await this.getAllPhotos();
+    async componentDidUpdate(preprops) {
+        if (preprops != this.props) {
+            await this.init();
+            const { web3 } = this.state;
+            this.setState({
+                isMetaMask: this.props.connected,
+            })
+            if (web3 != null) {
+                await this.getAllPhotos();
+            }
         }
-      }
-
-      if (prevState.activeCategory != activeCategory) {
-        await this.getAllPhotos();
-      }
     }
 
     render() {
@@ -219,7 +217,7 @@ class FolderItem extends Component {
                                     <div className="col-12 col-sm-6 col-lg-3 item" key={idx} data-groups={item.category}>
                                         <div className="card">
                                             <div className="image-over">
-                                            <a href={`/item-details/${item.nftData.tokenID}`}><img className="card-img-top" src={`${process.env.REACT_APP_IPFS}/ipfs/${item.image}`} alt="" /></a>
+                                            <a href={`/item-details/${item.nftData.tokenID}`}><img className="card-img-top" src={`${item.image}`} alt="" /></a>
                                             </div>
                                             {/* Card Caption */}
                                             <div className="card-caption col-12 p-0">
@@ -258,7 +256,7 @@ class FolderItem extends Component {
                                     <div className="col-12 col-sm-6 col-lg-3 item" key={idx} data-groups={item.category}>
                                         <div className="card">
                                             <div className="image-over">
-                                            <a href={`/item-details/${item.nftData.tokenID}`}><img className="card-img-top" src={`${process.env.REACT_APP_IPFS}/ipfs/${item.image}`} alt="" /></a>
+                                            <a href={`/item-details/${item.nftData.tokenID}`}><img className="card-img-top" src={`${item.image}`} alt="" /></a>
                                             </div>
                                             {/* Card Caption */}
                                             <div className="card-caption col-12 p-0">

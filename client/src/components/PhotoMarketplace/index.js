@@ -49,6 +49,7 @@ class PhotoMarketplace extends Component {
             NotificationManager.success("Success");
             this.setState({ isLoading: false });
         } catch(err) {
+            console.log(err);
             NotificationManager.error("Failed");
             this.setState({ isLoading: false });
         }
@@ -65,7 +66,7 @@ class PhotoMarketplace extends Component {
         await Promise.all(folderList.map(async(item) => {
             const res = await PhotoMarketplace.methods.getPhoto(item.wide[0]).call();
             try {
-            const response = await fetch(`${process.env.REACT_APP_IPFS}/ipfs/${res.nftData.tokenURI}`);
+            const response = await fetch(`${res.nftData.tokenURI}`);
             if(response.ok) {
                 const json = await response.json();
                 mainList[index] = {};
@@ -74,6 +75,8 @@ class PhotoMarketplace extends Component {
             }
             } catch (err) { }
         }))
+
+        console.log(mainList);
 
         switch(activeCategory) {
             case "physical":
@@ -90,11 +93,10 @@ class PhotoMarketplace extends Component {
         });
     }
 
-    componentDidMount = async () => {
+    async componentDidMount () {
     
       let PhotoNFT = {};
       let PhotoMarketplace = {};
-      let COIN = [];
       try {
           PhotoNFT = require("../../abi/PhotoNFT.json");
           PhotoMarketplace = require("../../abi/PhotoMarketplace.json");
@@ -166,7 +168,6 @@ class PhotoMarketplace extends Component {
 
     async componentDidUpdate(preprops, prevState) {
       const { web3, activeCategory } = this.state;
-
       if (preprops != this.props) {
         this.setState({
           isMetaMask: this.props.connected,
@@ -226,7 +227,7 @@ class PhotoMarketplace extends Component {
                                     <div className="col-12 col-sm-6 col-lg-3 item" key={idx} data-groups={item.category}>
                                         <div className="card">
                                             <div className="image-over">
-                                            <img className="card-img-top" src={`${process.env.REACT_APP_IPFS}/ipfs/${item.image}`} alt="" />
+                                            <img className="card-img-top" src={`${item.image}`} alt="" />
                                             </div>
                                             {/* Card Caption */}
                                             <div className="card-caption col-12 p-0 text-center">
