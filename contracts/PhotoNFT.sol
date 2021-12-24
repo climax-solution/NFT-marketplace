@@ -5,13 +5,71 @@ pragma experimental ABIEncoderV2;
 import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import {ERC721URIStorage} from "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
-/**
- * @notice - This is the NFT contract for a photo
- */
+library Strings {
+    bytes16 private constant _HEX_SYMBOLS = "0123456789abcdef";
+
+    /**
+     * @dev Converts a `uint256` to its ASCII `string` decimal representation.
+     */
+    function toString(uint256 value) internal pure returns (string memory) {
+        // Inspired by OraclizeAPI's implementation - MIT licence
+        // https://github.com/oraclize/ethereum-api/blob/b42146b063c7d6ee1358846c198246239e9360e8/oraclizeAPI_0.4.25.sol
+
+        if (value == 0) {
+            return "0";
+        }
+        uint256 temp = value;
+        uint256 digits;
+        while (temp != 0) {
+            digits++;
+            temp /= 10;
+        }
+        bytes memory buffer = new bytes(digits);
+        while (value != 0) {
+            digits -= 1;
+            buffer[digits] = bytes1(uint8(48 + uint256(value % 10)));
+            value /= 10;
+        }
+        return string(buffer);
+    }
+
+    /**
+     * @dev Converts a `uint256` to its ASCII `string` hexadecimal representation.
+     */
+    function toHexString(uint256 value) internal pure returns (string memory) {
+        if (value == 0) {
+            return "0x00";
+        }
+        uint256 temp = value;
+        uint256 length = 0;
+        while (temp != 0) {
+            length++;
+            temp >>= 8;
+        }
+        return toHexString(value, length);
+    }
+
+    /**
+     * @dev Converts a `uint256` to its ASCII `string` hexadecimal representation with fixed length.
+     */
+    function toHexString(uint256 value, uint256 length) internal pure returns (string memory) {
+        bytes memory buffer = new bytes(2 * length + 2);
+        buffer[0] = "0";
+        buffer[1] = "x";
+        for (uint256 i = 2 * length + 1; i > 1; --i) {
+            buffer[i] = _HEX_SYMBOLS[value & 0xf];
+            value >>= 4;
+        }
+        require(value == 0, "Strings: hex length insufficient");
+        return string(buffer);
+    }
+}
+
 contract PhotoNFT is ERC721URIStorage {
 
     uint256 public currentPhotoId;
     address private _owner;
+    using Strings for uint256;
 
     struct Photo {
         uint tokenID;
@@ -21,7 +79,6 @@ contract PhotoNFT is ERC721URIStorage {
 
     event NFTMinted(uint tokenId);
 
-    
     constructor(address owner) ERC721("NFT DEVELOPMENTS", "NFT DEVELOPMENTS") {
         _owner = owner;
     }
@@ -31,10 +88,12 @@ contract PhotoNFT is ERC721URIStorage {
         _;
     }
 
-    function bulkMint(string[] memory tokenURIs) public onlyOwner {
-        for (uint i; i < tokenURIs.length; i ++) {
+    function bulkMint(string memory baseURI, uint256 count) public onlyOwner {
+        for (uint i = 0; i < count; i ++) {
             _mint(msg.sender, currentPhotoId);
-            _setTokenURI(currentPhotoId, tokenURIs[i]);
+            baseURI = string(abi.encodePacked(baseURI, "/"));
+            string memory _BaseURI = string(abi.encodePacked("https://ipfs.io/ipfs/", baseURI));
+            _setTokenURI(currentPhotoId, string(abi.encodePacked(_BaseURI, i.toString())));
             currentPhotoId++;
         }
         emit NFTMinted(currentPhotoId);
