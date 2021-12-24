@@ -201,7 +201,7 @@ class Home extends Component {
                                                     <span>Price</span>
                                                 </div>
                                                 <div className="card-bottom d-flex justify-content-between">
-                                                    <span>{item.nftName}</span>
+                                                    <span>{item.nftName || item.nftname }</span>
                                                     <span>{web3.utils.fromWei(item.marketData.price, "ether")} BNB</span>
                                                 </div>
                                                 <Button

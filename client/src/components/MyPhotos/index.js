@@ -308,7 +308,7 @@ class MyPhotos extends Component {
                                                     <span>Price</span>
                                                 </div>
                                                 <div className="card-bottom d-flex justify-content-between">
-                                                    <span>{item.nftName}</span>
+                                                    <span>{item.nftName || item.nftname }</span>
                                                     <span>{ItemPrice} BNB</span>
                                                 </div>
                                                 { !item.marketData.marketStatus ? 
