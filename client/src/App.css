@@ -14,3 +14,11 @@
 	border: 1px solid !important;
 	border-radius: 25px !important;
 }
+
+.items .item {
+	height: inherit !important;
+}
+
+.card {
+	height: 100% !important;
+}

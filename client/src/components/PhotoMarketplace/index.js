@@ -64,21 +64,20 @@ class PhotoMarketplace extends Component {
         const folderList = await PhotoMarketplace.methods.getFolderList().call();
         let mainList = [];
         folderList.map(async(item, idx) => {
-            item.idx = idx;
+            item.folderIndex = idx;
         })
 
         for await (let item of folderList) {
             const res = await PhotoMarketplace.methods.getPhoto(item.wide[0]).call();
             try {
                 const response = await fetch(`${res.nftData.tokenURI}`);
-                // console.log("mainList",response, item, idx);
                 if(response.ok) {
                     const json = await response.json();
                     mainList.push({ ...item, ...json });
                 }
             } catch (err) { }
         }
-        
+
         switch(activeCategory) {
             case "physical":
                 mainList = mainList.filter(item => item.category == activeCategory);
@@ -223,22 +222,22 @@ class PhotoMarketplace extends Component {
                     {
                         !itemLoading &&
                         <div className="row items">
-                            {allPhotos.map((item, idx) => {
+                            {allPhotos.map((item, inx) => {
                                 return (
-                                    <div className="col-12 col-sm-6 col-lg-3 item" key={idx} data-groups={item.category}>
+                                    <div className="col-12 col-sm-6 col-lg-3 item" key={inx} data-groups={item.category}>
                                         <div className="card">
                                             <div className="image-over">
                                             <img className="card-img-top" src={`${item.image}`} alt="" />
                                             </div>
                                             {/* Card Caption */}
-                                            <div className="card-caption col-12 p-0 text-center">
+                                            <div className="card-caption p-0 text-center">
                                                 {/* Card Body */}
                                                 <div className="card-body">
                                                     <div className="card-bottom d-flex justify-content-center">
                                                         <span className="pb-2">{item.folder}</span>
                                                     </div>
                                                     <a
-                                                        href={`/folder-item/${item.idx}`}
+                                                        href={`/folder-item/${item.folderIndex}`}
                                                         size={'medium'}
                                                         width={1}
                                                         className="btn w-100"

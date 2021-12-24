@@ -63,6 +63,11 @@ class FolderItem extends Component {
         })
         const { id } = this.props.match.params;
         const folderList = await PhotoMarketplace.methods.getSubFolderItem(id).call();
+        
+        folderList.map(async(item, idx) => {
+            item.idx = idx;
+        })
+
         let mainList = []; let index = 0;
          await Promise.all(folderList.map(async(item) => {
             try {
@@ -76,6 +81,8 @@ class FolderItem extends Component {
             } catch (err) { }
         }))
         
+        console.log(mainList);
+
         this.setState({
             allPhotos: mainList,
             itemLoading: false
@@ -176,13 +183,13 @@ class FolderItem extends Component {
         let premiumNFT, normalNFT;
         let isExist = true;
         if (isMetaMask) {
-          premiumNFT = allPhotos.filter(item => item.marketData.premiumStatus && item.nftData.owner != currentAccount && item.marketData.marketStatus);
-          normalNFT = allPhotos.filter(item => !item.marketData.premiumStatus && item.nftData.owner != currentAccount && item.marketData.marketStatus);
+          premiumNFT = allPhotos.filter(item => item.marketData.premiumStatus );
+          normalNFT = allPhotos.filter(item => !item.marketData.premiumStatus );
           if (premiumNFT.length + normalNFT.length == 0) isExist = false;
         }
         else {
-          premiumNFT = allPhotos.filter(item => item.marketData.premiumStatus && item.marketData.marketStatus );
-          normalNFT = allPhotos.filter(item => !item.marketData.premiumStatus && item.marketData.marketStatus);
+          premiumNFT = allPhotos.filter(item => item.marketData.premiumStatus );
+          normalNFT = allPhotos.filter(item => !item.marketData.premiumStatus);
           if (premiumNFT.length + normalNFT.length == 0) isExist = false;
         }
 
@@ -211,7 +218,7 @@ class FolderItem extends Component {
                                             <a href={`/item-details/${item.nftData.tokenID}`}><img className="card-img-top" src={`${item.image}`} alt="" /></a>
                                             </div>
                                             {/* Card Caption */}
-                                            <div className="card-caption col-12 p-0">
+                                            <div className="card-caption p-0">
                                                 {/* Card Body */}
                                                 <div className="card-body">
                                                     <div className="card-bottom d-flex justify-content-between">
@@ -222,12 +229,15 @@ class FolderItem extends Component {
                                                         <span>{item.nftName}</span>
                                                         <span>{ItemPrice} BNB</span>
                                                     </div>
-                                                    <Button
-                                                        size={'medium'}
-                                                        width={1}
-                                                        onClick={() => this.buyPhotoNFT(item.nftData.tokenID)}
-                                                        className="btn"
-                                                    > Buy </Button>
+                                                    {
+                                                        item.marketData.marketStatus && item.nftData.owner != currentAccount &&
+                                                        <Button
+                                                            size={'medium'}
+                                                            width={1}
+                                                            onClick={() => this.buyPhotoNFT(item.nftData.tokenID)}
+                                                            className="btn"
+                                                        > Buy </Button>
+                                                    }
                                                 </div>
                                             </div>
                                         </div>
@@ -250,7 +260,7 @@ class FolderItem extends Component {
                                             <a href={`/item-details/${item.nftData.tokenID}`}><img className="card-img-top" src={`${item.image}`} alt="" /></a>
                                             </div>
                                             {/* Card Caption */}
-                                            <div className="card-caption col-12 p-0">
+                                            <div className="card-caption p-0">
                                                 {/* Card Body */}
                                                 <div className="card-body">
                                                     <div className="card-bottom d-flex justify-content-between">
@@ -261,12 +271,15 @@ class FolderItem extends Component {
                                                         <span>{item.nftName}</span>
                                                         <span>{ItemPrice} BNB</span>
                                                     </div>
-                                                    <Button
-                                                        size={'medium'}
-                                                        width={1}
-                                                        onClick={() => this.buyPhotoNFT(item.nftData.tokenID)}
-                                                        className="btn"
-                                                    > Buy </Button>
+                                                    {
+                                                        item.marketData.marketStatus && item.nftData.owner != currentAccount &&
+                                                        <Button
+                                                            size={'medium'}
+                                                            width={1}
+                                                            onClick={() => this.buyPhotoNFT(item.nftData.tokenID)}
+                                                            className="btn"
+                                                        > Buy </Button>
+                                                    }
                                                 </div>
                                             </div>
                                         </div>

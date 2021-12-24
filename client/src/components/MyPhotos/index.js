@@ -300,7 +300,7 @@ class MyPhotos extends Component {
                                             <a href={`/item-details/${item.nftData.tokenID}`}><img className="card-img-top" src={`${item.image}`} alt="" /></a>
                                         </div>
                                         {/* Card Caption */}
-                                        <div className="card-caption col-12 p-0">
+                                        <div className="card-caption p-0">
                                             {/* Card Body */}
                                             <div className="card-body">
                                                 <div className="card-bottom d-flex justify-content-between">

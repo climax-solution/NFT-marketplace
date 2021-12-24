@@ -30,6 +30,7 @@ class Home extends Component {
     }
     
     buyPhotoNFT = async (id) => {
+        console.log(id);
         const { accounts, PhotoMarketplace, isMetaMask } = this.state;
         
         if (!isMetaMask) {
@@ -60,14 +61,12 @@ class Home extends Component {
         let allPhotos = await PhotoMarketplace.methods.getPremiumNFTList().call();
         let mainList = []; let index = 0;
         allPhotos = allPhotos.filter(item => item.marketData.premiumStatus && item.marketData.marketStatus );
-        await Promise.all(allPhotos.map(async (item, idx) => {
+        await Promise.all(allPhotos.map(async (item,) => {
             try {
                 const response = await fetch(`${item.nftData.tokenURI}`);
                 if(response.ok) {
                     const json = await response.json();
-                    mainList[index] = {};
-                    mainList[index] = { ...item, ...json };
-                    index ++;
+                    mainList.push({ ...item, ...json });
                 }
             } catch (err) {
             }
@@ -194,7 +193,7 @@ class Home extends Component {
                                             <a href={`/item-details/${item.nftData.tokenID}`}><img className="card-img-top" src={`${item.image}`} alt="" /></a>
                                         </div>
                                         {/* Card Caption */}
-                                        <div className="card-caption col-12 p-0">
+                                        <div className="card-caption p-0">
                                             {/* Card Body */}
                                             <div className="card-body">
                                                 <div className="card-bottom d-flex justify-content-between">
@@ -203,7 +202,7 @@ class Home extends Component {
                                                 </div>
                                                 <div className="card-bottom d-flex justify-content-between">
                                                     <span>{item.nftName}</span>
-                                                    <span>{web3.utils.fromWei(item.marketData.price)}</span>
+                                                    <span>{web3.utils.fromWei(item.marketData.price, "ether")} BNB</span>
                                                 </div>
                                                 <Button
                                                     size={'medium'}

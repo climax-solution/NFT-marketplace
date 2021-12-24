@@ -69,6 +69,7 @@ class ItemDetails extends Component {
                 });
             }
             const item = await instancePhotoMarketplace.methods.getPhoto(id).call();
+            console.log(item);
             const response = await fetch(`${item.nftData.tokenURI}`);
             const result = await response.json();
             this.setState({ itemData: { ...item, ...result }})
@@ -119,6 +120,9 @@ class ItemDetails extends Component {
                                             <ul className="list-unstyled">
                                                 <li className="price d-flex justify-content-between">
                                                     <span>Premium NFT :  {itemData.marketData.premiumStatus ? "YES" : "NO"}</span>
+                                                </li>
+                                                <li className="price d-flex justify-content-between mt-3">
+                                                    <span>Token ID :  {itemData.nftData.tokenID}</span>
                                                 </li>
                                             </ul>
                                         </div>  
