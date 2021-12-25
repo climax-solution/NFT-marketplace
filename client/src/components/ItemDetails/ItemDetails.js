@@ -69,7 +69,7 @@ class ItemDetails extends Component {
                 });
             }
             const item = await instancePhotoMarketplace.methods.getPhoto(id).call();
-            console.log(item);
+            // console.log(item);
             const response = await fetch(`${item.nftData.tokenURI}`);
             const result = await response.json();
             this.setState({ itemData: { ...item, ...result }})
@@ -112,6 +112,9 @@ class ItemDetails extends Component {
                                             <span>Address : </span>
                                             <a href={`https://ropsten.etherscan.io/token/${nft_addr}`} target="_blank" className="ml-2">{nft_addr}</a>
                                         </div>
+                                        <div className="owner d-flex align-items-center mt-3">
+                                            <span>Token ID :  {itemData.nftData.tokenID}</span>
+                                        </div>
                                         {/* Item Info List */}
                                         <div className="item-info-list mt-3">
                                             <ul className="list-unstyled">
@@ -120,9 +123,6 @@ class ItemDetails extends Component {
                                                 </li>
                                                 <li className="price d-flex justify-content-between mt-3">
                                                     <span>Premium NFT :  {itemData.marketData.premiumStatus ? "YES" : "NO"}</span>
-                                                </li>
-                                                <li className="price d-flex justify-content-between mt-3">
-                                                    <span>Token ID :  {itemData.nftData.tokenID}</span>
                                                 </li>
                                                 {
                                                     itemData.attributes && itemData.attributes.length &&
