@@ -51,23 +51,24 @@ class MyPhotos extends Component {
         allowOutsideClick: () => !Swal.isLoading()
       }).then(async(result) => {
         if (result.isConfirmed) {
-          const { web3, accounts, PhotoMarketplace, PhotoNFT, coin } = this.state;
+          const { web3, accounts, PhotoMarketplace, PhotoNFT } = this.state;
           this.setState({
             isLoading: true
           })
 
           try {
             const photoPrice = web3.utils.toWei((result.value).toString(), 'ether');
-            await PhotoNFT.methods.approve(marketplace_addr, id).send({from : accounts[0]});
-            // await coin.methods.approve(marketplace_addr, photoPrice).send({ from: accounts[0] });
-            await PhotoMarketplace.methods.openTrade(id).send({ from: accounts[0], value: photoPrice / 40 })
-            .then( async(res) => {
+            await PhotoNFT.methods.approve(marketplace_addr, id).send({from : accounts[0]})
+            .on('receipt', async(rec) => {
+              await PhotoMarketplace.methods.openTrade(id).send({ from: accounts[0], value: photoPrice / 40 });
               this.setState({
                 isLoading: false
               })
               NotificationManager.success("Success");
               await this.getAllPhotos();
-            })
+            });
+            // await coin.methods.approve(marketplace_addr, photoPrice).send({ from: accounts[0] });
+            
           } catch(err) {
             NotificationManager.error("Failed");
             this.setState({
