@@ -63,23 +63,20 @@ class FolderItem extends Component {
         })
         const { id } = this.props.match.params;
         const folderList = await PhotoMarketplace.methods.getSubFolderItem(id).call();
-        
         folderList.map(async(item, idx) => {
             item.idx = idx;
         })
 
-        let mainList = []; let index = 0;
-         await Promise.all(folderList.map(async(item) => {
+        let mainList = [];
+        for await (let item of folderList) {
             try {
             const response = await fetch(`${item.nftData.tokenURI}`);
             if(response.ok) {
                 const json = await response.json();
-                mainList[index] = {};
-                mainList[index] = { ...item, ...json };
-                index ++;
+                mainList.push({ ...item, ...json });
             }
             } catch (err) { }
-        }))
+        }
         
         // console.log(folderList);
 
@@ -122,7 +119,7 @@ class FolderItem extends Component {
         if (PhotoMarketplace) {
             instancePhotoMarketplace = new web3.eth.Contract(PhotoMarketplace, marketplace_addr);
         }
-        
+
         if (instancePhotoNFT && instancePhotoMarketplace) {
             // Set web3, accounts, and contract to the state, and then proceed with an
             // example of interacting with the contract's methods.
@@ -145,7 +142,7 @@ class FolderItem extends Component {
             });
         }
 
-        if (web3) await this.getAllPhotos();
+        if (navigator.onLine) await this.getAllPhotos();
         else this.setState({ isLoading: false });
       } catch (error) {
           console.error(error);

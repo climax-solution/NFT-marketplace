@@ -160,20 +160,18 @@ class MyPhotos extends Component {
         });
         let allPhotos = await PhotoMarketplace.methods.getPersonalNFTList().call({ from: currentAccount });
         allPhotos = allPhotos.filter(item => item.marketData.existance);
-        let mainList = []; let index = 0;
-        await Promise.all(allPhotos.map(async (item, idx) => {
-            try {
-              const response = await fetch(`${item.nftData.tokenURI}`);
-              if(response.ok) {
-                  const json = await response.json();
-                  mainList[index] = {};
-                  mainList[index] = { ...item, ...json };
-                  index ++;
-              }
-            } catch (err) {
+        let mainList = [];
+        for await (let item of allPhotos) {
+          try {
+            const response = await fetch(`${item.nftData.tokenURI}`);
+            if(response.ok) {
+                const json = await response.json();
+                mainList.push({ ...item, ...json });
             }
-            return item;
-        }) );
+          } catch (err) {
+          }
+          return item;
+        };
   
         this.checkAssets(mainList);
       }
@@ -236,7 +234,7 @@ class MyPhotos extends Component {
             });
         }
         
-        if (web3) await this.getAllPhotos();
+        if (navigator.onLine) await this.getAllPhotos();
         else this.setState({ isLoading: false });
       } catch (error) {
           console.error(error);

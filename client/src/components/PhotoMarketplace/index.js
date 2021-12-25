@@ -152,7 +152,7 @@ class PhotoMarketplace extends Component {
                 networkType
             });
         }
-        if (web3) await this.getAllPhotos();
+        if (navigator.onLine) await this.getAllPhotos();
         else this.setState({ isLoading: false });
       } catch (error) {
       }

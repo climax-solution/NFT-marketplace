@@ -96,7 +96,6 @@ class Home extends Component {
             
             const web3 = await getWeb3();
             const accounts = await web3.eth.getAccounts();
-            const currentAccount = accounts[0];
 
             const networkType = await web3.eth.net.getNetworkType();
             let balance =
@@ -136,9 +135,9 @@ class Home extends Component {
                 });
             }
             
-            if (web3) await this.getAllPhotos();
+            if (navigator.onLine) await this.getAllPhotos();
             else this.setState({ isLoading: false });
-            
+
         } catch (error) {
             console.error(error);
         }
