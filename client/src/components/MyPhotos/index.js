@@ -106,11 +106,13 @@ class MyPhotos extends Component {
     }
 
     putOnPremium = async (id) => {
-        const { accounts, PhotoMarketplace, coin } = this.state;
+        const { accounts, PhotoMarketplace, PhotoNFT } = this.state;
         this.setState({
           isLoading: true
         })
         try {
+          const approved = await PhotoNFT.methods.getApproved(id).call();
+          if (approved != marketplace_addr) throw "Not approved";
           const photo = await PhotoMarketplace.methods.getPhoto(id).call();
           const tax = photo.marketData.price;
           await PhotoMarketplace.methods.updatePremiumStatus(id, true).send({ from: accounts[0], value: tax / 20});
@@ -120,7 +122,8 @@ class MyPhotos extends Component {
           NotificationManager.success("Success");
           await this.getAllPhotos();
         } catch(err) {
-          NotificationManager.error("Failed");
+          if (typeof err == "string") NotificationManager.error(err);
+          else NotificationManager.error("Failed");
           this.setState({
             isLoading: false
           })
