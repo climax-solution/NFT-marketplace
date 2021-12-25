@@ -32,37 +32,6 @@ library Strings {
         }
         return string(buffer);
     }
-
-    /**
-     * @dev Converts a `uint256` to its ASCII `string` hexadecimal representation.
-     */
-    function toHexString(uint256 value) internal pure returns (string memory) {
-        if (value == 0) {
-            return "0x00";
-        }
-        uint256 temp = value;
-        uint256 length = 0;
-        while (temp != 0) {
-            length++;
-            temp >>= 8;
-        }
-        return toHexString(value, length);
-    }
-
-    /**
-     * @dev Converts a `uint256` to its ASCII `string` hexadecimal representation with fixed length.
-     */
-    function toHexString(uint256 value, uint256 length) internal pure returns (string memory) {
-        bytes memory buffer = new bytes(2 * length + 2);
-        buffer[0] = "0";
-        buffer[1] = "x";
-        for (uint256 i = 2 * length + 1; i > 1; --i) {
-            buffer[i] = _HEX_SYMBOLS[value & 0xf];
-            value >>= 4;
-        }
-        require(value == 0, "Strings: hex length insufficient");
-        return string(buffer);
-    }
 }
 
 contract PhotoNFT is ERC721URIStorage {
@@ -89,9 +58,9 @@ contract PhotoNFT is ERC721URIStorage {
     }
 
     function bulkMint(string memory baseURI, uint256 count) public onlyOwner {
+        baseURI = string(abi.encodePacked(baseURI, "/"));
         for (uint i = 0; i < count; i ++) {
             _mint(msg.sender, currentPhotoId);
-            baseURI = string(abi.encodePacked(baseURI, "/"));
             string memory _BaseURI = string(abi.encodePacked("https://ipfs.io/ipfs/", baseURI));
             _setTokenURI(currentPhotoId, string(abi.encodePacked(_BaseURI, i.toString())));
             currentPhotoId++;
@@ -105,14 +74,6 @@ contract PhotoNFT is ERC721URIStorage {
             tokenURI : tokenURI (index), 
             owner : ownerOf(index)
         });
-    }
-
-    function getAllPhotos() public view returns (Photo[] memory) {
-        Photo[] memory result = new Photo[](currentPhotoId);
-        for (uint i = 0; i < currentPhotoId; i++) {
-            result[i] = getPhoto(i);
-        }
-        return result;
     }
 
     function cancelTrade(uint tokenID) public {

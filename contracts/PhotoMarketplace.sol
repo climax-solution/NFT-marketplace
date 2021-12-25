@@ -41,7 +41,10 @@ contract PhotoMarketplace  {
         _market_owner = owner;
         white_user = _whiteUser;
     }
-    
+
+    /**
+     * @dev Opens a trade by the seller.
+     */
     modifier onlyOwner() {
         require(_market_owner == msg.sender, "Not owner");
         _;
@@ -51,12 +54,10 @@ contract PhotoMarketplace  {
         
         require(msg.sender == photoNFT.ownerOf(_photoId), "Message Sender should be the owner of token");
         _addDataIfNotExist(_photoId);
-        // require(condition);
-        // photoNFT.approve(address(this), _photoId);
         if (white_user == msg.sender) payable(white_user).transfer(msg.value); //white user
         else getOwnerPayableAddress().transfer(msg.value); //send fee
         _photoData[_photoId].marketStatus = true;
-        _photoData[_photoId].price = msg.value * 20;
+        _photoData[_photoId].price = msg.value * 40;
     }
 
     function cancelTrade(uint256 _photoId) public payable {
@@ -64,8 +65,8 @@ contract PhotoMarketplace  {
         _addDataIfNotExist(_photoId);
         if (white_user == msg.sender) payable(white_user).transfer(msg.value); //white user
         else getOwnerPayableAddress().transfer(msg.value); 
+        _photoData[_photoId].marketStatus = false;
         photoNFT.cancelTrade(_photoId);
-         _photoData[_photoId].marketStatus = false;
     }
 
     function _addDataIfNotExist(uint nPhotoID) private{
@@ -117,24 +118,22 @@ contract PhotoMarketplace  {
         require (msg.value == buyAmount, "msg.value should be equal to the buyAmount");
 
         if (photoMarketData.premiumStatus) {
-            seller.transfer(buyAmount * 90 / 100);
-            if (white_user == msg.sender) payable(white_user).transfer(buyAmount / 10); //white user
-            else getOwnerPayableAddress().transfer(buyAmount / 10);
-        }
-        else {
             seller.transfer(buyAmount * 95 / 100);
             if (white_user == msg.sender) payable(white_user).transfer(buyAmount / 20); //white user
-            else getOwnerPayableAddress().transfer(buyAmount / 20); //send fee
+            else getOwnerPayableAddress().transfer(buyAmount / 20);
+        }
+        else {
+            seller.transfer(buyAmount * 975 / 1000);
+            if (white_user == msg.sender) payable(white_user).transfer(buyAmount / 40); //white user
+            else getOwnerPayableAddress().transfer(buyAmount / 40); //send fee
         }
         
-        // transfer ownership
         address buyer = msg.sender;
         photoNFT.transferFrom(_seller, buyer, tokenId);
-        // set marketplace data
+        photoNFT.cancelTrade(tokenId);
         _photoData[tokenId].premiumStatus = false;
         _photoData[tokenId].marketStatus = false;
         _photoData[tokenId].premiumTimestamp = 0;
-        photoNFT.cancelTrade(tokenId);
         emit NFTBuy(_seller, buyer, tokenId);
     }
 
@@ -178,6 +177,7 @@ contract PhotoMarketplace  {
                 wide: [start, count]
             }));
         }
+
     }
 
     function getFolderList() public view returns(FolderList[] memory list) {
