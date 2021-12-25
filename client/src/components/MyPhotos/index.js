@@ -194,50 +194,50 @@ class MyPhotos extends Component {
       }
 
       try {
-          
-          const web3 = await getWeb3();
-          const accounts = await web3.eth.getAccounts();
-          const currentAccount = accounts[0];
+        const web3 = await getWeb3();
+        const accounts = await web3.eth.getAccounts();
+        const currentAccount = accounts[0];
 
-          const networkType = await web3.eth.net.getNetworkType();
-          let balance =
-              accounts.length > 0
-                  ? await web3.eth.getBalance(accounts[0])
-                  : web3.utils.toWei("0");
-          balance = web3.utils.fromWei(balance, "ether");
+        const networkType = await web3.eth.net.getNetworkType();
+        let balance =
+            accounts.length > 0
+                ? await web3.eth.getBalance(accounts[0])
+                : web3.utils.toWei("0");
+        balance = web3.utils.fromWei(balance, "ether");
 
-          let instancePhotoNFT = null;
-          let instancePhotoMarketplace = null;
-          
-          if (PhotoNFT) {
-              instancePhotoNFT = new web3.eth.Contract(PhotoNFT, nft_addr);
-          }
+        let instancePhotoNFT = null;
+        let instancePhotoMarketplace = null;
+        
+        if (PhotoNFT) {
+            instancePhotoNFT = new web3.eth.Contract(PhotoNFT, nft_addr);
+        }
 
-          if (PhotoMarketplace) {
-              instancePhotoMarketplace = new web3.eth.Contract(PhotoMarketplace, marketplace_addr);
-          }
+        if (PhotoMarketplace) {
+            instancePhotoMarketplace = new web3.eth.Contract(PhotoMarketplace, marketplace_addr);
+        }
 
-          if (instancePhotoNFT && instancePhotoMarketplace) {
-              this.setState(
-                  {
-                      web3,
-                      accounts,
-                      balance,
-                      networkType,
-                      PhotoNFT: instancePhotoNFT,
-                      PhotoMarketplace: instancePhotoMarketplace
-                  }
-              );
-          } else {
-              this.setState({
-                  web3,
-                  accounts,
-                  balance,
-                  networkType
-              });
-          }
-          
-          await this.getAllPhotos();
+        if (instancePhotoNFT && instancePhotoMarketplace) {
+            this.setState(
+                {
+                    web3,
+                    accounts,
+                    balance,
+                    networkType,
+                    PhotoNFT: instancePhotoNFT,
+                    PhotoMarketplace: instancePhotoMarketplace
+                }
+            );
+        } else {
+            this.setState({
+                web3,
+                accounts,
+                balance,
+                networkType
+            });
+        }
+        
+        if (web3) await this.getAllPhotos();
+        else this.setState({ isLoading: false });
       } catch (error) {
           console.error(error);
       }

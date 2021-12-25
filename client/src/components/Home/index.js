@@ -136,7 +136,9 @@ class Home extends Component {
                 });
             }
             
-            await this.getAllPhotos();
+            if (web3) await this.getAllPhotos();
+            else this.setState({ isLoading: false });
+            
         } catch (error) {
             console.error(error);
         }

@@ -57,7 +57,7 @@ class FolderItem extends Component {
     }
     
     getAllPhotos = async () => {
-        const { PhotoMarketplace, activeCategory } = this.state;
+        const { PhotoMarketplace } = this.state;
         this.setState({
             itemLoading: true
         })
@@ -96,8 +96,6 @@ class FolderItem extends Component {
       try {
           PhotoNFT = require("../../abi/PhotoNFT.json");
           PhotoMarketplace = require("../../abi/PhotoMarketplace.json");
-          
-          //console.log(marketplace_addr, PhotoMarketplace);
       } catch (e) {
           ////console.log(e);
       }
@@ -106,7 +104,6 @@ class FolderItem extends Component {
         
         const web3 = await getWeb3();
         const accounts = await web3.eth.getAccounts();
-        const currentAccount = accounts[0];
 
         const networkType = await web3.eth.net.getNetworkType();
         let balance =
@@ -125,7 +122,7 @@ class FolderItem extends Component {
         if (PhotoMarketplace) {
             instancePhotoMarketplace = new web3.eth.Contract(PhotoMarketplace, marketplace_addr);
         }
-
+        
         if (instancePhotoNFT && instancePhotoMarketplace) {
             // Set web3, accounts, and contract to the state, and then proceed with an
             // example of interacting with the contract's methods.
@@ -147,7 +144,9 @@ class FolderItem extends Component {
                 networkType
             });
         }
-        await this.getAllPhotos();
+
+        if (web3) await this.getAllPhotos();
+        else this.setState({ isLoading: false });
       } catch (error) {
           console.error(error);
       }

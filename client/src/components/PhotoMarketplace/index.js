@@ -110,7 +110,6 @@ class PhotoMarketplace extends Component {
         
         const web3 = await getWeb3();
         const accounts = await web3.eth.getAccounts();
-        const currentAccount = accounts[0];
 
         const networkType = await web3.eth.net.getNetworkType();
         let balance =
@@ -142,8 +141,7 @@ class PhotoMarketplace extends Component {
                     balance,
                     networkType,
                     PhotoNFT: instancePhotoNFT,
-                    PhotoMarketplace: instancePhotoMarketplace,
-                    currentAccount,
+                    PhotoMarketplace: instancePhotoMarketplace
                 }
             );
         } else {
@@ -151,11 +149,11 @@ class PhotoMarketplace extends Component {
                 web3,
                 accounts,
                 balance,
-                networkType,
-                currentAccount
+                networkType
             });
         }
-        await this.getAllPhotos();
+        if (web3) await this.getAllPhotos();
+        else this.setState({ isLoading: false });
       } catch (error) {
       }
     };
