@@ -102,32 +102,43 @@ class ItemDetails extends Component {
                                 <div className="col-12 col-lg-6">
                                     {/* Content */}
                                     <div className="content mt-5 mt-lg-0">
-                                        <h3 className="m-0">{itemData.nftName}</h3>
+                                        <h3 className="m-0">{itemData.nftName || itemData.nftname}</h3>
                                         {/* Owner */}
-                                        <div className="owner d-flex align-items-center mt-4">
+                                        <div className="owner d-flex align-items-center mt-3">
                                             <span>Owner : </span>
-                                            <a href={`https://bscscan.com/address/${itemData.nftData.owner}`} target="_blank" className="ml-2">{itemData.nftData.owner.substr(0,14) + "..." + itemData.nftData.owner.substr(-4)}</a>
+                                            <a href={`https://ropsten.etherscan.io/address/${itemData.nftData.owner}`} target="_blank" className="ml-2">{itemData.nftData.owner.substr(0,14) + "..." + itemData.nftData.owner.substr(-4)}</a>
+                                        </div>
+                                        <div className="owner d-flex align-items-center mt-3">
+                                            <span>Address : </span>
+                                            <a href={`https://ropsten.etherscan.io/token/${nft_addr}`} target="_blank" className="ml-2">{nft_addr}</a>
                                         </div>
                                         {/* Item Info List */}
-                                        <div className="item-info-list mt-4">
+                                        <div className="item-info-list mt-3">
                                             <ul className="list-unstyled">
                                                 <li className="price d-flex justify-content-between">
                                                     <span>Current Price :  {web3.utils.fromWei(`${itemData.marketData.price}`,"ether")} BNB</span>
                                                 </li>
-                                            </ul>
-                                        </div>
-                                        <div className="item-info-list mt-4">
-                                            <ul className="list-unstyled">
-                                                <li className="price d-flex justify-content-between">
+                                                <li className="price d-flex justify-content-between mt-3">
                                                     <span>Premium NFT :  {itemData.marketData.premiumStatus ? "YES" : "NO"}</span>
                                                 </li>
                                                 <li className="price d-flex justify-content-between mt-3">
                                                     <span>Token ID :  {itemData.nftData.tokenID}</span>
                                                 </li>
+                                                {
+                                                    itemData.attributes && itemData.attributes.length &&
+                                                    itemData.attributes.map(attrItem => {
+                                                        return <li className="price d-flex justify-content-between mt-3">
+                                                            <span>{attrItem.trait_type} :  {attrItem.value}</span>
+                                                        </li>
+                                                    })
+                                                }
                                             </ul>
-                                        </div>  
-                                        <p>Description:</p>
-                                        <p>{itemData.nftDesc}</p>
+                                        </div>
+                                        <div className="owner mt-3">
+                                            <p>Description:</p>
+                                            <p className='ml-md-5 ml-sm-0'>{itemData.nftDesc}</p>
+                                        </div>
+                                        
                                     </div>
                                 </div>
                             </div>

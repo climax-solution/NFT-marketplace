@@ -81,7 +81,7 @@ class FolderItem extends Component {
             } catch (err) { }
         }))
         
-        console.log(mainList);
+        // console.log(folderList);
 
         this.setState({
             allPhotos: mainList,
