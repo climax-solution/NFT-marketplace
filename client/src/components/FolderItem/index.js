@@ -137,7 +137,6 @@ class FolderItem extends Component {
                     networkType,
                     PhotoNFT: instancePhotoNFT,
                     PhotoMarketplace: instancePhotoMarketplace,
-                    currentAccount,
                 }
             );
         } else {
@@ -145,8 +144,7 @@ class FolderItem extends Component {
                 web3,
                 accounts,
                 balance,
-                networkType,
-                currentAccount
+                networkType
             });
         }
         await this.getAllPhotos();
@@ -166,11 +164,16 @@ class FolderItem extends Component {
     }
 
     async componentDidUpdate(preprops) {
+        const { connected } = this.props;
         if (preprops != this.props) {
             await this.init();
             const { web3 } = this.state;
             this.setState({
-                isMetaMask: this.props.connected,
+                isMetaMask: connected
+            })
+            const accounts = await web3.eth.getAccounts();
+            this.setState({
+                currentAccount: connected ? accounts[0] : ''
             })
             if (web3 != null) {
                 await this.getAllPhotos();

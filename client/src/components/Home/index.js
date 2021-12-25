@@ -124,8 +124,7 @@ class Home extends Component {
                         balance,
                         networkType,
                         PhotoNFT: instancePhotoNFT,
-                        PhotoMarketplace: instancePhotoMarketplace,
-                        currentAccount,
+                        PhotoMarketplace: instancePhotoMarketplace
                     }
                 );
             } else {
@@ -133,8 +132,7 @@ class Home extends Component {
                     web3,
                     accounts,
                     balance,
-                    networkType,
-                    currentAccount,
+                    networkType
                 });
             }
             
@@ -156,6 +154,10 @@ class Home extends Component {
                 isMetaMask: this.props.connected,
             })
             const { web3 } = this.state;
+            const accounts = await web3.eth.getAccounts();
+            this.setState({
+                currentAccount: this.props.connected ? accounts[0] : ''
+            })
             if (web3 != null) {
                 await this.getAllPhotos();
             }

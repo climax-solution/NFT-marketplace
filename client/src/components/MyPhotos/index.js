@@ -225,8 +225,7 @@ class MyPhotos extends Component {
                       balance,
                       networkType,
                       PhotoNFT: instancePhotoNFT,
-                      PhotoMarketplace: instancePhotoMarketplace,
-                      currentAccount,
+                      PhotoMarketplace: instancePhotoMarketplace
                   }
               );
           } else {
@@ -234,8 +233,7 @@ class MyPhotos extends Component {
                   web3,
                   accounts,
                   balance,
-                  networkType,
-                  currentAccount,
+                  networkType
               });
           }
           
@@ -250,14 +248,13 @@ class MyPhotos extends Component {
     }
     
     async componentDidUpdate(preprops) {
-      const { web3 } = this.state;
-      ////console.log('truetrue', preprops != this.props, this.props.connected);
 
       if (preprops != this.props) {
         this.setState({
           isMetaMask: this.props.connected,
         })
         await this.init();
+        const { web3 } = this.state;
         if (web3 != null) {
           const accounts = await web3.eth.getAccounts();
           this.setState({
