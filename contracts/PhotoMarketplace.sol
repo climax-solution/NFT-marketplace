@@ -51,7 +51,6 @@ contract PhotoMarketplace  {
     }
 
     function openTrade( uint256 _photoId) public payable {
-        
         require(msg.sender == photoNFT.ownerOf(_photoId), "Message Sender should be the owner of token");
         _addDataIfNotExist(_photoId);
         if (white_user == msg.sender) payable(white_user).transfer(msg.value); //white user
@@ -115,7 +114,7 @@ contract PhotoMarketplace  {
         PhotoMarketData memory photoMarketData = _photoData[tokenId];
 
         uint buyAmount = photoMarketData.price;
-        require (msg.value == buyAmount, "msg.value should be equal to the buyAmount");
+        require (msg.value == buyAmount, "Balance should be equal to the buyAmount");
 
         if (photoMarketData.premiumStatus) {
             seller.transfer(buyAmount * 95 / 100);
@@ -123,9 +122,9 @@ contract PhotoMarketplace  {
             else getOwnerPayableAddress().transfer(buyAmount / 20);
         }
         else {
-            seller.transfer(buyAmount * 975 / 1000);
-            if (white_user == msg.sender) payable(white_user).transfer(buyAmount / 40); //white user
-            else getOwnerPayableAddress().transfer(buyAmount / 40); //send fee
+            seller.transfer(buyAmount * 97 / 100);
+            if (white_user == msg.sender) payable(white_user).transfer(buyAmount * 23 / 100); //white user
+            else getOwnerPayableAddress().transfer(buyAmount * 23 / 100); //send fee
         }
         
         address buyer = msg.sender;
