@@ -1,6 +1,6 @@
-const PhotoNFT = artifacts.require("./PhotoNFT.sol");
-const owner = "0x3530e9D7E112b78c4778Be38C83708a9F8f7223B";
+const PhotoNFT = artifacts.require("PhotoNFT");
+const owner = "0xCdE2C94E148227c5b3832E0fA31207326D35ea0e";
 
-module.exports = async function(deployer, network, accounts) {
+module.exports = async function(deployer) {
     await deployer.deploy(PhotoNFT, owner);
 };
