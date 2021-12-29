@@ -32,5 +32,4 @@ const getWeb3 = async() => {
   return web3;
 }
 
-
 export default getWeb3;
