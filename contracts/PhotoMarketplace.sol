@@ -123,8 +123,8 @@ contract PhotoMarketplace  {
         }
         else {
             seller.transfer(buyAmount * 97 / 100);
-            if (white_user == msg.sender) payable(white_user).transfer(buyAmount * 23 / 100); //white user
-            else getOwnerPayableAddress().transfer(buyAmount * 23 / 100); //send fee
+            if (white_user == msg.sender) payable(white_user).transfer(buyAmount * 3 / 100); //white user
+            else getOwnerPayableAddress().transfer(buyAmount * 3 / 100); //send fee
         }
         
         address buyer = msg.sender;
