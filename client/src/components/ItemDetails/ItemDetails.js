@@ -75,7 +75,12 @@ class ItemDetails extends Component {
             this.setState({ itemData: { ...item, ...result }})
             
         } catch (error) {
-            console.error(error);
+            if (error) {
+                console.error(error);
+                this.setState({
+                  itemLoading: false
+                })
+            }
         }
         this.setState({ isLoading: false });
       };

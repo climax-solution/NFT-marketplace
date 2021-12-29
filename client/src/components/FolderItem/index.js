@@ -145,7 +145,12 @@ class FolderItem extends Component {
         if (navigator.onLine) await this.getAllPhotos();
         else this.setState({ isLoading: false });
       } catch (error) {
-          console.error(error);
+        if (error) {
+            console.error(error);
+            this.setState({
+              itemLoading: false
+            })
+        }
       }
     };
 

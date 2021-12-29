@@ -159,6 +159,7 @@ class MyPhotos extends Component {
           itemLoading: true
         });
         let allPhotos = await PhotoMarketplace.methods.getPersonalNFTList().call({ from: currentAccount });
+        console.log(allPhotos);
         allPhotos = allPhotos.filter(item => item.marketData.existance);
         let mainList = [];
         for await (let item of allPhotos) {
@@ -168,8 +169,7 @@ class MyPhotos extends Component {
                 const json = await response.json();
                 mainList.push({ ...item, ...json });
             }
-          } catch (err) {
-          }
+          } catch (err) {}
           return item;
         };
   
@@ -237,7 +237,12 @@ class MyPhotos extends Component {
         if (navigator.onLine) await this.getAllPhotos();
         else this.setState({ isLoading: false });
       } catch (error) {
-          console.error(error);
+          if (error) {
+            console.error(error);
+            this.setState({
+              itemLoading: false
+            })
+          }
       }
     };
 
@@ -270,6 +275,7 @@ class MyPhotos extends Component {
           assets: list
       })
     }
+
     render() {
         const { web3, assets, currentAccount, isMetaMask, isLoading, itemLoading } = this.state;
         return (

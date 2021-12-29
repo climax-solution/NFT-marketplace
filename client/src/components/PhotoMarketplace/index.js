@@ -93,7 +93,7 @@ class PhotoMarketplace extends Component {
         });
     }
 
-    async componentDidMount () {
+    init = async () => {
     
       let PhotoNFT = {};
       let PhotoMarketplace = {};
@@ -103,7 +103,7 @@ class PhotoMarketplace extends Component {
           
           //console.log(marketplace_addr, PhotoMarketplace);
       } catch (e) {
-          ////console.log(e);
+          console.log(e);
       }
 
       try {
@@ -155,8 +155,18 @@ class PhotoMarketplace extends Component {
         if (navigator.onLine) await this.getAllPhotos();
         else this.setState({ isLoading: false });
       } catch (error) {
+          if (error) {
+            console.log(error)
+            this.setState({
+                itemLoading: false
+            })
+          }
       }
     };
+
+    async componentDidMount() {
+        await this.init();
+    }
 
     componentWillUnmount() {
         if (this.interval) {
