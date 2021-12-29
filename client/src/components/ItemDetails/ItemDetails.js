@@ -76,7 +76,7 @@ class ItemDetails extends Component {
             
         } catch (error) {
             if (error) {
-                console.error(error);
+                console.log(error);
                 this.setState({
                   itemLoading: false
                 })

@@ -146,7 +146,7 @@ class FolderItem extends Component {
         else this.setState({ isLoading: false });
       } catch (error) {
         if (error) {
-            console.error(error);
+            console.log(error);
             this.setState({
               itemLoading: false
             })
