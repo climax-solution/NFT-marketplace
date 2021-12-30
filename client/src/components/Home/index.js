@@ -171,9 +171,7 @@ class Home extends Component {
     }
 
     render() {
-        const { web3, allPhotos, currentAccount, isMetaMask, itemLoading, isLoading } = this.state;
-        let List = allPhotos.filter(item => item.nftData.owner != currentAccount || !isMetaMask);
-        //console.log(List);
+        const { web3, allPhotos, currentAccount, itemLoading, isLoading } = this.state;
         return(
             <>
                 { isLoading && <ScreenLoading/> }
@@ -193,7 +191,7 @@ class Home extends Component {
                     !itemLoading &&
                     <div className="row items" style={{minHeight: '300px'}}>
                         {
-                        List.map((item, idx) => {
+                        allPhotos.map((item, idx) => {
                             return (
                                 <div className="col-12 col-sm-6 col-lg-3 item" key={idx}>
                                     <div className="card">
@@ -212,12 +210,15 @@ class Home extends Component {
                                                     <span>{item.nftName || item.nftname }</span>
                                                     <span>{web3.utils.fromWei(item.marketData.price, "ether")} BNB</span>
                                                 </div>
-                                                <Button
-                                                    size={'medium'}
-                                                    width={1}
-                                                    onClick={() => this.buyPhotoNFT(item.nftData.tokenID)}
-                                                    className="btn"
-                                                > Buy </Button>
+                                                {
+                                                    item.nftData.owner != currentAccount &&
+                                                    <Button
+                                                        size={'medium'}
+                                                        width={1}
+                                                        onClick={() => this.buyPhotoNFT(item.nftData.tokenID)}
+                                                        className="btn"
+                                                    > Buy </Button>
+                                                }
                                             </div>
                                         </div>
                                     </div>

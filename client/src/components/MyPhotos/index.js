@@ -106,13 +106,13 @@ class MyPhotos extends Component {
     }
 
     putOnPremium = async (id) => {
-        const { accounts, PhotoMarketplace, PhotoNFT } = this.state;
+        const { accounts, PhotoMarketplace, PhotoNFT, currentAccount } = this.state;
         this.setState({
           isLoading: true
         })
         try {
-          const approved = await PhotoNFT.methods.getApproved(id).call();
-          if (approved != marketplace_addr) throw "Not approved";
+          const owner = await PhotoNFT.methods.ownerOf(id).call();
+          if (owner.toLowerCase() != currentAccount.toLowerCase() && currentAccount) throw "Not owner";
           const photo = await PhotoMarketplace.methods.getPhoto(id).call();
           const tax = photo.marketData.price;
           await PhotoMarketplace.methods.updatePremiumStatus(id, true).send({ from: accounts[0], value: tax / 20});
@@ -170,11 +170,11 @@ class MyPhotos extends Component {
                 mainList.push({ ...item, ...json });
             }
           } catch (err) {}
-          return item;
         };
   
-        this.checkAssets(mainList);
+        await this.checkAssets(mainList);
       }
+      console.log("Ok");
       this.setState({
         itemLoading: false
       })
@@ -194,7 +194,6 @@ class MyPhotos extends Component {
       try {
         const web3 = await getWeb3();
         const accounts = await web3.eth.getAccounts();
-        const currentAccount = accounts[0];
 
         const networkType = await web3.eth.net.getNetworkType();
         let balance =
@@ -278,6 +277,7 @@ class MyPhotos extends Component {
 
     render() {
         const { web3, assets, currentAccount, isMetaMask, isLoading, itemLoading } = this.state;
+        // console.log(itemLoading, assets);
         return (
           <>
             { isLoading && <ScreenLoading/> }
