@@ -227,7 +227,7 @@ class Home extends Component {
                         })
                         }
                         {
-                        !List.length && <h4 className="text-center text-muted">No items.</h4>
+                        !allPhotos.length && <h4 className="text-center text-muted">No items.</h4>
                         }
                     </div>
                 }
