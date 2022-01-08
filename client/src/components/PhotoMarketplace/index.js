@@ -190,6 +190,10 @@ class PhotoMarketplace extends Component {
       }
     }
 
+    faliedLoadImage = (e) => {
+        e.target.src="/img/empty.png";
+    }
+
     render() {
         const { allPhotos, isLoading, itemLoading } = this.state;
 
@@ -235,7 +239,7 @@ class PhotoMarketplace extends Component {
                                     <div className="col-12 col-sm-6 col-lg-3 item" key={inx} data-groups={item.category}>
                                         <div className="card">
                                             <div className="image-over">
-                                            <img className="card-img-top" src={`${item.image}`} alt="" />
+                                            <img className="card-img-top" src={`${item.image}`} alt="" onError={this.faliedLoadImage} />
                                             </div>
                                             {/* Card Caption */}
                                             <div className="card-caption p-0 text-center">

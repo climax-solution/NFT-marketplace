@@ -6,11 +6,7 @@ import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import { ERC721URIStorage } from "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
 library Strings {
-    bytes16 private constant _HEX_SYMBOLS = "0123456789abcdef";
-
-    /**
-     * @dev Converts a `uint256` to its ASCII `string` decimal representation.
-     */
+    
     function toString(uint256 value) internal pure returns (string memory) {
 
         if (value == 0) {

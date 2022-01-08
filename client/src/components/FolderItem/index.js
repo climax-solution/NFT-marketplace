@@ -182,6 +182,10 @@ class FolderItem extends Component {
         }
     }
 
+    faliedLoadImage = (e) => {
+        e.target.src="/img/empty.png";
+    }
+    
     render() {
         const { web3, allPhotos, currentAccount, isMetaMask, isLoading, itemLoading } = this.state;
         let premiumNFT, normalNFT;
@@ -196,6 +200,8 @@ class FolderItem extends Component {
           normalNFT = allPhotos.filter(item => !item.marketData.premiumStatus);
           if (premiumNFT.length + normalNFT.length == 0) isExist = false;
         }
+
+        
 
         return (
             <>
@@ -261,7 +267,7 @@ class FolderItem extends Component {
                                     <div className="col-12 col-sm-6 col-lg-3 item" key={idx} data-groups={item.category}>
                                         <div className="card">
                                             <div className="image-over">
-                                            <a href={`/item-details/${item.nftData.tokenID}`}><img className="card-img-top" src={`${item.image}`} alt="" /></a>
+                                            <a href={`/item-details/${item.nftData.tokenID}`}><img className="card-img-top" onError={this.faliedLoadImage} src={`${item.image}`} alt="" /></a>
                                             </div>
                                             {/* Card Caption */}
                                             <div className="card-caption p-0">

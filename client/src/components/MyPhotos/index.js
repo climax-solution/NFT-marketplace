@@ -267,12 +267,16 @@ class MyPhotos extends Component {
       }
     }
 
-    checkAssets(allPhotos) {
+    checkAssets = (allPhotos) => {
       const { currentAccount } = this.state;
       const list = allPhotos.filter(item => currentAccount == item.nftData.owner);
       this.setState({
           assets: list
       })
+    }
+
+    faliedLoadImage = (e) => {
+      e.target.src="/img/empty.png";
     }
 
     render() {
@@ -302,7 +306,7 @@ class MyPhotos extends Component {
                                 <div className="col-12 col-sm-6 col-lg-3 item" key={idx}>
                                     <div className="card">
                                         <div className="image-over">
-                                            <a href={`/item-details/${item.nftData.tokenID}`}><img className="card-img-top" src={`${item.image}`} alt="" /></a>
+                                            <a href={`/item-details/${item.nftData.tokenID}`}><img className="card-img-top" src={`${item.image}`} alt="" onError={this.faliedLoadImage}/></a>
                                         </div>
                                         {/* Card Caption */}
                                         <div className="card-caption p-0">

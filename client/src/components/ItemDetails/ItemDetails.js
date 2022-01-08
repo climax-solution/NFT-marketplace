@@ -83,7 +83,11 @@ class ItemDetails extends Component {
             }
         }
         this.setState({ isLoading: false });
-      };
+    };
+
+    faliedLoadImage = (e) => {
+        e.target.src="/img/empty.png";
+    }
 
     render() {
         const { itemData, web3, isLoading } = this.state;
@@ -100,7 +104,7 @@ class ItemDetails extends Component {
                                 <div className="col-12 col-lg-5">
                                     <div className="item-info">
                                         <div className="item-thumb text-center p-md-4 p-3" style={{background: "rgba(255,255,255,0.1)"}}>
-                                            <img src={`${itemData.image}`} alt="" />
+                                            <img src={`${itemData.image}`}  onError={this.faliedLoadImage} alt="" />
                                         </div>
                                     </div>
                                 </div>
@@ -111,11 +115,11 @@ class ItemDetails extends Component {
                                         {/* Owner */}
                                         <div className="owner d-flex align-items-center mt-3">
                                             <span>Owner : </span>
-                                            <a href={`https://ropsten.etherscan.io/address/${itemData.nftData.owner}`} target="_blank" className="ml-2">{itemData.nftData.owner.substr(0,14) + "..." + itemData.nftData.owner.substr(-4)}</a>
+                                            <a href={`https://bscscan.com/address/${itemData.nftData.owner}`} target="_blank" className="ml-2">{itemData.nftData.owner.substr(0,14) + "..." + itemData.nftData.owner.substr(-4)}</a>
                                         </div>
                                         <div className="owner d-flex align-items-center mt-3">
                                             <span>Address : </span>
-                                            <a href={`https://ropsten.etherscan.io/token/${nft_addr}`} target="_blank" className="ml-2">{nft_addr}</a>
+                                            <a href={`https://bscscan.com/token/${nft_addr}`} target="_blank" className="ml-2">{nft_addr}</a>
                                         </div>
                                         <div className="owner d-flex align-items-center mt-3">
                                             <span>Token ID :  {itemData.nftData.tokenID}</span>

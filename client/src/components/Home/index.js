@@ -170,6 +170,10 @@ class Home extends Component {
         }
     }
 
+    faliedLoadImage = (e) =>{
+        e.target.src="/img/empty.png";
+    }
+
     render() {
         const { web3, allPhotos, currentAccount, itemLoading, isLoading } = this.state;
         return(
@@ -196,7 +200,7 @@ class Home extends Component {
                                 <div className="col-12 col-sm-6 col-lg-3 item" key={idx}>
                                     <div className="card">
                                         <div className="image-over">
-                                            <a href={`/item-details/${item.nftData.tokenID}`}><img className="card-img-top" src={`${item.image}`} alt="" /></a>
+                                            <a href={`/item-details/${item.nftData.tokenID}`}><img className="card-img-top" src={`${item.image}`} onError={this.faliedLoadImage} alt="" /></a>
                                         </div>
                                         {/* Card Caption */}
                                         <div className="card-caption p-0">
