@@ -14,6 +14,7 @@ import 'react-notifications/lib/notifications.css';
 import styles from './App.module.scss';
 import './App.css';
 import FolderItem from "./components/FolderItem/index.js";
+import Collections from "./components/Collection/index.js";
 
 
 class App extends Component {
@@ -61,6 +62,7 @@ class App extends Component {
           <Switch>
             <Route exact path="/" component={Home}/>
             <Route path="/my-photos" component={MyPhotos}/>
+            <Route path="/collections" component={Collections}/>
             <Route path="/photo-marketplace" component={PhotoMarketplace}/>
             <Route path="/item-details/:id" component={ItemDetails}/>
             <Route path="/folder-item/:id" component={FolderItem}/>
