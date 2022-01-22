@@ -1,0 +1,10 @@
+.w-150 {
+    width: 150px;
+}
+.search-input {
+    width: calc(100% - 170px) !important;
+}
+.search-box {
+    max-width: 970px;
+    margin: auto;
+}

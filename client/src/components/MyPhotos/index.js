@@ -26,7 +26,8 @@ class MyPhotos extends Component {
           isMetaMask: false,
           PhotoMarketplace: {},
           PhotoNFT: {},
-          assets: []
+          assets: [],
+          restGradList: []
         };
 
         this.putOnSale = this.putOnSale.bind(this);
@@ -152,13 +153,13 @@ class MyPhotos extends Component {
         }
     }
 
-    getAllPhotos = async () => {
+    getAllPhotos = async (allPhotos) => {
       const { PhotoMarketplace, isMetaMask, currentAccount } = this.state;
       if (isMetaMask && currentAccount) {
         this.setState({
           itemLoading: true
         });
-        let allPhotos = await PhotoMarketplace.methods.getPersonalNFTList().call({ from: currentAccount });
+        allPhotos = await PhotoMarketplace.methods.getPersonalNFTList().call({ from: currentAccount });
         console.log(allPhotos);
         allPhotos = allPhotos.filter(item => item.marketData.existance);
         let mainList = [];
@@ -233,7 +234,19 @@ class MyPhotos extends Component {
             });
         }
         
-        if (navigator.onLine) await this.getAllPhotos();
+        if (navigator.onLine) {
+          const { currentAccount } = this.state;
+          let gradList = await instancePhotoMarketplace.methods.getPersonalNFTList().call({ from: currentAccount });
+          gradList = gradList.filter(item => item.existance);
+          let list = [];
+          if (gradList.length > 8) {
+              list = gradList.slice(0,8);
+              this.setState({
+                  restGradList: gradList.slice((gradList.length - 8) * -1)
+              })
+          }
+          await this.getAllPhotos(list);
+        }
         else this.setState({ isLoading: false });
       } catch (error) {
           if (error) {
@@ -262,7 +275,17 @@ class MyPhotos extends Component {
           this.setState({
             currentAccount: this.props.connected ? accounts[0] : ''
           })
-          await this.getAllPhotos();
+          const {  PhotoMarketplace } = this.state;
+          let gradList = await PhotoMarketplace.methods.getPersonalNFTList().call({ from: this.props.connected ? accounts[0] : '' });
+          gradList = gradList.filter(item => item.existance);
+          let list = [];
+          if (gradList.length > 8) {
+              list = gradList.slice(0,8);
+              this.setState({
+                  restGradList: gradList.slice((gradList.length - 8) * -1)
+              })
+          }
+          await this.getAllPhotos(list);
         }
       }
     }
@@ -279,102 +302,131 @@ class MyPhotos extends Component {
       e.target.src="/img/empty.png";
     }
 
-    render() {
-        const { web3, assets, currentAccount, isMetaMask, isLoading, itemLoading } = this.state;
-        // console.log(itemLoading, assets);
-        return (
-          <>
-            { isLoading && <ScreenLoading/> }
-            <Breadcrumb img="assets"/>
-            { itemLoading && <ItemLoading/> }
-            {
-              !itemLoading &&
-                <div className="row items" style={{padding: '30px 0'}}>
-                    {assets.map((item, idx) => {
-                        if (!isMetaMask && currentAccount == item.nftData.owner) return <></>;
-                        let ItemPrice = web3.utils.fromWei(`${item.marketData.price}`,"ether");
-                        const pidx = ItemPrice.indexOf('.');
-                        const pLen = ItemPrice.length;
-                        if (pidx > 0) {
-                          if (pLen - pidx > 3) {
-                            ItemPrice = ItemPrice.substr(0, pidx + 4);
-                          }
-                        }
-                        ////console.log('isMetaMask=>',currentAccount);
-                        if (currentAccount == item.nftData.owner) {
-                            return (
-                                <div className="col-12 col-sm-6 col-lg-3 item" key={idx}>
-                                    <div className="card">
-                                        <div className="image-over">
-                                            <a href={`/item-details/${item.nftData.tokenID}`}><img className="card-img-top" src={`${item.image}`} alt="" onError={this.faliedLoadImage}/></a>
-                                        </div>
-                                        {/* Card Caption */}
-                                        <div className="card-caption p-0">
-                                            {/* Card Body */}
-                                            <div className="card-body">
-                                                <div className="card-bottom d-flex justify-content-between">
-                                                    <span>Token Name</span>
-                                                    <span>Price</span>
-                                                </div>
-                                                <div className="card-bottom d-flex justify-content-between">
-                                                    <span>{item.nftName || item.nftname }</span>
-                                                    <span>{ItemPrice} BNB</span>
-                                                </div>
-                                                { !item.marketData.marketStatus ? 
-                                                    <Button
-                                                      size={'medium'}
-                                                      width={1}
-                                                      className="btn"
-                                                      onClick={() => this.putOnSale(item.nftData.tokenID)}
-                                                    > Put on sale </Button>
-                                                :
-                                                    <Button
-                                                      size={'medium'}
-                                                      width={1}
-                                                      className="btn"
-                                                      onClick={() => this.cancelOnSale(item.nftData.tokenID)}
-                                                    > Cancel on sale </Button>
-                                                }
-                                                  <div style={{ padding: "5px" }}></div>
+    async fetchMore() {
+      const { restGradList } = this.state;
+      let list = restGradList;
+      if (restGradList.length > 8) {
+          list = restGradList.slice(0, 8);
+          this.setState({
+              restGradList: restGradList.slice((restGradList.length - 8) * -1)
+          })
+      }
+      
+      else  {
+          this.setState({
+              restGradList: []
+          })
+      }
 
-                                                  {/* premium */}
-                                                  {
-                                                      item.marketData.premiumStatus && item.marketData.marketStatus && 
-                                                        <Button
-                                                          size={'medium'}
-                                                          width={1}
-                                                          className="btn"
-                                                          onClick={() => this.putOnNormal(item.nftData.tokenID)}
-                                                        >Make it normal </Button>
-                                                  }
-                                                  {
-                                                    !item.marketData.premiumStatus && item.marketData.marketStatus &&
-                                                        <Button
-                                                          size={'medium'}
-                                                          width={1}
-                                                          className="btn"
-                                                          onClick={() => this.putOnPremium(item.nftData.tokenID)}
-                                                        >Make it premium</Button>
-                                                  }
+      this.fetchCollections(list);
+
+  }
+
+  render() {
+    const { web3, assets, currentAccount, isMetaMask, isLoading, itemLoading, restGradList } = this.state;
+    // console.log(itemLoading, assets);
+    return (
+      <>
+        { isLoading && <ScreenLoading/> }
+        <Breadcrumb img="assets"/>
+        { itemLoading && <ItemLoading/> }
+        {
+          !itemLoading &&
+            <div className="row items" style={{padding: '30px 0'}}>
+                {assets.map((item, idx) => {
+                    if (!isMetaMask && currentAccount == item.nftData.owner) return <></>;
+                    let ItemPrice = web3.utils.fromWei(`${item.marketData.price}`,"ether");
+                    const pidx = ItemPrice.indexOf('.');
+                    const pLen = ItemPrice.length;
+                    if (pidx > 0) {
+                      if (pLen - pidx > 3) {
+                        ItemPrice = ItemPrice.substr(0, pidx + 4);
+                      }
+                    }
+                    ////console.log('isMetaMask=>',currentAccount);
+                    if (currentAccount == item.nftData.owner) {
+                        return (
+                            <div className="col-12 col-sm-6 col-lg-3 item" key={idx}>
+                                <div className="card">
+                                    <div className="image-over">
+                                        <a href={`/item-details/${item.nftData.tokenID}`}><img className="card-img-top" src={`${item.image}`} alt="" onError={this.faliedLoadImage}/></a>
+                                    </div>
+                                    {/* Card Caption */}
+                                    <div className="card-caption p-0">
+                                        {/* Card Body */}
+                                        <div className="card-body">
+                                            <div className="card-bottom d-flex justify-content-between">
+                                                <span>Token Name</span>
+                                                <span>Price</span>
                                             </div>
+                                            <div className="card-bottom d-flex justify-content-between">
+                                                <span>{item.nftName || item.nftname }</span>
+                                                <span>{ItemPrice} BNB</span>
+                                            </div>
+                                            { !item.marketData.marketStatus ? 
+                                                <Button
+                                                  size={'medium'}
+                                                  width={1}
+                                                  className="btn"
+                                                  onClick={() => this.putOnSale(item.nftData.tokenID)}
+                                                > Put on sale </Button>
+                                            :
+                                                <Button
+                                                  size={'medium'}
+                                                  width={1}
+                                                  className="btn"
+                                                  onClick={() => this.cancelOnSale(item.nftData.tokenID)}
+                                                > Cancel on sale </Button>
+                                            }
+                                              <div style={{ padding: "5px" }}></div>
+
+                                              {/* premium */}
+                                              {
+                                                  item.marketData.premiumStatus && item.marketData.marketStatus && 
+                                                    <Button
+                                                      size={'medium'}
+                                                      width={1}
+                                                      className="btn"
+                                                      onClick={() => this.putOnNormal(item.nftData.tokenID)}
+                                                    >Make it normal </Button>
+                                              }
+                                              {
+                                                !item.marketData.premiumStatus && item.marketData.marketStatus &&
+                                                    <Button
+                                                      size={'medium'}
+                                                      width={1}
+                                                      className="btn"
+                                                      onClick={() => this.putOnPremium(item.nftData.tokenID)}
+                                                    >Make it premium</Button>
+                                              }
                                         </div>
                                     </div>
                                 </div>
-                            );
-                        }
-                        else return <></>;
-                    })}
-                    {
-                        (isMetaMask && currentAccount && !assets.length) && <h4 className="text-center text-muted ml-2">No items.</h4>
+                            </div>
+                        );
                     }
-                    {
-                      (!isMetaMask || !currentAccount) && <h4 className="text-center text-muted ml-2">Connect Metamask.</h4>
-                    }
-                </div>
-            }
-          </>
-        );
-    }
+                    else return <></>;
+                })}
+                {
+                    (isMetaMask && currentAccount && !assets.length) && <h4 className="text-center text-muted ml-2">No items.</h4>
+                }
+                {
+                  (!isMetaMask || !currentAccount) && <h4 className="text-center text-muted ml-2">Connect Metamask.</h4>
+                }
+                {
+                    restGradList.length ? 
+                    <div className="row">
+                        <div className="col-12 text-center">
+                            <a id="load-btn" className="btn btn-bordered-white mt-5" onClick={() => this.fetchMore()}>Load More</a>
+                        </div>
+                    </div>
+                    : <></>
+                }
+            </div>
+        }
+      </>
+    );
+  }
 }
 
 const mapToStateProps = ({wallet}) => ({

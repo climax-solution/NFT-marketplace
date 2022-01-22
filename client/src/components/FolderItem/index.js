@@ -59,9 +59,6 @@ class FolderItem extends Component {
     
     getAllPhotos = async (folderList) => {
         const { allPhotos } = this.state;
-        this.setState({
-            itemLoading: true
-        })
         folderList.map(async(item, idx) => {
             item.idx = idx;
         })
@@ -217,7 +214,6 @@ class FolderItem extends Component {
     
     render() {
         const { web3, allPhotos, currentAccount, isMetaMask, isLoading, itemLoading, restGradList } = this.state;
-        console.log("allPhotos=>",allPhotos);
         let premiumNFT, normalNFT;
         let isExist = true;
         if (isMetaMask) {

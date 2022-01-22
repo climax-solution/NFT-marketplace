@@ -7,6 +7,7 @@ import Breadcrumb from "../Breadcrumb/Breadcrumb";
 import ScreenLoading from "../Loading/screenLoading";
 import ItemLoading  from "../Loading/itemLoading";
 import addresses from "../../config/address.json";
+import axios from "axios";
 
 const { marketplace_addr, nft_addr } = addresses;
 
@@ -25,56 +26,25 @@ class PhotoMarketplace extends Component {
           PhotoMarketplace: {},
           PhotoNFT: {},
           activeCategory: null,
-          folderData: []
+          folderData: [],
+          restGradList: []
         };
 
-        this.buyPhotoNFT = this.buyPhotoNFT.bind(this);
     }
 
-    buyPhotoNFT = async (id) => {
-        const { accounts, PhotoMarketplace, isMetaMask, coin } = this.state;
+    getAllPhotos = async (folderList) => {
         
-        if (!isMetaMask) {
-          NotificationManager.warning("Metamask is not connected!", "Warning");
-          return;
-        }
-
-        const photo = await PhotoMarketplace.methods.getPhoto(id).call();
-        const buyAmount = photo.marketData.price;
-        this.setState({ isLoading: true });
-
-        try {
-            await PhotoMarketplace.methods.buyNFT(id).send({ from: accounts[0], value: buyAmount });
-            await this.getAllPhotos();
-            NotificationManager.success("Success");
-            this.setState({ isLoading: false });
-        } catch(err) {
-            console.log(err);
-            NotificationManager.error("Failed");
-            this.setState({ isLoading: false });
-        }
-    }
-    
-    getAllPhotos = async () => {
-        
-        const { PhotoMarketplace, activeCategory } = this.state;
-        this.setState({
-            itemLoading: true
-        })
-        const folderList = await PhotoMarketplace.methods.getFolderList().call();
+        const { PhotoNFT, activeCategory, allPhotos } = this.state;
         let mainList = [];
         folderList.map(async(item, idx) => {
-            item.folderIndex = idx;
+            item.folderIndex = allPhotos.length + idx;
         })
 
         for await (let item of folderList) {
-            const res = await PhotoMarketplace.methods.getPhoto(item.wide[0]).call();
+            const URI = await PhotoNFT.methods.tokenURI(item.wide[0]).call();
             try {
-                const response = await fetch(`${res.nftData.tokenURI}`);
-                if(response.ok) {
-                    const json = await response.json();
-                    mainList.push({ ...item, ...json });
-                }
+                const res = await axios.get(`${URI}`);
+                mainList.push({ ...item, ...res.data });
             } catch (err) { }
         }
 
@@ -88,7 +58,7 @@ class PhotoMarketplace extends Component {
         }
 
         this.setState({
-            allPhotos: mainList,
+            allPhotos: allPhotos.concat(mainList),
             itemLoading: false
         });
     }
@@ -152,7 +122,17 @@ class PhotoMarketplace extends Component {
                 networkType
             });
         }
-        if (navigator.onLine) await this.getAllPhotos();
+        if (navigator.onLine){
+            let gradList = await instancePhotoMarketplace.methods.getFolderList().call();
+            let list = [];
+            if (gradList.length > 8) {
+                list = gradList.slice(0,8);
+                this.setState({
+                    restGradList: gradList.slice((gradList.length - 8) * -1)
+                })
+            }
+            await this.getAllPhotos(list);
+        }
         else this.setState({ isLoading: false });
       } catch (error) {
           if (error) {
@@ -175,27 +155,59 @@ class PhotoMarketplace extends Component {
     }
 
     async componentDidUpdate(preprops, prevState) {
-      const { web3, activeCategory } = this.state;
+      const { web3, activeCategory, PhotoMarketplace } = this.state;
       if (preprops != this.props) {
         this.setState({
           isMetaMask: this.props.connected,
         })
         if (web3 != null) {
-            await this.getAllPhotos();
+            let gradList = await PhotoMarketplace.methods.getFolderList().call();
+            let list = [];
+            if (gradList.length > 8) {
+                list = gradList.slice(0,8);
+                this.setState({
+                    restGradList: gradList.slice((gradList.length - 8) * -1)
+                })
+            }
+            this.setState({
+                allPhotos: []
+            });
+
+            await this.getAllPhotos(list);
         }
       }
 
-      if (prevState.activeCategory != activeCategory) {
-        await this.getAllPhotos();
-      }
+    //   if (prevState.activeCategory != activeCategory) {
+    //     await this.getAllPhotos();
+    //   }
     }
 
     faliedLoadImage = (e) => {
         e.target.src="/img/empty.png";
     }
 
+    async fetchMore() {
+        const { restGradList } = this.state;
+        let list = restGradList;
+        if (restGradList.length > 8) {
+            list = restGradList.slice(0, 8);
+            this.setState({
+                restGradList: restGradList.slice((restGradList.length - 8) * -1)
+            })
+        }
+        
+        else  {
+            this.setState({
+                restGradList: []
+            })
+        }
+
+        await this.getAllPhotos(list);
+
+    }
+
     render() {
-        const { allPhotos, isLoading, itemLoading } = this.state;
+        const { allPhotos, isLoading, itemLoading, restGradList } = this.state;
 
         return (
             <>
@@ -233,37 +245,48 @@ class PhotoMarketplace extends Component {
                     { itemLoading && <ItemLoading/> }
                     {
                         !itemLoading &&
-                        <div className="row items">
-                            {allPhotos.map((item, inx) => {
-                                return (
-                                    <div className="col-12 col-sm-6 col-lg-3 item" key={inx} data-groups={item.category}>
-                                        <div className="card">
-                                            <div className="image-over">
-                                            <img className="card-img-top" src={`${item.image}`} alt="" onError={this.faliedLoadImage} />
-                                            </div>
-                                            {/* Card Caption */}
-                                            <div className="card-caption p-0 text-center">
-                                                {/* Card Body */}
-                                                <div className="card-body">
-                                                    <div className="card-bottom d-flex justify-content-center">
-                                                        <span className="pb-2">{item.folder}</span>
+                        <>
+                            <div className="row items">
+                                {allPhotos.map((item, inx) => {
+                                    return (
+                                        <div className="col-12 col-sm-6 col-lg-3 item" key={inx} data-groups={item.category}>
+                                            <div className="card">
+                                                <div className="image-over">
+                                                <img className="card-img-top" src={`${item.image}`} alt="" onError={this.faliedLoadImage} />
+                                                </div>
+                                                {/* Card Caption */}
+                                                <div className="card-caption p-0 text-center">
+                                                    {/* Card Body */}
+                                                    <div className="card-body">
+                                                        <div className="card-bottom d-flex justify-content-center">
+                                                            <span className="pb-2">{item.folder}</span>
+                                                        </div>
+                                                        <a
+                                                            href={`/folder-item/${item.folderIndex}`}
+                                                            size={'medium'}
+                                                            width={1}
+                                                            className="btn w-100"
+                                                        > View Available NFT Collection </a>
                                                     </div>
-                                                    <a
-                                                        href={`/folder-item/${item.folderIndex}`}
-                                                        size={'medium'}
-                                                        width={1}
-                                                        className="btn w-100"
-                                                    > View Available NFT Collection </a>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                );
-                            })}
+                                    );
+                                })}
+                                {
+                                    !allPhotos.length && !itemLoading && <h4 className="text-center text-muted">No items.</h4>
+                                }
+                            </div>
                             {
-                                !allPhotos.length && !itemLoading && <h4 className="text-center text-muted">No items.</h4>
+                                restGradList.length ? 
+                                <div className="row">
+                                    <div className="col-12 text-center">
+                                        <a id="load-btn" className="btn btn-bordered-white mt-5" onClick={() => this.fetchMore()}>Load More</a>
+                                    </div>
+                                </div>
+                                : <></>
                             }
-                        </div>
+                        </>
                     }
                 </div>
                     

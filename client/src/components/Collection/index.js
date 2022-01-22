@@ -8,6 +8,7 @@ import ScreenLoading from "../Loading/screenLoading";
 import ItemLoading  from "../Loading/itemLoading";
 import addresses from "../../config/address.json";
 import axios from "axios";
+import "./custom.css";
 
 const { marketplace_addr, nft_addr } = addresses;
 
@@ -23,7 +24,8 @@ export default class Collections extends Component {
           PhotoNFT: {},
           activeCategory: null,
           collections: [],
-          restGradList: []
+          restGradList: [],
+          search: ""
         };
 
     }
@@ -156,15 +158,64 @@ export default class Collections extends Component {
 
     }
 
+    async searchCollection() {
+        const { PhotoMarketplace, search } = this.state;
+        console.log(search);
+        try {
+            this.setState({
+                itemLoading: true,
+                collections: []
+            });
+            let gradList = await PhotoMarketplace.methods.getFolderList().call();
+            if (search.length) gradList = gradList.filter(item => item.folder.indexOf(search) > 0);
+            let list = gradList;
+            if (gradList.length > 8) {
+                list = gradList.slice(0, 8);
+                this.setState({
+                    restGradList: gradList.slice((gradList.length - 8) * -1)
+                })
+            }
+            
+            else  {
+                this.setState({
+                    restGradList: []
+                })
+            }
+
+            await this.fetchCollections(list);
+        } catch(err) {
+            this.setState({
+                itemLoading: false
+            })
+        }
+    }
+
     render() {
-        const  { itemLoading, collections, restGradList } = this.state;
+        const  { itemLoading, collections, restGradList, search } = this.state;
         return (
             <>
                 <Breadcrumb img="marketplace"/>
+                <div className="row justify-content-between search-box align-items-center mt-3">
+                    <div className="form-group search-input mb-0">
+                        <input
+                            type="text"
+                            className="form-control"
+                            name="name"
+                            placeholder="Enter collection name"
+                            required="required"
+                            value={search}
+                            onChange={(e) => this.setState({ search: e.target.value }) }
+                        />
+                    </div>
+                    <div className="w-150">
+                        <button className="btn" type="button" onClick={() =>this.searchCollection()}>Search</button>
+                    </div>
+                </div>
                 { itemLoading && <ItemLoading/> }
                 {
                     !itemLoading &&
                     <>
+                        
                         <div className="row items">
                             {
                                 collections.map((item, inx) => {
