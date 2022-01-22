@@ -7,6 +7,7 @@ import { NotificationManager } from "react-notifications";
 import addresses from "../../config/address.json";
 import ItemLoading  from "../Loading/itemLoading";
 import ScreenLoading from "../Loading/screenLoading";
+import axios from "axios";
 
 const { marketplace_addr, nft_addr } = addresses;
 
@@ -23,7 +24,8 @@ class Home extends Component {
             itemLoading: true,
             isMetaMask: false,
             PhotoMarketplace: {},
-            PhotoNFT: {}
+            PhotoNFT: {},
+            restGradList: []
         };
 
         this.buyPhotoNFT = this.buyPhotoNFT.bind(this);
@@ -53,30 +55,25 @@ class Home extends Component {
         this.setState({ isLoading: false });
     }
     
-    getAllPhotos = async () => {
-        const {  PhotoMarketplace } = this.state;
+    getAllPhotos = async (list) => {
+        const {  allPhotos } = this.state;
         this.setState({
             itemLoading: true
         })
-        let allPhotos = await PhotoMarketplace.methods.getPremiumNFTList().call();
-        let mainList = []; let index = 0;
-        allPhotos = allPhotos.filter(item => item.marketData.premiumStatus && item.marketData.marketStatus );
-        await Promise.all(allPhotos.map(async (item,) => {
+        let _list = [];
+        await Promise.all(list.map(async (item,) => {
             try {
-                const response = await fetch(`${item.nftData.tokenURI}`);
-                if(response.ok) {
-                    const json = await response.json();
-                    mainList.push({ ...item, ...json });
-                }
+                const res = await axios.get(item.nftData.tokenURI);
+                _list.push({ ...item, ...res.data });
             } catch (err) {
             }
             return item;
         }) );
-        mainList.sort((before, after) => {
+        _list.sort((before, after) => {
             return before.marketData.premiumTimestamp - after.marketData.premiumTimestamp;
         })
         this.setState({
-            allPhotos: mainList,
+            allPhotos: allPhotos.concat(_list),
             itemLoading: false
         });
     }
@@ -135,7 +132,23 @@ class Home extends Component {
                 });
             }
             
-            if (navigator.onLine) await this.getAllPhotos();
+            if (navigator.onLine) {
+                let allPhotos = await instancePhotoMarketplace.methods.getPremiumNFTList().call();
+                allPhotos = allPhotos.filter(item => item.marketData.premiumStatus && item.marketData.marketStatus );
+                let list = allPhotos;
+                if (allPhotos.length > 8) {
+                    list = allPhotos.slice(0, 8);
+                    this.setState({
+                        restGradList: allPhotos.slice((allPhotos.length - 8) * (-1))
+                    });
+                }
+                else {
+                    this.setState({
+                        restGradList: []
+                    });
+                }
+                await this.getAllPhotos(list);
+            }
             else this.setState({ isLoading: false });
 
         } catch (error) {
@@ -165,7 +178,26 @@ class Home extends Component {
                 currentAccount: this.props.connected ? accounts[0] : ''
             })
             if (web3 != null) {
-                await this.getAllPhotos();
+                const { PhotoMarketplace } = this.state;
+                let allPhotos = await PhotoMarketplace.methods.getPremiumNFTList().call();
+                allPhotos = allPhotos.filter(item => item.marketData.premiumStatus && item.marketData.marketStatus );
+                let list = allPhotos;
+                this.setState({
+                    itemLoading: true,
+                    allPhotos: []
+                })
+                if (allPhotos.length > 8) {
+                    list = allPhotos.slice(0, 8);
+                    this.setState({
+                        restGradList: allPhotos.slice((allPhotos.length - 8) * (-1))
+                    });
+                }
+                else {
+                    this.setState({
+                        restGradList: []
+                    });
+                }
+                await this.getAllPhotos(list);
             }
         }
     }
@@ -174,8 +206,28 @@ class Home extends Component {
         e.target.src="/img/empty.png";
     }
 
+    async fetchMore() {
+        const { restGradList } = this.state;
+        let list = restGradList;
+        if (restGradList.length > 8) {
+            list = restGradList.slice(0, 8);
+            this.setState({
+                restGradList: restGradList.slice((restGradList.length - 8) * -1)
+            })
+        }
+        
+        else  {
+            this.setState({
+                restGradList: []
+            })
+        }
+
+        this.fetchCollections(list);
+
+    }
+
     render() {
-        const { web3, allPhotos, currentAccount, itemLoading, isLoading } = this.state;
+        const { web3, allPhotos, currentAccount, itemLoading, isLoading, restGradList } = this.state;
         return(
             <>
                 { isLoading && <ScreenLoading/> }
@@ -193,47 +245,58 @@ class Home extends Component {
                 { itemLoading && <ItemLoading/> }
                 {
                     !itemLoading &&
-                    <div className="row items" style={{minHeight: '300px'}}>
-                        {
-                        allPhotos.map((item, idx) => {
-                            return (
-                                <div className="col-12 col-sm-6 col-lg-3 item" key={idx}>
-                                    <div className="card">
-                                        <div className="image-over">
-                                            <a href={`/item-details/${item.nftData.tokenID}`}><img className="card-img-top" src={`${item.image}`} onError={this.faliedLoadImage} alt="" /></a>
-                                        </div>
-                                        {/* Card Caption */}
-                                        <div className="card-caption p-0">
-                                            {/* Card Body */}
-                                            <div className="card-body">
-                                                <div className="card-bottom d-flex justify-content-between">
-                                                    <span>Token Name</span>
-                                                    <span>Price</span>
+                    <>
+                        <div className="row items" style={{minHeight: '300px'}}>
+                            {
+                            allPhotos.map((item, idx) => {
+                                return (
+                                    <div className="col-12 col-sm-6 col-lg-3 item" key={idx}>
+                                        <div className="card">
+                                            <div className="image-over">
+                                                <a href={`/item-details/${item.nftData.tokenID}`}><img className="card-img-top" src={`${item.image}`} onError={this.faliedLoadImage} alt="" /></a>
+                                            </div>
+                                            {/* Card Caption */}
+                                            <div className="card-caption p-0">
+                                                {/* Card Body */}
+                                                <div className="card-body">
+                                                    <div className="card-bottom d-flex justify-content-between">
+                                                        <span>Token Name</span>
+                                                        <span>Price</span>
+                                                    </div>
+                                                    <div className="card-bottom d-flex justify-content-between">
+                                                        <span>{item.nftName || item.nftname }</span>
+                                                        <span>{web3.utils.fromWei(item.marketData.price, "ether")} BNB</span>
+                                                    </div>
+                                                    {
+                                                        item.nftData.owner != currentAccount &&
+                                                        <Button
+                                                            size={'medium'}
+                                                            width={1}
+                                                            onClick={() => this.buyPhotoNFT(item.nftData.tokenID)}
+                                                            className="btn"
+                                                        > Buy </Button>
+                                                    }
                                                 </div>
-                                                <div className="card-bottom d-flex justify-content-between">
-                                                    <span>{item.nftName || item.nftname }</span>
-                                                    <span>{web3.utils.fromWei(item.marketData.price, "ether")} BNB</span>
-                                                </div>
-                                                {
-                                                    item.nftData.owner != currentAccount &&
-                                                    <Button
-                                                        size={'medium'}
-                                                        width={1}
-                                                        onClick={() => this.buyPhotoNFT(item.nftData.tokenID)}
-                                                        className="btn"
-                                                    > Buy </Button>
-                                                }
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            )
-                        })
-                        }
+                                )
+                            })
+                            }
+                            {
+                            !allPhotos.length && <h4 className="text-center text-muted">No items.</h4>
+                            }
+                        </div>
                         {
-                        !allPhotos.length && <h4 className="text-center text-muted">No items.</h4>
+                            restGradList.length ? 
+                            <div className="row">
+                                <div className="col-12 text-center">
+                                    <a id="load-btn" className="btn btn-bordered-white mt-5" onClick={() => this.fetchMore()}>Load More</a>
+                                </div>
+                            </div>
+                            : <></>
                         }
-                    </div>
+                    </>
                 }
             </>
         )
