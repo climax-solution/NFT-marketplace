@@ -32,7 +32,6 @@ class Home extends Component {
     }
     
     buyPhotoNFT = async (id) => {
-        console.log(id);
         const { accounts, PhotoMarketplace, isMetaMask } = this.state;
         
         if (!isMetaMask) {
@@ -45,8 +44,8 @@ class Home extends Component {
         const buyAmount = photo.marketData.price;
         try {
             await PhotoMarketplace.methods.buyNFT(id).send({ from: accounts[0], value: buyAmount });
-            await this.getAllPhotos();
             NotificationManager.success("Success");
+            await this.getInitNFTs();
             this.setState({ isLoading: false });
         } catch(err) {
             NotificationManager.error("Failed");
@@ -61,14 +60,14 @@ class Home extends Component {
             itemLoading: true
         })
         let _list = [];
-        await Promise.all(list.map(async (item,) => {
+        for await (const item of list) {
             try {
                 const res = await axios.get(item.nftData.tokenURI);
                 _list.push({ ...item, ...res.data });
             } catch (err) {
             }
             return item;
-        }) );
+        };
         _list.sort((before, after) => {
             return before.marketData.premiumTimestamp - after.marketData.premiumTimestamp;
         })
@@ -132,23 +131,7 @@ class Home extends Component {
                 });
             }
             
-            if (navigator.onLine) {
-                let allPhotos = await instancePhotoMarketplace.methods.getPremiumNFTList().call();
-                allPhotos = allPhotos.filter(item => item.marketData.premiumStatus && item.marketData.marketStatus );
-                let list = allPhotos;
-                if (allPhotos.length > 8) {
-                    list = allPhotos.slice(0, 8);
-                    this.setState({
-                        restGradList: allPhotos.slice((allPhotos.length - 8) * (-1))
-                    });
-                }
-                else {
-                    this.setState({
-                        restGradList: []
-                    });
-                }
-                await this.getAllPhotos(list);
-            }
+            if (navigator.onLine) await this.getInitNFTs();
             else this.setState({ isLoading: false });
 
         } catch (error) {
@@ -163,6 +146,30 @@ class Home extends Component {
 
     async componentDidMount() {
         await this.init();
+    }
+
+    async getInitNFTs() {
+        const { PhotoMarketplace } = this.state;
+        let allPhotos = await PhotoMarketplace.methods.getPremiumNFTList().call();
+        allPhotos = allPhotos.filter(item => item.marketData.premiumStatus && item.marketData.marketStatus );
+        let list = allPhotos;
+        if (allPhotos.length > 8) {
+            list = allPhotos.slice(0, 8);
+            this.setState({
+                restGradList: allPhotos.slice((allPhotos.length - 8) * (-1)),
+                allPhotos: []
+            });
+        }
+
+        else {
+            this.setState({
+                restGradList: [],
+                allPhotos: []
+            });
+        }
+
+        await this.getAllPhotos(list);
+
     }
 
     async componentDidUpdate(preprops) {

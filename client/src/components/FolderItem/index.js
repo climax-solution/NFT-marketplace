@@ -47,8 +47,8 @@ class FolderItem extends Component {
 
         try {
             await PhotoMarketplace.methods.buyNFT(id).send({ from: accounts[0], value: buyAmount });
-            await this.getAllPhotos();
             NotificationManager.success("Success");
+            await this.getInitNFTs();
             this.setState({ isLoading: false });
         } catch(err) {
             console.log(err);
@@ -59,10 +59,6 @@ class FolderItem extends Component {
     
     getAllPhotos = async (folderList) => {
         const { allPhotos } = this.state;
-        folderList.map(async(item, idx) => {
-            item.idx = idx;
-        })
-
         let mainList = [];
         for await (let item of folderList) {
             try {
@@ -157,18 +153,7 @@ class FolderItem extends Component {
             });
         }
 
-        if (navigator.onLine) {
-            const { id } = this.props.match.params;
-            let gradList = await instancePhotoMarketplace.methods.getSubFolderItem(id).call();
-            let list = [];
-            if (gradList.length > 8) {
-                list = gradList.slice(0,8);
-                this.setState({
-                    restGradList: gradList.slice((gradList.length - 8) * -1)
-                })
-            }
-            await this.getAllPhotos(list);
-        }
+        if (navigator.onLine) await this.getInitNFTs();
         else this.setState({ isLoading: false });
       } catch (error) {
         if (error) {
@@ -202,10 +187,25 @@ class FolderItem extends Component {
             this.setState({
                 currentAccount: connected ? accounts[0] : ''
             })
-            if (web3 != null) {
-                await this.getAllPhotos();
-            }
         }
+    }
+
+    async getInitNFTs() {
+        const { PhotoMarketplace } = this.state;
+        const { id } = this.props.match.params;
+        let gradList = await PhotoMarketplace.methods.getSubFolderItem(id).call();
+        let list = gradList;
+        this.setState({
+            allPhotos: []
+        });
+        if (gradList.length > 8) {
+            list = gradList.slice(0,8);
+            this.setState({
+                restGradList: gradList.slice((gradList.length - 8) * -1)
+            })
+        }
+        await this.getAllPhotos(list);
+
     }
 
     faliedLoadImage = (e) => {
@@ -214,6 +214,7 @@ class FolderItem extends Component {
     
     render() {
         const { web3, allPhotos, currentAccount, isMetaMask, isLoading, itemLoading, restGradList } = this.state;
+        
         let premiumNFT, normalNFT;
         let isExist = true;
         if (isMetaMask) {

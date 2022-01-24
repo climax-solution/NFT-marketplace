@@ -59,8 +59,6 @@ export default class Collections extends Component {
           let instancePhotoNFT = null;
           let instancePhotoMarketplace = null;
           
-  
-          
           if (PhotoNFT) {
               instancePhotoNFT = new web3.eth.Contract(PhotoNFT, nft_addr);
           }
@@ -92,14 +90,14 @@ export default class Collections extends Component {
           }
           if (navigator.onLine) {
             let gradList = await instancePhotoMarketplace.methods.getFolderList().call();
-            let list = [];
+            let list = gradList;
             if (gradList.length > 8) {
                 list = gradList.slice(0,8);
                 this.setState({
                     restGradList: gradList.slice((gradList.length - 8) * -1)
                 })
             }
-            this.fetchCollections(list);
+            await this.fetchCollections(list);
           }
           else this.setState({ isLoading: false });
         } catch (error) {
