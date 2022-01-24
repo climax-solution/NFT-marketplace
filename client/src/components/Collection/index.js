@@ -87,6 +87,13 @@ export default class Collections extends Component {
           }
           if (navigator.onLine) {
             let gradList = await instancePhotoMarketplace.methods.getFolderList().call();
+            let idx = 0;
+
+            for await (let item of gradList) {
+                item.folderIndex = idx;
+                idx ++;
+            }
+
             let list = gradList;
             if (gradList.length > 8) {
                 list = gradList.slice(0,8);
@@ -121,6 +128,7 @@ export default class Collections extends Component {
             try {
                 const _item = await axios.get(res);
                 _item.data.folder = folder;
+                _item.data.folderIndex = item.folderIndex;
                 initList.push(_item.data);
             } catch(err) {
 
@@ -155,13 +163,19 @@ export default class Collections extends Component {
 
     async searchCollection() {
         const { PhotoMarketplace, search } = this.state;
-        console.log(search);
         try {
             this.setState({
                 itemLoading: true,
                 collections: []
             });
             let gradList = await PhotoMarketplace.methods.getFolderList().call();
+            let idx = 0;
+
+            for await (let item of gradList) {
+                item.folderIndex = idx;
+                idx ++;
+            }
+
             if (search.length) gradList = gradList.filter(item => item.folder.indexOf(search) > 0);
             let list = gradList;
             if (gradList.length > 8) {
@@ -218,7 +232,7 @@ export default class Collections extends Component {
                                         <div className="col-12 col-sm-6 col-lg-3 item" key={inx}>
                                             <div className="card">
                                                 <div className="image-over">
-                                                <img className="card-img-top" src={`${item.image}`} alt="" onError={this.faliedLoadImage} />
+                                                    <a href={`/sub-collection/${item.folderIndex}`}><img className="card-img-top" src={`${item.image}`} alt="" onError={this.faliedLoadImage} /></a>
                                                 </div>
                                                 {/* Card Caption */}
                                                 <div className="card-caption p-0 text-center">
