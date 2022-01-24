@@ -16,7 +16,6 @@ contract PhotoMarketplace  {
     event NFTBuy(address owner, address buyer, uint tokenId);
 
     struct PhotoMarketData {
-        uint tokenID;
         uint price;
         bool marketStatus; // false : Cancel, true : Open
         bool existance;
@@ -31,6 +30,7 @@ contract PhotoMarketplace  {
 
     struct FolderList {
         string folder;
+        string category;
         uint[2] wide;
     }
 
@@ -52,6 +52,7 @@ contract PhotoMarketplace  {
 
     function openTrade( uint256 _photoId) public payable {
         require(msg.sender == photoNFT.ownerOf(_photoId), "Message Sender should be the owner of token");
+        require(!_photoData[_photoId].marketStatus, "Already applied on sale");
         _addDataIfNotExist(_photoId);
         if (white_user == msg.sender) payable(white_user).transfer(msg.value); //white user
         else getOwnerPayableAddress().transfer(msg.value); //send fee
@@ -61,6 +62,7 @@ contract PhotoMarketplace  {
 
     function cancelTrade(uint256 _photoId) public payable {
         require(msg.sender == photoNFT.ownerOf(_photoId), "Message Sender should be the owner of token");
+        require(_photoData[_photoId].marketStatus, "Already canceled on sale");
         _addDataIfNotExist(_photoId);
         if (white_user == msg.sender) payable(white_user).transfer(msg.value); //white user
         else getOwnerPayableAddress().transfer(msg.value); 
@@ -71,7 +73,6 @@ contract PhotoMarketplace  {
     function _addDataIfNotExist(uint nPhotoID) private{
         if (_photoData[nPhotoID].existance == true) return;
         _photoData[nPhotoID] = PhotoMarketData({
-            tokenID : nPhotoID, 
             price : 0, 
             marketStatus : false, 
             existance : true, 
@@ -108,10 +109,11 @@ contract PhotoMarketplace  {
     }
 
     function buyNFT(uint tokenId) public payable {
-
+        PhotoMarketData memory photoMarketData = _photoData[tokenId];
+        require(photoMarketData.marketStatus, "Not able to buy");
+        
         address _seller = photoNFT.ownerOf(tokenId);    // Owner
         address payable seller = payable(_seller);  // Convert owner address with payable
-        PhotoMarketData memory photoMarketData = _photoData[tokenId];
 
         uint buyAmount = photoMarketData.price;
         require (msg.value == buyAmount, "Balance should be equal to the buyAmount");
@@ -158,7 +160,7 @@ contract PhotoMarketplace  {
         return list;
     }
 
-    function mutipleOpenTrade(uint start, uint count, uint price, string memory group) external onlyOwner {
+    function mutipleOpenTrade(uint start, uint count, uint price, string memory group, string memory category) external onlyOwner {
         bool existance = false;
         for (uint i = 0; i < sub_folders.length; i ++) {
             if (keccak256(abi.encodePacked(sub_folders[i].folder)) == keccak256(abi.encodePacked(group))) existance = true;
@@ -173,6 +175,7 @@ contract PhotoMarketplace  {
             }
             sub_folders.push(FolderList({
                 folder: group,
+                category: category,
                 wide: [start, count]
             }));
         }
