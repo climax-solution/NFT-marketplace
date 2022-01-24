@@ -13,7 +13,7 @@ const getWeb3 = async() => {
   if (window.ethereum) {
     web3 = new Web3(window.ethereum);
     const networkId = await web3.eth.net.getId();
-    if (networkId != 56) {
+    if (networkId !== 3) {
       ranId = Math.floor(Math.random() * 5);
       const provider = new Web3.providers.HttpProvider(node[ranId]);
       web3 = new Web3(provider);

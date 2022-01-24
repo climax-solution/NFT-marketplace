@@ -174,7 +174,7 @@ class Home extends Component {
 
     async componentDidUpdate(preprops) {
 
-        if (preprops != this.props) {
+        if (preprops !== this.props) {
             await this.init();
             this.setState({
                 isMetaMask: this.props.connected,
@@ -184,7 +184,7 @@ class Home extends Component {
             this.setState({
                 currentAccount: this.props.connected ? accounts[0] : ''
             })
-            if (web3 != null) {
+            if (web3 !== null) {
                 const { PhotoMarketplace } = this.state;
                 let allPhotos = await PhotoMarketplace.methods.getPremiumNFTList().call();
                 allPhotos = allPhotos.filter(item => item.marketData.premiumStatus && item.marketData.marketStatus );
@@ -275,7 +275,7 @@ class Home extends Component {
                                                         <span>{web3.utils.fromWei(item.marketData.price, "ether")} BNB</span>
                                                     </div>
                                                     {
-                                                        item.nftData.owner != currentAccount &&
+                                                        item.nftData.owner !== currentAccount &&
                                                         <Button
                                                             size={'medium'}
                                                             width={1}

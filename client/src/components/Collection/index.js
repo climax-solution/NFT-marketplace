@@ -1,13 +1,10 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import { NotificationManager } from "react-notifications";
-import getWeb3 from "../../utils/getWeb3";
-import '../../App.module.scss';
-import Breadcrumb from "../Breadcrumb/Breadcrumb";
-import ScreenLoading from "../Loading/screenLoading";
-import ItemLoading  from "../Loading/itemLoading";
-import addresses from "../../config/address.json";
 import axios from "axios";
+import Breadcrumb from "../Breadcrumb/Breadcrumb";
+import ItemLoading  from "../Loading/itemLoading";
+import getWeb3 from "../../utils/getWeb3";
+import addresses from "../../config/address.json";
+import '../../App.module.scss';
 import "./custom.css";
 
 const { marketplace_addr, nft_addr } = addresses;

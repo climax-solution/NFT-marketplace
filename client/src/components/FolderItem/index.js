@@ -177,7 +177,7 @@ class FolderItem extends Component {
 
     async componentDidUpdate(preprops) {
         const { connected } = this.props;
-        if (preprops != this.props) {
+        if (preprops !== this.props) {
             await this.init();
             const { web3 } = this.state;
             this.setState({
@@ -220,12 +220,12 @@ class FolderItem extends Component {
         if (isMetaMask) {
           premiumNFT = allPhotos.filter(item => item.marketData.premiumStatus );
           normalNFT = allPhotos.filter(item => !item.marketData.premiumStatus );
-          if (premiumNFT.length + normalNFT.length == 0) isExist = false;
+          if (premiumNFT.length + normalNFT.length === 0) isExist = false;
         }
         else {
           premiumNFT = allPhotos.filter(item => item.marketData.premiumStatus );
           normalNFT = allPhotos.filter(item => !item.marketData.premiumStatus);
-          if (premiumNFT.length + normalNFT.length == 0) isExist = false;
+          if (premiumNFT.length + normalNFT.length === 0) isExist = false;
         }
 
         return (
@@ -266,7 +266,7 @@ class FolderItem extends Component {
                                                             <span>{ItemPrice} BNB</span>
                                                         </div>
                                                         {
-                                                            item.marketData.marketStatus && item.nftData.owner != currentAccount &&
+                                                            item.marketData.marketStatus && item.nftData.owner !== currentAccount &&
                                                             <Button
                                                                 size={'medium'}
                                                                 width={1}
@@ -308,7 +308,7 @@ class FolderItem extends Component {
                                                             <span>{ItemPrice} BNB</span>
                                                         </div>
                                                         {
-                                                            item.marketData.marketStatus && item.nftData.owner != currentAccount &&
+                                                            item.marketData.marketStatus && item.nftData.owner !== currentAccount &&
                                                             <Button
                                                                 size={'medium'}
                                                                 width={1}

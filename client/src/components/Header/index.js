@@ -22,9 +22,9 @@ class Header extends Component{
             const mWeb3 = new Web3(window.ethereum);
             const fakeId = await web3.eth.net.getId();
             const networkId = await mWeb3.eth.net.getId();
-            const isMetaMask = accounts.length ? true : false;
+            let isMetaMask = accounts.length ? true : false;
             const { connected } = JSON.parse(window.localStorage.getItem("nftdevelopments"));
-            if (networkId != fakeId || !connected) isMetaMask = false;
+            if (networkId !== fakeId || !connected) isMetaMask = false;
             window.localStorage.setItem("nftdevelopments",JSON.stringify({connected: isMetaMask}));
             await this.props.WalletConnect();
             this.setState({
@@ -37,7 +37,7 @@ class Header extends Component{
     }
     
     componentDidUpdate(preprops) {
-        if (preprops != this.props) {
+        if (preprops !== this.props) {
             const { wallet_connected } = this.props;
             this.setState({
                 wallet_connect: wallet_connected
@@ -46,21 +46,21 @@ class Header extends Component{
     }
     async connectWallet() {
         try {
-            const web3 = await getWeb3();
             await window.ethereum.enable();
+            const web3 = await getWeb3();
             const accounts = await web3.eth.getAccounts();
             const mWeb3 = new Web3(window.ethereum);
             const fakeId = await web3.eth.net.getId();
             const networkId = await mWeb3.eth.net.getId();
-            const isMetaMask = accounts.length ? true : false;
-            if (networkId != fakeId) isMetaMask = false;
+            let isMetaMask = accounts.length ? true : false;
+            if (networkId !== fakeId) isMetaMask = false;
             window.localStorage.setItem("nftdevelopments",JSON.stringify({connected: isMetaMask}));
             await this.props.WalletConnect();
             this.setState({
                 account: isMetaMask ? accounts[0] : ''
             })
         } catch(err) {
-            if (err.code == 4001) {
+            if (err.code === 4001) {
                 ////console.log(err.message);
                 NotificationManager.error(err.message, "Error");
             }
