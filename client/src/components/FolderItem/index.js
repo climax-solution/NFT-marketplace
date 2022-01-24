@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Button } from 'rimble-ui';
+import ReactTooltip from "react-tooltip";
 import { connect } from "react-redux";
 import { NotificationManager } from "react-notifications";
 import getWeb3 from "../../utils/getWeb3";
@@ -249,8 +250,18 @@ class FolderItem extends Component {
                                     return (
                                         <div className="col-12 col-sm-6 col-lg-3 item" key={idx} data-groups={item.category}>
                                             <div className="card">
-                                                <div className="image-over">
-                                                <a href={`/item-details/${item.nftData.tokenID}`}><img className="card-img-top" src={`${item.image}`} alt="" /></a>
+                                                <div className="image-over position-relative">
+                                                    {
+                                                        item.nftData.owner == currentAccount && 
+                                                        <>
+                                                            
+                                                            <a data-tip data-for={`owner-${idx}`} className="owner-check"><i className="fal fa-badge-check"/></a>
+                                                            <ReactTooltip id={`owner-${idx}`} type='info' effect="solid">
+                                                                <span>Your NFT</span>
+                                                            </ReactTooltip>
+                                                        </>
+                                                    }
+                                                    <a href={`/item-details/${item.nftData.tokenID}`}><img className="card-img-top" src={`${item.image}`} alt="" /></a>
                                                 </div>
                                                 {/* Card Caption */}
                                                 <div className="card-caption p-0">
@@ -293,7 +304,14 @@ class FolderItem extends Component {
                                             <div className="card">
                                                 <div className="image-over position-relative">
                                                     {
-                                                        item.nftData.owner == currentAccount && <i className="fal fa-badge-check owner-check"/>
+                                                        item.nftData.owner == currentAccount && 
+                                                        <>
+                                                            
+                                                            <a data-tip data-for={`owner-${idx}`} className="owner-check"><i className="fal fa-badge-check"/></a>
+                                                            <ReactTooltip id={`owner-${idx}`} type='info' effect="solid">
+                                                                <span>Your NFT</span>
+                                                            </ReactTooltip>
+                                                        </>
                                                     }
                                                     <a href={`/item-details/${item.nftData.tokenID}`}><img className="card-img-top" onError={this.faliedLoadImage} src={`${item.image}`} alt="" /></a>
                                                 </div>

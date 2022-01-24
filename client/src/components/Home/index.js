@@ -1,13 +1,14 @@
 import React, { Component } from "react";
+import axios from "axios";
+import {  Button } from 'rimble-ui';
+import ReactTooltip from "react-tooltip";
 import { connect } from "react-redux";
 import getWeb3 from "../../utils/getWeb3";
 import Breadcrumb from "../Breadcrumb/Breadcrumb";
-import {  Button } from 'rimble-ui';
 import { NotificationManager } from "react-notifications";
 import addresses from "../../config/address.json";
 import ItemLoading  from "../Loading/itemLoading";
 import ScreenLoading from "../Loading/screenLoading";
-import axios from "axios";
 
 const { marketplace_addr, nft_addr } = addresses;
 
@@ -260,8 +261,16 @@ class Home extends Component {
                                         <div className="card">
                                             <div className="image-over position-relative">
                                                 {
-                                                    item.nftData.owner == currentAccount && <i className="fal fa-badge-check owner-check"/>
+                                                    item.nftData.owner == currentAccount && 
+                                                    <>
+                                                        
+                                                        <a data-tip data-for={`owner-${idx}`} className="owner-check"><i className="fal fa-badge-check"/></a>
+                                                        <ReactTooltip id={`owner-${idx}`} type='info' effect="solid">
+                                                            <span>Your NFT</span>
+                                                        </ReactTooltip>
+                                                    </>
                                                 }
+                                                
                                                 <a href={`/item-details/${item.nftData.tokenID}`}><img className="card-img-top" src={`${item.image}`} onError={this.faliedLoadImage} alt="" /></a>
                                             </div>
                                             {/* Card Caption */}
