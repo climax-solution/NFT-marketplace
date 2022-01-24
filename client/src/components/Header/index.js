@@ -73,8 +73,6 @@ class Header extends Component{
     }
 
     async disconnectWallet() {
-        const web3 = await getWeb3();
-        const accounts = await web3.eth.getAccounts();
         window.localStorage.setItem("nftdevelopments",JSON.stringify({connected: false}));
         await this.props.WalletConnect();
     }
@@ -123,7 +121,7 @@ class Header extends Component{
                                     </a>
                                 </li>
                                 : (<li className="nav-item">
-                                    <a className="nav-link" href="#" data-toggle="modal" data-target="#wallet-menu"><i className="icon-user fa-2x mr-md-2" /></a>
+                                    <a className="nav-link" href="" data-toggle="modal" data-target="#wallet-menu"><i className="icon-user fa-2x mr-md-2" /></a>
                                     <WalletMenu account={account} logOut={() => this.disconnectWallet()}/>
                                 </li>)
                             }
