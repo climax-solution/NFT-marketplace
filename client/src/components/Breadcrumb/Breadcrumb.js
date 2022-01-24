@@ -10,7 +10,7 @@ class Breadcrumb extends Component {
                         <div className="col-12">
                             {/* Breamcrumb Content */}
                             <div className="breadcrumb-content text-center">
-                                { this.props.img && <img src={`/img/${this.props.img}-ban-image.png`} style={{width: "150px"}} alt="Banner image"/> }
+                                { this.props.img && <img src={`/img/${this.props.img}-ban-image.png`} style={{width: "150px"}} alt="Banner"/> }
                             </div>
                         </div>
                     </div>

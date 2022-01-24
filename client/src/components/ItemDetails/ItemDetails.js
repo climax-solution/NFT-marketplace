@@ -115,11 +115,11 @@ class ItemDetails extends Component {
                                         {/* Owner */}
                                         <div className="owner d-flex align-items-center mt-3">
                                             <span>Owner : </span>
-                                            <a href={`https://bscscan.com/address/${itemData.nftData.owner}`} target="_blank" className="ml-2">{itemData.nftData.owner.substr(0,14) + "..." + itemData.nftData.owner.substr(-4)}</a>
+                                            <a href={`https://bscscan.com/address/${itemData.nftData.owner}`} target="_blank" rel="noopener noreferrer" className="ml-2">{itemData.nftData.owner.substr(0,14) + "..." + itemData.nftData.owner.substr(-4)}</a>
                                         </div>
                                         <div className="owner d-flex align-items-center mt-3">
                                             <span>Address : </span>
-                                            <a href={`https://bscscan.com/token/${nft_addr}`} target="_blank" className="ml-2">{nft_addr}</a>
+                                            <a href={`https://bscscan.com/token/${nft_addr}`} rel="noopener noreferrer" target="_blank" className="ml-2">{nft_addr}</a>
                                         </div>
                                         <div className="owner d-flex align-items-center mt-3">
                                             <span>Token ID :  {itemData.nftData.tokenID}</span>

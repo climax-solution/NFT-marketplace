@@ -13,15 +13,12 @@ const WalletMenu = ({ account, logOut}) => {
                             <div className="items p-0 col-12 text-left" >
                                 <ul className="navbar-nav">
                                     <li className="nav-item">
-                                        <a href="#" className="nav-link">{account.substr(0,14) + "..." + account.substr(-4)}</a>
+                                        <small className="nav-link">{account.substr(0,14) + "..." + account.substr(-4)}</small>
                                     </li>
                                     <li className="nav-item">
-                                        <a className="nav-link" onClick={() => logOut()} href="#">
-                                            <span>
-                                                <i className="icon-logout text-white mr-2" style={{color: "#000"}}/>
-                                                 Log Out
-                                            </span>
-                                        </a>
+                                        <small className="nav-link justify-content-start logout-btn" onClick={() => logOut()}>
+                                            <i className="icon-logout text-white mr-2"/>Log Out
+                                        </small>
                                     </li>
                                 </ul>
                             </div>

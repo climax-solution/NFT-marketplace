@@ -1,3 +1,15 @@
 .modal-body {
     align-items: baseline;
 }
+
+.menu .nav-link:first-child {
+    font-size: 1rem;
+}
+
+.logout-btn {
+    cursor: pointer;
+}
+
+.logout-btn:hover {
+    color: turquoise !important;
+}
