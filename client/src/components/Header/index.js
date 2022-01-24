@@ -24,7 +24,7 @@ class Header extends Component{
             const networkId = await mWeb3.eth.net.getId();
             let isMetaMask = accounts.length ? true : false;
             const { connected } = JSON.parse(window.localStorage.getItem("nftdevelopments"));
-            if (networkId !== fakeId || !connected) isMetaMask = false;
+            if (networkId != fakeId || !connected) isMetaMask = false;
             window.localStorage.setItem("nftdevelopments",JSON.stringify({connected: isMetaMask}));
             await this.props.WalletConnect();
             this.setState({
@@ -37,7 +37,7 @@ class Header extends Component{
     }
     
     componentDidUpdate(preprops) {
-        if (preprops !== this.props) {
+        if (preprops != this.props) {
             const { wallet_connected } = this.props;
             this.setState({
                 wallet_connect: wallet_connected
@@ -53,7 +53,7 @@ class Header extends Component{
             const fakeId = await web3.eth.net.getId();
             const networkId = await mWeb3.eth.net.getId();
             let isMetaMask = accounts.length ? true : false;
-            if (networkId !== fakeId) isMetaMask = false;
+            if (networkId != fakeId) isMetaMask = false;
             window.localStorage.setItem("nftdevelopments",JSON.stringify({connected: isMetaMask}));
             await this.props.WalletConnect();
             this.setState({

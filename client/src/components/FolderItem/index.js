@@ -3,11 +3,11 @@ import { Button } from 'rimble-ui';
 import { connect } from "react-redux";
 import { NotificationManager } from "react-notifications";
 import getWeb3 from "../../utils/getWeb3";
-import '../../App.module.scss';
 import Breadcrumb from "../Breadcrumb/Breadcrumb";
 import ScreenLoading from "../Loading/screenLoading";
 import ItemLoading  from "../Loading/itemLoading";
 import addresses from "../../config/address.json";
+import './custom.css';
 
 const { marketplace_addr, nft_addr } = addresses;
 
@@ -177,7 +177,7 @@ class FolderItem extends Component {
 
     async componentDidUpdate(preprops) {
         const { connected } = this.props;
-        if (preprops !== this.props) {
+        if (preprops != this.props) {
             await this.init();
             const { web3 } = this.state;
             this.setState({
@@ -266,7 +266,7 @@ class FolderItem extends Component {
                                                             <span>{ItemPrice} BNB</span>
                                                         </div>
                                                         {
-                                                            item.marketData.marketStatus && item.nftData.owner !== currentAccount &&
+                                                            item.marketData.marketStatus && item.nftData.owner != currentAccount &&
                                                             <Button
                                                                 size={'medium'}
                                                                 width={1}
@@ -292,8 +292,11 @@ class FolderItem extends Component {
                                     return (
                                         <div className="col-12 col-sm-6 col-lg-3 item" key={idx} data-groups={item.category}>
                                             <div className="card">
-                                                <div className="image-over">
-                                                <a href={`/item-details/${item.nftData.tokenID}`}><img className="card-img-top" onError={this.faliedLoadImage} src={`${item.image}`} alt="" /></a>
+                                                <div className="image-over position-relative">
+                                                    {
+                                                        item.nftData.owner == currentAccount && <i className="fal fa-badge-check owner-check"/>
+                                                    }
+                                                    <a href={`/item-details/${item.nftData.tokenID}`}><img className="card-img-top" onError={this.faliedLoadImage} src={`${item.image}`} alt="" /></a>
                                                 </div>
                                                 {/* Card Caption */}
                                                 <div className="card-caption p-0">
@@ -308,7 +311,7 @@ class FolderItem extends Component {
                                                             <span>{ItemPrice} BNB</span>
                                                         </div>
                                                         {
-                                                            item.marketData.marketStatus && item.nftData.owner !== currentAccount &&
+                                                            item.marketData.marketStatus && item.nftData.owner != currentAccount &&
                                                             <Button
                                                                 size={'medium'}
                                                                 width={1}
