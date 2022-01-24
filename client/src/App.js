@@ -1,21 +1,20 @@
 import React, { Component } from "react";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { NotificationContainer } from "react-notifications";
+import { Loader } from 'rimble-ui';
 import Header from "./components/Header/index.js";
 import Footer from "./components/Footer/index.js";
 import MyPhotos from "./components/MyPhotos/index.js";
 import PhotoMarketplace from "./components/PhotoMarketplace/index.js";
 import ItemDetails from "./components/ItemDetails/ItemDetails";
-
-import { Loader } from 'rimble-ui';
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Home from "./components/Home";
-import 'react-notifications/lib/notifications.css';
-
-import styles from './App.module.scss';
-import './App.css';
 import FolderItem from "./components/FolderItem/index.js";
 import Collections from "./components/Collection/index.js";
+import SubCollection from "./components/SubCollection/index.js";
 
+import 'react-notifications/lib/notifications.css';
+import styles from './App.module.scss';
+import './App.css';
 
 class App extends Component {
   constructor(props) {    
@@ -66,6 +65,7 @@ class App extends Component {
             <Route path="/photo-marketplace" component={PhotoMarketplace}/>
             <Route path="/item-details/:id" component={ItemDetails}/>
             <Route path="/folder-item/:id" component={FolderItem}/>
+            <Route path="/sub-collection/:id" component={SubCollection}/>
           </Switch>
         <Footer />
       </Router>
