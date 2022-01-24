@@ -7,7 +7,6 @@ import Breadcrumb from "../Breadcrumb/Breadcrumb";
 import ScreenLoading from "../Loading/screenLoading";
 import ItemLoading  from "../Loading/itemLoading";
 import addresses from "../../config/address.json";
-import './custom.css';
 
 const { marketplace_addr, nft_addr } = addresses;
 

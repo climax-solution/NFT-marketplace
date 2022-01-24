@@ -56,9 +56,6 @@ class Home extends Component {
     
     getAllPhotos = async (list) => {
         const {  allPhotos } = this.state;
-        this.setState({
-            itemLoading: true
-        })
         let _list = [];
         for await (const item of list) {
             try {
@@ -66,7 +63,6 @@ class Home extends Component {
                 _list.push({ ...item, ...res.data });
             } catch (err) {
             }
-            return item;
         };
         _list.sort((before, after) => {
             return before.marketData.premiumTimestamp - after.marketData.premiumTimestamp;
@@ -152,6 +148,9 @@ class Home extends Component {
         const { PhotoMarketplace } = this.state;
         let allPhotos = await PhotoMarketplace.methods.getPremiumNFTList().call();
         allPhotos = allPhotos.filter(item => item.marketData.premiumStatus && item.marketData.marketStatus );
+        this.setState({
+
+        })
         let list = allPhotos;
         if (allPhotos.length > 8) {
             list = allPhotos.slice(0, 8);
@@ -259,7 +258,10 @@ class Home extends Component {
                                 return (
                                     <div className="col-12 col-sm-6 col-lg-3 item" key={idx}>
                                         <div className="card">
-                                            <div className="image-over">
+                                            <div className="image-over position-relative">
+                                                {
+                                                    item.nftData.owner == currentAccount && <i className="fal fa-badge-check owner-check"/>
+                                                }
                                                 <a href={`/item-details/${item.nftData.tokenID}`}><img className="card-img-top" src={`${item.image}`} onError={this.faliedLoadImage} alt="" /></a>
                                             </div>
                                             {/* Card Caption */}
