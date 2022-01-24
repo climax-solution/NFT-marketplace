@@ -34,11 +34,8 @@ class PhotoMarketplace extends Component {
 
     getAllPhotos = async (folderList) => {
         
-        const { PhotoNFT, activeCategory, allPhotos } = this.state;
+        const { PhotoNFT, allPhotos } = this.state;
         let mainList = [];
-        folderList.map(async(item, idx) => {
-            item.folderIndex = allPhotos.length + idx;
-        })
 
         for await (let item of folderList) {
             const URI = await PhotoNFT.methods.tokenURI(item.wide[0]).call();
@@ -46,15 +43,6 @@ class PhotoMarketplace extends Component {
                 const res = await axios.get(`${URI}`);
                 mainList.push({ ...item, ...res.data });
             } catch (err) { }
-        }
-
-        switch(activeCategory) {
-            case "physical":
-                mainList = mainList.filter(item => item.category == activeCategory);
-                break;
-            case "digital":
-                mainList = mainList.filter(item => item.category == activeCategory);
-                break;
         }
 
         this.setState({
@@ -91,8 +79,6 @@ class PhotoMarketplace extends Component {
         let instancePhotoNFT = null;
         let instancePhotoMarketplace = null;
         
-
-        
         if (PhotoNFT) {
             instancePhotoNFT = new web3.eth.Contract(PhotoNFT, nft_addr);
         }
@@ -124,7 +110,12 @@ class PhotoMarketplace extends Component {
         }
         if (navigator.onLine){
             let gradList = await instancePhotoMarketplace.methods.getFolderList().call();
-            let list = [];
+            let idx = 0;
+            for await (let item of gradList) {
+                item.folderIndex = idx;
+                idx ++;
+            }
+            let list = gradList;
             if (gradList.length > 8) {
                 list = gradList.slice(0,8);
                 this.setState({
@@ -156,13 +147,25 @@ class PhotoMarketplace extends Component {
 
     async componentDidUpdate(preprops, prevState) {
       const { web3, activeCategory, PhotoMarketplace } = this.state;
-      if (preprops != this.props) {
+      if (preprops != this.props || prevState.activeCategory != activeCategory) {
         this.setState({
           isMetaMask: this.props.connected,
         })
         if (web3 != null) {
             let gradList = await PhotoMarketplace.methods.getFolderList().call();
-            let list = [];
+            let idx = 0;
+
+            for await (let item of gradList) {
+                item.folderIndex = idx;
+                idx ++;
+            }
+
+            if (prevState.activeCategory != activeCategory && activeCategory) {
+                gradList = gradList.filter(item => item.category == activeCategory);
+            }
+
+            let list = gradList;
+            
             if (gradList.length > 8) {
                 list = gradList.slice(0,8);
                 this.setState({
@@ -220,7 +223,7 @@ class PhotoMarketplace extends Component {
                             <div className="explore-menu btn-group btn-group-toggle flex-wrap justify-content-center text-center mb-4" data-toggle="buttons">
                                 <label
                                     className="btn active d-table text-uppercase p-2 category-btn border-radius"
-                                    onClick={() => this.setState({ activeCategory: "all" })}
+                                    onClick={() => this.setState({ activeCategory: "" })}
                                 >
                                     <input type="radio" defaultValue="all" defaultChecked className="explore-btn" />
                                     <span>ALL</span>
