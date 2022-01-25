@@ -172,7 +172,7 @@ class PhotoMarketplace extends Component {
                 gradList = gradList.filter(item => item.category == activeCategory);
             }
 
-            if (search) gradList = gradList.filter(item => (item.folder).search(search) > -1);
+            if (search) gradList = gradList.filter(item => ((item.folder).toLowerCase()).search(search.toLowerCase()) > -1);
 
             let list = gradList;
             
@@ -212,7 +212,7 @@ class PhotoMarketplace extends Component {
                 idx ++;
             }
 
-            if (tmpWord.length) gradList = gradList.filter(item => (item.folder).search(tmpWord) > -1);
+            if (tmpWord.length) gradList = gradList.filter(item => ((item.folder).toLowerCase()).search(tmpWord.toLowerCase()) > -1);
             if (activeCategory) gradList = gradList.filter(item => item.category == activeCategory);
             let list = gradList;
             if (gradList.length > 8) {
