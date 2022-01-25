@@ -8,6 +8,7 @@ import ScreenLoading from "../Loading/screenLoading";
 import ItemLoading  from "../Loading/itemLoading";
 import addresses from "../../config/address.json";
 import axios from "axios";
+import "./custom.css";
 
 const { marketplace_addr, nft_addr } = addresses;
 
@@ -27,7 +28,9 @@ class PhotoMarketplace extends Component {
           PhotoNFT: {},
           activeCategory: null,
           folderData: [],
-          restGradList: []
+          restGradList: [],
+          search: '',
+          tmpWord: ''
         };
 
     }
@@ -146,12 +149,17 @@ class PhotoMarketplace extends Component {
     }
 
     async componentDidUpdate(preprops, prevState) {
-      const { web3, activeCategory, PhotoMarketplace } = this.state;
+      const { web3, activeCategory, PhotoMarketplace, search } = this.state;
       if (preprops != this.props || prevState.activeCategory != activeCategory) {
         this.setState({
           isMetaMask: this.props.connected,
         })
         if (web3 != null) {
+
+            this.setState({
+                itemLoading: true
+            })
+
             let gradList = await PhotoMarketplace.methods.getFolderList().call();
             let idx = 0;
 
@@ -163,6 +171,8 @@ class PhotoMarketplace extends Component {
             if (prevState.activeCategory != activeCategory && activeCategory) {
                 gradList = gradList.filter(item => item.category == activeCategory);
             }
+
+            if (search) gradList = gradList.filter(item => (item.folder).search(search) > -1);
 
             let list = gradList;
             
@@ -179,14 +189,52 @@ class PhotoMarketplace extends Component {
             await this.getAllPhotos(list);
         }
       }
-
-    //   if (prevState.activeCategory != activeCategory) {
-    //     await this.getAllPhotos();
-    //   }
     }
 
     faliedLoadImage = (e) => {
         e.target.src="/img/empty.png";
+    }
+
+    async searchCollection() {
+        const { PhotoMarketplace, tmpWord, activeCategory } = this.state;
+        try {
+            this.setState({
+                itemLoading: true,
+                allPhotos: [],
+                search: tmpWord
+            });
+
+            let gradList = await PhotoMarketplace.methods.getFolderList().call();
+            let idx = 0;
+
+            for await (let item of gradList) {
+                item.folderIndex = idx;
+                idx ++;
+            }
+
+            if (tmpWord.length) gradList = gradList.filter(item => (item.folder).search(tmpWord) > -1);
+            if (activeCategory) gradList = gradList.filter(item => item.category == activeCategory);
+            let list = gradList;
+            if (gradList.length > 8) {
+                list = gradList.slice(0, 8);
+                this.setState({
+                    restGradList: gradList.slice((gradList.length - 8) * -1)
+                })
+            }
+            
+            else  {
+                this.setState({
+                    restGradList: []
+                })
+            }
+
+            await this.getAllPhotos(list);
+        } catch(err) {
+            console.log(err);
+            this.setState({
+                itemLoading: false
+            })
+        }
     }
 
     async fetchMore() {
@@ -210,12 +258,13 @@ class PhotoMarketplace extends Component {
     }
 
     render() {
-        const { allPhotos, isLoading, itemLoading, restGradList } = this.state;
+        const { allPhotos, isLoading, itemLoading, restGradList, tmpWord } = this.state;
 
         return (
             <>
                 { isLoading && <ScreenLoading/> }
                 <Breadcrumb img="marketplace"/>
+                
                 <div className="explore-area">
                     <div className="row justify-content-center text-center mt-3">
                         <div className="col-12">
@@ -243,6 +292,22 @@ class PhotoMarketplace extends Component {
                                     <span>DIGITAL ASSETS</span>
                                 </label>
                             </div>
+                        </div>
+                    </div>
+                    <div className="row justify-content-between search-box align-items-center">
+                        <div className="form-group search-input mb-0">
+                            <input
+                                type="text"
+                                className="form-control"
+                                name="name"
+                                placeholder="Enter collection name"
+                                required="required"
+                                value={tmpWord}
+                                onChange={(e) => this.setState({ tmpWord: e.target.value }) }
+                            />
+                        </div>
+                        <div className="w-150">
+                            <button className="btn" type="button" onClick={() => !itemLoading ? this.searchCollection() : null}>Search</button>
                         </div>
                     </div>
                     { itemLoading && <ItemLoading/> }

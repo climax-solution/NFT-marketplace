@@ -1,0 +1,18 @@
+.w-150 {
+    width: 150px;
+}
+
+.search-box {
+    max-width: 970px;
+    margin: auto;
+}
+
+.search-input {
+    width: calc(100% - 170px) !important;
+}
+
+.search-input input, .search-input input:focus, .search-input input:visited {
+    background-color: transparent;
+    color: #d1d3d5;
+    border-color: #686c70;
+}
