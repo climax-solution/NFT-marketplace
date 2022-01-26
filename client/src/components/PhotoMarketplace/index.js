@@ -154,10 +154,11 @@ class PhotoMarketplace extends Component {
 
     async componentDidUpdate(preprops, prevState) {
       const { web3, activeCategory, PhotoMarketplace, search } = this.state;
-      if (preprops != this.props || prevState.activeCategory != activeCategory) {
+      if (preprops != this.props)
         this.setState({
-          isMetaMask: this.props.connected,
+            isMetaMask: this.props.connected,
         })
+      if(prevState.activeCategory != activeCategory) {
         if (web3 != null) {
 
             this.setState({
