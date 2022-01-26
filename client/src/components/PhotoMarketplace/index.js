@@ -1,13 +1,14 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { NotificationManager } from "react-notifications";
+import axios from "axios";
+import Select from "react-select";
 import getWeb3 from "../../utils/getWeb3";
-import '../../App.module.scss';
 import Breadcrumb from "../Breadcrumb/Breadcrumb";
 import ScreenLoading from "../Loading/screenLoading";
 import ItemLoading  from "../Loading/itemLoading";
 import addresses from "../../config/address.json";
-import axios from "axios";
+import categories from "./category.json";
+import '../../App.module.scss';
 import "./custom.css";
 
 const { marketplace_addr, nft_addr } = addresses;
@@ -26,7 +27,10 @@ class PhotoMarketplace extends Component {
           isMetaMask: false,
           PhotoMarketplace: {},
           PhotoNFT: {},
-          activeCategory: null,
+          activeCategory: {
+              value:'',
+              label: 'All'
+          },
           folderData: [],
           restGradList: [],
           search: '',
@@ -169,7 +173,7 @@ class PhotoMarketplace extends Component {
             }
 
             if (prevState.activeCategory != activeCategory && activeCategory) {
-                gradList = gradList.filter(item => item.category == activeCategory);
+                if (activeCategory.value) gradList = gradList.filter(item => item.category == activeCategory.value);
             }
 
             if (search) gradList = gradList.filter(item => ((item.folder).toLowerCase()).search(search.toLowerCase()) > -1);
@@ -213,7 +217,7 @@ class PhotoMarketplace extends Component {
             }
 
             if (tmpWord.length) gradList = gradList.filter(item => ((item.folder).toLowerCase()).search(tmpWord.toLowerCase()) > -1);
-            if (activeCategory) gradList = gradList.filter(item => item.category == activeCategory);
+            if (activeCategory.value) gradList = gradList.filter(item => item.category == activeCategory.value);
             let list = gradList;
             if (gradList.length > 8) {
                 list = gradList.slice(0, 8);
@@ -258,7 +262,7 @@ class PhotoMarketplace extends Component {
     }
 
     render() {
-        const { allPhotos, isLoading, itemLoading, restGradList, tmpWord } = this.state;
+        const { allPhotos, isLoading, itemLoading, restGradList, tmpWord, activeCategory } = this.state;
 
         return (
             <>
@@ -266,35 +270,16 @@ class PhotoMarketplace extends Component {
                 <Breadcrumb img="marketplace"/>
                 
                 <div className="explore-area">
-                    <div className="row justify-content-center text-center mt-3">
-                        <div className="col-12">
-                            {/* Explore Menu */}
-                            <div className="explore-menu btn-group btn-group-toggle flex-wrap justify-content-center text-center mb-4" data-toggle="buttons">
-                                <label
-                                    className="btn active d-table text-uppercase p-2 category-btn border-radius"
-                                    onClick={() => this.setState({ activeCategory: "" })}
-                                >
-                                    <input type="radio" defaultValue="all" defaultChecked className="explore-btn" />
-                                    <span>ALL</span>
-                                </label>
-                                <label
-                                    className="btn d-table text-uppercase p-2 ml-2 category-btn border-radius"
-                                    onClick={() => this.setState({ activeCategory: "physical" })}
-                                >
-                                    <input type="radio" defaultValue="physical" className="explore-btn" />
-                                    <span>PHYSICAL ASSETS</span>
-                                </label>
-                                <label
-                                    className="btn d-table text-uppercase p-2 ml-2 category-btn border-radius"
-                                    onClick={() => this.setState({ activeCategory: "digital" })}
-                                >
-                                    <input type="radio" defaultValue="digital" className="explore-btn" />
-                                    <span>DIGITAL ASSETS</span>
-                                </label>
-                            </div>
-                        </div>
+                    <div className="row align-items-center justify-content-end mt-3 pr-3 mb-5">
+                        <span className="mr-3">Category</span>
+                        <Select
+                            options={categories}
+                            className="category-dropdown"
+                            onChange={(value) => this.setState({ activeCategory: value })}
+                            value={activeCategory}
+                        />
                     </div>
-                    <div className="row justify-content-between search-box align-items-center">
+                    <div className="row justify-content-between search-box align-items-center mt-5">
                         <div className="form-group search-input mb-0">
                             <input
                                 type="text"
@@ -306,7 +291,7 @@ class PhotoMarketplace extends Component {
                                 onChange={(e) => this.setState({ tmpWord: e.target.value }) }
                             />
                         </div>
-                        <div className="w-150">
+                        <div className="w-120">
                             <button className="btn" type="button" onClick={() => !itemLoading ? this.searchCollection() : null}>Search</button>
                         </div>
                     </div>
