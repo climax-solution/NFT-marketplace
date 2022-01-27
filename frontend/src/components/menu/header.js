@@ -177,303 +177,225 @@ const Header= function() {
                     </NavLink>
                   </div>
               </div>
-
-              <div className='search'>
-                <input id="quick_search" className="xs-hide" name="quick_search" placeholder="search item here..." type="text" />
-              </div>
                         
-                  <BreakpointProvider>
-                    <Breakpoint l down>
-                      {showmenu && 
-                      <div className='menu'>
-                        <div className='navbar-item'>
-                          <NavLink to="/">
-                            Home
-                            <span className='lines'></span>
-                          </NavLink>
-                        </div>
-                        <div className='navbar-item'>
-                          <div ref={ref1}>
-                            <div className="dropdown-custom dropdown-toggle btn" 
-                              onClick={handleBtnClick1}
-                              >
-                              Explore
-                            </div>
-                            {openMenu1 && (
-                              <div className='item-dropdown'>
-                                <div className="dropdown" onClick={closeMenu1}>
-                                  <NavLink to="/explore" onClick={() => btn_icon(!showmenu)}>Explore</NavLink>
-                                  <NavLink to="/explore2" onClick={() => btn_icon(!showmenu)}>Explore 2</NavLink>
-                                  <NavLink to="/rangking" onClick={() => btn_icon(!showmenu)}>Rangking</NavLink>
-                                  <NavLink to="/colection" onClick={() => btn_icon(!showmenu)}>Collection</NavLink>
-                                  <NavLink to="/ItemDetail" onClick={() => btn_icon(!showmenu)}>Items Details</NavLink>
-                                  <NavLink to="/Auction" onClick={() => btn_icon(!showmenu)}>Live Auction</NavLink>
-                                  <NavLink to="/helpcenter" onClick={() => btn_icon(!showmenu)}>Help Center</NavLink>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                        <div className='navbar-item'>
-                          <div ref={ref2}>
-                            <div className="dropdown-custom dropdown-toggle btn" 
-                              onClick={handleBtnClick2}
-                              >
-                              Pages
-                            </div>
-                            {openMenu2 && (
-                              <div className='item-dropdown'>
-                                <div className="dropdown" onClick={closeMenu2}>
-                                  <NavLink to="/Author" onClick={() => btn_icon(!showmenu)}>Author</NavLink>
-                                  <NavLink to="/wallet" onClick={() => btn_icon(!showmenu)}>Wallet</NavLink>
-                                  <NavLink to="/create" onClick={() => btn_icon(!showmenu)}>Create</NavLink>
-                                  <NavLink to="/news" onClick={() => btn_icon(!showmenu)}>News</NavLink>
-                                  <NavLink to="/works" onClick={() => btn_icon(!showmenu)}>Gallery</NavLink>
-                                  <NavLink to="/login" onClick={() => btn_icon(!showmenu)}>login</NavLink>
-                                  <NavLink to="/loginTwo" onClick={() => btn_icon(!showmenu)}>login 2</NavLink>
-                                  <NavLink to="/register" onClick={() => btn_icon(!showmenu)}>Register</NavLink>
-                                  <NavLink to="/contact" onClick={() => btn_icon(!showmenu)}>Contact Us</NavLink>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                        <div className='navbar-item'>
-                          <NavLink to="/activity" onClick={() => btn_icon(!showmenu)}>
-                            Activity
-                          </NavLink>
-                        </div>
-                        <div className='navbar-item'>
-                          <div ref={ref3}>
-                            <div className="dropdown-custom dropdown-toggle btn" 
-                              onClick={handleBtnClick3}
-                              >
-                              Element
-                            </div>
-                            {openMenu3 && (
-                              <div className='item-dropdown'>
-                                <div className="dropdown" onClick={closeMenu3}>
-                                  <NavLink to="/elegantIcons" onClick={() => btn_icon(!showmenu)}>Elegant Icon</NavLink>
-                                  <NavLink to="/etlineIcons" onClick={() => btn_icon(!showmenu)}>Etline Icon</NavLink>
-                                  <NavLink to="/fontAwesomeIcons" onClick={() => btn_icon(!showmenu)}>Font Awesome Icon</NavLink>
-                                  <NavLink to="/accordion" onClick={() => btn_icon(!showmenu)}>Accordion</NavLink>
-                                  <NavLink to="/alerts" onClick={() => btn_icon(!showmenu)}>Alerts</NavLink>
-                                  <NavLink to="/price" onClick={() => btn_icon(!showmenu)}>Pricing Table</NavLink>
-                                  <NavLink to="/progressbar" onClick={() => btn_icon(!showmenu)}>Progress bar</NavLink>
-                                  <NavLink to="/tabs" onClick={() => btn_icon(!showmenu)}>Tabs</NavLink>
-                                </div>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                      }
-                    </Breakpoint>
-
-                    <Breakpoint xl>
-                      <div className='menu'>
-                        <div className='navbar-item'>
-                          <NavLink to="/" onClick={() => btn_icon(!showmenu)}>
-                            Home
-                            <span className='lines'></span>
-                          </NavLink>
-                        </div>
-                        <div className='navbar-item'>
-                          <div ref={ref1}>
-                              <div className="dropdown-custom dropdown-toggle btn" 
-                                onMouseEnter={handleBtnClick1} onMouseLeave={closeMenu1}>
-                                Explore
-                                <span className='lines'></span>
-                                {openMenu1 && (
-                                <div className='item-dropdown'>
-                                  <div className="dropdown" onClick={closeMenu1}>
-                                  <NavLink to="/explore">Explore</NavLink>
-                                  <NavLink to="/explore2">Explore 2</NavLink>
-                                  <NavLink to="/rangking">Rangking</NavLink>
-                                  <NavLink to="/colection">Collection</NavLink>
-                                  <NavLink to="/ItemDetail">Items Details</NavLink>
-                                  <NavLink to="/Auction">Live Auction</NavLink>
-                                  <NavLink to="/helpcenter">Help Center</NavLink>
-                                  </div>
-                                </div>
-                              )}
-                              </div>
-                              
-                            </div>
-                        </div>
-                        <div className='navbar-item'>
-                          <div ref={ref2}>
-                              <div className="dropdown-custom dropdown-toggle btn" 
-                                onMouseEnter={handleBtnClick2} onMouseLeave={closeMenu2}>
-                                Pages
-                                <span className='lines'></span>
-                                {openMenu2 && (
-                                <div className='item-dropdown'>
-                                  <div className="dropdown" onClick={closeMenu2}>
-                                  <NavLink to="/Author">Author</NavLink>
-                                  <NavLink to="/wallet">Wallet</NavLink>
-                                  <NavLink to="/create">Create</NavLink>
-                                  <NavLink to="/news">News</NavLink>
-                                  <NavLink to="/works">Gallery</NavLink>
-                                  <NavLink to="/login">login</NavLink>
-                                  <NavLink to="/loginTwo">login 2</NavLink>
-                                  <NavLink to="/register">Register</NavLink>
-                                  <NavLink to="/contact">Contact Us</NavLink>
-                                  </div>
-                                </div>
-                              )}
-                              </div>
-                            </div>
-                        </div>
-                        <div className='navbar-item'>
-                          <NavLink to="/activity">
-                          Activity
-                          <span className='lines'></span>
-                          </NavLink>
-                        </div>
-                        <div className='navbar-item'>
-                          <div ref={ref3}>
-                              <div className="dropdown-custom dropdown-toggle btn" 
-                                onMouseEnter={handleBtnClick3} onMouseLeave={closeMenu3}>
-                                Elements
-                                <span className='lines'></span>
-                                {openMenu3 && (
-                                <div className='item-dropdown'>
-                                  <div className="dropdown" onClick={closeMenu3}>
-                                  <NavLink to="/elegantIcons">Elegant Icon</NavLink>
-                                  <NavLink to="/etlineIcons">Etline Icon</NavLink>
-                                  <NavLink to="/fontAwesomeIcons">Font Awesome Icon</NavLink>
-                                  <NavLink to="/accordion">Accordion</NavLink>
-                                  <NavLink to="/alerts">Alerts</NavLink>
-                                  <NavLink to="/price">Pricing Table</NavLink>
-                                  <NavLink to="/progressbar">Progess Bar</NavLink>
-                                  <NavLink to="/tabs">Tabs</NavLink>
-                                  </div>
-                                </div>
-                              )}
-                              </div>
-                            </div>
-                        </div>
-                      </div>
-                    </Breakpoint>
-                  </BreakpointProvider>
-
-                  <div className='mainside'>
-                    <div className="logout">
-                      <div ref={ref}>
+              <BreakpointProvider>
+                <Breakpoint l down>
+                  {showmenu && 
+                  <div className='menu'>
+                    <div className='navbar-item'>
+                      <NavLink to="/">
+                        Home
+                        <span className='lines'></span>
+                      </NavLink>
+                    </div>
+                    <div className='navbar-item'>
+                      <div ref={ref1}>
                         <div className="dropdown-custom dropdown-toggle btn" 
-                          onMouseEnter={handleBtnClick} onMouseLeave={closeMenu}>
-                          <i className="fa fa-user-circle-o auth-btn"/>
-                          {openMenu && (
+                          onClick={handleBtnClick1}
+                          >
+                          Explore
+                        </div>
+                        {openMenu1 && (
                           <div className='item-dropdown'>
-                            <div className="dropdown" onClick={closeMenu}>
-                            <NavLink to="/login">Login</NavLink>
-                            <NavLink to="/register">Register</NavLink>
+                            <div className="dropdown" onClick={closeMenu1}>
+                              <NavLink to="/explore" onClick={() => btn_icon(!showmenu)}>Explore</NavLink>
+                              <NavLink to="/explore2" onClick={() => btn_icon(!showmenu)}>Explore 2</NavLink>
+                              <NavLink to="/rangking" onClick={() => btn_icon(!showmenu)}>Rangking</NavLink>
+                              <NavLink to="/colection" onClick={() => btn_icon(!showmenu)}>Collection</NavLink>
+                              <NavLink to="/ItemDetail" onClick={() => btn_icon(!showmenu)}>Items Details</NavLink>
+                              <NavLink to="/Auction" onClick={() => btn_icon(!showmenu)}>Live Auction</NavLink>
+                              <NavLink to="/helpcenter" onClick={() => btn_icon(!showmenu)}>Help Center</NavLink>
                             </div>
                           </div>
                         )}
+                      </div>
+                    </div>
+                    <div className='navbar-item'>
+                      <div ref={ref2}>
+                        <div className="dropdown-custom dropdown-toggle btn" 
+                          onClick={handleBtnClick2}
+                          >
+                          Pages
                         </div>
-                        
-                      </div>
-                      <div id="de-click-menu-notification" className="de-menu-notification" onClick={() => btn_icon_not(!shownot)} ref={refpopnot}>
-                          <div className="d-count">8</div>
-                          <i className="fa fa-bell"></i>
-                          {shownot && 
-                            <div className="popshow">
-                              <div className="de-flex">
-                                  <h4>Notifications</h4>
-                                  <span className="viewaall">Show all</span>
-                              </div>
-                              <ul>
-                                <li>
-                                    <div className="mainnot">
-                                        <img className="lazy" src="../../img/author/author-2.jpg" alt=""/>
-                                        <div className="d-desc">
-                                            <span className="d-name"><b>Mamie Barnett</b> started following you</span>
-                                            <span className="d-time">1 hour ago</span>
-                                        </div>
-                                    </div>  
-                                </li>
-                                <li>
-                                    <div className="mainnot">
-                                        <img className="lazy" src="../../img/author/author-3.jpg" alt=""/>
-                                        <div className="d-desc">
-                                            <span className="d-name"><b>Nicholas Daniels</b> liked your item</span>
-                                            <span className="d-time">2 hours ago</span>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div className="mainnot">
-                                        <img className="lazy" src="../../img/author/author-4.jpg" alt=""/>
-                                        <div className="d-desc">
-                                            <span className="d-name"><b>Lori Hart</b> started following you</span>
-                                            <span className="d-time">18 hours ago</span>
-                                        </div>
-                                    </div>    
-                                </li>
-                                <li>
-                                    <div className="mainnot">
-                                        <img className="lazy" src="../../img/author/author-5.jpg" alt=""/>
-                                        <div className="d-desc">
-                                            <span className="d-name"><b>Jimmy Wright</b> liked your item</span>
-                                            <span className="d-time">1 day ago</span>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div className="mainnot">
-                                        <img className="lazy" src="../../img/author/author-6.jpg" alt=""/>
-                                        <div className="d-desc">
-                                            <span className="d-name"><b>Karla Sharp</b> started following you</span>
-                                            <span className="d-time">3 days ago</span>
-                                        </div>
-                                    </div>    
-                                </li>
-                            </ul>
+                        {openMenu2 && (
+                          <div className='item-dropdown'>
+                            <div className="dropdown" onClick={closeMenu2}>
+                              <NavLink to="/Author" onClick={() => btn_icon(!showmenu)}>Author</NavLink>
+                              <NavLink to="/wallet" onClick={() => btn_icon(!showmenu)}>Wallet</NavLink>
+                              <NavLink to="/create" onClick={() => btn_icon(!showmenu)}>Create</NavLink>
+                              <NavLink to="/news" onClick={() => btn_icon(!showmenu)}>News</NavLink>
+                              <NavLink to="/works" onClick={() => btn_icon(!showmenu)}>Gallery</NavLink>
+                              <NavLink to="/login" onClick={() => btn_icon(!showmenu)}>login</NavLink>
+                              <NavLink to="/loginTwo" onClick={() => btn_icon(!showmenu)}>login 2</NavLink>
+                              <NavLink to="/register" onClick={() => btn_icon(!showmenu)}>Register</NavLink>
+                              <NavLink to="/contact" onClick={() => btn_icon(!showmenu)}>Contact Us</NavLink>
                             </div>
-                            }
-                      </div>
-                      <div id="de-click-menu-profile" className="de-menu-profile" onClick={() => btn_icon_pop(!showpop)} ref={refpop}>                           
-                          <img src="../../img/author_single/author_thumbnail.jpg" alt=""/>
-                          {showpop && 
-                            <div className="popshow">
-                              <div className="d-name">
-                                  <h4>Monica Lucas</h4>
-                                  <span className="name" onClick={()=> window.open("", "_self")}>Set display name</span>
-                              </div>
-                              <div className="d-balance">
-                                  <h4>Balance</h4>
-                                  12.858 ETH
-                              </div>
-                              <div className="d-wallet">
-                                  <h4>My Wallet</h4>
-                                  <span id="wallet" className="d-wallet-address">DdzFFzCqrhshMSxb9oW3mRo4MJrQkusV3fGFSTwaiu4wPBqMryA9DYVJCkW9n7twCffG5f5wX2sSkoDXGiZB1HPa7K7f865Kk4LqnrME</span>
-                                  <button id="btn_copy" title="Copy Text">Copy</button>
-                              </div>
-                              <div className="d-line"></div>
-                              <ul className="de-submenu-profile">
-                                <li>
-                                  <span>
-                                    <i className="fa fa-user"></i> My profile
-                                  </span>
-                                </li>
-                                <li>
-                                  <span>
-                                    <i className="fa fa-pencil"></i> Edit profile
-                                  </span>
-                                </li>
-                                <li>
-                                  <span>
-                                    <i className="fa fa-sign-out"></i> Sign out
-                                  </span>
-                                </li>
-                              </ul>
-                            </div>
-                          }
+                          </div>
+                        )}
                       </div>
                     </div>
                   </div>
+                  }
+                </Breakpoint>
+
+                <Breakpoint xl>
+                  <div className='menu'>
+                    <div className='navbar-item'>
+                      <NavLink to="/" onClick={() => btn_icon(!showmenu)}>
+                        Home
+                        <span className='lines'></span>
+                      </NavLink>
+                    </div>
+                    <div className='navbar-item'>
+                      <NavLink to="/explore" onClick={() => btn_icon(!showmenu)}>
+                      Explore
+                        <span className='lines'></span>
+                      </NavLink>
+                    </div>
+                    <div className='navbar-item'>
+                      <div ref={ref2}>
+                          <div className="dropdown-custom dropdown-toggle btn" 
+                            onMouseEnter={handleBtnClick2} onMouseLeave={closeMenu2}>
+                            Pages
+                            <span className='lines'></span>
+                            {openMenu2 && (
+                            <div className='item-dropdown'>
+                              <div className="dropdown" onClick={closeMenu2}>
+                              <NavLink to="/Author">Author</NavLink>
+                              <NavLink to="/wallet">Wallet</NavLink>
+                              <NavLink to="/create">Create</NavLink>
+                              <NavLink to="/news">News</NavLink>
+                              <NavLink to="/works">Gallery</NavLink>
+                              <NavLink to="/login">login</NavLink>
+                              <NavLink to="/loginTwo">login 2</NavLink>
+                              <NavLink to="/register">Register</NavLink>
+                              <NavLink to="/contact">Contact Us</NavLink>
+                              </div>
+                            </div>
+                          )}
+                          </div>
+                        </div>
+                    </div>
+                  </div>
+                </Breakpoint>
+              </BreakpointProvider>
+
+              <div className='mainside'>
+                <div className="logout">
+                  <div ref={ref}>
+                    <div className="dropdown-custom dropdown-toggle btn" 
+                      onMouseEnter={handleBtnClick} onMouseLeave={closeMenu}>
+                      <i className="fa fa-user-circle-o auth-btn"/>
+                      {openMenu && (
+                      <div className='item-dropdown'>
+                        <div className="dropdown" onClick={closeMenu}>
+                        <NavLink to="/login">Login</NavLink>
+                        <NavLink to="/register">Register</NavLink>
+                        </div>
+                      </div>
+                    )}
+                    </div>
+                    
+                  </div>
+                  <div id="de-click-menu-notification" className="de-menu-notification" onClick={() => btn_icon_not(!shownot)} ref={refpopnot}>
+                      <div className="d-count">8</div>
+                      <i className="fa fa-bell"></i>
+                      {shownot && 
+                        <div className="popshow">
+                          <div className="de-flex">
+                              <h4>Notifications</h4>
+                              <span className="viewaall">Show all</span>
+                          </div>
+                          <ul>
+                            <li>
+                                <div className="mainnot">
+                                    <img className="lazy" src="../../img/author/author-2.jpg" alt=""/>
+                                    <div className="d-desc">
+                                        <span className="d-name"><b>Mamie Barnett</b> started following you</span>
+                                        <span className="d-time">1 hour ago</span>
+                                    </div>
+                                </div>  
+                            </li>
+                            <li>
+                                <div className="mainnot">
+                                    <img className="lazy" src="../../img/author/author-3.jpg" alt=""/>
+                                    <div className="d-desc">
+                                        <span className="d-name"><b>Nicholas Daniels</b> liked your item</span>
+                                        <span className="d-time">2 hours ago</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div className="mainnot">
+                                    <img className="lazy" src="../../img/author/author-4.jpg" alt=""/>
+                                    <div className="d-desc">
+                                        <span className="d-name"><b>Lori Hart</b> started following you</span>
+                                        <span className="d-time">18 hours ago</span>
+                                    </div>
+                                </div>    
+                            </li>
+                            <li>
+                                <div className="mainnot">
+                                    <img className="lazy" src="../../img/author/author-5.jpg" alt=""/>
+                                    <div className="d-desc">
+                                        <span className="d-name"><b>Jimmy Wright</b> liked your item</span>
+                                        <span className="d-time">1 day ago</span>
+                                    </div>
+                                </div>
+                            </li>
+                            <li>
+                                <div className="mainnot">
+                                    <img className="lazy" src="../../img/author/author-6.jpg" alt=""/>
+                                    <div className="d-desc">
+                                        <span className="d-name"><b>Karla Sharp</b> started following you</span>
+                                        <span className="d-time">3 days ago</span>
+                                    </div>
+                                </div>    
+                            </li>
+                        </ul>
+                        </div>
+                        }
+                  </div>
+                  <div id="de-click-menu-profile" className="de-menu-profile" onClick={() => btn_icon_pop(!showpop)} ref={refpop}>                           
+                      <img src="../../img/author_single/author_thumbnail.jpg" alt=""/>
+                      {showpop && 
+                        <div className="popshow">
+                          <div className="d-name">
+                              <h4>Monica Lucas</h4>
+                              <span className="name" onClick={()=> window.open("", "_self")}>Set display name</span>
+                          </div>
+                          <div className="d-balance">
+                              <h4>Balance</h4>
+                              12.858 ETH
+                          </div>
+                          <div className="d-wallet">
+                              <h4>My Wallet</h4>
+                              <span id="wallet" className="d-wallet-address">DdzFFzCqrhshMSxb9oW3mRo4MJrQkusV3fGFSTwaiu4wPBqMryA9DYVJCkW9n7twCffG5f5wX2sSkoDXGiZB1HPa7K7f865Kk4LqnrME</span>
+                              <button id="btn_copy" title="Copy Text">Copy</button>
+                          </div>
+                          <div className="d-line"></div>
+                          <ul className="de-submenu-profile">
+                            <li>
+                              <span>
+                                <i className="fa fa-user"></i> My profile
+                              </span>
+                            </li>
+                            <li>
+                              <span>
+                                <i className="fa fa-pencil"></i> Edit profile
+                              </span>
+                            </li>
+                            <li>
+                              <span>
+                                <i className="fa fa-sign-out"></i> Sign out
+                              </span>
+                            </li>
+                          </ul>
+                        </div>
+                      }
+                  </div>
+                </div>
+              </div>
                       
           </div>
 
