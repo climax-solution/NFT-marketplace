@@ -9,7 +9,7 @@ import StyledHeader from "../Styles";
 const GlobalStyles = createGlobalStyle`
   .navbar {
     .light-logo {
-      width: 100px;
+      width: 100px !important;
     }
     .mainside{
       .connect-wal{
