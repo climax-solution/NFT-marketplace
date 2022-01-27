@@ -8,6 +8,9 @@ import StyledHeader from "../Styles";
 
 const GlobalStyles = createGlobalStyle`
   .navbar {
+    .light-logo {
+      width: 100px;
+    }
     .mainside{
       .connect-wal{
         display: none;
@@ -159,19 +162,19 @@ const Header= function() {
               <div className='logo px-0'>
                   <div className='navbar-title navbar-item'>
                     <NavLink to="/">
-                    <img
-                        src="./img/logo-3.png"
-                        className="img-fluid d-block"
+                      <img
+                        src="./img/logo-light.png"
+                        className="img-fluid d-block light-logo"
                         alt="#"
                       />
                       <img
-                        src="./img/logo-3.png"
+                        src="./img/logo-light.png light-logo"
                         className="img-fluid d-3"
                         alt="#"
                       />
                       <img
                         src="./img/logo-light.png"
-                        className="img-fluid d-none"
+                        className="img-fluid d-none light-logo"
                         alt="#"
                       />
                     </NavLink>
