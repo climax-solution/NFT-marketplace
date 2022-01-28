@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import Clock from "./Clock";
+import { createGlobalStyle } from 'styled-components';
 
-
+const GlobalStyles  = createGlobalStyle`
+`;
 
 export default class Responsive extends Component {
-
     dummyData = [{
         deadline:"December, 30, 2021",
         authorLink: "ItemDetail",
@@ -174,13 +174,14 @@ export default class Responsive extends Component {
         likes: 50
     }]
 
-  constructor(props) {
-    super(props);
-    this.state = {
-        nfts: this.dummyData.slice(0,8),
-        height: 0
-    };
-    this.onImgLoad = this.onImgLoad.bind(this);
+    constructor(props) {
+        super(props);
+        this.state = {
+            nfts: this.dummyData.slice(0,8),
+            height: 0,
+            folderList: []
+        };
+        this.onImgLoad = this.onImgLoad.bind(this);
     }
 
     loadMore = () => {
@@ -201,53 +202,42 @@ export default class Responsive extends Component {
         }
     }
     
-
- render() {
-  return (
-    <div className='row'>
-        {this.state.nfts.map( (nft, index) => (
-            <div key={index} className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4">
-                <div className="nft__item m-0">
-                    { nft.deadline &&
-                        <div className="de_countdown">
-                            <Clock deadline={nft.deadline} />
-                        </div>
-                    }
-                    <div className="author_list_pp">
-                        <span onClick={()=> window.open(nft.authorLink, "_self")}>                                    
-                            <img className="lazy" src={nft.authorImg} alt=""/>
-                            <i className="fa fa-check"></i>
-                        </span>
-                    </div>
-                    <div className="nft__item_wrap" style={{height: `${this.state.height}px`}}>
-                        <span>
-                            <img onLoad={this.onImgLoad} src={nft.previewImg} className="lazy nft__item_preview" alt=""/>
-                        </span>
-                    </div>
-                    <div className="nft__item_info">
-                        <span onClick={()=> window.open(nft.nftLink, "_self")}>
-                            <h4>{nft.title}</h4>
-                        </span>
-                        <div className="nft__item_price">
-                            {nft.price}<span>{nft.bid}</span>
-                        </div>
-                        <div className="nft__item_action">
-                            <span onClick={()=> window.open(nft.bidLink, "_self")}>Place a bid</span>
-                        </div>
-                        <div className="nft__item_like">
-                            <i className="fa fa-heart"></i><span>{nft.likes}</span>
-                        </div>                            
-                    </div> 
-                </div>
-            </div>  
-        ))}
-        { this.state.nfts.length !== this.dummyData.length &&
-            <div className='col-lg-12'>
-                <div className="spacer-single"></div>
-                <span onClick={() => this.loadMore()} className="btn-main lead m-auto">Load More</span>
-            </div>
+    componentDidUpdate(preProps) {
+        if (preProps != this.props) {
+            this.setState({
+                folderList: this.props.data
+            })
         }
-    </div>              
-    );
-}
+    }
+
+    render() {
+        const { folderList } = this.state;
+        return (
+            <div className='row'>
+                <GlobalStyles/>
+                {folderList.map( (nft, index) => (
+                    <div key={index} className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4">
+                        <div className="nft__item m-0 pb-4">
+                            <div className="nft__item_wrap" style={{height: `${this.state.height}px`}}>
+                                <span>
+                                    <img onLoad={this.onImgLoad} src={nft.image} className="lazy nft__item_preview" alt=""/>
+                                </span>
+                            </div>
+                            <div className="nft__item_info mb-0">
+                                <span onClick={()=> window.open(nft.nftLink, "_self")}>
+                                    <h4>{nft.folder}</h4>
+                                </span>
+                            </div> 
+                        </div>
+                    </div>  
+                ))}
+                { this.state.nfts.length !== this.dummyData.length &&
+                    <div className='col-lg-12'>
+                        <div className="spacer-single"></div>
+                        <span onClick={() => this.loadMore()} className="btn-main lead m-auto">Load More</span>
+                    </div>
+                }
+            </div>              
+        );
+    }
 }
