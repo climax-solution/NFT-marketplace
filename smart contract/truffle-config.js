@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 const HDWalletProvider = require('@truffle/hdwallet-provider');  // @notice - Should use new module.
-const mnemonic = ''; // process.env.;
+const mnemonic = 'master gallery almost century lonely label anxiety refuse cable super kitten autumn'; // process.env.;
 
 const INFURA_API_KEY="e5f6b05589544b1bb8526dc3c034c63e";
 
