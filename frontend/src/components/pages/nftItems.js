@@ -85,7 +85,7 @@ const GlobalStyles = createGlobalStyle`
   }
 `;
 
-const explore = () => {
+const nftItems = () => {
   const [web3, setWeb3] = useState(null);
   const [NFT, setNFT] = useState(null);
   const [Marketplace, setMarketplace] = useState(null);
@@ -201,4 +201,4 @@ const explore = () => {
     </div>
   )
 };
-export default explore;
+export default nftItems;
