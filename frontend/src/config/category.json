@@ -1,0 +1,8 @@
+[
+    { "value": "", "label": "All categories" },
+    { "value": "physical", "label": "Physical Assets"},
+    { "value": "digital", "label": "Digital Assets"},
+    { "value": "art", "label": "Art" },
+    { "value": "muic", "label": "Music" },
+    { "value": "video", "label": "Video" }
+]
