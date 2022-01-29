@@ -1,4 +1,4 @@
-import Mongoose from "mongoose";
+var Mongoose = require("mongoose");
 
 const { Schema } = Mongoose;
 
@@ -7,6 +7,9 @@ const UserSchema = Schema({
         type: String
     },
     lastName: {
+        type: String
+    },
+    username: {
         type: String
     },
     email: {

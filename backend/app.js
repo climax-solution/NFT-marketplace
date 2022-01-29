@@ -9,6 +9,7 @@ var cors = require('cors');
 var helmet = require('helmet');
 var chalk = require('chalk');
 var { database } = require('./config/key');
+var routes = require("./controllers");
 var app = express();
 
 // view engine setup
@@ -35,6 +36,7 @@ mongoose
   )
   .catch(err => console.log(err));
 
+app.use(routes);
   // catch 404 and forward to error handler
 app.use(function(req, res, next) {
   next(createError(404));

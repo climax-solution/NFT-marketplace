@@ -7,7 +7,7 @@ module.exports = {
         uri: process.env.MONGO_URI
     },
     jwt: {
-        secret: process.env.JWT_SECRET,
+        secret: "climax",
         tokenLife: '7d'
     }
 }

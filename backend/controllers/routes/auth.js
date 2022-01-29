@@ -6,20 +6,54 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 var UserSchema = require('../../models/users');
 
-const { secret, tokenLife } = require("../../config/key");
+const { jwt: JWT } = require("../../config/key");
 
-router.use('/login', (req, res) => {
+router.post('/login', async(req, res) => {
+    try {
+        let { id, password } = req.body;
+        const exitingEmail = await UserSchema.findOne({ email: id });
+        const existingUserName = await UserSchema.findOne({ username: id });
+        if (existingUserName || exitingEmail) {
+            const user = existingUserName ? existingUserName : exitingEmail;
+            const isMatch = await bcrypt.compare(password, user.password);
+            
+            if (!isMatch) {
+                return res.status(400).json({
+                    error: 'No existing user1.'
+                });
+            }
 
+            const payload = {
+                id: user.id
+            };
+
+            const token = jwt.sign(payload, JWT.secret, { expiresIn: JWT.tokenLife });
+
+            return res.status(200).json({
+                success: true,
+                token: `Bearer ${token}`
+            });
+        }
+        else {
+            res.status(400).json({
+                error: 'No existing user'
+            });
+        }
+    } catch(err) {
+        res.status(400).json({
+            error: 'Your request could not be processed. Please try again.'
+        }); 
+    }
 });
 
-router.use('/register', (req, res) => {
+router.post('/register', async(req, res) => {
     try {
-        const { username, firstName, lastName, email, country, phoneNumber, walletAddress, password } = req.body;
-        if (!emailValidator(email)) {
+        const { username, firstName, lastName, email, country, phoneNumber, walletAddress, password, brithday } = req.body;
+        if (!emailValidator.validate(email)) {
             return res.status(400).json({ error: 'You must enter an correct email address.' });
         }
 
-        else if (!walletValidator(walletAddress, 'ETH')) {
+        else if (!walletValidator.validate(walletAddress, 'ETH')) {
             return res.status(400).json({ error: 'You must enter an correct BSC wallet address.' });
         }
 
@@ -43,15 +77,14 @@ router.use('/register', (req, res) => {
             return res.status(400).json({ error: 'You must enter a user name.' });
         }
 
-        const existingEmail = await UserSchema({ email });
-        const existingUserName = await UserSchema({ username });
-        const existingWallet =  await UserSchema({ walletAddress });
-
+        const existingEmail = await UserSchema.findOne({ email });
+        const existingUserName = await UserSchema.findOne({ username });
+        const existingWallet =  await UserSchema.findOne({ walletAddress });
         if (existingEmail) {
             return res.status(400).json({ error: 'That email address is already in use.' });
         }
 
-        if (eexistingUserName) {
+        if (existingUserName) {
             return res.status(400).json({ error: 'That username is already in use.' });
         }
 
@@ -67,6 +100,7 @@ router.use('/register', (req, res) => {
             country,
             phoneNumber,
             walletAddress,
+            brithday,
             password
         });
 
@@ -80,14 +114,14 @@ router.use('/register', (req, res) => {
             id: registeredUser.id
         };
 
-        const token = jwt.sign(payload, secret, { expiresIn: tokenLife });
+        const token = jwt.sign(payload, JWT.secret, { expiresIn: JWT.tokenLife });
 
         return res.status(200).json({
             success: true,
             token: `Bearer ${token}`,
             user: registeredUser
         });
-        
+
     } catch(err) {
         console.error(err);
     }
