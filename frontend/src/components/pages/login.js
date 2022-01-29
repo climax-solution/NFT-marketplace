@@ -40,14 +40,7 @@ const logintwo= () => (
                 <div className="field-set">
                   <input type='submit' id='send_message' value='Submit' className="btn btn-main btn-fullwidth color-2"/>
                 </div>
-                
-                <div className="clearfix"></div>  
-                  <ul className="list s3">
-                      <li>Login with:</li>
-                      <li><span >Facebook</span></li>
-                      <li><span >Google</span></li>
-                  </ul>
-                  <div className="spacer-half"></div>
+                <div className="spacer-half"></div>
               </form>
             </div>
           </div>

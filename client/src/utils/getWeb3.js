@@ -15,14 +15,16 @@ const getWeb3 = async() => {
     const networkId = await web3.eth.net.getId();
     if (networkId !== 3) {
       ranId = Math.floor(Math.random() * 5);
-      const provider = new Web3.providers.HttpProvider(node[ranId]);
+      // const provider = new Web3.providers.HttpProvider(node[ranId]);
+      const provider = new Web3.providers.HttpProvider("https://ropsten.infura.io/v3/e5f6b05589544b1bb8526dc3c034c63e");
       web3 = new Web3(provider);
     }
   }
 
   else {
     ranId = Math.floor(Math.random() * 5);
-    const provider = new Web3.providers.HttpProvider(node[ranId]);
+    // const provider = new Web3.providers.HttpProvider(node[ranId]);
+    const provider = new Web3.providers.HttpProvider("https://ropsten.infura.io/v3/e5f6b05589544b1bb8526dc3c034c63e");
     web3 = new Web3(provider);
     //console.log("No web3 instance injected, using Infura/Local web3.");
   }
