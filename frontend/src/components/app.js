@@ -15,6 +15,7 @@ import Create from './pages/create';
 import Auction from './pages/Auction';
 import Activity from './pages/activity';
 import Contact from './pages/contact';
+import FolderItems from './pages/folderNFTs';
 
 import { createGlobalStyle } from 'styled-components';
 
@@ -64,6 +65,7 @@ const app= () => (
         <Auction path="/Auction" />
         <Activity path="/activity" />
         <Contact path="/contact" />
+        <FolderItems path="/folder-explorer/:id"/>
         </ScrollTop>
       </PosedRouter>
     <ScrollToTopBtn />

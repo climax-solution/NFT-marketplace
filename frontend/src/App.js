@@ -1,5 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
+import 'react-country-dropdown/dist/index.css';
 
 function App() {
   return (
