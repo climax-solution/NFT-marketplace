@@ -13,6 +13,7 @@
     "crypto": "^1.0.1",
     "debug": "~2.6.9",
     "dotenv": "^14.3.2",
+    "email-validator": "^2.0.4",
     "express": "~4.16.1",
     "helmet": "^5.0.2",
     "http-errors": "~1.6.3",
@@ -21,6 +22,7 @@
     "mongoose": "^6.1.8",
     "morgan": "~1.9.1",
     "nodemon": "^2.0.15",
-    "passport": "^0.5.2"
+    "passport": "^0.5.2",
+    "wallet-address-validator": "^0.2.4"
   }
 }
