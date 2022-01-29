@@ -5,179 +5,9 @@ const GlobalStyles  = createGlobalStyle`
 `;
 
 export default class Responsive extends Component {
-    dummyData = [{
-        deadline:"December, 30, 2021",
-        authorLink: "ItemDetail",
-        nftLink: "ItemDetail",
-        bidLink: "ItemDetail",
-        authorImg: "./img/author/author-1.jpg",
-        previewImg: "./img/items/static-1.jpg",
-        title: "Pinky Ocean",
-        price: "0.08 ETH",
-        bid: "1/20",
-        likes: 50
-    },
-    {
-        deadline:"",
-        authorLink: "#",
-        nftLink: "#",
-        bidLink: "#",
-        authorImg: "./img/author/author-10.jpg",
-        previewImg: "./img/items/static-2.jpg",
-        title: "Deep Sea Phantasy",
-        price: "0.06 ETH",
-        bid: "1/22",
-        likes: 80
-    },
-    {
-        deadline:"",
-        authorLink: "#",
-        nftLink: "#",
-        bidLink: "#",
-        authorImg: "./img/author/author-11.jpg",
-        previewImg: "./img/items/static-3.jpg",
-        title: "Rainbow Style",
-        price: "0.05 ETH",
-        bid: "1/11",
-        likes: 97
-    },
-    {
-        deadline:"January, 1, 2022",
-        authorLink: "#",
-        nftLink: "#",
-        bidLink: "#",
-        authorImg: "./img/author/author-12.jpg",
-        previewImg: "./img/items/static-4.jpg",
-        title: "Two Tigers",
-        price: "0.08 ETH",
-        bid: "1/20",
-        likes: 50
-    },
-    {
-        deadline:"",
-        authorLink: "#",
-        nftLink: "#",
-        bidLink: "#",
-        authorImg: "./img/author/author-9.jpg",
-        previewImg: "./img/items/anim-4.webp",
-        title: "The Truth",
-        price: "0.08 ETH",
-        bid: "1/20",
-        likes: 50
-    },
-    {
-        deadline:"January, 15, 2022",
-        authorLink: "#",
-        nftLink: "#",
-        bidLink: "#",
-        authorImg: "./img/author/author-2.jpg",
-        previewImg: "./img/items/anim-2.webp",
-        title: "Running Puppets",
-        price: "0.08 ETH",
-        bid: "1/20",
-        likes: 50
-    },
-    {
-        deadline:"",
-        authorLink: "#",
-        nftLink: "#",
-        bidLink: "#",
-        authorImg: "./img/author/author-3.jpg",
-        previewImg: "./img/items/anim-1.webp",
-        title: "USA Wordmation",
-        price: "0.08 ETH",
-        bid: "1/20",
-        likes: 50
-    },
-    {
-        deadline:"",
-        authorLink: "#",
-        nftLink: "#",
-        bidLink: "#",
-        authorImg: "./img/author/author-4.jpg",
-        previewImg: "./img/items/anim-5.webp",
-        title: "Loop Donut",
-        price: "0.08 ETH",
-        bid: "1/20",
-        likes: 50
-    },
-    {
-        deadline:"January, 3, 2022",
-        authorLink: "#",
-        nftLink: "#",
-        bidLink: "#",
-        authorImg: "./img/author/author-5.jpg",
-        previewImg: "./img/items/anim-3.webp",
-        title: "Lady Copter",
-        price: "0.08 ETH",
-        bid: "1/20",
-        likes: 50
-    },
-    {
-        deadline:"",
-        authorLink: "#",
-        nftLink: "#",
-        bidLink: "#",
-        authorImg: "./img/author/author-7.jpg",
-        previewImg: "./img/items/static-5.jpg",
-        title: "Purple Planet",
-        price: "0.08 ETH",
-        bid: "1/20",
-        likes: 50
-    },
-    {
-        deadline:"",
-        authorLink: "#",
-        nftLink: "#",
-        bidLink: "#",
-        authorImg: "./img/author/author-6.jpg",
-        previewImg: "./img/items/anim-6.webp",
-        title: "Oh Yeah!",
-        price: "0.08 ETH",
-        bid: "1/20",
-        likes: 50
-    },
-    {
-        deadline:"January, 10, 2022",
-        authorLink: "#",
-        nftLink: "#",
-        bidLink: "#",
-        authorImg: "./img/author/author-8.jpg",
-        previewImg: "./img/items/anim-7.webp",
-        title: "This is Our Story",
-        price: "0.08 ETH",
-        bid: "1/20",
-        likes: 50
-    },
-    {
-        deadline:"",
-        authorLink: "#",
-        nftLink: "#",
-        bidLink: "#",
-        authorImg: "./img/author/author-9.jpg",
-        previewImg: "./img/items/static-6.jpg",
-        title: "Pixel World",
-        price: "0.08 ETH",
-        bid: "1/20",
-        likes: 50
-    },
-    {
-        deadline:"January, 10, 2022",
-        authorLink: "#",
-        nftLink: "#",
-        bidLink: "#",
-        authorImg: "./img/author/author-12.jpg",
-        previewImg: "./img/items/anim-8.webp",
-        title: "I Believe I Can Fly",
-        price: "0.08 ETH",
-        bid: "1/20",
-        likes: 50
-    }]
-
     constructor(props) {
         super(props);
         this.state = {
-            nfts: this.dummyData.slice(0,8),
             height: 0,
             folderList: []
         };
@@ -185,12 +15,6 @@ export default class Responsive extends Component {
     }
 
     loadMore = () => {
-        let nftState = this.state.nfts
-        let start = nftState.length
-        let end = nftState.length+4
-        this.setState({
-            nfts: [...nftState, ...(this.dummyData.slice(start, end))]
-        });
     }
 
     onImgLoad({target:img}) {
@@ -211,17 +35,17 @@ export default class Responsive extends Component {
     }
 
     render() {
-        const { folderList } = this.state;
+        const { folderList, height } = this.state;
         return (
             <div className='row'>
                 <GlobalStyles/>
                 {folderList.map( (nft, index) => (
                     <div key={index} className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4">
                         <div className="nft__item m-0 pb-4">
-                            <div className="nft__item_wrap" style={{height: `${this.state.height}px`}}>
-                                <span>
+                            <div className="nft__item_wrap" style={{height: `${height}px`}}>
+                                <a href={`/folder-explorer/${nft.folderIndex}`}>
                                     <img onLoad={this.onImgLoad} src={nft.image} className="lazy nft__item_preview" alt=""/>
-                                </span>
+                                </a>
                             </div>
                             <div className="nft__item_info mb-0">
                                 <span onClick={()=> window.open(nft.nftLink, "_self")}>
@@ -231,12 +55,6 @@ export default class Responsive extends Component {
                         </div>
                     </div>  
                 ))}
-                { this.state.nfts.length !== this.dummyData.length &&
-                    <div className='col-lg-12'>
-                        <div className="spacer-single"></div>
-                        <span onClick={() => this.loadMore()} className="btn-main lead m-auto">Load More</span>
-                    </div>
-                }
             </div>              
         );
     }

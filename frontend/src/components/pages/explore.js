@@ -106,10 +106,11 @@ const explore = () => {
   useEffect(async() => {
     if (!Marketplace) return;
     let gradList = await Marketplace.methods.getFolderList().call();
-    gradList.map((item, idx) => {
-      return { ...item, ...{folderIndex: idx} };
-    });
-    await getFolderData(gradList);
+    let gradList1 = [];
+    for(let idx in gradList) {
+      gradList1.push({...gradList[idx], folderIndex: idx});
+    };
+    await getFolderData(gradList1);
   },[Marketplace])
   
   useEffect(async() => {
@@ -120,7 +121,7 @@ const explore = () => {
   const getFolderData = async(gradList) => {
     let mainList = [];
     for await (let item of gradList) {
-      const URI = await NFT.methods.tokenURI(item.wide[0]).call();
+      const URI = await NFT.methods.tokenURI(item[2][0]).call();
       try {
           const res = await axios.get(`${URI}`);
           mainList.push({ ...item, ...res.data });
@@ -133,12 +134,13 @@ const explore = () => {
 
   const filterFolder = async() => {
     let gradList = await Marketplace.methods.getFolderList().call();
-    gradList.map((item, idx) => {
-      return { ...item, ...{folderIndex: idx} };
-    });
-    gradList = gradList.filter(item => ((item.folder).toLowerCase()).search(searchKwd.toLowerCase()) > -1);
-    if (activeCategory.value) gradList = gradList.filter(item => item.category == activeCategory.value);
-    await getFolderData(gradList);
+    let gradList1 = [];
+    for(let idx in gradList) {
+      gradList1.push({...gradList[idx], folderIndex: idx});
+    };
+    gradList1 = gradList1.filter(item => ((item[0]).toLowerCase()).search(searchKwd.toLowerCase()) > -1);
+    if (activeCategory.value) gradList1 = gradList1.filter(item => item[1] == activeCategory.value);
+    await getFolderData(gradList1);
   }
 
   return(
@@ -171,7 +173,15 @@ const explore = () => {
                           value={tmpKwd}
                           onChange={(e) => setTmpKwd(e.target.value)}
                         />
-                        <button id="btn-submit" onClick={() => setRealKwd(tmpKwd)}><i className="fa fa-search bg-color-secondary"></i></button>
+                        <button
+                          id="btn-submit"
+                          onClick={() => {
+                            setRealKwd(tmpKwd);
+                            setFolderList([]);
+                          }}
+                        >
+                          <i className="fa fa-search bg-color-secondary"></i>
+                        </button>
                         <div className="clearfix"></div>
                     </div>
                 </div>
