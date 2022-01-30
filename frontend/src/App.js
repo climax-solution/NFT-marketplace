@@ -1,11 +1,14 @@
+
 import logo from './logo.svg';
 import './App.css';
 import 'react-country-dropdown/dist/index.css';
-import 'react-phone-input-2/lib/style.css';
+
 
 function App() {
   return (
     <div className="App">
+      <NotificationContainer/>
+      <ToastContainer/>
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
         <p>
