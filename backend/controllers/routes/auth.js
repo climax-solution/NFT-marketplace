@@ -1,11 +1,12 @@
-var router = require('express').Router();
-var emailValidator = require('email-validator');
-var walletValidator = require('wallet-address-validator');
+let router = require('express').Router();
+let emailValidator = require('email-validator');
+let walletValidator = require('wallet-address-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-var UserSchema = require('../../models/users');
 
+const checkAuth = require("../../helpers/auth");
+let UserSchema = require('../../models/users');
 const { jwt: JWT } = require("../../config/key");
 
 router.post('/login', async(req, res) => {
@@ -125,6 +126,16 @@ router.post('/register', async(req, res) => {
     } catch(err) {
         console.error(err);
     }
+});
+
+router.post('/check-authentication', async(req, res) => {
+    const result = await checkAuth(req);
+    console.log("result ====>", result);
+    console.log(req);
+    console.log("< ================== >");
+    res.status(200).json({
+        token: result
+    })
 });
 
 module.exports = router;
