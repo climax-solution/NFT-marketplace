@@ -338,7 +338,7 @@ const Header= function() {
                                 <ul className="de-submenu-profile">
                                   <li>
                                     <span>
-                                      <Link to="/profile">
+                                      <Link to="/profile" className="text-black">
                                         <i className="fa fa-user"></i> My profile
                                       </Link>
                                     </span>
