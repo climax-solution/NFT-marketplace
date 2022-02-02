@@ -6,6 +6,7 @@ import ColumnNew from '../components/ColumnNew';
 import Footer from '../components/footer';
 import getWeb3 from '../../utils/getWeb3';
 import categoryOptions from "../../config/category.json";
+import Loading from '../components/Loading';
 
 const customStyles = {
   option: (base, state) => ({
@@ -32,16 +33,6 @@ const customStyles = {
     padding: 2
   })
 };
-
-
-const options = [
-  { value: '', label: 'All categories' },
-  { value: 'physical', label: 'Physical Assets'},
-  { value: 'digital', label: 'Digital Assets'},
-  { value: 'art', label: 'Art' },
-  { value: 'muic', label: 'Music' },
-  { value: 'video', label: 'Video' },
-]
 
 const GlobalStyles = createGlobalStyle`
   .items_filter {
@@ -91,7 +82,7 @@ const explore = () => {
   const [Marketplace, setMarketplace] = useState(null);
   const [folderList, setFolderList] = useState([]);
   const [activeCategory, setCategory] = useState({ value:'', label: 'All categories' });
-  const [itemLoading, setItemLoading] = useState(false);
+  const [itemLoading, setItemLoading] = useState(true);
   const [searchKwd, setRealKwd] = useState('');
   const [tmpKwd, setTmpKwd] = useState('');
 
@@ -130,9 +121,11 @@ const explore = () => {
       }
     }
     setFolderList([...folderList, ...mainList]);
+    setItemLoading(false);
   }
 
   const filterFolder = async() => {
+    setItemLoading(true);
     let gradList = await Marketplace.methods.getFolderList().call();
     let gradList1 = [];
     for(let idx in gradList) {
@@ -203,7 +196,9 @@ const explore = () => {
             </div>
           </div>
         </div>
-        <ColumnNew data={folderList}/>
+        {
+          itemLoading ? <Loading/> : <ColumnNew data={folderList}/>
+        }
       </section>
 
 

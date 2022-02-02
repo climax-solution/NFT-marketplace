@@ -1,18 +1,23 @@
-import React, {  useEffect, useState, Fragment } from "react";
+import axios from "axios";
+import React, {  useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { createGlobalStyle } from 'styled-components';
 import getWeb3 from "../../utils/getWeb3";
+import Empty from "../components/Empty";
+import Loading from "../components/Loading";
 
 const GlobalStyles  = createGlobalStyle`
 `;
 
 const folderNFTs = (props) => {
+    const params = useParams();
     const [web3, setWeb3] = useState(null);
     const [NFT, setNFT] = useState(null);
     const [Marketplace, setMarketplace] = useState(null);
     const [nfts, setNFTLists] = useState([]);
     const [restGradList, setRestGradList] = useState([]);
     const [height, setHeight] = useState(0);
-    const [folderName, setFolderName] = useState('');
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(async() => {
         const { _web3, instanceNFT, instanceMarketplace } = await getWeb3();
@@ -28,10 +33,9 @@ const folderNFTs = (props) => {
     },[Marketplace])
 
     const getInitNFTs = async() => {
-        const { id } = props;
+        const { id } = params;
         let gradList = await Marketplace.methods.getSubFolderItem(id).call();
         let list = gradList;
-        setFolderName(gradList.folder);
         if (gradList.length > 8) {
             list = gradList.slice(0,8);
             setRestGradList(gradList.slice((gradList.length - 8) * -1));
@@ -43,16 +47,14 @@ const folderNFTs = (props) => {
         let mainList = [];
         for await (let item of list) {
             try {
-                const response = await fetch(`${item.nftData.tokenURI}`);
-                if(response.ok) {
-                    const json = await response.json();
-                    mainList.push({ ...item, ...json });
-                }
+                const { data } = await axios.get(`${item.nftData.tokenURI}`);
+                mainList.push({ ...item, ...data });
             } catch (err) { }
         }
         
-        // console.log(folderList);
+        console.log(mainList);
         setNFTLists(mainList);
+        setIsLoading(false);
     }
 
     const onImgLoad = ({target:img}) => {
@@ -80,34 +82,38 @@ const folderNFTs = (props) => {
                 </div>
             </section>
             <section className='container'>
-                <div className='row'>
+                {
+                    isLoading && <Loading/>
+                }
 
-                    {nfts.map( (nft, index) => (
-                        <div key={index} className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4">
-                            <div className="nft__item m-0 pb-4">
-                                <div className="nft__item_wrap" style={{height: `${height}px`}}>
-                                    <span>
-                                        <img onLoad={onImgLoad} src={nft.image} onError={faliedLoadImage} className="lazy nft__item_preview" alt=""/>
-                                    </span>
-                                </div>
-                                <div className="nft__item_info mb-0">
-                                    <span onClick={()=> window.open(nft.nftLink, "_self")}>
-                                        <h4>{nft.nftName}</h4>
-                                    </span>
-                                    <div className="nft__item_price">
-                                        {web3.utils.fromWei(nft.marketData.price, 'ether')}<span>BNB</span>
-                                    </div>                       
-                                </div> 
-                            </div>
-                        </div>  
-                    ))}
-                    {/* { nfts.length !== this.dummyData.length &&
-                        <div className='col-lg-12'>
-                            <div className="spacer-single"></div>
-                            <span onClick={() => this.loadMore()} className="btn-main lead m-auto">Load More</span>
+                {
+                    !isLoading && (
+                        <div className='row'>
+                            {nfts.map( (nft, index) => (
+                                <div key={index} className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4">
+                                    <div className="nft__item m-0 pb-4">
+                                        <div className="nft__item_wrap" style={{height: `${height}px`}}>
+                                            <span>
+                                                <img onLoad={onImgLoad} src={nft.image} onError={faliedLoadImage} className="lazy nft__item_preview" alt=""/>
+                                            </span>
+                                        </div>
+                                        <div className="nft__item_info mb-0">
+                                            <span onClick={()=> window.open(nft.nftLink, "_self")}>
+                                                <h4>{nft.nftName}</h4>
+                                            </span>
+                                            <div className="nft__item_price">
+                                                {web3.utils.fromWei(nft.marketData.price, 'ether')}<span>BNB</span>
+                                            </div>                       
+                                        </div> 
+                                    </div>
+                                </div>  
+                            ))}
+                            {
+                                !nfts.length && <Empty/>
+                            }
                         </div>
-                    } */}
-                </div>
+                    )
+                }
             </section>
         </div>
 
