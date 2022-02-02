@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import ColumnZero from '../components/ColumnZero';
-import ColumnZeroTwo from '../components/ColumnZeroTwo';
-import ColumnZeroThree from '../components/ColumnZeroThree';
-import Footer from '../components/footer';
 import { createGlobalStyle } from 'styled-components';
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
+import ColumnZero from '../components/ColumnZero';
+import ColumnZeroTwo from '../components/ColumnZeroTwo';
+import ColumnZeroThree from '../components/ColumnZeroThree';
+import Loading from "../components/Loading";
+import Footer from '../components/footer';
 import getWeb3 from "../../utils/getWeb3";
 import { UPDATE_AUTH } from "../../store/action/auth.action";
 
@@ -18,6 +19,10 @@ const GlobalStyles = createGlobalStyle`
   }
 `;
 
+const token = localStorage.getItem("nftdevelopments-token");
+
+const _headers = {headers: {Authorization: JSON.parse(token)}}
+
 const Profile= function() {
 
   const initUserData = useSelector((state) => state.auth.user);
@@ -27,6 +32,7 @@ const Profile= function() {
   const [openMenu1, setOpenMenu1] = useState(false);
   const [openMenu2, setOpenMenu2] = useState(false);
 
+  const [isLoading, setLoading] = useState(true);
   const [userData, setUserData] = useState({});
   const [web3, setWeb3] = useState({});
   const [NFT, setNFT] = useState({});
@@ -61,9 +67,8 @@ const Profile= function() {
   };
 
   useEffect(async() => {
-    const token = localStorage.getItem("nftdevelopments-token");
     if (token) {
-      await axios.post('http://localhost:7060/user/get-user', {}, {headers: {Authorization: JSON.parse(token)}}).then(async(res) => {
+      await axios.post('http://localhost:7060/user/get-user', {}, _headers).then(async(res) => {
         setUserData(res.data);
         dispatch(UPDATE_AUTH(res.data));
         const { _web3, instanceNFT, instanceMarketplace } = await getWeb3();
@@ -71,34 +76,65 @@ const Profile= function() {
         setNFT(instanceNFT);
         setMarketplace(instanceMarketplace);
       }).catch(err => {
-        
+        setLoading(false);
       })
     }
   },[]);
 
   useEffect(async() => {
     if (Object.keys(userData).length && Marketplace && openMenu) {
-      let list = await Marketplace.methods.getPersonalNFTList().call({ from: userData.walletAddress });
-      list = list.filter(item => item.marketData.existance && item.marketData.marketStatus);
-      let final = list;
-      if (list.length > 8) {
-        final = list.slice(0, 8);
+      setLoading(true);
+      try {
+        let list = await Marketplace.methods.getPersonalNFTList().call({ from: userData.walletAddress });
+        list = list.filter(item => item.marketData.existance && item.marketData.marketStatus);
+        let final = list;
+        if (list.length > 8) {
+          final = list.slice(0, 8);
+        }
+        await fetchMetadata(list, 0);
+      } catch(err) {
+        setLoading(false);
       }
-      await fetchMetadata(list, 0);
     }
   },[Marketplace, openMenu]);
 
   useEffect(async() => {
     if (Object.keys(userData).length && Marketplace && openMenu1) {
-      let list = await Marketplace.methods.getPersonalNFTList().call({ from: userData.walletAddress });
-      list = list.filter(item => item.marketData.existance && !item.marketData.marketStatus);
-      let final = list;
-      if (list.length > 8) {
-        final = list.slice(0, 8);
+      setLoading(true);
+      try {
+        let list = await Marketplace.methods.getPersonalNFTList().call({ from: userData.walletAddress });
+        list = list.filter(item => item.marketData.existance && !item.marketData.marketStatus);
+        let final = list;
+        if (list.length > 8) {
+          final = list.slice(0, 8);
+        }
+        await fetchMetadata(final, 1);
+      } catch(err) {
+        setLoading(false);
       }
-      await fetchMetadata(list, 1);
     }
   },[Marketplace, openMenu1]);
+
+  useEffect(async() => {
+    if (Object.keys(userData).length && Marketplace && openMenu2) {
+      setLoading(true);
+      await axios.post("http://localhost:7060/user/get-liked-nfts", {}, _headers).then(async(res) => {
+        const { liked } = res.data;
+        const final = liked;
+        if (liked.length > 8) final = liked.slice(0, 8);
+        const list = [];
+        for await(let item of final) {
+          const _item = await Marketplace.methods.getPhoto(item.tokenID).call();
+          list.push(_item);
+        }
+
+        await fetchMetadata(list, 2);
+
+      }).catch(err => {
+        setLoading(false);
+      })
+    }
+  }, [openMenu2])
 
   const fetchMetadata = async(list, status) => {
     let mainList = [];
@@ -111,7 +147,9 @@ const Profile= function() {
       }
     }
     if (!status) setSellingNFT(mainList);
-    else setNotSellingNFT(mainList);
+    else if (status == 1) setNotSellingNFT(mainList);
+    else setLikedNFT(mainList);
+    setLoading(false);
   }
 
   return (
@@ -155,33 +193,46 @@ const Profile= function() {
       </section>
 
       <section className='container no-top'>
-            <div className='row'>
-              <div className='col-lg-12'>
-                  <div className="items_filter">
-                    <ul className="de_nav text-left">
-                        <li id='Mainbtn' className="active"><span onClick={handleBtnClick}>On Sale</span></li>
-                        <li id='Mainbtn1' className=""><span onClick={handleBtnClick1}>Not Sale</span></li>
-                        <li id='Mainbtn2' className=""><span onClick={handleBtnClick2}>Liked</span></li>
-                    </ul>
-                </div>
+        <div className='row'>
+          <div className='col-lg-12'>
+              <div className="items_filter">
+                <ul className="de_nav text-left">
+                    <li id='Mainbtn' className="active"><span onClick={handleBtnClick}>On Sale</span></li>
+                    <li id='Mainbtn1' className=""><span onClick={handleBtnClick1}>Not Sale</span></li>
+                    <li id='Mainbtn2' className=""><span onClick={handleBtnClick2}>Liked</span></li>
+                </ul>
+            </div>
+          </div>
+        </div>
+        {
+          isLoading && <Loading/>
+        }
+
+        {
+          !isLoading &&
+            (openMenu && (
+              <div id='zero1' className='onStep fadeIn'>
+              <ColumnZero data={sellingNFT} _web3={web3}/>
               </div>
-            </div>
-          {openMenu && (  
-            <div id='zero1' className='onStep fadeIn'>
-            <ColumnZero data={sellingNFT} _web3={web3}/>
-            </div>
-          )}
-          {openMenu1 && ( 
-            <div id='zero2' className='onStep fadeIn'>
-            <ColumnZeroTwo data={notSellingNFT} _web3={web3}/>
-            </div>
-          )}
-          {openMenu2 && ( 
-            <div id='zero3' className='onStep fadeIn'>
-            <ColumnZeroThree data={likedNFT} _web3={web3}/>
-            </div>
-          )}
-          </section>
+            ))
+        }
+        {
+          !isLoading &&
+            (openMenu1 && (
+              <div id='zero2' className='onStep fadeIn'>
+              <ColumnZeroTwo data={notSellingNFT} _web3={web3}/>
+              </div>
+            ))
+        }
+        {
+          !isLoading &&
+            (openMenu2 && (
+              <div id='zero3' className='onStep fadeIn'>
+              <ColumnZeroThree data={likedNFT} _web3={web3}/>
+              </div>
+            ))
+        }
+      </section>
 
 
       <Footer />
