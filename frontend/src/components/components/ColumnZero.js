@@ -39,11 +39,9 @@ export default function SellingNFT({data, _web3, ...props}) {
                 <div key={index} className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12">
                     <div className="nft__item">
                         <div className="nft__item_wrap" style={{height: `${height}px`}}>
-                        <Outer>
-                            <span>
+                            <a>
                                 <img onLoad={onImgLoad} src={nft.image} className="lazy nft__item_preview" alt=""/>
-                            </span>
-                        </Outer>
+                            </a>
                         </div>
                         <div className="nft__item_info">
                             <span onClick={()=> window.open(nft.nftLink, "_self")}>
