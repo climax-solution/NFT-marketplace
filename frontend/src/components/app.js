@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import { createGlobalStyle } from 'styled-components';
 import { NotificationContainer } from 'react-notifications';
 import { ToastContainer } from 'react-toastify';
 import { useSelector, useDispatch } from "react-redux";
+import axios from 'axios';
 import ScrollToTopBtn from './menu/ScrollToTop';
 import Header from './menu/header';
 import Home from './pages/home';
@@ -24,7 +25,6 @@ import FolderItems from './pages/folderNFTs';
 import NotFound from './components/404';
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-notifications/lib/notifications.css';
-import axios from 'axios';
 import { UPDATE_AUTH, UPDATE_LOADING_PROCESS } from '../store/action/auth.action';
 
 const GlobalStyles = createGlobalStyle`
