@@ -1,7 +1,7 @@
 import { SET_AUTH, SET_LOADING_PROCESS } from "../types";
 
 const data = {
-    user: [],
+    user: {},
     isLoading: true
 }
 
