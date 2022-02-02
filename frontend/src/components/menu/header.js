@@ -25,6 +25,9 @@ const GlobalStyles = createGlobalStyle`
         .item-dropdown a{
           display: block;
         }
+        .index-avatar {
+          aspect-ratio: 1;
+        }
         .dropdown-toggle {
           text-align: center;
           color: #fff !important;
@@ -318,7 +321,7 @@ const Header= function() {
                     <div className="logout">
                       {Object.keys(user_data).length &&
                         <div id="de-click-menu-profile" className="de-menu-profile" onClick={() => btn_icon_pop(!showpop)} ref={refpop}>                           
-                            <img src={userData.avatar ? userData.avatar : "/img/empty-avatar.png"} alt=""/>
+                            <img src={`http://localhost:7060/avatar/${userData.avatar ? userData.avatar : "empty-avatar.png"}`}  alt="" crossOrigin="true" className="index-avatar"/>
                             {showpop && 
                               <div className="popshow">
                                 <div className="d-name">

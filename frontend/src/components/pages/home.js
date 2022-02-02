@@ -15,12 +15,6 @@ const GlobalStyles = createGlobalStyle`
   header#myHeader .logo .d-none{
     display: block !important;
   }
-  .navbar .mainside a{
-    background: #8364e2;
-    &:hover{
-      box-shadow: 2px 2px 20px 0px #8364e2;
-    }
-  }
   .item-dropdown{
     .dropdown{
       a{

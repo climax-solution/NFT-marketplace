@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { createGlobalStyle } from 'styled-components';
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
+import useOnclickOutside from "react-cool-onclickoutside";
 import ColumnZero from '../components/ColumnZero';
 import ColumnZeroTwo from '../components/ColumnZeroTwo';
 import ColumnZeroThree from '../components/ColumnZeroThree';
@@ -17,6 +18,32 @@ const GlobalStyles = createGlobalStyle`
   .ml-12 {
     margin-left: 12px;
   }
+  .avatar-change {
+    height: 100%;
+    position: absolute;
+    background: rgba(0,0,0,0.4);
+    width: 100%;
+    z-index: 999;
+    border-radius: 50%;
+    transition: 0.2s ease;
+  }
+
+  .profile_avatar {
+    min-width: 300px;
+    min-height: 150px;
+  }
+
+  .index-avatar {
+    backface-visibility: hidden;
+    aspect-ratio: 1;
+  }
+
+  .edit-btn {
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    cursor: pointer;
+  }
 `;
 
 const token = localStorage.getItem("nftdevelopments-token");
@@ -31,6 +58,7 @@ const Profile= function() {
   const [openMenu, setOpenMenu] = useState(true);
   const [openMenu1, setOpenMenu1] = useState(false);
   const [openMenu2, setOpenMenu2] = useState(false);
+  const [openChange, setOpenChange] = useState(false);
 
   const [isLoading, setLoading] = useState(true);
   const [userData, setUserData] = useState({});
@@ -40,6 +68,10 @@ const Profile= function() {
   const [sellingNFT, setSellingNFT] = useState([]);
   const [notSellingNFT, setNotSellingNFT] = useState([]);
   const [likedNFT, setLikedNFT] = useState({});
+
+  const ref = useOnclickOutside(() => {
+    setOpenChange(false);
+  });
 
   const handleBtnClick = (): void => {
     setOpenMenu(!openMenu);
@@ -152,6 +184,28 @@ const Profile= function() {
     setLoading(false);
   }
 
+  const updateAvatar = async(e) => {
+    const files = e.target.files;
+    if (files[0].type.indexOf("image") > -1) {
+      let fileData = new FormData();
+      fileData.append("myfile", files[0]);
+      await axios.post(
+        "http://localhost:7060/user/update-avatar",
+        fileData,
+        {
+          headers: {
+            Authorization: JSON.parse(token),
+            'Content-Type': 'multipart/form-data'
+          }
+        }
+      ).then(res => {
+        console.log(res);
+      }).catch(err => {
+
+      })
+    }
+  }
+
   return (
     <div>
     <GlobalStyles/>
@@ -162,9 +216,30 @@ const Profile= function() {
           <div className="col-md-12">
             <div className="d_profile de-flex">
                   <div className="de-flex-col">
-                      <div className="profile_avatar">
-                          <img src={userData.avatar ? userData.avatar : "/img/empty-avatar.png"} alt=""/>
-                          <i className="fa fa-check"></i>
+                      <div className="profile_avatar d-flex" ref={ref}>
+                          <div
+                            className="avatar-image position-relative w-50 overflow-hidden"
+                            onMouseEnter={() => setOpenChange(true)}
+                            onMouseLeave={() => setOpenChange(false)}
+                          >
+                            <img
+                              src={`http://localhost:7060/avatar/${userData.avatar ? userData.avatar : "empty-avatar.png"}`}
+                              className="position-absolute index-avatar"
+                              alt=""
+                              crossOrigin="true"
+                              />
+                            { openChange &&
+                              <label className="avatar-change">
+                                <i className="fa fa-edit edit-btn m-0 d-inline-block"/>
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  onChange={updateAvatar}
+                                  hidden
+                                />
+                              </label>
+                            }
+                          </div>
                           <div className="profile_name">
                               {
                                 Object.keys(userData).length &&
