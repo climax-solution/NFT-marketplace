@@ -130,12 +130,11 @@ router.post('/register', async(req, res) => {
 
 router.post('/check-authentication', async(req, res) => {
     const result = await checkAuth(req);
-    console.log("result ====>", result);
-    console.log(req);
-    console.log("< ================== >");
-    res.status(200).json({
-        token: result
-    })
+    if (!result) return res.status(400).json({ error: "No validation"});
+    res.status(200).json({ token: result});
 });
 
+router.post('/logout', async(req, res) => {
+    
+})
 module.exports = router;
