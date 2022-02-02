@@ -1,6 +1,7 @@
 let router = require('express').Router();
 const multer = require("multer");
 const path = require("path");
+let fs = require("fs");
 let UserSchema = require('../../models/users');
 let LikedLogs = require("../../models/liked-logs");
 const checkAuth = require("../../helpers/auth");
@@ -56,14 +57,10 @@ router.post('/update-avatar', upload.single("myfile") ,async(req, res) => {
     }
 
     const oldAvatar = await UserSchema.findOne({ _id: { $in: [id] } });
-
-    console.log(oldAvatar);
-
+    fs.unlinkSync("public/avatar/" + oldAvatar.avatar);
     await UserSchema.findOneAndUpdate({ _id: { $in: [id] } }, {avatar: req.file.filename});
-
-    res.status(200).json({
-        success: true
-    })
+    const newUser = await UserSchema.findOne({ _id: { $in: [id] } });
+    res.status(200).json(newUser)
 
 })
 
