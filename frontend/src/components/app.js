@@ -47,86 +47,54 @@ const app = () => {
 
   useEffect(async() => {
     const token = localStorage.getItem("nftdevelopments-token");
+    dispatch(UPDATE_LOADING_PROCESS(true));
     if (token) {
-      await axios.post('http://localhost:7060/auth/check-authentication', { Authorization: token }).then(res => {
-        console.log(res);
+      await axios.post('http://localhost:7060/auth/check-authentication', {}, { headers :{ Authorization: JSON.parse(token) } }).then(res => {
+        const { token } = res.data;
+        dispatch(UPDATE_LOADING_PROCESS(false));
+        dispatch(UPDATE_AUTH(token));
       }).catch((err) => {
-        // dispatch(UPDATE_LOADING_PROCESS(false));
-        // dispatch(UPDATE_AUTH([]));
+        dispatch(UPDATE_LOADING_PROCESS(false));
+        dispatch(UPDATE_AUTH({}));
       })
     }
 
     else {
       dispatch(UPDATE_LOADING_PROCESS(false));
-      dispatch(UPDATE_AUTH([]));
+      dispatch(UPDATE_AUTH({}));
     }
 
   }, []);
 
   if (loadingProcessing) return (<p>Loading...</p>)
-
-  // console.log(userData);
-  if (userData.length) {
-    return (
-      <div className="wraper">
-        <GlobalStyles />
-        <NotificationContainer/>
-        <ToastContainer/>
-        <Header/>
-          <Router history={history}>
-            <Routes>
-                <Route path="*" element={<NotFound/>}/>
-                <Route exact path="/" element={<Home/>}/>
-                <Route path="/explore" element={<Explore/>}/>
-                <Route path="/helpcenter" element={<Helpcenter/>}/>
-                <Route path="/rangking" element={<Rangking/>}/>
-                <Route path="/colection" element={<Colection/>}/>
-                <Route path="/item-detail" element={<ItemDetail/>}/>
-                <Route path="/profile" element={<Profile/>}/>
-                <Route path="/login" element={<Login/>}/>
-                <Route path="/register" element={<Register/>}/>
-                <Route path="/create" element={<Create/>}/>
-                <Route path="/aution" element={<Auction/>}/>
-                <Route path="/activity" element={<Activity/>}/>
-                <Route path="/contact" element={<Contact/>}/>
-                <Route path="/folder-explorer/:id" element={<FolderItems/>}/>
-            </Routes>
-          </Router>
-        <ScrollToTopBtn />
-        
-      </div>
-    )
-  }
-  
-  else {
-    return (
-      <div className="wraper">
-        <GlobalStyles />
-        <NotificationContainer/>
-        <ToastContainer/>
-          <Router history={history}>
-            <Header/>
-            <Routes>
-                <Route path="*" element={<NotFound/>}/>
-                <Route exact path="/" element={<Home/>}/>
-                <Route path="/explore" element={<Explore/>}/>
-                <Route path="/helpcenter" element={<Helpcenter/>}/>
-                <Route path="/rangking" element={<Rangking/>}/>
-                <Route path="/colection" element={<Colection/>}/>
-                <Route path="/item-detail" element={<ItemDetail/>}/>
-                <Route path="/login" element={<Login/>}/>
-                <Route path="/register" element={<Register/>}/>
-                <Route path="/create" element={<Create/>}/>
-                <Route path="/aution" element={<Auction/>}/>
-                <Route path="/activity" element={<Activity/>}/>
-                <Route path="/contact" element={<Contact/>}/>
-                <Route path="/folder-explorer/:id" element={<FolderItems/>}/>
-                {/* <Route path="*" element={<Navigate to="/404"/>}/> */}
-            </Routes>
-          </Router>
-        <ScrollToTopBtn />
-      </div>
-    )
-  }
+  return (
+    <div className="wraper">
+      <GlobalStyles />
+      <NotificationContainer/>
+      <ToastContainer/>
+        <Router history={history}>
+          <Header/>
+          <Routes>
+              <Route path="*" element={<NotFound/>}/>
+              <Route exact path="/" element={<Home/>}/>
+              <Route path="/explore" element={<Explore/>}/>
+              <Route path="/helpcenter" element={<Helpcenter/>}/>
+              <Route path="/rangking" element={<Rangking/>}/>
+              <Route path="/colection" element={<Colection/>}/>
+              <Route path="/item-detail" element={<ItemDetail/>}/>
+              <Route path="/login" element={<Login/>}/>
+              <Route path="/register" element={<Register/>}/>
+              <Route path="/create" element={<Create/>}/>
+              <Route path="/aution" element={<Auction/>}/>
+              <Route path="/activity" element={<Activity/>}/>
+              <Route path="/contact" element={<Contact/>}/>
+              <Route path="/folder-explorer/:id" element={<FolderItems/>}/>
+              <Route path={Object.keys(userData).length ? "/profile" : "/user/:id"} element={<Profile/>}/>
+          </Routes>
+        </Router>
+      <ScrollToTopBtn />
+      
+    </div>
+  )
 };
 export default app;
