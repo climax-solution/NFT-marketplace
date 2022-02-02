@@ -129,25 +129,25 @@ const Header= function() {
     });
 
     useEffect(() => {
-    const header = document.getElementById("myHeader");
-    const totop = document.getElementById("scroll-to-top");
-    const sticky = header.offsetTop;
-    const scrollCallBack = window.addEventListener("scroll", () => {
-        btn_icon(false);
-        if (window.pageYOffset > sticky) {
-          header.classList.add("sticky");
-          totop.classList.add("show");
-          
-        } else {
-          header.classList.remove("sticky");
-          totop.classList.remove("show");
-        } if (window.pageYOffset > sticky) {
-          closeMenu();
-        }
-      });
-      return () => {
-        window.removeEventListener("scroll", scrollCallBack);
-      };
+      const header = document.getElementById("myHeader");
+      const totop = document.getElementById("scroll-to-top");
+      const sticky = header.offsetTop;
+      const scrollCallBack = window.addEventListener("scroll", () => {
+          btn_icon(false);
+          if (window.pageYOffset > sticky) {
+            header.classList.add("sticky");
+            totop.classList.add("show");
+            
+          } else {
+            header.classList.remove("sticky");
+            totop.classList.remove("show");
+          } if (window.pageYOffset > sticky) {
+            closeMenu();
+          }
+        });
+        return () => {
+          window.removeEventListener("scroll", scrollCallBack);
+        };
     }, []);
     
     useEffect(async() => {
@@ -155,7 +155,6 @@ const Header= function() {
       if (token) {
         await axios.post('http://localhost:7060/user/get-user', {}, {headers: {Authorization: JSON.parse(token)}}).then((res) => {
           dispatch(UPDATE_AUTH(res.data));
-          setUserData(res.data);
         }).then((err) => {
         });
       } else {
@@ -163,6 +162,9 @@ const Header= function() {
       }
     },[])
 
+    useEffect(() => {
+      setUserData(user_data);
+    },[user_data])
     const logout = () => {
       localStorage.removeItem("nftdevelopments-token");
       dispatch(UPDATE_AUTH({}));

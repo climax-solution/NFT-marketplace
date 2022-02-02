@@ -101,7 +101,6 @@ const Profile= function() {
   useEffect(async() => {
     if (token) {
       await axios.post('http://localhost:7060/user/get-user', {}, _headers).then(async(res) => {
-        setUserData(res.data);
         dispatch(UPDATE_AUTH(res.data));
         const { _web3, instanceNFT, instanceMarketplace } = await getWeb3();
         setWeb3(_web3);
@@ -112,6 +111,10 @@ const Profile= function() {
       })
     }
   },[]);
+
+  useEffect(() => {
+    setUserData(initUserData);
+  },[initUserData])
 
   useEffect(async() => {
     if (Object.keys(userData).length && Marketplace && openMenu) {
@@ -199,7 +202,7 @@ const Profile= function() {
           }
         }
       ).then(res => {
-        console.log(res);
+        dispatch(UPDATE_AUTH(res.data));
       }).catch(err => {
 
       })
@@ -246,7 +249,7 @@ const Profile= function() {
                                 <h4>
                                     {`${userData.firstName}  ${userData.lastName}`}
                                     <span className="profile_username">@{userData.username}</span>
-                                    <span id="wallet" className="profile_wallet">{(userData.walletAddress).substr(0, 4) + '...' + (userData.walletAddress).substr(-4)}</span>
+                                    <span id="wallet" className="profile_wallet">{userData.walletAddress && ((userData.walletAddress).substr(0, 4) + '...' + (userData.walletAddress).substr(-4))}</span>
                                     <button id="btn_copy" className="ml-12" title="Copy Text">Copy</button>
                                 </h4>
                               }
