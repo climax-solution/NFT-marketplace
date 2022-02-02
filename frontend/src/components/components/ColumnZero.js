@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import Empty from "./Empty";
 
 const Outer = styled.div`
   display: flex;
@@ -9,13 +10,16 @@ const Outer = styled.div`
   overflow: hidden;
   border-radius: 8px;
 `;
+
+
+
 export default function SellingNFT({data, _web3, ...props}) {
 
     const [web3, setWeb3] = useState({});
     const [nfts, setNFTs] = useState([]);
     const [height, setHeight] = useState(0);
 
-    const onImgLoad = ({target:img}) => {
+    const onImgLoad = ({target: img}) => {
         let currentHeight = height;
         if(currentHeight < img.offsetHeight) {
             setHeight(img.offsetHeight);
@@ -31,7 +35,7 @@ export default function SellingNFT({data, _web3, ...props}) {
 
     return (
         <div className='row'>
-            {nfts.map( (nft, index) => (
+            { nfts.map( (nft, index) => (
                 <div key={index} className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12">
                     <div className="nft__item">
                         <div className="nft__item_wrap" style={{height: `${height}px`}}>
@@ -55,6 +59,8 @@ export default function SellingNFT({data, _web3, ...props}) {
                     </div>
                 </div>  
             ))}
+
+            {!nfts.length && <Empty/>}
             
         </div>
     )

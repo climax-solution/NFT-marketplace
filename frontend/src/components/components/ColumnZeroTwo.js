@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import Empty from "./Empty";
 
 const Outer = styled.div`
   display: flex;
@@ -55,6 +56,8 @@ export default function SellingNFT({data, _web3, ...props}) {
                     </div>
                 </div>  
             ))}
+
+            {!nfts.length && <Empty/>}
             
         </div>
     )
