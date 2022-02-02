@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import Footer from '../components/footer';
 import { createGlobalStyle } from 'styled-components';
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import Footer from '../components/footer';
+import { UPDATE_AUTH } from '../../store/action/auth.action';
 
 const GlobalStyles = createGlobalStyle`
   header#myHeader.navbar.white {
@@ -22,6 +25,9 @@ const login = () => {
   const [password, setPassword] = useState('');
   const [emailStatus, setEmailStatus] = useState('');
   const [passwordStatus, setPasswordStatus] = useState('');
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const authenticate = async() => {
     let flag = 0;
@@ -45,6 +51,8 @@ const login = () => {
       toast.success("You have logined successfully", {theme: "colored"});
       const { token } = res.data;
       localStorage.setItem("nftdevelopments-token", JSON.stringify(token));
+      dispatch(UPDATE_AUTH(token));
+      navigate('/profile');
     }).catch(err => {
       const { error } = err.response.data;
       toast.error(error, {theme: "colored"});
