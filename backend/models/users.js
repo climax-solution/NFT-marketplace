@@ -33,10 +33,19 @@ const UserSchema = Schema({
     avatar: {
         type: String
     },
-    facebookID: {
+    facebook: {
         type: String
     },
-    instagramID: {
+    instagram: {
+        type: String
+    },
+    twitter: {
+        type: String
+    },
+    linkedin: {
+        type: String
+    },
+    tiktok: {
         type: String
     },
     role: {
