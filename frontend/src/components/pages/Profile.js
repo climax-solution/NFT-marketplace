@@ -22,14 +22,14 @@ const GlobalStyles = createGlobalStyle`
     height: 100%;
     position: absolute;
     background: rgba(0,0,0,0.4);
-    width: 100%;
+    min-width: 150px;
     z-index: 999;
     border-radius: 50%;
     transition: 0.2s ease;
   }
 
   .profile_avatar {
-    min-width: 300px;
+    min-width: 350px;
     min-height: 150px;
   }
 
@@ -44,13 +44,18 @@ const GlobalStyles = createGlobalStyle`
     left: 50%;
     cursor: pointer;
   }
+
+  .user-info {
+    border: 1px solid #333;
+    border-radius: 5px;
+  }
 `;
 
 const token = localStorage.getItem("nftdevelopments-token");
 
 const _headers = {headers: {Authorization: JSON.parse(token)}}
 
-const Profile= function() {
+const Profile = function() {
 
   const initUserData = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
@@ -58,6 +63,7 @@ const Profile= function() {
   const [openMenu, setOpenMenu] = useState(true);
   const [openMenu1, setOpenMenu1] = useState(false);
   const [openMenu2, setOpenMenu2] = useState(false);
+  const [openMenu3, setOpenMenu3] = useState(false);
   const [openChange, setOpenChange] = useState(false);
 
   const [isLoading, setLoading] = useState(true);
@@ -73,29 +79,45 @@ const Profile= function() {
     setOpenChange(false);
   });
 
-  const handleBtnClick = (): void => {
-    setOpenMenu(!openMenu);
+  const handleBtnClick = () => {
+    setOpenMenu(true);
     setOpenMenu1(false);
     setOpenMenu2(false);
     document.getElementById("Mainbtn").classList.add("active");
     document.getElementById("Mainbtn1").classList.remove("active");
     document.getElementById("Mainbtn2").classList.remove("active");
+    document.getElementById("Mainbtn3").classList.remove("active");
   };
-  const handleBtnClick1 = (): void => {
-    setOpenMenu1(!openMenu1);
+  
+  const handleBtnClick1 = () => {
+    setOpenMenu1(true);
     setOpenMenu2(false);
     setOpenMenu(false);
     document.getElementById("Mainbtn1").classList.add("active");
     document.getElementById("Mainbtn").classList.remove("active");
     document.getElementById("Mainbtn2").classList.remove("active");
+    document.getElementById("Mainbtn3").classList.remove("active");
   };
-  const handleBtnClick2 = (): void => {
-    setOpenMenu2(!openMenu2);
+
+  const handleBtnClick2 = () => {
+    setOpenMenu2(true);
     setOpenMenu(false);
     setOpenMenu1(false);
     document.getElementById("Mainbtn2").classList.add("active");
     document.getElementById("Mainbtn").classList.remove("active");
     document.getElementById("Mainbtn1").classList.remove("active");
+    document.getElementById("Mainbtn3").classList.remove("active");
+  };
+
+  const handleBtnClick3 = () => {
+    setOpenMenu3(true);
+    setOpenMenu(false);
+    setOpenMenu1(false);
+    setOpenMenu2(false);
+    document.getElementById("Mainbtn3").classList.add("active");
+    document.getElementById("Mainbtn").classList.remove("active");
+    document.getElementById("Mainbtn1").classList.remove("active");
+    document.getElementById("Mainbtn2").classList.remove("active");
   };
 
   useEffect(async() => {
@@ -126,7 +148,7 @@ const Profile= function() {
         if (list.length > 8) {
           final = list.slice(0, 8);
         }
-        await fetchMetadata(list, 0);
+        await fetchMetadata(final, 0);
       } catch(err) {
         setLoading(false);
       }
@@ -243,7 +265,7 @@ const Profile= function() {
                               </label>
                             }
                           </div>
-                          <div className="profile_name">
+                          <div className="profile_name w-50">
                               {
                                 Object.keys(userData).length &&
                                 <h4>
@@ -256,14 +278,14 @@ const Profile= function() {
                           </div>
                       </div>
                   </div>
-                  <div className="profile_follow de-flex">
+                  {/* <div className="profile_follow de-flex">
                       <div className="de-flex-col">
                           <div className="profile_follower">500 followers</div>
                       </div>
                       <div className="de-flex-col">
                           <span className="btn-main">Follow</span>
                       </div>
-                  </div>
+                  </div> */}
 
               </div>
           </div>
@@ -278,6 +300,7 @@ const Profile= function() {
                     <li id='Mainbtn' className="active"><span onClick={handleBtnClick}>On Sale</span></li>
                     <li id='Mainbtn1' className=""><span onClick={handleBtnClick1}>Not Sale</span></li>
                     <li id='Mainbtn2' className=""><span onClick={handleBtnClick2}>Liked</span></li>
+                    <li id='Mainbtn3' className=""><span onClick={handleBtnClick3}>User Info</span></li>
                 </ul>
             </div>
           </div>
@@ -310,8 +333,65 @@ const Profile= function() {
               </div>
             ))
         }
-      </section>
 
+        {
+          !isLoading &&
+            (
+              openMenu3 && (
+              <div id='zero4' className='onStep fadeIn'>
+                <form id="form-create-item" className="form-border row justify-content-center" action="#">
+                  <div className="field-set col-md-8 mg-auto p-4 user-info">
+                      <div className="spacer-single"></div>
+                      <div className="row">
+                        <div className="col-md-6 col-12">
+                          <span>First Name</span>
+                          <input type="text" name="item_title" id="item_title" className="form-control" placeholder="Please enter your first name" />
+                        </div>
+                        <div className="col-md-6 col-12">
+                          <span>Last Name</span>
+                          <input type="text" name="item_title" id="item_title" className="form-control" placeholder="Please enter your last name" />
+                        </div>
+                        <div className="col-md-6 col-12">
+                          <span>Email</span>
+                          <input type="email" name="item_title" id="item_title" className="form-control" placeholder="Please enter your email address" />
+                        </div>
+                        <div className="col-md-6 col-12">
+                          <span>Facebook</span>
+                          <input type="text" name="item_title" id="item_title" className="form-control" placeholder="Please enter your facebook profile link" />
+                        </div>
+                        <div className="col-md-6 col-12">
+                          <span>Instagram</span>
+                          <input type="text" name="item_title" id="item_title" className="form-control" placeholder="Please enter your instagram profile link" />
+                        </div>
+                        <div className="col-md-6 col-12">
+                          <span>Twitter</span>
+                          <input type="text" name="item_title" id="item_title" className="form-control" placeholder="Please enter your twitter profile link" />
+                        </div>
+                        <div className="col-md-6 col-12">
+                          <span>LinkedIn</span>
+                          <input type="text" name="item_title" id="item_title" className="form-control" placeholder="Please enter your linkedin profile link" />
+                        </div>
+                        <div className="col-md-6 col-12">
+                          <span>Tik tok</span>
+                          <input type="text" name="item_title" id="item_title" className="form-control" placeholder="Please enter your tiktok profile link" />
+                        </div>
+                        <div className="col-md-6 col-12">
+                          <span>Password</span>
+                          <input type="password" name="item_title" id="item_title" className="form-control" placeholder="Please enter your password" />
+                        </div>
+                        <div className="col-md-6 col-12">
+                          <span>Confirm Password</span>
+                          <input type="password" name="item_title" id="item_title" className="form-control" placeholder="Please confirm password" />
+                        </div>
+                      </div>
+                      <input type="button" id="submit" className="btn-main" value="Update profile"/>
+                  </div>
+                </form>
+              </div>
+              )
+            )
+        }
+      </section>
 
       <Footer />
     </div>
