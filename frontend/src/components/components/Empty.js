@@ -12,7 +12,7 @@ export default function Empty() {
     return (
         <>
             <GlobalStyles/>
-            <div className="empty-panel text-center">
+            <div className="empty-panel text-center m-4">
                 No items to display
             </div>
         </>

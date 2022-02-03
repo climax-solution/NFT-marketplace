@@ -92,13 +92,13 @@ const folderNFTs = (props) => {
                             {nfts.map( (nft, index) => (
                                 <div key={index} className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4">
                                     <div className="nft__item m-0 pb-4">
-                                        <div className="nft__item_wrap" style={{height: `${height}px`}}>
-                                            <span>
+                                        <div className="nft__item_wrap" style={{ height: height+'px'}}>
+                                            <a href={`/item-detail/${nft.nftData.tokenID}`}>
                                                 <img onLoad={onImgLoad} src={nft.image} onError={faliedLoadImage} className="lazy nft__item_preview" alt=""/>
-                                            </span>
+                                            </a>
                                         </div>
                                         <div className="nft__item_info mb-0">
-                                            <span onClick={()=> window.open(nft.nftLink, "_self")}>
+                                            <span>
                                                 <h4>{nft.nftName}</h4>
                                             </span>
                                             <div className="nft__item_price">
