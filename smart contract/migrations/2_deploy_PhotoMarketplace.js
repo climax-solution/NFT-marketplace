@@ -1,5 +1,5 @@
-const PhotoMarketplace = artifacts.require("PhotoMarketplace");
-const PhotoNFT = artifacts.require("PhotoNFT");
+const PhotoMarketplace = artifacts.require("Marketplace");
+const PhotoNFT = artifacts.require("NFTD");
 
 const _photoNFT = PhotoNFT.address;
 // const _marketplaceOwner = '0xCdE2C94E148227c5b3832E0fA31207326D35ea0e';

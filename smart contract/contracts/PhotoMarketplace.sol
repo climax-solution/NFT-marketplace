@@ -2,20 +2,28 @@
 pragma solidity ^0.8.0;
 pragma experimental ABIEncoderV2;
 
-import { PhotoNFT } from "./PhotoNFT.sol";
+import { NFTD } from "./NFTD.sol";
 
-contract PhotoMarketplace  {
+contract Marketplace  {
     address private _market_owner;
     address private white_user;
     uint256 public premiumLimit = 2592000; //30 * 24 * 3600
+    uint256 public minAuctionPrice = 100000000000000000;
 
-    PhotoNFT public photoNFT;
-    mapping(uint => PhotoMarketData) private _photoData;
+    NFTD public flexNFT;
+    mapping(uint => MarketData) private _nftData;
 
     event NFTPremiumStatusChanged(uint256 tokenId, bool newState, uint timeStamp);
     event NFTBuy(address owner, address buyer, uint tokenId);
+    event OpenTradeToDirect(address owner, uint tokenID, uint256 price);
+    event CloseTradeToDirect(address owner, uint tokenID);
+    event OpenTradeToAuction(address owner, uint tokenID, uint period);
+    event CloseTradeToAuction(address owner, uint tokenID);
+    event PlaceBid(address owner, uint256 bidPrice);
+    event WithdrawBid(address owner, uint tokenID);
+    event ClaimNFT(address winner, uint tokenID, uint256 price);
 
-    struct PhotoMarketData {
+    struct MarketData {
         uint price;
         bool marketStatus; // false : Cancel, true : Open
         bool existance;
@@ -23,9 +31,10 @@ contract PhotoMarketplace  {
         uint256 premiumTimestamp;
     }
 
-    struct PhotoData {
-        PhotoNFT.Photo nftData;
-        PhotoMarketData marketData;
+    struct ItemNFT {
+        NFTD.ItemNFT nftData;
+        MarketData marketData;
+        Auction auctionData;
     }
 
     struct FolderList {
@@ -34,10 +43,20 @@ contract PhotoMarketplace  {
         uint[2] wide;
     }
 
-    FolderList[] public sub_folders;
+    struct Auction {
+        address currentBidOwner; // Address of the highest bider
+        uint256 currentBidPrice; // Current highest bid for the auction
+        uint256 endAuction; // Timestamp for the end day&time of the auction
+        uint256 bidCount; // Number of bid placed on the auction
+        uint256 minPrice;
+        bool existance;
+    }
 
-    constructor(address _photoNFT, address owner, address _whiteUser) {
-        photoNFT = PhotoNFT(_photoNFT);
+    FolderList[] public sub_folders;
+    mapping(uint => Auction) public auctions;
+
+    constructor(address _nftNFT, address owner, address _whiteUser) {
+        flexNFT = NFTD(_nftNFT);
         _market_owner = owner;
         white_user = _whiteUser;
     }
@@ -50,29 +69,60 @@ contract PhotoMarketplace  {
         _;
     }
 
-    function openTrade( uint256 _photoId) public payable {
-        require(msg.sender == photoNFT.ownerOf(_photoId), "Message Sender should be the owner of token");
-        require(!_photoData[_photoId].marketStatus, "Already applied on sale");
-        _addDataIfNotExist(_photoId);
+    function openTradeToDirect(uint tokenID) external payable {
+        require(msg.sender == flexNFT.ownerOf(tokenID), "Not owner");
+        require(!_nftData[tokenID].marketStatus, "Already on sale");
+        require(!auctions[tokenID].existance, "Already on auction");
+        _addDataIfNotExist(tokenID);
         if (white_user == msg.sender) payable(white_user).transfer(msg.value); //white user
-        else getOwnerPayableAddress().transfer(msg.value); //send fee
-        _photoData[_photoId].marketStatus = true;
-        _photoData[_photoId].price = msg.value * 40;
+        else payable(_market_owner).transfer(msg.value); //send fee
+        _nftData[tokenID].marketStatus = true;
+        _nftData[tokenID].price = msg.value * 40;
+        emit OpenTradeToDirect(msg.sender, tokenID, msg.value * 40);
     }
 
-    function cancelTrade(uint256 _photoId) public payable {
-        require(msg.sender == photoNFT.ownerOf(_photoId), "Message Sender should be the owner of token");
-        require(_photoData[_photoId].marketStatus, "Already canceled on sale");
-        _addDataIfNotExist(_photoId);
+    function closeTradeToDirect(uint tokenID) external payable {
+        require(msg.sender == flexNFT.ownerOf(tokenID), "Not owner");
+        require(_nftData[tokenID].marketStatus, "Already down sale");
+        require(!auctions[tokenID].existance, "Already on auction");
+        require(msg.value >= _nftData[tokenID].price / 40, "Tax is not enough");
+        _addDataIfNotExist(tokenID);
         if (white_user == msg.sender) payable(white_user).transfer(msg.value); //white user
-        else getOwnerPayableAddress().transfer(msg.value); 
-        _photoData[_photoId].marketStatus = false;
-        photoNFT.cancelTrade(_photoId);
+        else payable(_market_owner).transfer(msg.value); 
+        _nftData[tokenID].marketStatus = false;
+        flexNFT.cancelTrade(tokenID);
+        emit CloseTradeToDirect(msg.sender, tokenID);
     }
 
-    function _addDataIfNotExist(uint nPhotoID) private{
-        if (_photoData[nPhotoID].existance == true) return;
-        _photoData[nPhotoID] = PhotoMarketData({
+    function openTradeToAuction(uint tokenID, uint auctionPrice, uint period) external payable {
+        require(msg.sender == flexNFT.ownerOf(tokenID), "Not owner");
+        require(!_nftData[tokenID].marketStatus, "Already on sale");
+        require(!auctions[tokenID].existance, "Already on auction");
+        require(auctionPrice >= minAuctionPrice, "Auction price must be higher than min price");
+
+        auctions[tokenID] = Auction({
+            currentBidOwner: address(0),
+            currentBidPrice: 0,
+            endAuction: block.timestamp + period * 1 hours,
+            bidCount: 0,
+            minPrice: auctionPrice,
+            existance: true
+        });
+        emit OpenTradeToAuction(msg.sender, tokenID, period);
+    }
+
+    function closeTradeToAuction(uint tokenID) external payable {
+        require(msg.sender == flexNFT.ownerOf(tokenID), "Not owner");
+        require(_nftData[tokenID].marketStatus, "Already on sale");
+        require(auctions[tokenID].existance, "Already on auction");
+        require(auctions[tokenID].currentBidPrice == 0, "Bid is existing");
+        delete auctions[tokenID];
+        emit CloseTradeToAuction(msg.sender, tokenID);
+    }
+
+    function _addDataIfNotExist(uint tokenID) private {
+        if (_nftData[tokenID].existance == true) return;
+        _nftData[tokenID] = MarketData({
             price : 0, 
             marketStatus : false, 
             existance : true, 
@@ -81,26 +131,16 @@ contract PhotoMarketplace  {
         });
     }
 
-    function getPhoto(uint index) public view returns (PhotoData memory photoData) {
-        photoData = PhotoData ({
-            nftData : photoNFT.getPhoto(index), 
-            marketData : getMarketData(index)
+    function getItemNFT(uint tokenID) public view returns (ItemNFT memory _item) {
+        _item = ItemNFT ({
+            nftData : flexNFT.getItemNFT(tokenID), 
+            marketData : getMarketData(tokenID),
+            auctionData: auctions[tokenID]
         });
     }
-
-    function updatePremiumStatus(uint256 _photoId, bool _newState) public payable {
-        require(msg.sender == photoNFT.ownerOf(_photoId), "Message Sender should be the owner of token");
-        if (white_user == msg.sender) payable(white_user).transfer(msg.value); //white user
-        else getOwnerPayableAddress().transfer(msg.value); //send fee
-        _photoData[_photoId].premiumStatus = _newState;
-        if (_newState == true) _photoData[_photoId].premiumTimestamp = block.timestamp;
-        else _photoData[_photoId].premiumTimestamp = 0;
-
-        emit NFTPremiumStatusChanged(_photoId, _newState, block.timestamp);
-    }
-
-    function getMarketData(uint tokenId) public view returns (PhotoMarketData memory marketData) {
-        marketData = _photoData[tokenId];
+    
+    function getMarketData(uint tokenID) internal view returns (MarketData memory marketData) {
+        marketData = _nftData[tokenID];
         if ((marketData.premiumStatus) && (block.timestamp - marketData.premiumTimestamp > premiumLimit)) {
             marketData.premiumStatus = false;
             marketData.premiumTimestamp = 0;
@@ -108,54 +148,93 @@ contract PhotoMarketplace  {
         return marketData;
     }
 
-    function buyNFT(uint tokenId) public payable {
-        PhotoMarketData memory photoMarketData = _photoData[tokenId];
-        require(photoMarketData.marketStatus, "Not able to buy");
+    function buyNFT(uint tokenID) external payable {
+        MarketData memory marketData = _nftData[tokenID];
+        require(marketData.marketStatus, "Not able to buy");
+        require(!auctions[tokenID].existance, "Already on auction");
         
-        address _seller = photoNFT.ownerOf(tokenId);    // Owner
+        address _seller = flexNFT.ownerOf(tokenID);    // Owner
         address payable seller = payable(_seller);  // Convert owner address with payable
 
-        uint buyAmount = photoMarketData.price;
+        uint buyAmount = marketData.price;
         require (msg.value == buyAmount, "Balance should be equal to the buyAmount");
 
-        if (photoMarketData.premiumStatus) {
+        if (marketData.premiumStatus) {
             seller.transfer(buyAmount * 95 / 100);
             if (white_user == msg.sender) payable(white_user).transfer(buyAmount / 20); //white user
-            else getOwnerPayableAddress().transfer(buyAmount / 20);
+            else payable(_market_owner).transfer(buyAmount / 20);
         }
         else {
             seller.transfer(buyAmount * 97 / 100);
             if (white_user == msg.sender) payable(white_user).transfer(buyAmount * 3 / 100); //white user
-            else getOwnerPayableAddress().transfer(buyAmount * 3 / 100); //send fee
+            else payable(_market_owner).transfer(buyAmount * 3 / 100); //send fee
         }
         
         address buyer = msg.sender;
-        photoNFT.transferFrom(_seller, buyer, tokenId);
-        photoNFT.cancelTrade(tokenId);
-        _photoData[tokenId].premiumStatus = false;
-        _photoData[tokenId].marketStatus = false;
-        _photoData[tokenId].premiumTimestamp = 0;
-        emit NFTBuy(_seller, buyer, tokenId);
+        flexNFT.transferFrom(_seller, buyer, tokenID);
+        flexNFT.cancelTrade(tokenID);
+        _nftData[tokenID].premiumStatus = false;
+        _nftData[tokenID].marketStatus = false;
+        _nftData[tokenID].premiumTimestamp = 0;
+        emit NFTBuy(_seller, buyer, tokenID);
     }
 
-    function getOwnerPayableAddress() public view returns(address payable) {
-        return payable(_market_owner);
+    function placeBid(uint tokenID) external payable {
+        Auction memory auction = auctions[tokenID];
+        require(auction.existance, "Not on auction");
+        require(msg.value > auction.currentBidPrice, "Bid price must be higher that last price");
+        require(block.timestamp < auction.endAuction, "Auction is ended");
+
+        if (auction.currentBidOwner != address(0)) {
+            payable(auction.currentBidOwner).transfer(auction.currentBidPrice);
+        }
+
+        auction.currentBidOwner = msg.sender;
+        auction.currentBidPrice = msg.value;
+
+        emit PlaceBid(msg.sender, msg.value);
     }
-    
-    function getPremiumNFTList() public view returns(PhotoData[] memory) {
+
+    function withdrawBid(uint tokenID) external payable {
+        Auction memory auction = auctions[tokenID];
+        require(auction.existance, "Not on auction");
+        require(block.timestamp < auction.endAuction, "Auction is ended");
+        require(auction.currentBidOwner == msg.sender, "Not last bidder");
+        payable(auction.currentBidOwner).transfer(auction.currentBidPrice);
+        auction.currentBidOwner = address(0);
+
+        emit WithdrawBid(msg.sender, tokenID);
+    }
+
+    function claimNFT(uint tokenID) external payable {
+        Auction memory auction = auctions[tokenID];
+        require(auction.existance, "Not on auction");
+        require(block.timestamp >= auction.endAuction, "Auction is not ended");
+        require(auction.currentBidOwner == msg.sender, "Not winner");
+        address _seller = flexNFT.ownerOf(tokenID);
+        payable(_seller).transfer(auction.currentBidPrice);
+        flexNFT.transferFrom(_seller, msg.sender, tokenID);
+        _nftData[tokenID].premiumStatus = false;
+        _nftData[tokenID].marketStatus = false;
+        _nftData[tokenID].premiumTimestamp = 0;
+        emit ClaimNFT(msg.sender, tokenID, auction.currentBidPrice);
+        delete auctions[tokenID];
+    }
+
+    function getPremiumNFTList() public view returns(ItemNFT[] memory) {
         uint idx = 0;
-        PhotoData[] memory list = new PhotoData[](photoNFT.currentPhotoId());
-        for (uint i = 0; i < photoNFT.currentPhotoId(); i ++ ) {
-            if (_photoData[i].premiumStatus) list[idx++] = getPhoto(i);
+        ItemNFT[] memory list = new ItemNFT[](flexNFT.lastID());
+        for (uint i = 0; i < flexNFT.lastID(); i ++ ) {
+            if (_nftData[i].premiumStatus) list[idx++] = getItemNFT(i);
         }
         return list;
     }
 
-    function getPersonalNFTList() public view returns(PhotoData[] memory) {
+    function getPersonalNFTList() public view returns(ItemNFT[] memory) {
         uint idx = 0;
-        PhotoData[] memory list = new PhotoData[](photoNFT.currentPhotoId());
-        for (uint i = 0; i < photoNFT.currentPhotoId(); i ++ ) {
-            if (photoNFT.ownerOf(i) ==  msg.sender) list[idx++] = getPhoto(i);
+        ItemNFT[] memory list = new ItemNFT[](flexNFT.lastID());
+        for (uint i = 0; i < flexNFT.lastID(); i ++ ) {
+            if (flexNFT.ownerOf(i) ==  msg.sender) list[idx++] = getItemNFT(i);
         }
         return list;
     }
@@ -167,11 +246,11 @@ contract PhotoMarketplace  {
         }
         if (!existance) {
             for (uint i = 0; i < count; i ++) {
-                uint _photoId = start + i;
-                require(msg.sender == photoNFT.ownerOf(_photoId), "Message Sender should be the owner of token");
-                _addDataIfNotExist(_photoId);
-                _photoData[_photoId].marketStatus = true;
-                _photoData[_photoId].price = price;
+                uint tokenID = start + i;
+                require(msg.sender == flexNFT.ownerOf(tokenID), "Message Sender should be the owner of token");
+                _addDataIfNotExist(tokenID);
+                _nftData[tokenID].marketStatus = true;
+                _nftData[tokenID].price = price;
             }
             sub_folders.push(FolderList({
                 folder: group,
@@ -182,16 +261,18 @@ contract PhotoMarketplace  {
 
     }
 
-    function getFolderList() public view returns(FolderList[] memory list) {
+    function getFolderList() external view returns(FolderList[] memory list) {
         list  = sub_folders;
     }
 
-    function getSubFolderItem(uint idx) public view returns(PhotoData[] memory) {
+    function getSubFolderItem(uint idx) external view returns(ItemNFT[] memory, string memory) {
         FolderList memory item = sub_folders[idx];
-        PhotoData[] memory list = new PhotoData[](item.wide[1]);
+        ItemNFT[] memory list = new ItemNFT[](item.wide[1]);
+        string memory folderName = item.folder;
         for (uint i = 0; i < item.wide[1]; i ++ ) {
-            list[i] = getPhoto(item.wide[0] + i);
+            list[i] = getItemNFT(item.wide[0] + i);
         }
-        return list;
+
+        return (list, folderName);
     }
 }
