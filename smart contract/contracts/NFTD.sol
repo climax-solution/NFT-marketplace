@@ -29,13 +29,13 @@ library Strings {
     
 }
 
-contract PhotoNFT is ERC721URIStorage {
+contract NFTD is ERC721URIStorage {
 
-    uint256 public currentPhotoId;
+    uint256 public lastID;
     address private _owner;
     using Strings for uint256;
 
-    struct Photo {
+    struct ItemNFT {
         uint tokenID;
         string tokenURI;
         address owner;
@@ -53,19 +53,18 @@ contract PhotoNFT is ERC721URIStorage {
     }
 
     function bulkMint(string memory baseURI, uint256 count) public onlyOwner {
-        baseURI = string(abi.encodePacked(baseURI, "/"));
         for (uint i = 0; i < count; i ++) {
-            _mint(msg.sender, currentPhotoId);
-            string memory _BaseURI = string(abi.encodePacked("https://ipfs.io/ipfs/", baseURI));
-            _setTokenURI(currentPhotoId, string(abi.encodePacked(_BaseURI, i.toString())));
-            currentPhotoId++;
+            _mint(msg.sender, lastID);
+            string memory _BaseURI = string(abi.encodePacked("https://ipfs.io/ipfs/", baseURI, "/", i.toString()));
+            _setTokenURI(lastID, _BaseURI);
+            lastID ++;
         }
-        emit NFTMinted(currentPhotoId);
+        emit NFTMinted(lastID);
     }
 
-    function getPhoto(uint index) public view returns (Photo memory _photo) {
-        _photo = Photo ({
-            tokenID: index, 
+    function getItemNFT(uint index) public view returns (ItemNFT memory _nft) {
+        _nft = ItemNFT ({
+            tokenID: index,
             tokenURI : tokenURI (index), 
             owner : ownerOf(index)
         });
