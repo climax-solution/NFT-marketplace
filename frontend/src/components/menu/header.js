@@ -349,11 +349,6 @@ const Header= function() {
                                     </span>
                                   </li>
                                   <li>
-                                    <span>
-                                      <i className="fa fa-pencil"></i> Edit profile
-                                    </span>
-                                  </li>
-                                  <li>
                                     <span onClick={logout}>
                                       <i className="fa fa-sign-out"></i> Sign out
                                     </span>
