@@ -108,6 +108,9 @@ contract Marketplace  {
             minPrice: auctionPrice,
             existance: true
         });
+
+        _nftData[tokenID].marketStatus = true;
+        
         emit OpenTradeToAuction(msg.sender, tokenID, period);
     }
 
@@ -117,6 +120,7 @@ contract Marketplace  {
         require(auctions[tokenID].existance, "Already on auction");
         require(auctions[tokenID].currentBidPrice == 0, "Bid is existing");
         delete auctions[tokenID];
+        _nftData[tokenID].marketStatus = false;
         emit CloseTradeToAuction(msg.sender, tokenID);
     }
 
