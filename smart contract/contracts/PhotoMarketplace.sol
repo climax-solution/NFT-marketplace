@@ -193,8 +193,8 @@ contract Marketplace  {
             payable(auction.currentBidOwner).transfer(auction.currentBidPrice);
         }
 
-        auction.currentBidOwner = msg.sender;
-        auction.currentBidPrice = msg.value;
+        auctions[tokenID].currentBidOwner = msg.sender;
+        auctions[tokenID].currentBidPrice = msg.value;
 
         emit PlaceBid(msg.sender, msg.value);
     }
@@ -205,7 +205,7 @@ contract Marketplace  {
         require(block.timestamp < auction.endAuction, "Auction is ended");
         require(auction.currentBidOwner == msg.sender, "Not last bidder");
         payable(auction.currentBidOwner).transfer(auction.currentBidPrice);
-        auction.currentBidOwner = address(0);
+        auctions[tokenID].currentBidOwner = address(0);
 
         emit WithdrawBid(msg.sender, tokenID);
     }
