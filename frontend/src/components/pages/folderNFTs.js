@@ -16,6 +16,7 @@ const folderNFTs = (props) => {
     const [Marketplace, setMarketplace] = useState(null);
     const [nfts, setNFTLists] = useState([]);
     const [restGradList, setRestGradList] = useState([]);
+    const [folderName, setFolderName] = useState("Collection");
     const [height, setHeight] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -35,11 +36,12 @@ const folderNFTs = (props) => {
     const getInitNFTs = async() => {
         const { id } = params;
         let gradList = await Marketplace.methods.getSubFolderItem(id).call();
-        let list = gradList;
-        if (gradList.length > 8) {
-            list = gradList.slice(0,8);
-            setRestGradList(gradList.slice((gradList.length - 8) * -1));
+        let list = gradList[0];
+        if (gradList[0].length > 8) {
+            list = gradList[0].slice(0,8);
+            setRestGradList(gradList[0].slice((gradList[0].length - 8) * -1));
         }
+        setFolderName(gradList[1]);
         await getNFTs(list);
     }
 
@@ -52,7 +54,6 @@ const folderNFTs = (props) => {
             } catch (err) { }
         }
         
-        console.log(mainList);
         setNFTLists(mainList);
         setIsLoading(false);
     }
@@ -75,7 +76,7 @@ const folderNFTs = (props) => {
                     <div className='container'>
                         <div className='row m-10-hor'>
                         <div className='col-12'>
-                            <h1 className='text-center'>Collection</h1>
+                            <h1 className='text-center'>{folderName}</h1>
                         </div>
                         </div>
                     </div>
