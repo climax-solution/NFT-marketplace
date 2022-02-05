@@ -63,7 +63,7 @@ export default function SellingNFT(props) {
     //     try {
     //     const owner = await PhotoNFT.methods.ownerOf(id).call();
     //     if (owner.toLowerCase() != currentAccount.toLowerCase() && currentAccount) throw "Not owner";
-    //     const photo = await PhotoMarketplace.methods.getPhoto(id).call();
+    //     const photo = await PhotoMarketplace.methods.getItemNFT(id).call();
     //     const tax = photo.marketData.price;
     //     await PhotoMarketplace.methods.updatePremiumStatus(id, true).send({ from: accounts[0], value: tax / 20});
     //     this.setState({
@@ -86,7 +86,7 @@ export default function SellingNFT(props) {
     //     isLoading: true
     //     })
     //     try {
-    //     const photo = await PhotoMarketplace.methods.getPhoto(id).call();
+    //     const photo = await PhotoMarketplace.methods.getItemNFT(id).call();
     //     const tax = photo.marketData.price;
     //     await PhotoMarketplace.methods.updatePremiumStatus(id, false).send({ from: accounts[0], value: tax / 20});
     //     this.setState({

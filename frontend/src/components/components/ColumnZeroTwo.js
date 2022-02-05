@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { NotificationManager } from "react-notifications";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styled, { createGlobalStyle } from "styled-components";
 import Swal from 'sweetalert2'
 import { UPDATE_LOADING_PROCESS } from "../../store/action/auth.action";
@@ -27,6 +27,7 @@ const GlobalStyles = createGlobalStyle`
 export default function SellingNFT(props) {
 
     const dispatch = useDispatch();
+    const initUserData = useSelector((state) => state.auth.user);
     const [web3, setWeb3] = useState({});
     const [NFT, setNFT] = useState({});
     const [Marketplace, setMarketplace] = useState({});
@@ -71,11 +72,9 @@ export default function SellingNFT(props) {
                 dispatch(UPDATE_LOADING_PROCESS(true));
                 try {
                     const nftPrice = web3.utils.toWei((result.value).toString(), 'ether');
-                    const accounts = await web3.eth.getAccounts();
-                    if (!accounts.length) throw new Error();
-                    await NFT.methods.approve(marketplace_addr, id).send({from : accounts[0]})
+                    await NFT.methods.approve(marketplace_addr, id).send({from : initUserData.walletAddress})
                     .on('receipt', async(rec) => {
-                        await Marketplace.methods.openTradeToDirect(id).send({ from: accounts[0], value: nftPrice / 40 });
+                        await Marketplace.methods.openTradeToDirect(id).send({ from: initUserData.walletAddress, value: nftPrice / 40 });
                         NotificationManager.success("Success");
                         dispatch(UPDATE_LOADING_PROCESS(false));
                     });
@@ -115,16 +114,13 @@ export default function SellingNFT(props) {
             showLoaderOnConfirm: true,
             allowOutsideClick: () => !Swal.isLoading()
           }).then(async(result) => {
-              console.log(result);
             if (result.isConfirmed) {
                 dispatch(UPDATE_LOADING_PROCESS(true));
                 try {
                     const nftPrice = web3.utils.toWei(result.value[0], 'ether');
-                    const accounts = await web3.eth.getAccounts();
-                    if (!accounts.length) throw new Error();
-                    await NFT.methods.approve(marketplace_addr, id).send({from : accounts[0]})
+                    await NFT.methods.approve(marketplace_addr, id).send({from : initUserData.walletAddress})
                     .on('receipt', async(rec) => {
-                        await Marketplace.methods.openTradeToAuction(id, nftPrice, result.value[1]).send({ from: accounts[0], value: nftPrice / 40 });
+                        await Marketplace.methods.openTradeToAuction(id, nftPrice, result.value[1]).send({ from: initUserData.walletAddress, value: nftPrice / 40 });
                         NotificationManager.success("Success");
                         dispatch(UPDATE_LOADING_PROCESS(false));
                     });
