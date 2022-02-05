@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { NotificationManager } from "react-notifications";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { createGlobalStyle } from "styled-components";
 import { UPDATE_LOADING_PROCESS } from "../../store/action/auth.action";
 import Empty from "./Empty";
@@ -15,9 +15,11 @@ const GlobalStyles = createGlobalStyle`
 export default function SellingNFT(props) {
 
     const dispatch = useDispatch();
+    const initialUser = useSelector(({ auth }) => auth.user);
 
     const [web3, setWeb3] = useState({});
     const [Marketplace, setMarketplace] = useState({});
+    const [NFT, setNFT] = useState({});
     const [nfts, setNFTs] = useState([]);
     const [height, setHeight] = useState(0);
 
@@ -33,6 +35,7 @@ export default function SellingNFT(props) {
         if (_insMarketplace) {
             setWeb3(_web3);
             setNFTs(data);
+            setNFT(_insNFT);
             setMarketplace(_insMarketplace);
         }
     },[props])
@@ -42,9 +45,7 @@ export default function SellingNFT(props) {
         try {
             const nft = await Marketplace.methods.getItemNFT(id).call();
             const buyAmount = nft.marketData.price;
-            const accounts = await web3.eth.getAccounts();
-            if (!accounts.length) throw new Error();
-            await Marketplace.methods.closeTradeToDirect(id).send({ from: accounts[0], value: buyAmount / 40 }).
+            await Marketplace.methods.closeTradeToDirect(id).send({ from: initialUser.walletAddress, value: buyAmount / 40 }).
             then(async(result) => {
                 NotificationManager.success("Success");
             });
@@ -55,52 +56,22 @@ export default function SellingNFT(props) {
         dispatch(UPDATE_LOADING_PROCESS(false));
     }
   
-    // const putOnPremium = async (id) => {
-    //     const { accounts, PhotoMarketplace, PhotoNFT, currentAccount } = this.state;
-    //     this.setState({
-    //     isLoading: true
-    //     })
-    //     try {
-    //     const owner = await PhotoNFT.methods.ownerOf(id).call();
-    //     if (owner.toLowerCase() != currentAccount.toLowerCase() && currentAccount) throw "Not owner";
-    //     const photo = await PhotoMarketplace.methods.getItemNFT(id).call();
-    //     const tax = photo.marketData.price;
-    //     await PhotoMarketplace.methods.updatePremiumStatus(id, true).send({ from: accounts[0], value: tax / 20});
-    //     this.setState({
-    //         isLoading: false
-    //     })
-    //     NotificationManager.success("Success");
-    //     await this.getAllPhotos();
-    //     } catch(err) {
-    //     if (typeof err == "string") NotificationManager.error(err);
-    //     else NotificationManager.error("Failed");
-    //     this.setState({
-    //         isLoading: false
-    //     })
-    //     }
-    // }
-  
-    // const putOnNormal = async (id) => {
-    //     const { accounts, PhotoMarketplace, coin } = this.state;
-    //     this.setState({
-    //     isLoading: true
-    //     })
-    //     try {
-    //     const photo = await PhotoMarketplace.methods.getItemNFT(id).call();
-    //     const tax = photo.marketData.price;
-    //     await PhotoMarketplace.methods.updatePremiumStatus(id, false).send({ from: accounts[0], value: tax / 20});
-    //     this.setState({
-    //         isLoading: false
-    //     })
-    //     NotificationManager.success("Success");
-    //     await this.getAllPhotos();
-    //     } catch(err) {
-    //     NotificationManager.error("Failed");
-    //     this.setState({
-    //         isLoading: false
-    //     })
-    //     }
-    // }
+    const updatePremiumNFT = async (id, status) => {
+        try {
+            const owner = await NFT.methods.ownerOf(id).call();
+            if (owner.toLowerCase() != (initialUser.walletAddress).toLowerCase() && initialUser.walletAddress) throw "Not owner";
+            const nft = await Marketplace.methods.getItemNFT(id).call();
+            const tax = nft.marketData.price;
+            await Marketplace.methods.updatePremiumStatus(id, status).send({ from: initialUser.walletAddress, value: tax / 20});
+            NotificationManager.success("Success");
+            // await this.getAllPhotos();
+        } catch(err) {
+            console.log(err);
+            if (typeof err == "string") NotificationManager.error(err);
+            else NotificationManager.error("Failed");
+        }
+    }
+
     return (
         <div className='row'>
             <GlobalStyles/>
@@ -126,7 +97,7 @@ export default function SellingNFT(props) {
                                         :<span className="btn-main w-100">Put down auction</span>
                                     )
                                 }
-                                { !nft.auctionData.existance && (!nft.marketData.premiumStatus ? <span className="btn-main mt-2 w-100">To Preimum</span> : <span className="btn-main mt-2 w-100">To Normal</span>) }
+                                { !nft.auctionData.existance && (!nft.marketData.premiumStatus ? <span className="btn-main mt-2 w-100" onClick={() => updatePremiumNFT(nft.nftData.tokenID, true)}>To Preimum</span> : <span className="btn-main mt-2 w-100"  onClick={() => updatePremiumNFT(nft.nftData.tokenID, false)}>To Normal</span>) }
                             </div>
                         </div> 
                     </div>
