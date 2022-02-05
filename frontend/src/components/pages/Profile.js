@@ -185,7 +185,7 @@ const Profile = function() {
         if (liked.length > 8) final = liked.slice(0, 8);
         const list = [];
         for await(let item of final) {
-          const _item = await Marketplace.methods.getPhoto(item.tokenID).call();
+          const _item = await Marketplace.methods.getItemNFT(item.tokenID).call();
           list.push(_item);
         }
 
@@ -215,12 +215,13 @@ const Profile = function() {
 
   const updateAvatar = async(e) => {
     const files = e.target.files;
+    console.log(files);
     if (files[0].type.indexOf("image") > -1) {
       let fileData = new FormData();
       fileData.append("myfile", files[0]);
       await axios.post(
         "http://localhost:7060/user/update-avatar",
-        {data: fileData},
+        fileData,
         {
           headers: {
             Authorization: JSON.parse(token),

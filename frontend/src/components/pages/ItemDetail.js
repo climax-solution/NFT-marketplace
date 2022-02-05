@@ -33,13 +33,14 @@ const Colection= function() {
         if (!Marketplace) return;
         try {
             const { id } = params;
-            const item = await Marketplace.methods.getPhoto(id).call();
+            const item = await Marketplace.methods.getItemNFT(id).call();
             console.log(item);
             await axios.get(item.nftData.tokenURI).then(res => {
                 const { data } = res;
                 setNFTData({ ...item, ...data});
             })
         } catch(err) {
+            console.log(err);
             setNFTData({});
         }
     },[Marketplace])
