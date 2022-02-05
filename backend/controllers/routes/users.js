@@ -4,7 +4,7 @@ const path = require("path");
 let fs = require("fs");
 const bcrypt = require('bcryptjs');
 let UserSchema = require('../../models/users');
-let LikedLogs = require("../../models/liked-logs");
+let LikedLogs = require("../../models/activity-log");
 const checkAuth = require("../../helpers/auth");
 
 router.post('/get-user', async(req, res) => {
