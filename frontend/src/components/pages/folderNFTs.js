@@ -57,9 +57,7 @@ const folderNFTs = (props) => {
     },[Marketplace])
 
     useEffect(() => {
-        if (initUserData?.walletAddress) {
-            setUserData(initUserData);
-        }
+        setUserData(initUserData);
     },[initUserData])
     const getInitNFTs = async() => {
         const { id } = params;
@@ -153,6 +151,8 @@ const folderNFTs = (props) => {
         }
     }
 
+    console.log(nfts, isLoading, userData);
+
     return (
         <div>
             <GlobalStyles/>
@@ -173,7 +173,7 @@ const folderNFTs = (props) => {
                 }
 
                 {
-                    !isLoading && Object.keys(userData).length > 1 && (
+                    !isLoading &&  (
                         <div className='row'>
                             {
                                 nfts.map( (nft, index) => {

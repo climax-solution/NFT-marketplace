@@ -54,18 +54,21 @@ const app = () => {
     if (token) {
       await axios.post('http://localhost:7060/auth/check-authentication', {}, { headers :{ Authorization: JSON.parse(token) } }).then(res => {
         const { token } = res.data;
-        
         dispatch(UPDATE_LOADING_PROCESS(false));
         dispatch(UPDATE_AUTH(token));
       }).catch((err) => {
         dispatch(UPDATE_LOADING_PROCESS(false));
-        dispatch(UPDATE_AUTH({}));
+        dispatch(UPDATE_AUTH({
+          walletAddress: ''
+        }));
       })
     }
 
     else {
       dispatch(UPDATE_LOADING_PROCESS(false));
-      dispatch(UPDATE_AUTH({}));
+      dispatch(UPDATE_AUTH({
+        walletAddress: ''
+      }));
     }
 
   }, []);

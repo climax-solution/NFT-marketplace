@@ -53,10 +53,6 @@ const GlobalStyles = createGlobalStyle`
   }
 `;
 
-const token = localStorage.getItem("nftdevelopments-token");
-
-const _headers = {headers: {Authorization: JSON.parse(token)}}
-
 const Profile = function() {
 
   const initUserData = useSelector((state) => state.auth.user);
@@ -125,6 +121,8 @@ const Profile = function() {
   };
 
   useEffect(async() => {
+    const token = localStorage.getItem("nftdevelopments-token");
+    const _headers = {headers: {Authorization: JSON.parse(token)}}
     if (token) {
       await axios.post('http://localhost:7060/user/get-user', {}, _headers).then(async(res) => {
         dispatch(UPDATE_AUTH(res.data));
@@ -139,7 +137,7 @@ const Profile = function() {
   },[]);
 
   useEffect(() => {
-    setUserData(initUserData);
+    if (initUserData) setUserData(initUserData);
   },[initUserData])
 
   useEffect(async() => {
@@ -179,6 +177,9 @@ const Profile = function() {
   useEffect(async() => {
     if (Object.keys(userData).length && Marketplace && openMenu2) {
       setLoading(true);
+      const token = localStorage.getItem("nftdevelopments-token");
+      const _headers = {headers: {Authorization: JSON.parse(token)}}
+      
       await axios.post("http://localhost:7060/user/get-liked-nfts", {}, _headers).then(async(res) => {
         const { liked } = res.data;
         const final = liked;
@@ -215,7 +216,7 @@ const Profile = function() {
 
   const updateAvatar = async(e) => {
     const files = e.target.files;
-    console.log(files);
+    const token = localStorage.getItem("nftdevelopments-token");
     if (files[0].type.indexOf("image") > -1) {
       let fileData = new FormData();
       fileData.append("myfile", files[0]);

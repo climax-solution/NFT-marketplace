@@ -52,6 +52,7 @@ export default function SellingNFT(props) {
     },[props])
 
     const putOnSale = async (id) => {
+        console.log(id);
         await Swal.fire({
             title: '<span style="font-size: 22px">PLEASE ENTER PRICE</span>',
             input: 'number',

@@ -162,7 +162,9 @@ const Header= function() {
         }).then((err) => {
         });
       } else {
-        dispatch(UPDATE_AUTH({}))
+        dispatch(UPDATE_AUTH({
+          walletAddress: ''
+        }))
       }
     },[])
 
@@ -180,7 +182,9 @@ const Header= function() {
 
     const logout = () => {
       localStorage.removeItem("nftdevelopments-token");
-      dispatch(UPDATE_AUTH({}));
+      dispatch(UPDATE_AUTH({
+        walletAddress: ''
+      }));
       navigate('/');
     }
 
@@ -311,7 +315,7 @@ const Header= function() {
                             </div>
                         </div>
                         {
-                          !Object.keys(user_data).length && (
+                          Object.keys(user_data).length < 2 && (
                             <>
                             <div className='navbar-item'>
                               <Link to="/login" onClick={() => btn_icon(!showmenu)}>
@@ -334,7 +338,7 @@ const Header= function() {
 
                   <div className='mainside'>
                     <div className="logout">
-                      {Object.keys(user_data).length &&
+                      {Object.keys(user_data).length > 1 &&
                         <div id="de-click-menu-profile" className="de-menu-profile" onClick={() => btn_icon_pop(!showpop)} ref={refpop}>                           
                             <img src={`http://localhost:7060/avatar/${userData.avatar ? userData.avatar : "empty-avatar.png"}`}  alt="" crossOrigin="true" className="index-avatar"/>
                             {showpop && 
