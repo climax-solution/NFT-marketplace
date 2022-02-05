@@ -31,6 +31,7 @@ const UserSchema = Schema({
         type: String
     },
     avatar: {
+        default: "empty-avatar.png",
         type: String
     },
     facebook: {
