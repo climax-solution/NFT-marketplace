@@ -8,6 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 import StyledHeader from "../Styles";
 import { UPDATE_AUTH } from "../../store/action/auth.action";
 import axios from "axios";
+import getWeb3 from "../../utils/getWeb3";
 
 const GlobalStyles = createGlobalStyle`
   .navbar {
@@ -52,7 +53,9 @@ const GlobalStyles = createGlobalStyle`
           content: "";
         }
       }
-      
+      .font-bold {
+        font-weight: 900;
+      }
     }
   }
 `;
@@ -68,6 +71,7 @@ const Header= function() {
     const user_data = useSelector(({auth}) => auth.user)
     const dispatch = useDispatch();
 
+    const [ethBalance, setETHBalance] = useState(0);
     const [openMenu, setOpenMenu] = React.useState(false);
     const [openMenu1, setOpenMenu1] = React.useState(false);
     const [openMenu2, setOpenMenu2] = React.useState(false);
@@ -128,7 +132,7 @@ const Header= function() {
       closeNot();
     });
 
-    useEffect(() => {
+    useEffect(async() => {
       const header = document.getElementById("myHeader");
       const totop = document.getElementById("scroll-to-top");
       const sticky = header.offsetTop;
@@ -162,9 +166,18 @@ const Header= function() {
       }
     },[])
 
-    useEffect(() => {
+    useEffect(async() => {
       setUserData(user_data);
+      if (user_data?.walletAddress) {
+        const { _web3 } = await getWeb3();
+        let balance = await _web3.eth.getBalance(user_data.walletAddress); //Will give value in.
+        balance = _web3.utils.fromWei(balance, "ether");
+        let diver = balance.indexOf('.') + 5;
+        balance = balance.slice(0, diver);
+        setETHBalance(balance);
+      }
     },[user_data])
+
     const logout = () => {
       localStorage.removeItem("nftdevelopments-token");
       dispatch(UPDATE_AUTH({}));
@@ -332,11 +345,11 @@ const Header= function() {
                                 </div>
                                 <div className="d-balance">
                                     <h4>Balance</h4>
-                                    12.858 ETH
+                                    <span className="font-bold">{ethBalance}</span> ETH
                                 </div>
                                 <div className="d-wallet">
                                     <h4>My Wallet</h4>
-                                    <span id="wallet" className="d-wallet-address">{ userData.walletAddress && ((userData.walletAddress).substr(0, 4) + '...' + (userData.walletAddress).substr(-4))}</span>
+                                    <span id="wallet" className="d-wallet-address font-bold">{ userData.walletAddress && ((userData.walletAddress).substr(0, 4) + '...' + (userData.walletAddress).substr(-4))}</span>
                                     <button id="btn_copy" title="Copy Text">Copy</button>
                                 </div>
                                 <div className="d-line"></div>
