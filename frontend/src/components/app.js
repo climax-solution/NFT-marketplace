@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
+import axios from 'axios';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import { createGlobalStyle } from 'styled-components';
 import { NotificationContainer } from 'react-notifications';
 import { ToastContainer } from 'react-toastify';
 import { useSelector, useDispatch } from "react-redux";
-import axios from 'axios';
+import {  ThreeDots } from 'react-loader-spinner';
 import ScrollToTopBtn from './menu/ScrollToTop';
 import Header from './menu/header';
 import Home from './pages/home';
@@ -25,6 +26,8 @@ import Profile from './pages/profile';
 import NotFound from './components/404';
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-notifications/lib/notifications.css';
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+
 import { UPDATE_AUTH, UPDATE_LOADING_PROCESS } from '../store/action/auth.action';
 
 const GlobalStyles = createGlobalStyle`
@@ -51,6 +54,7 @@ const app = () => {
     if (token) {
       await axios.post('http://localhost:7060/auth/check-authentication', {}, { headers :{ Authorization: JSON.parse(token) } }).then(res => {
         const { token } = res.data;
+        
         dispatch(UPDATE_LOADING_PROCESS(false));
         dispatch(UPDATE_AUTH(token));
       }).catch((err) => {
@@ -66,7 +70,12 @@ const app = () => {
 
   }, []);
 
-  if (loadingProcessing) return (<p>Loading...</p>)
+  if (loadingProcessing)
+    return (
+      <div className='position-fixed d-flex w-100 h-100 justify-content-center align-items-center'>
+        <ThreeDots />
+      </div>
+    )
   return (
     <div className="wraper">
       <GlobalStyles />
