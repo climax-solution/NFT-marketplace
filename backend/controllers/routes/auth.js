@@ -20,7 +20,7 @@ router.post('/login', async(req, res) => {
             
             if (!isMatch) {
                 return res.status(400).json({
-                    error: 'No existing user1.'
+                    error: 'No existing user.'
                 });
             }
 
