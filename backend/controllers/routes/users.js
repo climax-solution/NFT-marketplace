@@ -58,7 +58,7 @@ router.post('/update-avatar', upload.single("myfile") ,async(req, res) => {
     }
 
     const oldAvatar = await UserSchema.findOne({ _id: { $in: [id] } });
-    fs.unlinkSync("public/avatar/" + oldAvatar.avatar);
+    if (oldAvatar.avatar != "empty-avatar.png") fs.unlinkSync("public/avatar/" + oldAvatar.avatar);
     await UserSchema.findOneAndUpdate({ _id: { $in: [id] } }, {avatar: req.file.filename});
     const newUser = await UserSchema.findOne({ _id: { $in: [id] } });
     res.status(200).json(newUser)
