@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
+import { NotificationManager } from "react-notifications";
+import { useDispatch } from "react-redux";
 import { createGlobalStyle } from "styled-components";
+import { UPDATE_LOADING_PROCESS } from "../../store/action/auth.action";
 import Empty from "./Empty";
 
 const GlobalStyles = createGlobalStyle`
@@ -9,9 +12,12 @@ const GlobalStyles = createGlobalStyle`
         }
     }
 `;
-export default function SellingNFT({data, _web3, ...props}) {
+export default function SellingNFT(props) {
+
+    const dispatch = useDispatch();
 
     const [web3, setWeb3] = useState({});
+    const [Marketplace, setMarketplace] = useState({});
     const [nfts, setNFTs] = useState([]);
     const [height, setHeight] = useState(0);
 
@@ -23,46 +29,31 @@ export default function SellingNFT({data, _web3, ...props}) {
     }
     
     useEffect(() => {
-        if (_web3) {
+        const { _web3, data, _insNFT, _insMarketplace} = props;
+        if (_insMarketplace) {
             setWeb3(_web3);
             setNFTs(data);
+            setMarketplace(_insMarketplace);
         }
-    },[data, _web3])
-
-    // const putOnSale = async (id) => {
-    //     const photoPrice = web3.utils.toWei((result.value).toString(), 'ether');
-    //     await PhotoNFT.methods.approve(marketplace_addr, id).send({from : accounts[0]})
-    //     .on('receipt', async(rec) => {
-    //     await PhotoMarketplace.methods.openTrade(id).send({ from: accounts[0], value: photoPrice / 40 });
-    //     this.setState({
-    //         isLoading: false
-    //     })
-    // }
+    },[props])
   
-    // const cancelOnSale = async (id) => {
-    //     const { coin, accounts, PhotoMarketplace } = this.state;
-    //     this.setState({
-    //     isLoading: true
-    //     })
-    //     try {
-    //     const photo = await PhotoMarketplace.methods.getPhoto(id).call();
-    //     const buyAmount = photo.marketData.price;
-    //     // await coin.methods.approve(marketplace_addr, buyAmount).send({ from: accounts[0] });
-    //     await PhotoMarketplace.methods.cancelTrade(id).send({ from: accounts[0], value: buyAmount / 40 }).
-    //     then(async(result) => {
-    //         this.setState({
-    //         isLoading: false
-    //         })
-    //         NotificationManager.success("Success");
-    //         await this.getAllPhotos();
-    //     });
-    //     } catch(err) {
-    //     NotificationManager.error("Failed");
-    //     this.setState({
-    //         isLoading: false
-    //     })
-    //     }
-    // }
+    const putDownSale = async (id) => {
+        dispatch(UPDATE_LOADING_PROCESS(true));
+        try {
+            const nft = await Marketplace.methods.getItemNFT(id).call();
+            const buyAmount = nft.marketData.price;
+            const accounts = await web3.eth.getAccounts();
+            if (!accounts.length) throw new Error();
+            await Marketplace.methods.closeTradeToDirect(id).send({ from: accounts[0], value: buyAmount / 40 }).
+            then(async(result) => {
+                NotificationManager.success("Success");
+            });
+        } catch(err) {
+            console.log(id, "==>" ,err);
+            NotificationManager.error("Failed");
+        }
+        dispatch(UPDATE_LOADING_PROCESS(false));
+    }
   
     // const putOnPremium = async (id) => {
     //     const { accounts, PhotoMarketplace, PhotoNFT, currentAccount } = this.state;
@@ -110,7 +101,6 @@ export default function SellingNFT({data, _web3, ...props}) {
     //     })
     //     }
     // }
-    console.log(nfts);
     return (
         <div className='row'>
             <GlobalStyles/>
@@ -129,12 +119,14 @@ export default function SellingNFT({data, _web3, ...props}) {
                             <div className="nft__item_price">
                                 {web3.utils.fromWei(nft.marketData.price, "ether")} BNB
                             </div>
-                            <div className="nft__item_like">
-                                <i className="fa fa-heart"></i><span>{nft.likes}</span>
-                            </div>
                             <div className="pb-4 trade-btn-group">
-                                { !nft.marketData.marketStatus ? <span className="btn-main w-100">Put on sale</span> : <span className="btn-main w-100">Put down sale</span> }
-                                { !nft.marketData.premiumStatus ? <span className="btn-main mt-2 w-100">To Preimum</span> : <span className="btn-main mt-2 w-100">To Normal</span> }
+                                { nft.marketData.marketStatus && (
+                                    !nft.auctionData.existance ?
+                                        <span className="btn-main w-100" onClick={() => putDownSale(nft.nftData.tokenID)}>Put down sale</span>
+                                        :<span className="btn-main w-100">Put down auction</span>
+                                    )
+                                }
+                                { !nft.auctionData.existance && (!nft.marketData.premiumStatus ? <span className="btn-main mt-2 w-100">To Preimum</span> : <span className="btn-main mt-2 w-100">To Normal</span>) }
                             </div>
                         </div> 
                     </div>

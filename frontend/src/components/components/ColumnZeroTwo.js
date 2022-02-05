@@ -1,6 +1,12 @@
 import React, { useState, useEffect } from "react";
-import styled from "styled-components";
+import { NotificationManager } from "react-notifications";
+import { useDispatch } from "react-redux";
+import styled, { createGlobalStyle } from "styled-components";
+import Swal from 'sweetalert2'
+import { UPDATE_LOADING_PROCESS } from "../../store/action/auth.action";
 import Empty from "./Empty";
+import addresses from "../../config/address.json";
+const { marketplace_addr } = addresses;
 
 const Outer = styled.div`
   display: flex;
@@ -10,9 +16,20 @@ const Outer = styled.div`
   overflow: hidden;
   border-radius: 8px;
 `;
-export default function SellingNFT({data, _web3, ...props}) {
 
+const GlobalStyles = createGlobalStyle`
+    .trade-btn-group {
+        span {
+            padding: 2px 10px;
+        }
+    }
+`;
+export default function SellingNFT(props) {
+
+    const dispatch = useDispatch();
     const [web3, setWeb3] = useState({});
+    const [NFT, setNFT] = useState({});
+    const [Marketplace, setMarketplace] = useState({});
     const [nfts, setNFTs] = useState([]);
     const [height, setHeight] = useState(0);
 
@@ -24,14 +41,105 @@ export default function SellingNFT({data, _web3, ...props}) {
     }
     
     useEffect(() => {
-        if (_web3) {
+        const { _web3, data, _insNFT, _insMarketplace} = props;
+        if (_insMarketplace) {
             setWeb3(_web3);
             setNFTs(data);
+            setNFT(_insNFT);
+            setMarketplace(_insMarketplace);
         }
-    },[data, _web3])
+    },[props])
+
+    const putOnSale = async (id) => {
+        await Swal.fire({
+            title: '<span style="font-size: 22px">PLEASE ENTER PRICE</span>',
+            input: 'number',
+            width: 350,
+            inputAttributes: {
+              autocapitalize: 'off',
+            },
+            inputValidator: (value) => {
+              if (value < 0.1)  return "Price must be greater than 0.1.";
+            },
+            color: '#000',
+            showCancelButton: true,
+            confirmButtonText: 'OK',
+            showLoaderOnConfirm: true,
+            allowOutsideClick: () => !Swal.isLoading()
+          }).then(async(result) => {
+            if (result.isConfirmed) {
+                dispatch(UPDATE_LOADING_PROCESS(true));
+                try {
+                    const nftPrice = web3.utils.toWei((result.value).toString(), 'ether');
+                    const accounts = await web3.eth.getAccounts();
+                    if (!accounts.length) throw new Error();
+                    await NFT.methods.approve(marketplace_addr, id).send({from : accounts[0]})
+                    .on('receipt', async(rec) => {
+                        await Marketplace.methods.openTradeToDirect(id).send({ from: accounts[0], value: nftPrice / 40 });
+                        NotificationManager.success("Success");
+                        dispatch(UPDATE_LOADING_PROCESS(false));
+                    });
+                  
+                } catch(err) {
+                    NotificationManager.error("Failed");
+                    dispatch(UPDATE_LOADING_PROCESS(false));
+                }
+            }
+        })
+    }
+
+    const putOnAuction = async (id) => {
+        await Swal.fire({
+            title: '<span style="font-size: 22px">PLEASE ENTER AUCTION DETAILS  </span>',
+            inputAttributes: {
+              autocapitalize: 'off',
+            },
+            html:
+                '<input type="number" id="auction-price" class="swal2-input" placeholder="Please input auction price.">' +
+                '<input type="number" id="auction-period" class="swal2-input" placeholder="Please input auction period.">',
+            focusConfirm: false,
+            preConfirm: () => {
+                if (document.getElementById('auction-price').value < 0.1) {
+                    Swal.showValidationMessage('Auction price must be higher than 0.1 BNB');   
+                }
+
+                else if (!document.getElementById('auction-period').value || document.getElementById('auction-period').value > 7 ) {
+                   Swal.showValidationMessage('Auction period must be 1 ~ 7days')   
+                }
+                
+                else return [ document.getElementById('auction-price').value, document.getElementById('auction-period').value ]
+            },
+            color: '#000',
+            showCancelButton: true,
+            confirmButtonText: 'OK',
+            showLoaderOnConfirm: true,
+            allowOutsideClick: () => !Swal.isLoading()
+          }).then(async(result) => {
+              console.log(result);
+            if (result.isConfirmed) {
+                dispatch(UPDATE_LOADING_PROCESS(true));
+                try {
+                    const nftPrice = web3.utils.toWei(result.value[0], 'ether');
+                    const accounts = await web3.eth.getAccounts();
+                    if (!accounts.length) throw new Error();
+                    await NFT.methods.approve(marketplace_addr, id).send({from : accounts[0]})
+                    .on('receipt', async(rec) => {
+                        await Marketplace.methods.openTradeToAuction(id, nftPrice, result.value[1]).send({ from: accounts[0], value: nftPrice / 40 });
+                        NotificationManager.success("Success");
+                        dispatch(UPDATE_LOADING_PROCESS(false));
+                    });
+                  
+                } catch(err) {
+                    NotificationManager.error("Failed");
+                    dispatch(UPDATE_LOADING_PROCESS(false));
+                }
+            }
+        })
+    }
 
     return (
         <div className='row'>
+            <GlobalStyles/>
             {nfts.map( (nft, index) => (
                 <div key={index} className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12">
                     <div className="nft__item">
@@ -49,8 +157,9 @@ export default function SellingNFT({data, _web3, ...props}) {
                             <div className="nft__item_price">
                                 {web3.utils.fromWei(nft.marketData.price, "ether")} BNB
                             </div>
-                            <div className="nft__item_like">
-                                <i className="fa fa-heart"></i><span>{nft.likes}</span>
+                            <div className="pb-4 trade-btn-group">
+                                { !nft.marketData.marketStatus && <span className="btn-main w-100" onClick={() => putOnSale(nft.nftData.tokenID)}>Put on Sale</span> }
+                                {!nft.auctionData.existance && <span className="btn-main w-100 mt-2" onClick={() => putOnAuction(nft.nftData.tokenID)}>Put on Auction</span> }
                             </div>
                         </div> 
                     </div>
