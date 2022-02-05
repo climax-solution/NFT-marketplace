@@ -8,7 +8,7 @@ export const UPDATE_LOADING_PROCESS = (payload) => async dispatch => {
 }
 
 export const UPDATE_AUTH = (payload) => async dispatch => {
-    payload.password = '';
+    if (payload?.password) payload.password = '';
     dispatch({
         payload,
         type: SET_AUTH
