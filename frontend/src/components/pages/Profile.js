@@ -256,7 +256,6 @@ const Profile = function() {
       NotificationManager.error(error);
     })
   }
-
   return (
     <div>
     <GlobalStyles/>
@@ -339,7 +338,12 @@ const Profile = function() {
           !isLoading &&
             (openMenu && (
               <div id='zero1' className='onStep fadeIn'>
-              <ColumnZero data={sellingNFT} _web3={web3}/>
+              <ColumnZero
+                data={sellingNFT}
+                _web3={web3}
+                _insNFT={NFT}
+                _insMarketplace={Marketplace}
+              />
               </div>
             ))
         }
@@ -347,7 +351,11 @@ const Profile = function() {
           !isLoading &&
             (openMenu1 && (
               <div id='zero2' className='onStep fadeIn'>
-              <ColumnZeroTwo data={notSellingNFT} _web3={web3}/>
+              <ColumnZeroTwo
+                data={notSellingNFT}
+                _web3={web3}
+                _insNFT={NFT}
+                _insMarketplace={Marketplace}/>
               </div>
             ))
         }
@@ -355,7 +363,12 @@ const Profile = function() {
           !isLoading &&
             (openMenu2 && (
               <div id='zero3' className='onStep fadeIn'>
-              <ColumnZeroThree data={likedNFT} _web3={web3}/>
+              <ColumnZeroThree
+                data={likedNFT}
+                _web3={web3}
+                _insNFT={NFT}
+                _insMarketplace={Marketplace}
+              />
               </div>
             ))
         }
