@@ -45,10 +45,44 @@ export default function SellingNFT(props) {
         try {
             const nft = await Marketplace.methods.getItemNFT(id).call();
             const buyAmount = nft.marketData.price;
-            await Marketplace.methods.closeTradeToDirect(id).send({ from: initialUser.walletAddress, value: buyAmount / 40 }).
-            then(async(result) => {
-                NotificationManager.success("Success");
+            await Marketplace.methods.closeTradeToDirect(id).send({ from: initialUser.walletAddress, value: buyAmount / 40 });
+
+            const data = {
+                tokenID: id,
+                type: 2,
+                price: buyAmount / 40,
+                walletAddress: initUserData.walletAddress
+            }
+
+            await axios.post('http://localhost:7060/activity/create-log', data).then(res =>{
+
             });
+            NotificationManager.success("Success");
+        } catch(err) {
+            console.log(id, "==>" ,err);
+            NotificationManager.error("Failed");
+        }
+        dispatch(UPDATE_LOADING_PROCESS(false));
+    }
+
+    const putDownAuction = async (id) => {
+        dispatch(UPDATE_LOADING_PROCESS(true));
+        try {
+            const nft = await Marketplace.methods.getItemNFT(id).call();
+            const buyAmount = nft.marketData.price;
+            await Marketplace.methods.closeTradeToAuction(id).send({ from: initialUser.walletAddress, value: buyAmount / 40 });
+
+            const data = {
+                tokenID: id,
+                type: 2,
+                price: buyAmount / 40,
+                walletAddress: initUserData.walletAddress
+            }
+
+            await axios.post('http://localhost:7060/activity/create-log', data).then(res =>{
+
+            });
+            NotificationManager.success("Success");
         } catch(err) {
             console.log(id, "==>" ,err);
             NotificationManager.error("Failed");
@@ -63,6 +97,17 @@ export default function SellingNFT(props) {
             const nft = await Marketplace.methods.getItemNFT(id).call();
             const tax = nft.marketData.price;
             await Marketplace.methods.updatePremiumStatus(id, status).send({ from: initialUser.walletAddress, value: tax / 20});
+
+            const data = {
+                tokenID: id,
+                type: status ? 3 : 4,
+                price: tax / 20,
+                walletAddress: initUserData.walletAddress
+            }
+
+            await axios.post('http://localhost:7060/activity/create-log', data).then(res =>{
+
+            });
             NotificationManager.success("Success");
             // await this.getAllPhotos();
         } catch(err) {

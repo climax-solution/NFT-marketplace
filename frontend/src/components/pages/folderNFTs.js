@@ -104,6 +104,18 @@ const folderNFTs = (props) => {
             let { marketData, auctionData } = await Marketplace.methods.getItemNFT(id).call();
             if (marketData.marketStatus && !auctionData.existance) {
                 await Marketplace.methods.buyNFT(id).send({ from: userData.walletAddress, value: marketData.price });
+
+                const data = {
+                    tokenID: id,
+                    type: 0,
+                    price: marketData.price,
+                    walletAddress: userData.walletAddress
+                }
+
+                await axios.post('http://localhost:7060/activity/create-log', data).then(res =>{
+
+                });
+
                 NotificationManager.success("Buy success");
             }
         } catch(err) {
@@ -136,22 +148,28 @@ const folderNFTs = (props) => {
                     allowOutsideClick: () => !Swal.isLoading()
                 }).then(async(res) => {
                     if (res.isConfirmed) {
-                        const accounts = await web3.eth.getAccounts();
-                        if (!accounts.length) throw new Error();
-                        await Marketplace.methods.placeBid(id).send({ from: accounts[0], value: web3.utils.toWei(res.value, "ether") });
+                        const price = web3.utils.toWei(res.value, "ether");
+                        await Marketplace.methods.placeBid(id).send({ from: userData.walletAddress, value: price});
+                        const data = {
+                            tokenID: id,
+                            type: 7,
+                            price: price,
+                            walletAddress: userData.walletAddress
+                        }
+        
+                        await axios.post('http://localhost:7060/activity/create-log', data).then(res =>{
+        
+                        });
                         NotificationManager.success("Success Bid");
                         dispatch(UPDATE_LOADING_PROCESS(false));
                     }
                 });
             } catch(err) {
-                console.log(err);
                 NotificationManager.error("Failed Bid");
                 dispatch(UPDATE_LOADING_PROCESS(false));
            }
         }
     }
-
-    console.log(nfts, isLoading, userData);
 
     return (
         <div>

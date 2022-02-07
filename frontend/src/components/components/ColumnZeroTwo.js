@@ -6,6 +6,7 @@ import Swal from 'sweetalert2'
 import { UPDATE_LOADING_PROCESS } from "../../store/action/auth.action";
 import Empty from "./Empty";
 import addresses from "../../config/address.json";
+import axios from "axios";
 const { marketplace_addr } = addresses;
 
 const Outer = styled.div`
@@ -77,6 +78,16 @@ export default function SellingNFT(props) {
                     .on('receipt', async(rec) => {
                         await Marketplace.methods.openTradeToDirect(id).send({ from: initUserData.walletAddress, value: nftPrice / 40 });
                         NotificationManager.success("Success");
+                        const data = {
+                            tokenID: id,
+                            type: 1,
+                            price: nftPrice / 40,
+                            walletAddress: initUserData.walletAddress
+                        }
+        
+                        await axios.post('http://localhost:7060/activity/create-log', data).then(res =>{
+        
+                        });
                         dispatch(UPDATE_LOADING_PROCESS(false));
                     });
                   
@@ -122,6 +133,17 @@ export default function SellingNFT(props) {
                     await NFT.methods.approve(marketplace_addr, id).send({from : initUserData.walletAddress})
                     .on('receipt', async(rec) => {
                         await Marketplace.methods.openTradeToAuction(id, nftPrice, result.value[1]).send({ from: initUserData.walletAddress, value: nftPrice / 40 });
+
+                        const data = {
+                            tokenID: id,
+                            type: 5,
+                            price: nftPrice / 40,
+                            walletAddress: initUserData.walletAddress
+                        }
+        
+                        await axios.post('http://localhost:7060/activity/create-log', data).then(res =>{
+        
+                        });
                         NotificationManager.success("Success");
                         dispatch(UPDATE_LOADING_PROCESS(false));
                     });
