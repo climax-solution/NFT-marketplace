@@ -3,9 +3,8 @@ const UserSchema = require("../../models/users");
 const ActivitySchema = require("../../models/activity-log");
 const router = require("express").Router();
 
-router.post('/create-logs', async(req, res) => {
-    const { tokenID, id, price, type } = req.body;
-    const { walletAddress } = await UserSchema.findOne({ _id: { $in: [id] }});
+router.post('/create-log', async(req, res) => {
+    const { tokenID, walletAddress, price, type } = req.body;
 
     let logs = new ActivitySchema({
         walletAddress,
