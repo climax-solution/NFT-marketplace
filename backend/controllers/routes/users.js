@@ -16,7 +16,11 @@ router.post('/get-user', async(req, res) => {
     }
     const { id } = token;
     const result = await UserSchema.findOne({ _id: { $in: [id] } });
-    
+    if (!result) {
+        return res.status(400).json({
+            error: "not existing user"
+        });    
+    } 
     res.status(200).json(result);
 })
 
