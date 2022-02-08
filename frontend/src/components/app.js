@@ -91,8 +91,7 @@ const app = () => {
               <Route exact path="/" element={<Home/>}/>
               <Route path="/explore" element={<Explore/>}/>
               <Route path="/helpcenter" element={<Helpcenter/>}/>
-              <Route path="/rangking" element={<Rangking/>}/>
-              <Route path="/colection" element={<Colection/>}/>
+              <Route path="/ranking" element={<Rangking/>}/>
               <Route path="/item-detail/:id" element={<ItemDetail/>}/>
               <Route path="/login" element={<Login/>}/>
               <Route path="/register" element={<Register/>}/>
@@ -101,7 +100,8 @@ const app = () => {
               <Route path="/activity" element={<Activity/>}/>
               <Route path="/contact" element={<Contact/>}/>
               <Route path="/folder-explorer/:id" element={<FolderItems/>}/>
-              <Route path={Object.keys(userData).length ? "/profile" : "/user/:id"} element={<Profile/>}/>
+              <Route path={Object.keys(userData).length ? "/profile" : "/404"} element={Object.keys(userData).length ? <Profile/>: <NotFound/>}/>
+              <Route path="/user/:username" element={<Colection/>}/>
           </Routes>
         </Router>
       <ScrollToTopBtn />
