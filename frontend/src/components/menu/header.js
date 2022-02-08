@@ -159,8 +159,7 @@ const Header= function() {
       if (token) {
         await axios.post('http://localhost:7060/user/get-user', {}, {headers: {Authorization: JSON.parse(token)}}).then((res) => {
           dispatch(UPDATE_AUTH(res.data));
-        }).then((err) => {
-        });
+        })
       } else {
         dispatch(UPDATE_AUTH({
           walletAddress: ''
@@ -187,7 +186,7 @@ const Header= function() {
       }));
       navigate('/');
     }
-
+    
     return (
       <Fragment>
         <GlobalStyles/>
@@ -315,7 +314,7 @@ const Header= function() {
                             </div>
                         </div>
                         {
-                          Object.keys(user_data).length < 2 && (
+                          !user_data?.walletAddress && (
                             <>
                             <div className='navbar-item'>
                               <Link to="/login" onClick={() => btn_icon(!showmenu)}>
@@ -338,7 +337,7 @@ const Header= function() {
 
                   <div className='mainside'>
                     <div className="logout">
-                      {Object.keys(user_data).length > 1 &&
+                      { user_data?.walletAddress &&
                         <div id="de-click-menu-profile" className="de-menu-profile" onClick={() => btn_icon_pop(!showpop)} ref={refpop}>                           
                             <img src={`http://localhost:7060/avatar/${userData.avatar ? userData.avatar : "empty-avatar.png"}`}  alt="" crossOrigin="true" className="index-avatar"/>
                             {showpop && 
