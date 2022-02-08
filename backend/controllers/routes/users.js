@@ -100,4 +100,25 @@ router.post('/update-user', async(req, res) => {
 
 })
 
+router.post('/get-user-by-username', async(req, res) => {
+    
+    try {
+        const { username } = req.body;
+        const user = await UserSchema.findOne({ username });
+        if (!user) {
+            return res.status(400).json({
+                error: "Not found user"
+            });
+        }
+
+        if (user.role != "ROLE_CREATOR") throw new Error();
+        res.status(200).json(user);
+    } catch (err) {
+        res.status(400).json({
+            error: "Your request is restricted"
+        })
+    }
+
+})
+
 module.exports = router;
