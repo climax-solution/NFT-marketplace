@@ -49,10 +49,10 @@ const app = () => {
   const userData = useSelector((state) => state.auth.user);
 
   useEffect(async() => {
-    const token = localStorage.getItem("nftdevelopments-token");
+    const jwtToekn = localStorage.getItem("nftdevelopments-token");
     dispatch(UPDATE_LOADING_PROCESS(true));
-    if (token) {
-      await axios.post('http://localhost:7060/auth/check-authentication', {}, { headers :{ Authorization: JSON.parse(token) } }).then(res => {
+    if (jwtToekn) {
+      await axios.post('http://localhost:7060/auth/check-authentication', {}, { headers :{ Authorization: JSON.parse(jwtToekn) } }).then(res => {
         const { token } = res.data;
         dispatch(UPDATE_LOADING_PROCESS(false));
         dispatch(UPDATE_AUTH(token));
@@ -97,7 +97,7 @@ const app = () => {
               <Route path="/login" element={<Login/>}/>
               <Route path="/register" element={<Register/>}/>
               <Route path="/create" element={<Create/>}/>
-              <Route path="/aution" element={<Auction/>}/>
+              <Route path="/auction" element={<Auction/>}/>
               <Route path="/activity" element={<Activity/>}/>
               <Route path="/contact" element={<Contact/>}/>
               <Route path="/folder-explorer/:id" element={<FolderItems/>}/>
