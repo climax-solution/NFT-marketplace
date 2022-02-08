@@ -34,3 +34,17 @@ module.exports = Mongoose.model('activity_logs', ActivityLogs);
 // 9 like
 // 10 dislike
 // 11 claim
+// [
+//     "action-buy",
+//     "action-sell",
+//     "action-down-sell",
+//     "action-to-premium",
+//     "action-to-normal",
+//     "action-on-auction",
+//     "action-down-auction",
+//     "action-make-bid",
+//     "action-withdraw-bid",
+//     "action-like",
+//     "action-dislike",
+//     "action-claim"
+// ]
