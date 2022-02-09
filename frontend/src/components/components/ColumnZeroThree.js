@@ -13,9 +13,30 @@ const Outer = styled.div`
 export default function SellingNFT({data, _web3, ...props}) {
 
     const [web3, setWeb3] = useState({});
+    const [Marketplace, setMarketplace] = useState({});
+    const [NFT, setNFT] = useState({});
     const [nfts, setNFTs] = useState([]);
+    const [restList, setRestList] = useState([]);
     const [height, setHeight] = useState(0);
+    const [loaded, setLoaded] = useState(false);
+    
+    useEffect(() => {
+        const { _web3, data, _insNFT, _insMarketplace} = props;
+        if (_insMarketplace) {
+            setWeb3(_web3);
+            setNFT(_insNFT);
+            setRestList(data);
+            setMarketplace(_insMarketplace);
+            setLoaded(true);
+        }
+    },[props])
 
+    useEffect(async() => {
+        if (loaded) {
+            await fetchNFT();
+        }
+    },[loaded])
+    
     const onImgLoad = ({target:img}) => {
         let currentHeight = height;
         if(currentHeight < img.offsetHeight) {
@@ -23,12 +44,23 @@ export default function SellingNFT({data, _web3, ...props}) {
         }
     }
     
-    useEffect(() => {
-        if (_web3) {
-            setWeb3(_web3);
-            setNFTs(data);
+    const fetchNFT = async() => {
+        if (!restList.length) return;
+        let tmpList = restList;
+        if (tmpList.length > 8) {
+          tmpList = tmpList.slice(0, 8);
+          setRestList(restList.slice(8, restList.length));
         }
-    },[data, _web3])
+        else setRestList([]);
+        let mainList = [];
+        for await (let item of tmpList) {
+          await axios.get(item.nftData.tokenURI).then(res => {
+            mainList.push({...item, ...res.data});
+          })
+        }
+    
+        setNFTs([...nfts, ...mainList]);
+    }
 
     return (
         <div className='row'>

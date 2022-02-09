@@ -58,11 +58,8 @@ const Profile = function() {
   const initUserData = useSelector((state) => state.auth.user);
   const dispatch = useDispatch();
 
-  const [openMenu, setOpenMenu] = useState(true);
-  const [openMenu1, setOpenMenu1] = useState(false);
-  const [openMenu2, setOpenMenu2] = useState(false);
-  const [openMenu3, setOpenMenu3] = useState(false);
   const [openChange, setOpenChange] = useState(false);
+  const [activeTab, setActiveTab] = useState(0);
 
   const [isLoading, setLoading] = useState(true);
   const [userData, setUserData] = useState({});
@@ -72,53 +69,13 @@ const Profile = function() {
   const [sellingNFT, setSellingNFT] = useState([]);
   const [notSellingNFT, setNotSellingNFT] = useState([]);
   const [likedNFT, setLikedNFT] = useState({});
+
+  const [sellUpdated, setSellUpdated] = useState(false);
+  const [notSellUpdated, setNotSellUpdated] = useState(false);
+
   const ref = useOnclickOutside(() => {
     setOpenChange(false);
   });
-
-  const handleBtnClick = () => {
-    setOpenMenu(true);
-    setOpenMenu1(false);
-    setOpenMenu2(false);
-    setOpenMenu3(false);
-    document.getElementById("Mainbtn").classList.add("active");
-    document.getElementById("Mainbtn1").classList.remove("active");
-    document.getElementById("Mainbtn2").classList.remove("active");
-    document.getElementById("Mainbtn3").classList.remove("active");
-  };
-  
-  const handleBtnClick1 = () => {
-    setOpenMenu1(true);
-    setOpenMenu2(false);
-    setOpenMenu(false);
-    setOpenMenu3(false);
-    document.getElementById("Mainbtn1").classList.add("active");
-    document.getElementById("Mainbtn").classList.remove("active");
-    document.getElementById("Mainbtn2").classList.remove("active");
-    document.getElementById("Mainbtn3").classList.remove("active");
-  };
-
-  const handleBtnClick2 = () => {
-    setOpenMenu2(true);
-    setOpenMenu(false);
-    setOpenMenu1(false);
-    setOpenMenu3(false);
-    document.getElementById("Mainbtn2").classList.add("active");
-    document.getElementById("Mainbtn").classList.remove("active");
-    document.getElementById("Mainbtn1").classList.remove("active");
-    document.getElementById("Mainbtn3").classList.remove("active");
-  };
-
-  const handleBtnClick3 = () => {
-    setOpenMenu3(true);
-    setOpenMenu(false);
-    setOpenMenu1(false);
-    setOpenMenu2(false);
-    document.getElementById("Mainbtn3").classList.add("active");
-    document.getElementById("Mainbtn").classList.remove("active");
-    document.getElementById("Mainbtn1").classList.remove("active");
-    document.getElementById("Mainbtn2").classList.remove("active");
-  };
 
   useEffect(async() => {
     const token = localStorage.getItem("nftdevelopments-token");
@@ -141,78 +98,58 @@ const Profile = function() {
   },[initUserData])
 
   useEffect(async() => {
-    if (Object.keys(userData).length && Marketplace && openMenu) {
+    if (Object.keys(userData).length && Marketplace) {
       setLoading(true);
-      try {
-        let list = await Marketplace.methods.getPersonalNFTList().call({ from: userData.walletAddress });
-        list = list.filter(item => item.marketData.existance && item.marketData.marketStatus);
-        let final = list;
-        if (list.length > 8) {
-          final = list.slice(0, 8);
-        }
-        await fetchMetadata(final, 0);
-      } catch(err) {
-        setLoading(false);
+      switch(activeTab) {
+        case 0:
+          try {
+            let list = await Marketplace.methods.getPersonalNFTList().call({ from: userData.walletAddress });
+            list = list.filter(item => item.marketData.existance && item.marketData.marketStatus);
+            setSellingNFT(list);
+          } catch(err) {
+            console.log(err);
+            setLoading(false);
+          }
+          break;
+        case 1:
+          try {
+            let list = await Marketplace.methods.getPersonalNFTList().call({ from: userData.walletAddress });
+            list = list.filter(item => item.marketData.existance && !item.marketData.marketStatus);
+            setNotSellingNFT(list);
+          } catch(err) {
+            console.log(err);
+            setLoading(false);
+          }
+          break;
+        default:
+          break;
       }
+      setLoading(false);
     }
-  },[Marketplace, openMenu]);
+  },[Marketplace, activeTab, sellUpdated, notSellUpdated]);
 
-  useEffect(async() => {
-    if (Object.keys(userData).length && Marketplace && openMenu1) {
-      setLoading(true);
-      try {
-        let list = await Marketplace.methods.getPersonalNFTList().call({ from: userData.walletAddress });
-        list = list.filter(item => item.marketData.existance && !item.marketData.marketStatus);
-        let final = list;
-        if (list.length > 8) {
-          final = list.slice(0, 8);
-        }
-        await fetchMetadata(final, 1);
-      } catch(err) {
-        setLoading(false);
-      }
-    }
-  },[Marketplace, openMenu1]);
-
-  useEffect(async() => {
-    if (Object.keys(userData).length && Marketplace && openMenu2) {
-      setLoading(true);
-      const token = localStorage.getItem("nftdevelopments-token");
-      const _headers = {headers: {Authorization: JSON.parse(token)}}
+  // useEffect(async() => {
+  //   if (Object.keys(userData).length && Marketplace && activeTab) {
+  //     setLoading(true);
+  //     const token = localStorage.getItem("nftdevelopments-token");
+  //     const _headers = {headers: {Authorization: JSON.parse(token)}}
       
-      await axios.post("http://localhost:7060/user/get-liked-nfts", {}, _headers).then(async(res) => {
-        const { liked } = res.data;
-        const final = liked;
-        if (liked.length > 8) final = liked.slice(0, 8);
-        const list = [];
-        for await(let item of final) {
-          const _item = await Marketplace.methods.getItemNFT(item.tokenID).call();
-          list.push(_item);
-        }
+  //     await axios.post("http://localhost:7060/user/get-liked-nfts", {}, _headers).then(async(res) => {
+  //       const { liked } = res.data;
+  //       const final = liked;
+  //       if (liked.length > 8) final = liked.slice(0, 8);
+  //       const list = [];
+  //       for await(let item of final) {
+  //         const _item = await Marketplace.methods.getItemNFT(item.tokenID).call();
+  //         list.push(_item);
+  //       }
 
-        await fetchMetadata(list, 2);
-
-      }).catch(err => {
-        setLoading(false);
-      })
-    }
-  }, [openMenu2])
-
-  const fetchMetadata = async(list, status) => {
-    let mainList = [];
-    for await (let item of list) {
-      try {
-        const {data} = await axios.get(item.nftData.tokenURI);
-        mainList.push({ ...item, ...data});
-      } catch(err) {
-
-      }
-    }
-    if (!status) setSellingNFT(mainList);
-    else if (status == 1) setNotSellingNFT(mainList);
-    else setLikedNFT(mainList);
-    setLoading(false);
-  }
+  //     }).catch(err => {
+  //       setLoading(false);
+  //     })
+  //     setLoading(false);
+  //   }
+  // }, [activeTab])
 
   const updateAvatar = async(e) => {
     const files = e.target.files;
@@ -258,6 +195,7 @@ const Profile = function() {
       NotificationManager.error(error);
     })
   }
+
   return (
     <div>
     <GlobalStyles/>
@@ -324,10 +262,10 @@ const Profile = function() {
           <div className='col-lg-12'>
               <div className="items_filter">
                 <ul className="de_nav text-left">
-                    <li id='Mainbtn' className="active"><span onClick={handleBtnClick}>On Sale</span></li>
-                    <li id='Mainbtn1' className=""><span onClick={handleBtnClick1}>Not Sale</span></li>
-                    <li id='Mainbtn2' className=""><span onClick={handleBtnClick2}>Liked</span></li>
-                    <li id='Mainbtn3' className=""><span onClick={handleBtnClick3}>User Info</span></li>
+                    <li id='Mainbtn' className={activeTab == 0 ? 'active' : ''}><span onClick={() => setActiveTab(0)}>On Sale</span></li>
+                    <li id='Mainbtn1' className={activeTab == 1 ? 'active' : ''}><span onClick={() => setActiveTab(1)}>Not Sale</span></li>
+                    {/* <li id='Mainbtn2' className=""><span onClick={handleBtnClick2}>Liked</span></li> */}
+                    <li id='Mainbtn3' className={activeTab == 3 ? 'active' : ''}><span onClick={() => setActiveTab(3)}>User Info</span></li>
                 </ul>
             </div>
           </div>
@@ -338,32 +276,37 @@ const Profile = function() {
 
         {
           !isLoading &&
-            (openMenu && (
+            (activeTab == 0 && (
               <div id='zero1' className='onStep fadeIn'>
               <ColumnZero
                 data={sellingNFT}
                 _web3={web3}
                 _insNFT={NFT}
                 _insMarketplace={Marketplace}
+                updateStatus={setSellUpdated}
+                status={sellUpdated}
               />
               </div>
             ))
         }
         {
           !isLoading &&
-            (openMenu1 && (
+            (activeTab == 1  && (
               <div id='zero2' className='onStep fadeIn'>
               <ColumnZeroTwo
                 data={notSellingNFT}
                 _web3={web3}
                 _insNFT={NFT}
-                _insMarketplace={Marketplace}/>
+                _insMarketplace={Marketplace}
+                updateStatus={setNotSellUpdated}
+                status={notSellUpdated}
+              />
               </div>
             ))
         }
         {
           !isLoading &&
-            (openMenu2 && (
+            (activeTab == 2  && (
               <div id='zero3' className='onStep fadeIn'>
               <ColumnZeroThree
                 data={likedNFT}
@@ -378,7 +321,7 @@ const Profile = function() {
         {
           !isLoading &&
             (
-              openMenu3 && Object.keys(userData).length && (
+              activeTab == 3 && Object.keys(userData).length && (
               <div id='zero4' className='onStep fadeIn'>
                 <div id="form-create-item" className="form-border row justify-content-center" action="#">
                   <div className="field-set col-md-8 mg-auto p-4 user-info">

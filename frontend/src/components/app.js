@@ -13,7 +13,7 @@ import Home from './pages/home';
 import Explore from './pages/explore';
 import Helpcenter from './pages/helpcenter';
 import Rangking from './pages/rangking';
-import Colection from './pages/colection';
+import Collection from './pages/collection';
 import ItemDetail from './pages/ItemDetail';
 import Login from './pages/login';
 import Register from './pages/register';
@@ -101,7 +101,7 @@ const app = () => {
               <Route path="/contact" element={<Contact/>}/>
               <Route path="/folder-explorer/:id" element={<FolderItems/>}/>
               <Route path={Object.keys(userData).length ? "/profile" : "/404"} element={Object.keys(userData).length ? <Profile/>: <NotFound/>}/>
-              <Route path="/user/:username" element={<Colection/>}/>
+              <Route path="/user/:username" element={<Collection/>}/>
           </Routes>
         </Router>
       <ScrollToTopBtn />
