@@ -96,33 +96,8 @@ const explore = () => {
 
   useEffect(async() => {
     if (!Marketplace) return;
-    let gradList = await Marketplace.methods.getFolderList().call();
-    let gradList1 = [];
-    for(let idx in gradList) {
-      gradList1.push({...gradList[idx], folderIndex: idx});
-    };
-    await getFolderData(gradList1);
-  },[Marketplace])
-  
-  useEffect(async() => {
-    if (!Marketplace) return;
     await filterFolder();
-  },[activeCategory, searchKwd])
-
-  const getFolderData = async(gradList) => {
-    let mainList = [];
-    for await (let item of gradList) {
-      const URI = await NFT.methods.tokenURI(item[2][0]).call();
-      try {
-          const res = await axios.get(`${URI}`);
-          mainList.push({ ...item, ...res.data });
-      } catch (err) {
-        console.log(err);
-      }
-    }
-    setFolderList([...folderList, ...mainList]);
-    setItemLoading(false);
-  }
+  },[Marketplace, activeCategory, searchKwd])
 
   const filterFolder = async() => {
     setItemLoading(true);
@@ -133,7 +108,8 @@ const explore = () => {
     };
     gradList1 = gradList1.filter(item => ((item[0]).toLowerCase()).search(searchKwd.toLowerCase()) > -1);
     if (activeCategory.value) gradList1 = gradList1.filter(item => item[1] == activeCategory.value);
-    await getFolderData(gradList1);
+    setFolderList(gradList1);
+    setItemLoading(false);
   }
 
   return(
@@ -188,7 +164,7 @@ const explore = () => {
                     onChange={(value) => {
                       setCategory(value);
                       setFolderList([]);
-                    } }
+                    }}
                   />
                 </div>
                 {/* <div className='dropdownSelect two'><Select className='select1' styles={customStyles} defaultValue={options1[0]} options={options1} /></div> */}
@@ -197,7 +173,7 @@ const explore = () => {
           </div>
         </div>
         {
-          itemLoading ? <Loading/> : <ColumnNew data={folderList}/>
+          itemLoading ? <Loading/> : <ColumnNew data={folderList} _insNFT={NFT}/>
         }
       </section>
 
