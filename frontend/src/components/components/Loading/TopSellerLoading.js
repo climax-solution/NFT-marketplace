@@ -3,7 +3,7 @@ import Skeleton from "react-loading-skeleton";
 const TopSellerLoading = () => {
     return (
         <div>
-            <ul className="author_list list-style-type-none">
+            <ul className="author_list list-unstyled">
                 <li>
                     <Skeleton
                         height={50}
