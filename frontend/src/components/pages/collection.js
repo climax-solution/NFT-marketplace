@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import ColumnZero from '../components/ColumnZero';
 import ColumnZeroTwo from '../components/ColumnZeroTwo';
 import Footer from '../components/footer';
@@ -21,24 +21,9 @@ const Collection= function() {
   const [Marketplace, setMarketplace] = useState(null);
   const [web3, setWeb3] = useState(null);
   const [userData, setUserData] = useState({});
-  const [activeList, setActiveList] = useState([]);
+  const [nfts, setNFTs] = useState([]);
   const [restList, setRestList] = useState([]);
-
-  const [openMenu, setOpenMenu] = useState(true);
-  const [openMenu1, setOpenMenu1] = useState(false);
-
-  const handleBtnClick = () => {
-    setOpenMenu(!openMenu);
-    setOpenMenu1(false);
-    document.getElementById("Mainbtn").classList.add("active");
-    document.getElementById("Mainbtn1").classList.remove("active");
-  };
-  const handleBtnClick1 = () => {
-    setOpenMenu1(!openMenu1);
-    setOpenMenu(false);
-    document.getElementById("Mainbtn1").classList.add("active");
-    document.getElementById("Mainbtn").classList.remove("active");
-  };
+  const [loaded, setLoaded] = useState(false);
 
   useEffect(async () => {
     const { username } = params;
@@ -58,17 +43,25 @@ const Collection= function() {
       let list = await Marketplace.methods.getPersonalNFTList().call({ from: userData.walletAddress });
       list = list.filter(item => item.marketData.existance);
       setRestList(list);
-      // await fetchNFT(list);
+      setLoaded(true);
     }
   },[userData])
 
+  useEffect(async() => {
+    if (loaded) {
+      await fetchNFT();
+      setLoaded(false);
+    }
+  },[loaded])
+
   const fetchNFT = async() => {
+    if (!restList.length) return;
     let tmpList = restList;
     if (tmpList.length > 8) {
       tmpList = tmpList.slice(0, 8);
-      setRestList(tmpList.slice(8, tmpList.length));
+      setRestList(restList.slice(8, restList.length));
     }
-    console.log("tmpList=>", tmpList);
+    else setRestList([]);
     let mainList = [];
     for await (let item of tmpList) {
       await axios.get(item.nftData.tokenURI).then(res => {
@@ -76,10 +69,8 @@ const Collection= function() {
       })
     }
 
-    setActiveList([...activeList, ...mainList]);
+    setNFTs([...nfts, ...mainList]);
   }
-
-  console.log(activeList, restList);
 
   return (
     <div>
@@ -115,25 +106,15 @@ const Collection= function() {
       </section>
 
       <section className='container no-top'>
-        <div className='row'>
-          <div className='col-lg-12'>
-              <div className="items_filter">
-                <ul className="de_nav">
-                    <li id='Mainbtn' className="active"><span onClick={handleBtnClick}>On Sale</span></li>
-                    <li id='Mainbtn1' className=""><span onClick={handleBtnClick1}>Owned</span></li>
-                </ul>
-            </div>
-          </div>
-        </div>
           <InfiniteScroll
-            dataLength={activeList.length}
+            dataLength={nfts.length}
             next={fetchNFT}
-            hasMore={true}
+            hasMore={restList.length ? true : false}
             loader={<Loading/>}
             className="row"
           >
             {
-              activeList.map( (nft, index) => (
+              nfts.map( (nft, index) => (
                 <div key={index} className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12">
                     <div className="nft__item">
                         <div className="nft__item_wrap">
@@ -155,11 +136,6 @@ const Collection= function() {
               )
             }
           </InfiniteScroll>
-          {openMenu1 && ( 
-            <div id='zero2' className='onStep fadeIn'>
-            <ColumnZeroTwo/>
-            </div>
-          )}
       </section>
 
 
