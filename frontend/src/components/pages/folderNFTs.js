@@ -108,7 +108,7 @@ const folderNFTs = (props) => {
                 const data = {
                     tokenID: id,
                     type: 0,
-                    price: marketData.price,
+                    price: Number(marketData.price),
                     walletAddress: userData.walletAddress
                 }
 
@@ -129,7 +129,6 @@ const folderNFTs = (props) => {
         let lastPrice = web3.utils.fromWei(auctionData.currentBidPrice, "ether");
         if (!Number(lastPrice)) lastPrice = web3.utils.fromWei(auctionData.minPrice, "ether");
         if (auctionData.existance) {
-            dispatch(UPDATE_LOADING_PROCESS(false));
            try {
                 await Swal.fire({
                     title: '<span style="font-size: 22px">PLEASE ENTER PRICE</span>',
@@ -149,11 +148,12 @@ const folderNFTs = (props) => {
                 }).then(async(res) => {
                     if (res.isConfirmed) {
                         const price = web3.utils.toWei(res.value, "ether");
+                       dispatch(UPDATE_LOADING_PROCESS(true));
                         await Marketplace.methods.placeBid(id).send({ from: userData.walletAddress, value: price});
                         const data = {
                             tokenID: id,
                             type: 7,
-                            price: price,
+                            price: Number(price),
                             walletAddress: userData.walletAddress
                         }
         
