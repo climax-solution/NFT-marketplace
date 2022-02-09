@@ -11,6 +11,8 @@ import { createGlobalStyle } from 'styled-components';
 import getWeb3 from "../../utils/getWeb3";
 import PremiumNFTLoading from '../components/Loading/PremiumNFTLoading';
 import TopSellerLoading from '../components/Loading/TopSellerLoading';
+import { useSelector } from 'react-redux';
+
 const GlobalStyles = createGlobalStyle`
   header#myHeader .logo .d-block{
     display: none !important;
@@ -102,19 +104,26 @@ const GlobalStyles = createGlobalStyle`
       color: #fff !important;
     }
   }
+  .ratio-1-1 {
+    aspect-ratio: 1;
+  }
 `;
 
 
 const homeone= () => {
+
+  const initialUser = useSelector(({auth}) => auth.user);
   const [topPreimumNFTs, setTopPreimumNFTs] = useState([]);
   const [topSeller, setTopSeller] = useState([]);
   const [hotCollection, setHotCollection] = useState([]);
   const [carouselLoading, setCarouselLoading] = useState(true);
   const [sellerLoading, setSellerLoading] = useState(true);
+  const [carouselUpdated, setCarouselUpdated] = useState(false);
 
   useEffect(async() => {
+    if (initialUser.walletAddress == undefined) return;
     try {
-      const { _web3, instanceNFT, instanceMarketplace } = await getWeb3();
+      const { instanceMarketplace } = await getWeb3();
       let list = await instanceMarketplace.methods.getPremiumNFTList().call();
       list = list.filter(item => item.marketData.premiumStatus);
       list.sort((before, after) => before.marketData.price - after.marketData.price);
@@ -126,10 +135,29 @@ const homeone= () => {
           mainList.push({ ...item, ...data});
         })
       }
+      for await (let item of mainList) {
+        await axios.post(
+          'http://localhost:7060/activity/get-likes',
+          { tokenID: item.nftData.tokenID, walletAddress: initialUser?.walletAddress }
+        ).then(res => {
+          const { liked, lastAct } = res.data;
+          item["liked"] = liked; item["lastAct"] = lastAct;
+        })
+      }
+      
       setTopPreimumNFTs(mainList);
     } catch(err) { }
     setCarouselLoading(false);
-  },[])
+  },[carouselUpdated, initialUser ])
+
+  useEffect(async() => {
+    await axios.post('http://localhost:7060/activity/get-top-sellers').then(res => {
+      setTopSeller(res.data);
+      setSellerLoading(false);
+    }).catch(err => {
+      setSellerLoading(false);
+    })
+  },[]);
 
   return (
     <div>
@@ -138,53 +166,7 @@ const homeone= () => {
          <Particle/>
            <SliderMainParticle/>
         </section>
-  
-        <section className='container no-bottom'>
-          <div className="row">
-              <div className="col-lg-2 col-sm-4 col-6 mb30">
-                  <span className="box-url">
-                      <img src="./img/wallet/1.png" alt="" className="mb20"/>
-                      <h4>Metamask</h4>
-                  </span>
-              </div>
-  
-              <div className="col-lg-2 col-sm-4 col-6 mb30">
-                  <span className="box-url">
-                      <img src="./img/wallet/2.png" alt="" className="mb20"/>
-                      <h4>Bitski</h4>
-                  </span>
-              </div>       
-  
-              <div className="col-lg-2 col-sm-4 col-6 mb30">
-                  <span className="box-url">
-                      <img src="./img/wallet/3.png" alt="" className="mb20"/>
-                      <h4>Fortmatic</h4>
-                  </span>
-              </div>    
-  
-              <div className="col-lg-2 col-sm-4 col-6 mb30">
-                  <span className="box-url">
-                      <img src="./img/wallet/4.png" alt="" className="mb20"/>
-                      <h4>WalletConnect</h4>
-                  </span>
-              </div>
-  
-              <div className="col-lg-2 col-sm-4 col-6 mb30">
-                  <span className="box-url">
-                      <img src="./img/wallet/5.png" alt="" className="mb20"/>
-                      <h4>Coinbase Wallet</h4>
-                  </span>
-              </div>
-  
-              <div className="col-lg-2 col-sm-4 col-6 mb30">
-                  <span className="box-url">
-                      <img src="./img/wallet/6.png" alt="" className="mb20"/>
-                      <h4>Arkane</h4>
-                  </span>
-              </div>                                       
-          </div>
-        </section>
-  
+    
         <section className='container no-top no-bottom'>
           <div className='row'>
             <div className="spacer-double"></div>
@@ -192,7 +174,7 @@ const homeone= () => {
                 <h2>Premium NFTs</h2>
             </div>
           </div> 
-          { carouselLoading ? <PremiumNFTLoading/> :<CarouselNew data={topPreimumNFTs}/>}
+          { carouselLoading ? <PremiumNFTLoading/> : <CarouselNew data={topPreimumNFTs} update={setCarouselUpdated} status={carouselUpdated}/>}
         </section>
   
         <section className='container no-top no-bottom'>
@@ -206,19 +188,7 @@ const homeone= () => {
             </div>
           </div>
         </section>
-  
-        <section className='container no-top no-bottom'>
-          <div className='row'>
-            <div className="spacer-double"></div>
-            <div className='col-lg-12 mb-2'>
-                <h2>Hot Collections</h2>
-            </div>
-              <div className='col-lg-12'>
-                <CarouselCollection data={hotCollection}/>
-              </div>
-            </div>
-        </section>
-  
+    
         <section className='container no-top'>
           <div className='row'>
               <div className="spacer-double"></div>
