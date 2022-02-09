@@ -1,12 +1,17 @@
 import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import styled, { createGlobalStyle } from "styled-components";
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
-import Clock from "./Clock";
 import Empty from "./Empty";
 import getWeb3 from "../../utils/getWeb3";
 import PremiumNFTLoading from './Loading/PremiumNFTLoading';
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import axios from "axios";
+import { NotificationManager } from "react-notifications";
+
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import { UPDATE_LOADING_PROCESS } from "../../store/action/auth.action";
 
 const Outer = styled.div`
   display: flex;
@@ -23,9 +28,13 @@ const GlobalStyles = createGlobalStyle`
     max-width: 324px;
   }
 `;
-export default function ({ data }) {
+export default function ({ data, status, update }) {
+
+  const dispatch = useDispatch();
+  const initialUser = useSelector(({ auth }) => auth.user);
   const [list, setList] = useState([]);
   const [web3, setWEB3] = useState([]);
+  const [Marketplace, setMarketplace] = useState([]);
   const [carouselLoading, setCarouselLoading] = useState(true);
 
   const settings = {
@@ -78,13 +87,65 @@ export default function ({ data }) {
   };
 
   useEffect(async () => {
-    const { _web3 } = await getWeb3();
+    const { _web3, instanceMarketplace } = await getWeb3();
     setWEB3(_web3);
+    setMarketplace(instanceMarketplace);
     setCarouselLoading(false);
   },[])
+
   useEffect(() => {
     setList(data);
-  },[data])
+  }, [data])
+
+  const buyNow = async(id) => {
+    try {
+        dispatch(UPDATE_LOADING_PROCESS(true));
+        let { marketData, auctionData } = await Marketplace.methods.getItemNFT(id).call();
+        if (marketData.marketStatus && !auctionData.existance) {
+            await Marketplace.methods.buyNFT(id).send({ from: initialUser?.walletAddress, value: marketData.price });
+
+            const data = {
+                tokenID: id,
+                type: 0,
+                price: marketData.price,
+                walletAddress: initialUser?.walletAddress
+            }
+
+            await axios.post('http://localhost:7060/activity/create-log', data).then(res =>{
+
+            });
+
+            update(!status);
+            NotificationManager.success("Buy success");
+        }
+    } catch(err) {
+        console.log(err);
+        NotificationManager.error("Buy failed");
+    }
+    dispatch(UPDATE_LOADING_PROCESS(false));
+  }
+
+  const updateLike = async(idx, act) => {
+    if (!initialUser.walletAddress) return;
+    let _act = list[idx].liked > 0 && act == "9" ? "10" : "9";
+    const data = {
+      walletAddress: initialUser.walletAddress,
+      tokenID: list[idx].nftData.tokenID,
+      type: _act
+    };
+
+    await axios.post("http://localhost:7060/activity/create-log", data).then(res => {
+      let _list = [];
+      list.map((item,index) => {
+        const { liked } = item;
+        if (index == idx) {
+          _list.push({ ...item, liked: _act == "9" ? liked + 1 : liked - 1, lastAct: _act});
+        }
+        else _list.push(item);
+      })
+      setList(_list);
+    })
+  }
 
   return (
     <div className='nft'>
@@ -101,15 +162,6 @@ export default function ({ data }) {
                   <div className='itm' key={index}>
                     <div className="d-item">
                         <div className="nft__item">
-                            <div className="de_countdown">
-                              {/* <Clock deadline={this.state.deadline2} /> */}
-                            </div>
-                            <div className="author_list_pp">
-                                <span onClick={()=> window.open("/#", "_self")}>                                    
-                                    <img className="lazy" src="./img/author/author-2.jpg" alt=""/>
-                                    <i className="fa fa-check"></i>
-                                </span>
-                            </div>
                             <div className="nft__item_wrap">
                               <Outer>
                                 <span>
@@ -125,10 +177,13 @@ export default function ({ data }) {
                                     {web3.utils.fromWei(price)} BNB
                                 </div>    
                                 <div className="nft__item_action">
-                                    <span onClick={()=> window.open("/#", "_self")}>Place a bid</span>
+                                  { (item.nftData.owner).toLowerCase() != (initialUser.walletAddress).toLowerCase() && <span onClick={() => buyNow(item.nftData.tokenID)}>Buy now</span>}
                                 </div>
-                                <div className="nft__item_like">
-                                    <i className="fa fa-heart"></i><span>45</span>
+                                <div
+                                  className="nft__item_like"
+                                  onClick={() => updateLike(index, item.lastAct)}
+                                >
+                                    <i className={`fa fa-heart ${item.lastAct == "9" && item.liked > 0 && "text-danger"}`}></i><span>{item.liked}</span>
                                 </div>                                  
                             </div> 
                         </div>
