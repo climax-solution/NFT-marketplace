@@ -5,7 +5,7 @@ import { createGlobalStyle } from "styled-components";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { UPDATE_LOADING_PROCESS } from "../../store/action/auth.action";
 import Empty from "./Empty";
-import Loading from "./Loading";
+import Loading from "./Loading/Loading";
 import axios from "axios";
 
 const GlobalStyles = createGlobalStyle`

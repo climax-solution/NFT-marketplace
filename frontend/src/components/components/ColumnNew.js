@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Empty from "./Empty";
-import Loading from "./Loading";
+import Loading from "./Loading/Loading";
 
 export default function FolderList({data, _insNFT }) {
 

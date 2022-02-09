@@ -8,7 +8,7 @@ import Swal from 'sweetalert2'
 import { UPDATE_LOADING_PROCESS } from "../../store/action/auth.action";
 import Empty from "./Empty";
 import addresses from "../../config/address.json";
-import Loading from "./Loading";
+import Loading from "./Loading/Loading";
 const { marketplace_addr } = addresses;
 
 const Outer = styled.div`
