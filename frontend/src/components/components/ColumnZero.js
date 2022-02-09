@@ -63,13 +63,12 @@ export default function SellingNFT(props) {
                 tokenID: id,
                 type: 2,
                 price: buyAmount / 40,
-                walletAddress: initUserData.walletAddress
+                walletAddress: initialUser.walletAddress
             }
-
+            NotificationManager.success("Success");
             await axios.post('http://localhost:7060/activity/create-log', data).then(res =>{
 
             });
-            NotificationManager.success("Success");
         } catch(err) {
             console.log(id, "==>" ,err);
             NotificationManager.error("Failed");
@@ -82,29 +81,33 @@ export default function SellingNFT(props) {
         dispatch(UPDATE_LOADING_PROCESS(true));
         try {
             const nft = await Marketplace.methods.getItemNFT(id).call();
+            if (!web3.utils.toBN(nft.auctionData.currentBidOwner).isZero()) {
+                NotificationManager.warning("There is existing bid");
+                dispatch(UPDATE_LOADING_PROCESS(false));
+                return;
+            }
             const buyAmount = nft.marketData.price;
             await Marketplace.methods.closeTradeToAuction(id).send({ from: initialUser.walletAddress, value: buyAmount / 40 });
-
             const data = {
                 tokenID: id,
-                type: 2,
+                type: 6,
                 price: buyAmount / 40,
-                walletAddress: initUserData.walletAddress
+                walletAddress: initialUser.walletAddress
             }
-
+            await NotificationManager.success("Success");
             await axios.post('http://localhost:7060/activity/create-log', data).then(res =>{
 
             });
-            NotificationManager.success("Success");
         } catch(err) {
             console.log(id, "==>" ,err);
             NotificationManager.error("Failed");
         }
-        dispatch(UPDATE_LOADING_PROCESS(false));
-        props.updateStatus(!props.status);
+        await dispatch(UPDATE_LOADING_PROCESS(false));
+        await props.updateStatus(!props.status);
     }
   
     const updatePremiumNFT = async (id, status) => {
+        dispatch(UPDATE_LOADING_PROCESS(true));
         try {
             const owner = await NFT.methods.ownerOf(id).call();
             if (owner.toLowerCase() != (initialUser.walletAddress).toLowerCase() && initialUser.walletAddress) throw "Not owner";
@@ -116,20 +119,19 @@ export default function SellingNFT(props) {
                 tokenID: id,
                 type: status ? 3 : 4,
                 price: tax / 20,
-                walletAddress: initUserData.walletAddress
+                walletAddress: initialUser.walletAddress
             }
-
+            NotificationManager.success("Success");
             await axios.post('http://localhost:7060/activity/create-log', data).then(res =>{
 
             });
-            NotificationManager.success("Success");
             // await this.getAllPhotos();
         } catch(err) {
             console.log(err);
             if (typeof err == "string") NotificationManager.error(err);
             else NotificationManager.error("Failed");
         }
-
+        dispatch(UPDATE_LOADING_PROCESS(false));
         props.updateStatus(!props.status);
     }
 
@@ -179,11 +181,11 @@ export default function SellingNFT(props) {
                                 <div className="pb-4 trade-btn-group">
                                     { nft.marketData.marketStatus && (
                                         !nft.auctionData.existance ?
-                                            <span className="btn-main w-100" onClick={() => putDownSale(nft.nftData.tokenID)}>Put down sale</span>
-                                            :<span className="btn-main w-100">Put down auction</span>
+                                            <span className="btn-main w-100" onClick={async() => await putDownSale(nft.nftData.tokenID)}>Put down sale</span>
+                                            :<span className="btn-main w-100" onClick={() => putDownAuction(nft.nftData.tokenID)}>Put down auction</span>
                                         )
                                     }
-                                    { !nft.auctionData.existance && (!nft.marketData.premiumStatus ? <span className="btn-main mt-2 w-100" onClick={() => updatePremiumNFT(nft.nftData.tokenID, true)}>To Preimum</span> : <span className="btn-main mt-2 w-100"  onClick={() => updatePremiumNFT(nft.nftData.tokenID, false)}>To Normal</span>) }
+                                    { !nft.auctionData.existance && (!nft.marketData.premiumStatus ? <span className="btn-main mt-2 w-100" onClick={async() => await updatePremiumNFT(nft.nftData.tokenID, true)}>To Preimum</span> : <span className="btn-main mt-2 w-100"  onClick={() => updatePremiumNFT(nft.nftData.tokenID, false)}>To Normal</span>) }
                                 </div>
                             </div> 
                         </div>
