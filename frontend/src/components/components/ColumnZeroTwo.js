@@ -117,8 +117,8 @@ export default function SellingNFT(props) {
               autocapitalize: 'off',
             },
             html:
-                '<input type="number" id="auction-price" class="swal2-input" placeholder="Please input auction price.">' +
-                '<input type="number" id="auction-period" class="swal2-input" placeholder="Please input auction period.">',
+                '<input type="number" id="auction-price" class="swal2-input" placeholder="Please input price.">' +
+                '<input type="number" id="auction-period" class="swal2-input" placeholder="Please input period.">',
             focusConfirm: false,
             preConfirm: () => {
                 if (document.getElementById('auction-price').value < 0.1) {
@@ -151,11 +151,8 @@ export default function SellingNFT(props) {
                             price: nftPrice / 40,
                             walletAddress: initUserData.walletAddress
                         }
-        
-                        await axios.post('http://localhost:7060/activity/create-log', data).then(res =>{
-        
-                        });
                         NotificationManager.success("Success");
+                        await axios.post('http://localhost:7060/activity/create-log', data).catch(res => {});
                         dispatch(UPDATE_LOADING_PROCESS(false));
                     });
                   
