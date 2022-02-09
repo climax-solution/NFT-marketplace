@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { createGlobalStyle } from 'styled-components';
 import getWeb3 from "../../utils/getWeb3";
 import Empty from "../components/Empty";
-import Loading from "../components/Loading";
+import Loading from "../components/Loading/Loading";
 import NotificationManager from "react-notifications/lib/NotificationManager";
 import { useDispatch, useSelector } from "react-redux";
 import { UPDATE_LOADING_PROCESS } from "../../store/action/auth.action";

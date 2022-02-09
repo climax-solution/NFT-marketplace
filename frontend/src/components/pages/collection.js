@@ -7,7 +7,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import getWeb3 from "../../utils/getWeb3";
 import InfiniteScroll from "react-infinite-scroll-component";
-import Loading from "../components/Loading";
+import Loading from "../components/Loading/Loading";
 
 const GlobalStyles = createGlobalStyle`
   header#myHeader.navbar.white {

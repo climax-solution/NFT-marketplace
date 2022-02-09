@@ -9,6 +9,8 @@ import AuthorList from '../components/authorList';
 import Footer from '../components/footer';
 import { createGlobalStyle } from 'styled-components';
 import getWeb3 from "../../utils/getWeb3";
+import PremiumNFTLoading from '../components/Loading/PremiumNFTLoading';
+import TopSellerLoading from '../components/Loading/TopSellerLoading';
 const GlobalStyles = createGlobalStyle`
   header#myHeader .logo .d-block{
     display: none !important;
@@ -107,21 +109,26 @@ const homeone= () => {
   const [topPreimumNFTs, setTopPreimumNFTs] = useState([]);
   const [topSeller, setTopSeller] = useState([]);
   const [hotCollection, setHotCollection] = useState([]);
+  const [carouselLoading, setCarouselLoading] = useState(true);
+  const [sellerLoading, setSellerLoading] = useState(true);
 
   useEffect(async() => {
-    const { _web3, instanceNFT, instanceMarketplace } = await getWeb3();
-    let list = await instanceMarketplace.methods.getPremiumNFTList().call();
-    list = list.filter(item => item.marketData.premiumStatus);
-    list.sort((before, after) => before.marketData.price - after.marketData.price);
-    if (list.length > 10) list = list.slice(0, 10);
-    let mainList = [];
-    for await (let item of list) {
-      await axios.get(item.nftData.tokenURI).then(res => {
-        const { data } = res;
-        mainList.push({ ...item, ...data});
-      })
-    }
-    setTopPreimumNFTs(mainList);
+    try {
+      const { _web3, instanceNFT, instanceMarketplace } = await getWeb3();
+      let list = await instanceMarketplace.methods.getPremiumNFTList().call();
+      list = list.filter(item => item.marketData.premiumStatus);
+      list.sort((before, after) => before.marketData.price - after.marketData.price);
+      if (list.length > 10) list = list.slice(0, 10);
+      let mainList = [];
+      for await (let item of list) {
+        await axios.get(item.nftData.tokenURI).then(res => {
+          const { data } = res;
+          mainList.push({ ...item, ...data});
+        })
+      }
+      setTopPreimumNFTs(mainList);
+    } catch(err) { }
+    setCarouselLoading(false);
   },[])
 
   return (
@@ -185,7 +192,7 @@ const homeone= () => {
                 <h2>Premium NFTs</h2>
             </div>
           </div> 
-          <CarouselNew data={topPreimumNFTs}/>
+          { carouselLoading ? <PremiumNFTLoading/> :<CarouselNew data={topPreimumNFTs}/>}
         </section>
   
         <section className='container no-top no-bottom'>
@@ -195,7 +202,7 @@ const homeone= () => {
                 <h2>Top Sellers</h2>
             </div>
             <div className='col-lg-12'>
-              <AuthorList data={topSeller}/>
+              { sellerLoading ? <TopSellerLoading/> : <AuthorList data={topSeller}/>}
             </div>
           </div>
         </section>

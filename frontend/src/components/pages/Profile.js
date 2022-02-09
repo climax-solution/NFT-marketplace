@@ -8,7 +8,7 @@ import useOnclickOutside from "react-cool-onclickoutside";
 import ColumnZero from '../components/ColumnZero';
 import ColumnZeroTwo from '../components/ColumnZeroTwo';
 import ColumnZeroThree from '../components/ColumnZeroThree';
-import Loading from "../components/Loading";
+import Loading from "../components/Loading/Loading";
 import Footer from '../components/footer';
 import getWeb3 from "../../utils/getWeb3";
 import { UPDATE_AUTH } from "../../store/action/auth.action";
