@@ -1,12 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import { FixedSizeList as List } from "react-window";
-import InfiniteLoading from "react-simple-infinite-loading";
+import InfiniteScroll from "react-infinite-scroll-component";
 import Footer from '../components/footer';
 import { createGlobalStyle } from 'styled-components';
 import axios from 'axios';
 import ActivityItem from "../components/activity-row";
-
-
+import Loading from '../components/Loading/Loading';
+import Empty from '../components/Empty';
 
 const GlobalStyles = createGlobalStyle`
   header#myHeader.navbar.white {
@@ -80,11 +79,13 @@ const Activity= function() {
 
   const [activeTab, setActiveTab] = useState('');
   const [items, setLogs] = useState([]);
+  const [moreItems, setMoreItems] = useState(true);
 
   const _loadNextPage = async() => {
     await axios.get(`http://localhost:7060/activity/get-logs?b=${items.length}&type=${activeTab}`).then(res => {
       const { data } = res;
       if (data.length) setLogs([...items, ...data]);
+      else setMoreItems(false);
     })
   };
 
@@ -92,6 +93,7 @@ const Activity= function() {
     setLogs([]);
     await _loadNextPage();
   },[activeTab])
+
   return (
     <div>
       <GlobalStyles/>
@@ -125,17 +127,20 @@ const Activity= function() {
           </div>
 
           <div className="col-md-8">
-            <ul className='activity-list' style={{ height: 600 }}>
-              <InfiniteLoading
-                hasMoreItems
-                itemHeight={130}
-                loadMoreItems={_loadNextPage}
+              <InfiniteScroll
+                dataLength={items.length}
+                next={_loadNextPage}
+                hasMore={moreItems}
+                loader="..."
+                className='activity-list'
               >
                 {
                   items.map((item, idx) => <ActivityItem key={idx} data={item}/>)
                 }
-              </InfiniteLoading>
-            </ul>
+              </InfiniteScroll>
+              {
+                !items.length && <Empty/>
+              }
           </div>
         </div>
       </section>
