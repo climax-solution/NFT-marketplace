@@ -47,7 +47,7 @@ router.post('/get-likes', async(req,res) => {
 
     } catch(err) {
         res.status(200).json({
-            count: 0,
+            liked: 0,
             lastAct: "10"
         })
     }
@@ -68,7 +68,7 @@ router.post('/get-top-sellers', async(req, res) => {
                     price: { $sum: "$price" }
                 }
             }
-        ]).sort({ price: 'desc', _id: 'desc'});
+        ]).sort({ price: 'desc', _id: 'desc'}).limit(12);
         
         let list = [];
         for await (let item of seller) {
