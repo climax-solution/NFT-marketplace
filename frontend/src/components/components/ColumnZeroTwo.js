@@ -171,6 +171,7 @@ export default function SellingNFT(props) {
           tmpList = tmpList.slice(0, 8);
           setRestList(restList.slice(8, restList.length));
         }
+        
         else setRestList([]);
         let mainList = [];
         for await (let item of tmpList) {

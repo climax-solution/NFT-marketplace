@@ -26,8 +26,8 @@ router.get('/get-logs', async(req, res) => {
     let list = await ActivitySchema.find(query);
     list = list.slice(Number(b), Number(b) + 5);
     for await (let item of list) {
-        let { avatar } = await UserSchema.findOne({ walletAddress: item.walletAddress });
-        if (!avatar) avatar = "empty-avatar.png";
+        let user = await UserSchema.findOne({ walletAddress: item.walletAddress });
+        let avatar = user ? user.avatar : "empty-avatar.png";
         item._doc = { ...item._doc, avatar: avatar};
     }
 
