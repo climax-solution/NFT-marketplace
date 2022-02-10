@@ -13,6 +13,9 @@ const GlobalStyles = createGlobalStyle`
   header#myHeader.navbar.white {
     background: #212428;
   }
+  .ratio-1-1 {
+    aspect-ratio: 1;
+  }
 `;
 
 const Collection= function() {
@@ -49,8 +52,9 @@ const Collection= function() {
 
   useEffect(async() => {
     if (loaded) {
-      await fetchNFT();
       setLoaded(false);
+      await fetchNFT();
+      setLoaded(true);
     }
   },[loaded])
 
@@ -72,6 +76,10 @@ const Collection= function() {
     setNFTs([...nfts, ...mainList]);
   }
 
+  const errorImage = (e) => {
+    e.target.src="/img/empty.jfif";
+  }
+
   return (
     <div>
       <GlobalStyles/>
@@ -87,7 +95,7 @@ const Collection= function() {
             <div className="d_profile">
               <div className="profile_avatar">
                   <div className="d_profile_img">
-                    <img src={`http://localhost:7060/avatar/${userData.avatar}`} alt="" crossOrigin="true"/>
+                    <img src={`http://localhost:7060/avatar/${userData.avatar}`} className="ratio-1-1" alt="" crossOrigin="true"/>
                     <i className="fa fa-check"></i>
                   </div>
                   
@@ -115,11 +123,11 @@ const Collection= function() {
           >
             {
               nfts.map( (nft, index) => (
-                <div key={index} className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                    <div className="nft__item">
+                <div key={index} className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-3">
+                    <div className="nft__item h-100">
                         <div className="nft__item_wrap">
                             <a>
-                                <img src={nft.image} className="lazy nft__item_preview" alt=""/>
+                                <img src={nft.image} onError={errorImage} className="lazy nft__item_preview" alt=""/>
                             </a>
                         </div>
                         <div className="nft__item_info">
@@ -136,6 +144,9 @@ const Collection= function() {
               )
             }
           </InfiniteScroll>
+          {
+            !loaded && <Loading/>
+          }
       </section>
 
 
