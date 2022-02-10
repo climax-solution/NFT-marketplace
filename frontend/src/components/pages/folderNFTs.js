@@ -27,11 +27,15 @@ const GlobalStyles  = createGlobalStyle`
         font-size: 25px !important;
         color: turquoise;
     }
+
+    .wap-height {
+        height: calc(100% - 120px);
+    }
 `;
 
 const folderNFTs = (props) => {
     const dispatch = useDispatch();
-    const initUserData = useSelector((state) => state.auth.user);
+    const initialUser = useSelector((state) => state.auth.user);
     const params = useParams();
     const [web3, setWeb3] = useState(null);
     const [NFT, setNFT] = useState(null);
@@ -57,8 +61,8 @@ const folderNFTs = (props) => {
     },[Marketplace])
 
     useEffect(() => {
-        setUserData(initUserData);
-    },[initUserData])
+        setUserData(initialUser);
+    },[initialUser])
     const getInitNFTs = async() => {
         const { id } = params;
         let gradList = await Marketplace.methods.getSubFolderItem(id).call();
@@ -79,9 +83,12 @@ const folderNFTs = (props) => {
         let mainList = [];
         for await (let item of list) {
             try {
-                const { data } = await axios.get(`${item.nftData.tokenURI}`);
-                mainList.push({ ...item, ...data });
-            } catch (err) { }
+                const { data: nft } = await axios.get(`${item.nftData.tokenURI}`);
+                const { data: likes } = await axios.post(`http://localhost:7060/activity/get-likes`, {tokenID: item.nftData.tokenID, walletAddress: userData.walletAddress });
+                mainList.push({ ...item, ...nft, ...likes });
+            } catch (err) {
+                console.log(err);
+            }
         }
         
         setNFTLists(mainList);
@@ -171,6 +178,29 @@ const folderNFTs = (props) => {
         }
     }
 
+    const updateLike = async(idx, act) => {
+        if (!initialUser.walletAddress) return;
+        let _act = nfts[idx].liked > 0 && act == "9" ? "10" : "9";
+        const data = {
+          walletAddress: initialUser.walletAddress,
+          tokenID: nfts[idx].nftData.tokenID,
+          type: _act
+        };
+    
+        await axios.post("http://localhost:7060/activity/create-log", data).then(res => {
+          let _nfts = [];
+          nfts.map((item,index) => {
+            let { liked } = item;
+            if (index == idx) {
+              _nfts.push({ ...item, liked: _act == "9" ? liked + 1 : liked - 1, lastAct: _act});
+            }
+            else _nfts.push(item);
+          })
+
+          setNFTLists(_nfts);
+        })
+    }
+
     return (
         <div>
             <GlobalStyles/>
@@ -196,32 +226,32 @@ const folderNFTs = (props) => {
                             {
                                 nfts.map( (nft, index) => {
                                     const price = !nft.auctionData.existance ? nft.marketData.price : (Number(nft.auctionData.currentBidPrice) ? nft.auctionData.currentBidPrice : nft.auctionData.minPrice);
-                                    const nftOwner =( (nft.nftData.owner).toLowerCase() == (initUserData.walletAddress).toLowerCase());
+                                    const nftOwner =( (nft.nftData.owner).toLowerCase() == (initialUser.walletAddress).toLowerCase());
                                     const bidOwner = (nft.auctionData.currentBidOwner).toLowerCase() == (userData.walletAddress).toLowerCase();
                                     return (<div key={index} className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4">
-                                        <div className="nft__item m-0 pb-4">
-                                            <div className="nft__item_wrap" style={{ height: height+'px'}}>
+                                        <div className="nft__item m-0 pb-4 justify-content-between h-100">
+                                            <div className="nft__item_wrap wap-height">
                                                 <a href={`/item-detail/${nft.nftData.tokenID}`} className="position-relative">
                                                     <img onLoad={onImgLoad} src={nft.image} onError={faliedLoadImage} className="lazy nft__item_preview" alt=""/>
                                                     {
                                                         nftOwner && 
-                                                        <>
+                                                        <span>
                                                             
                                                             <a data-tip data-for={`owner-${index}`} className="owner-check"><i className="fal fa-badge-check"/></a>
                                                             <ReactTooltip id={`owner-${index}`} type='info' effect="solid">
                                                                 <span>Your NFT</span>
                                                             </ReactTooltip>
-                                                        </>
+                                                        </span>
                                                     }
                                                     {
                                                         bidOwner && 
-                                                        <>
+                                                        <span>
                                                             
                                                             <a data-tip data-for={`bid-${index}`} className="bid-check"><i className="fal fa-clock"/></a>
                                                             <ReactTooltip id={`bid-${index}`} type='info' effect="solid">
                                                                 <span>Pending Bid</span>
                                                             </ReactTooltip>
-                                                        </>
+                                                        </span>
                                                     }
                                                 </a>
                                             </div>
@@ -232,7 +262,13 @@ const folderNFTs = (props) => {
                                                 <div className="nft__item_price">
                                                     {web3.utils.fromWei(price, 'ether')}<span>BNB</span>
                                                 </div>
-                                                <div className="pb-4 trade-btn-group">
+                                                <div
+                                                    className="nft__item_like"
+                                                    onClick={() => updateLike(index, nft.lastAct)}
+                                                >
+                                                        <i className={`fa fa-heart ${nft.lastAct == "9" && nft.liked > 0 && "text-danger"}`}></i><span>{nft.liked}</span>
+                                                </div>
+                                                <div className="trade-btn-group">
                                                     { !nftOwner && nft.marketData.marketStatus && (
                                                         !nft.auctionData.existance
                                                             ? <span className="btn-main w-100" onClick={() => buyNow(nft.nftData.tokenID)} >Buy Now</span>
