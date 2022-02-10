@@ -83,9 +83,9 @@ const footer= () => (
                                 <div className="de-flex-col">
                                     <div className="social-icons">
                                         {
-                                            socials.map(item => {
+                                            socials.map((item, index) => {
                                                 return (
-                                                    <span onClick={()=> window.open(`${item.link}`, "_blank")}><i className={item.icon}></i></span>
+                                                    <span onClick={()=> window.open(`${item.link}`, "_blank")} key={index}><i className={item.icon}></i></span>
                                                 )
                                             })
                                         }
