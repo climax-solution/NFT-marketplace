@@ -290,6 +290,12 @@ const Header= function() {
                           </Link>
                         </div>
                         <div className='navbar-item'>
+                          <Link to="/activity" onClick={() => btn_icon(!showmenu)}>
+                          Activity
+                            <span className='lines'></span>
+                          </Link>
+                        </div>
+                        <div className='navbar-item'>
                           <div ref={ref2}>
                               <div className="dropdown-custom dropdown-toggle btn" 
                                 onMouseEnter={handleBtnClick2} onMouseLeave={closeMenu2}>
