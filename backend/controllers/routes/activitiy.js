@@ -28,7 +28,7 @@ router.get('/get-logs', async(req, res) => {
     for await (let item of list) {
         let user = await UserSchema.findOne({ walletAddress: item.walletAddress });
         let avatar = user ? user.avatar : "empty-avatar.png";
-        item._doc = { ...item._doc, avatar: avatar};
+        item._doc = { ...item._doc, avatar: avatar, firstName: user ? user.firstName : '???', lastName: user ? user.lastName : "???"};
     }
 
     res.status(200).json(list);
