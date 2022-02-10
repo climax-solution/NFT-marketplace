@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import EmailValidator from 'email-validator';
 import { NotificationManager } from "react-notifications";
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import useOnclickOutside from "react-cool-onclickoutside";
 import SellingNFT from '../components/SellingNFT';
 import NotSellingNFT from '../components/NotSellingNFT';
@@ -196,6 +197,10 @@ const Profile = function() {
     })
   }
 
+  const copyAlert = () => {
+    NotificationManager.info("Copied");
+  }
+
   return (
     <div>
     <GlobalStyles/>
@@ -236,8 +241,13 @@ const Profile = function() {
                                 <h4>
                                     {`${userData.firstName}  ${userData.lastName}`}
                                     <span className="profile_username">@{userData.username}</span>
-                                    <span id="wallet" className="profile_wallet">{userData.walletAddress && ((userData.walletAddress).substr(0, 4) + '...' + (userData.walletAddress).substr(-4))}</span>
-                                    <button id="btn_copy" className="ml-12" title="Copy Text">Copy</button>
+                                    <span id="wallet" className="profile_wallet mt-1">{userData.walletAddress && ((userData.walletAddress).substr(0, 4) + '...' + (userData.walletAddress).substr(-4))}</span>
+                                    <CopyToClipboard
+                                      text={userData.walletAddress}
+                                      onCopy={copyAlert}
+                                    >
+                                      <button id="btn_copy" className="position-relative ms-2">Copy</button>
+                                    </CopyToClipboard>
                                 </h4>
                               }
                           </div>

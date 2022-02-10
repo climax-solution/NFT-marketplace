@@ -1,9 +1,11 @@
 import React, { useEffect, useState, Fragment } from "react";
 import Breakpoint, { BreakpointProvider, setDefaultBreakpoints } from "react-socks";
 import { createGlobalStyle } from 'styled-components';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { header } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import useOnclickOutside from "react-cool-onclickoutside";
+import { NotificationManager } from "react-notifications";
 import { useSelector, useDispatch } from "react-redux";
 import StyledHeader from "../Styles";
 import { UPDATE_AUTH } from "../../store/action/auth.action";
@@ -187,6 +189,10 @@ const Header= function() {
       navigate('/');
     }
     
+    const copyAlert = () => {
+      NotificationManager.info("Copied");
+    }
+
     return (
       <Fragment>
         <GlobalStyles/>
@@ -218,60 +224,44 @@ const Header= function() {
                   <BreakpointProvider>
                     <Breakpoint l down>
                       {showmenu && 
-                      <div className='menu'>
-                        <div className='navbar-item'>
-                          <Link to="/">
-                            Home
-                            <span className='lines'></span>
-                          </Link>
-                        </div>
-                        <div className='navbar-item'>
-                          <div ref={ref1}>
-                            <div className="dropdown-custom dropdown-toggle btn" 
-                              onClick={handleBtnClick1}
-                              >
-                              Explore
-                            </div>
-                            {openMenu1 && (
-                              <div className='item-dropdown'>
-                                <div className="dropdown" onClick={closeMenu1}>
-                                  <Link to="/explore" onClick={() => btn_icon(!showmenu)}>Explore</Link>
-                                  <Link to="/explore2" onClick={() => btn_icon(!showmenu)}>Explore 2</Link>
-                                  <Link to="/rangking" onClick={() => btn_icon(!showmenu)}>Rangking</Link>
-                                  <Link to="/colection" onClick={() => btn_icon(!showmenu)}>Collection</Link>
-                                  <Link to="/ItemDetail" onClick={() => btn_icon(!showmenu)}>Items Details</Link>
-                                  <Link to="/Auction" onClick={() => btn_icon(!showmenu)}>Live Auction</Link>
-                                  <Link to="/helpcenter" onClick={() => btn_icon(!showmenu)}>Help Center</Link>
-                                </div>
-                              </div>
-                            )}
+                        <div className='menu'>
+                          <div className='navbar-item'>
+                            <Link to="/" onClick={() => btn_icon(!showmenu)}>
+                              Home
+                              <span className='lines'></span>
+                            </Link>
                           </div>
-                        </div>
-                        <div className='navbar-item'>
-                          <div ref={ref2}>
-                            <div className="dropdown-custom dropdown-toggle btn" 
-                              onClick={handleBtnClick2}
-                              >
-                              Pages
-                            </div>
-                            {openMenu2 && (
-                              <div className='item-dropdown'>
-                                <div className="dropdown" onClick={closeMenu2}>
-                                  <Link to="/Author" onClick={() => btn_icon(!showmenu)}>Author</Link>
-                                  <Link to="/wallet" onClick={() => btn_icon(!showmenu)}>Wallet</Link>
-                                  <Link to="/create" onClick={() => btn_icon(!showmenu)}>Create</Link>
-                                  <Link to="/news" onClick={() => btn_icon(!showmenu)}>News</Link>
-                                  <Link to="/works" onClick={() => btn_icon(!showmenu)}>Gallery</Link>
-                                  <Link to="/login" onClick={() => btn_icon(!showmenu)}>login</Link>
-                                  <Link to="/loginTwo" onClick={() => btn_icon(!showmenu)}>login 2</Link>
-                                  <Link to="/register" onClick={() => btn_icon(!showmenu)}>Register</Link>
-                                  <Link to="/contact" onClick={() => btn_icon(!showmenu)}>Contact Us</Link>
-                                </div>
-                              </div>
-                            )}
+                          <div className='navbar-item'>
+                            <Link to="/explore" onClick={() => btn_icon(!showmenu)}>
+                            Explore
+                              <span className='lines'></span>
+                            </Link>
                           </div>
+                          <div className='navbar-item'>
+                            <Link to="/activity" onClick={() => btn_icon(!showmenu)}>
+                            Activity
+                              <span className='lines'></span>
+                            </Link>
+                          </div>
+                          {
+                            !user_data?.walletAddress && (
+                              <>
+                              <div className='navbar-item'>
+                                <Link to="/login" onClick={() => btn_icon(!showmenu)}>
+                                Login
+                                  <span className='lines'></span>
+                                </Link>
+                              </div>
+                              <div className='navbar-item'>
+                                <Link to="/register" onClick={() => btn_icon(!showmenu)}>
+                                Register
+                                  <span className='lines'></span>
+                                </Link>
+                              </div>
+                              </>
+                            )
+                          }
                         </div>
-                      </div>
                       }
                     </Breakpoint>
 
@@ -294,30 +284,6 @@ const Header= function() {
                           Activity
                             <span className='lines'></span>
                           </Link>
-                        </div>
-                        <div className='navbar-item'>
-                          <div ref={ref2}>
-                              <div className="dropdown-custom dropdown-toggle btn" 
-                                onMouseEnter={handleBtnClick2} onMouseLeave={closeMenu2}>
-                                Pages
-                                <span className='lines'></span>
-                                {openMenu2 && (
-                                <div className='item-dropdown'>
-                                  <div className="dropdown" onClick={closeMenu2}>
-                                  <Link to="/Author">Author</Link>
-                                  <Link to="/wallet">Wallet</Link>
-                                  <Link to="/create">Create</Link>
-                                  <Link to="/news">News</Link>
-                                  <Link to="/works">Gallery</Link>
-                                  <Link to="/login">login</Link>
-                                  <Link to="/loginTwo">login 2</Link>
-                                  <Link to="/register">Register</Link>
-                                  <Link to="/contact">Contact Us</Link>
-                                  </div>
-                                </div>
-                              )}
-                              </div>
-                            </div>
                         </div>
                         {
                           !user_data?.walletAddress && (
@@ -349,17 +315,19 @@ const Header= function() {
                             {showpop && 
                               <div className="popshow">
                                 <div className="d-name">
-                                    <h4>Monica Lucas</h4>
-                                    <span className="name" onClick={()=> window.open("", "_self")}>Set display name</span>
+                                    <h3 className="text-black">{userData.firstName + " " + userData.lastName }</h3>
                                 </div>
                                 <div className="d-balance">
-                                    <h4>Balance</h4>
+                                    <h4 className="text-black">Balance</h4>
                                     <span className="font-bold">{ethBalance}</span> ETH
                                 </div>
                                 <div className="d-wallet">
-                                    <h4>My Wallet</h4>
+                                    <h4 className="text-black">My Wallet</h4>
                                     <span id="wallet" className="d-wallet-address font-bold">{ userData.walletAddress && ((userData.walletAddress).substr(0, 4) + '...' + (userData.walletAddress).substr(-4))}</span>
-                                    <button id="btn_copy" title="Copy Text">Copy</button>
+                                    <CopyToClipboard text={userData.walletAddress}
+                                      onCopy={copyAlert}>
+                                      <button id="btn_copy">Copy</button>
+                                    </CopyToClipboard>
                                 </div>
                                 <div className="d-line"></div>
                                 <ul className="de-submenu-profile">

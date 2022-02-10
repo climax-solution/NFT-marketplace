@@ -8,6 +8,8 @@ import axios from "axios";
 import getWeb3 from "../../utils/getWeb3";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Loading from "../components/Loading/Loading";
+import { NotificationManager } from "react-notifications";
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 const GlobalStyles = createGlobalStyle`
   header#myHeader.navbar.white {
@@ -80,6 +82,10 @@ const Collection= function() {
     e.target.src="/img/empty.jfif";
   }
 
+  const copyAlert = () => {
+    NotificationManager.info("Copied");
+  }
+
   return (
     <div>
       <GlobalStyles/>
@@ -101,11 +107,17 @@ const Collection= function() {
                   
                   <div className="profile_name">
                     <h4>
-                      {userData.firstName + " " + userData.lastName}                                                
-                      <div className="clearfix mt-2"></div>
-                      <span id="wallet" className="profile_wallet">{ userData.walletAddress && ((userData.walletAddress).substr(0, 4) + '...' + (userData.walletAddress).substr(-4))}</span>
-                      <button id="btn_copy" title="Copy Text">Copy</button>
+                      {userData.firstName + " " + userData.lastName}
                     </h4>
+                    <div className="d-flex justify-content-center">
+                      <span id="wallet" className="profile_wallet mx-2">{ userData.walletAddress && ((userData.walletAddress).substr(0, 4) + '...' + (userData.walletAddress).substr(-4))}</span>
+                      <CopyToClipboard
+                        text={userData.walletAddress}
+                        onCopy={copyAlert}
+                      >
+                        <button id="btn_copy" className="position-relative">Copy</button>
+                      </CopyToClipboard>
+                    </div>
                   </div>
               </div>
             </div>
