@@ -130,9 +130,9 @@ router.post('/register', async(req, res) => {
 
 router.post('/check-authentication', async(req, res) => {
     const result = await checkAuth(req);
-    console.log(result);
     if (!result) return res.status(400).json({ error: "No validation"});
-    res.status(200).json({ token: result});
+    const user = await UserSchema.findOne({ _id: { $in: [result.id]}})
+    res.status(200).json(user);
 });
 
 router.post('/logout', async(req, res) => {
