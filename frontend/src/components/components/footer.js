@@ -1,5 +1,15 @@
 import React from 'react';
-import { Link } from '@reach/router';
+import { Link } from 'react-router-dom';
+
+const socials =  [
+    {id: 1, link: 'https://twitter.com/NFTDevelopments', icon: 'fab fa-twitter'},
+    {id: 2, link: 'https://instagram.com/NFTDevelopments', icon: 'fab fa-instagram'},
+    {id: 3, link: 'https://tiktok.com/@NFTDevelopments', icon: 'fab fa-tiktok'},
+    {id: 4, link: 'https://www.youtube.com/channel/UCbPW7kuPqflfqplBZy8knsg', icon: 'fab fa-youtube'},
+    {id: 5, link: 'https://www.linkedin.com/in/nft-developments-372a08222/', icon: 'fab fa-linkedin'},
+    {id: 6, link: 'mailto:Enquire@NFTDevelopments.com', icon: 'fa fa-envelope'},
+    {id: 7, link: 'https://t.me/NFTdevelopments', icon: 'fab fa-telegram'},
+];
 
 const footer= () => (
   <footer className="footer-light">
@@ -9,12 +19,9 @@ const footer= () => (
                         <div className="widget">
                             <h5>Marketplace</h5>
                             <ul>
-                                <li><Link to="">All NFTs</Link></li>
-                                <li><Link to="">Art</Link></li>
-                                <li><Link to="">Music</Link></li>
-                                <li><Link to="">Domain Names</Link></li>
-                                <li><Link to="">Virtual World</Link></li>
-                                <li><Link to="">Collectibles</Link></li>
+                                <li><Link to="/">Home</Link></li>
+                                <li><Link to="/explore">Explorer</Link></li>
+                                <li><Link to="/activity">Activity</Link></li>
                             </ul>
                         </div>
                     </div>
@@ -70,16 +77,18 @@ const footer= () => (
                             <div className="de-flex">
                                 <div className="de-flex-col">
                                     <span onClick={()=> window.open("", "_self")}>
-                                        <span className="copy">&copy; Copyright 2021 - Gigaland by Designesia</span>
+                                        <span className="copy">&copy; Copyright 2022 - NFT Developments Marketplace </span>
                                     </span>
                                 </div>
                                 <div className="de-flex-col">
                                     <div className="social-icons">
-                                        <span onClick={()=> window.open("", "_self")}><i className="fa fa-facebook fa-lg"></i></span>
-                                        <span onClick={()=> window.open("", "_self")}><i className="fa fa-twitter fa-lg"></i></span>
-                                        <span onClick={()=> window.open("", "_self")}><i className="fa fa-linkedin fa-lg"></i></span>
-                                        <span onClick={()=> window.open("", "_self")}><i className="fa fa-pinterest fa-lg"></i></span>
-                                        <span onClick={()=> window.open("", "_self")}><i className="fa fa-rss fa-lg"></i></span>
+                                        {
+                                            socials.map(item => {
+                                                return (
+                                                    <span onClick={()=> window.open(`${item.link}`, "_blank")}><i className={item.icon}></i></span>
+                                                )
+                                            })
+                                        }
                                     </div>
                                 </div>
                             </div>
