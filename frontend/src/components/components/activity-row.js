@@ -35,7 +35,7 @@ const ActivityItem = ({ data }) => {
                     <img className="lazy ratio-1-1 position-relative" src={`http://localhost:7060/avatar/${data.avatar}`} alt="" crossOrigin="true"/>
                     <h4 className="ms-2">{data.firstName + " " + data.lastName }</h4>
                 </div>
-                <div className="act_list_text ps-0 mt-2">
+                <div className="act_list_text ps-0 mt-2 text-break">
                     <h4>{action[data["type"]][1]}</h4>
                     1 edition purchased by <span className='color'>{data.walletAddress}</span>
                     <span className="act_list_date">

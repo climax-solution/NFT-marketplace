@@ -183,7 +183,7 @@ const homeone= () => {
             <div className='col-lg-12'>
                 <h2>Top Sellers</h2>
             </div>
-            <div className='col-lg-12'>
+            <div className='col-lg-12 mt-5'>
               { sellerLoading ? <TopSellerLoading/> : <AuthorList data={topSeller}/>}
             </div>
           </div>
