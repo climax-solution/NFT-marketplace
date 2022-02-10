@@ -11,6 +11,7 @@ import StyledHeader from "../Styles";
 import { UPDATE_AUTH } from "../../store/action/auth.action";
 import axios from "axios";
 import getWeb3 from "../../utils/getWeb3";
+import { WalletConnect } from "../../store/action/wallet.action";
 
 const GlobalStyles = createGlobalStyle`
   .navbar {
@@ -60,6 +61,9 @@ const GlobalStyles = createGlobalStyle`
       }
     }
   }
+  .btn-main {
+    padding: 6px 20px;
+  }
 `;
 
 setDefaultBreakpoints([
@@ -70,68 +74,27 @@ setDefaultBreakpoints([
 
 const Header= function() {
 
-    const user_data = useSelector(({auth}) => auth.user)
+    const user_data = useSelector(({auth}) => auth.user);
+    const wallet_info = useSelector(({ wallet }) => wallet.wallet_connected);
     const dispatch = useDispatch();
 
     const [ethBalance, setETHBalance] = useState(0);
-    const [openMenu, setOpenMenu] = React.useState(false);
-    const [openMenu1, setOpenMenu1] = React.useState(false);
-    const [openMenu2, setOpenMenu2] = React.useState(false);
-    const [openMenu3, setOpenMenu3] = React.useState(false);
     const [userData, setUserData] = useState({});
+    const [openMenu, setOpenMenu] = React.useState(false);
     const navigate = useNavigate();
 
-    const handleBtnClick = () => {
-      setOpenMenu(!openMenu);
-    };
-    const handleBtnClick1 = () => {
-      setOpenMenu1(!openMenu1);
-    };
-    const handleBtnClick2 = () => {
-      setOpenMenu2(!openMenu2);
-    };
-    const handleBtnClick3 = () => {
-      setOpenMenu3(!openMenu3);
-    };
     const closeMenu = () => {
       setOpenMenu(false);
     };
-    const closeMenu1 = () => {
-      setOpenMenu1(false);
-    };
-    const closeMenu2 = () => {
-      setOpenMenu2(false);
-    };
-    const closeMenu3 = () => {
-      setOpenMenu3(false);
-    };
-    const ref = useOnclickOutside(() => {
-      closeMenu();
-    });
-    const ref1 = useOnclickOutside(() => {
-      closeMenu1();
-    });
-    const ref2 = useOnclickOutside(() => {
-      closeMenu2();
-    });
-    const ref3 = useOnclickOutside(() => {
-      closeMenu3();
-    });
 
     const [showmenu, btn_icon] = useState(false);
     const [showpop, btn_icon_pop] = useState(false);
-    const [shownot, btn_icon_not] = useState(false);
+
     const closePop = () => {
       btn_icon_pop(false);
     };
-    const closeNot = () => {
-      btn_icon_not(false);
-    };
     const refpop = useOnclickOutside(() => {
       closePop();
-    });
-    const refpopnot = useOnclickOutside(() => {
-      closeNot();
     });
 
     useEffect(async() => {
@@ -156,24 +119,21 @@ const Header= function() {
         };
     }, []);
     
-    useEffect(async() => {
-      const token = localStorage.getItem("nftdevelopments-token");
-      if (token) {
-        await axios.post('http://localhost:7060/user/get-user', {}, {headers: {Authorization: JSON.parse(token)}}).then((res) => {
-          dispatch(UPDATE_AUTH(res.data));
-        })
-      } else {
-        dispatch(UPDATE_AUTH({
-          walletAddress: ''
-        }))
-      }
-    },[])
 
     useEffect(async() => {
       setUserData(user_data);
       if (user_data?.walletAddress) {
         const { _web3 } = await getWeb3();
-        let balance = await _web3.eth.getBalance(user_data.walletAddress); //Will give value in.
+        let balance = await _web3.eth.getBalance(user_data.walletAddress);
+        const accounts = await _web3.eth.getAccounts();
+        if ((accounts[0]).toLowerCase() != (user_data.walletAddress).toLowerCase()) {
+          localStorage.setItem("nftdevelopments-connected", JSON.stringify({ connected: false }));
+          dispatch(WalletConnect());
+        }
+        else {
+          const { connected } = JSON.parse(localStorage.getItem("nftdevelopments-connected"));
+          if (connected) dispatch(WalletConnect());
+        }
         balance = _web3.utils.fromWei(balance, "ether");
         let diver = balance.indexOf('.') + 5;
         balance = balance.slice(0, diver);
@@ -181,16 +141,60 @@ const Header= function() {
       }
     },[user_data])
 
+    useEffect(() => {
+      if (window.ethereum) {
+        const provider = window.ethereum;
+        provider.on("accountsChanged", (accounts) => {
+
+          if ((accounts[0]).toLowerCase() != (user_data.walletAddress).toLowerCase()) {
+            localStorage.setItem("nftdevelopments-connected", JSON.stringify({ connected: false }));
+          }
+          else {
+            localStorage.setItem("nftdevelopments-connected", JSON.stringify({ connected: true }));
+          }
+          dispatch(WalletConnect());
+        })
+
+        provider.on("chainChanged", (chainID) => {
+          if (chainID != '0x3') {
+            localStorage.setItem("nftdevelopments-connected", JSON.stringify({ connected: false }));
+          }
+          else {
+            localStorage.setItem("nftdevelopments-connected", JSON.stringify({ connected: true }));
+          }
+          dispatch(WalletConnect());
+        })
+      }
+    },[user_data, ])
+
     const logout = () => {
       localStorage.removeItem("nftdevelopments-token");
-      dispatch(UPDATE_AUTH({
-        walletAddress: ''
-      }));
+      localStorage.removeItem("nftdevelopments-connected", JSON.stringify({ connected: true }));
+      dispatch(UPDATE_AUTH({ walletAddress: '' }));
+      dispatch(WalletConnect());
       navigate('/');
     }
     
-    const copyAlert = () => {
-      NotificationManager.info("Copied");
+    const copyAlert = () => NotificationManager.info("Copied");
+
+    const connectWallet = async() => {
+      try {
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        if ((accounts[0]).toLowerCase() != (user_data.walletAddress).toLowerCase()) throw new Error("Please connect correct account");
+        else {
+          localStorage.setItem("nftdevelopments-connected", JSON.stringify({ connected: true }));
+          dispatch(WalletConnect());
+          NotificationManager.success("Connected");
+        }
+      } catch(err) {
+        NotificationManager.error(err.message);
+      }
+    }
+
+    const disConnectWallet = () => {
+      localStorage.setItem("nftdevelopments-connected", JSON.stringify({ connected: false }));
+      dispatch(WalletConnect());
+      NotificationManager.info("Disconnected");
     }
 
     return (
@@ -307,7 +311,11 @@ const Header= function() {
                     </Breakpoint>
                   </BreakpointProvider>
 
-                  <div className='mainside'>
+                  <div className='mainside d-flex align-items-center'>
+                    { user_data?.walletAddress && 
+                      <span className="btn-main" onClick={ !wallet_info ? connectWallet : disConnectWallet }>{ !wallet_info ? "Connect Wallet" : "Disconnect Wallet"
+                    } </span>
+                    }
                     <div className="logout">
                       { user_data?.walletAddress &&
                         <div id="de-click-menu-profile" className="de-menu-profile" onClick={() => btn_icon_pop(!showpop)} ref={refpop}>                           

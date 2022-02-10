@@ -53,9 +53,9 @@ const app = () => {
     dispatch(UPDATE_LOADING_PROCESS(true));
     if (jwtToekn) {
       await axios.post('http://localhost:7060/auth/check-authentication', {}, { headers :{ Authorization: JSON.parse(jwtToekn) } }).then(res => {
-        const { token } = res.data;
+        const { data } = res;
         dispatch(UPDATE_LOADING_PROCESS(false));
-        dispatch(UPDATE_AUTH(token));
+        dispatch(UPDATE_AUTH(data));
       }).catch((err) => {
         dispatch(UPDATE_LOADING_PROCESS(false));
         dispatch(UPDATE_AUTH({
