@@ -8,7 +8,7 @@ export default function FolderList({data, _insNFT }) {
 
     const [NFT, setNFT] = useState({});
     const [folderList, setFolderList] = useState([]);
-    const [restList, setRestList] = useState([]);
+    const [restList, setRestList] = useState([{},{}]);
     const [height, setHeight] = useState(0);
     const [loaded, setLoaded] = useState(false);
 
