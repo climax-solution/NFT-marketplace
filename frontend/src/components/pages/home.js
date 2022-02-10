@@ -4,7 +4,7 @@ import Particle from '../components/Particle';
 import SliderMainParticle from '../components/SliderMainParticle';
 import FeatureBox from '../components/FeatureBox';
 import CarouselCollection from '../components/CarouselCollection';
-import CarouselNew from '../components/CarouselNew';
+import PremiumNFTCarousel from '../components/PremiumNFTCarousel';
 import AuthorList from '../components/authorList';
 import Footer from '../components/footer';
 import { createGlobalStyle } from 'styled-components';
@@ -174,7 +174,7 @@ const homeone= () => {
                 <h2>Premium NFTs</h2>
             </div>
           </div> 
-          { carouselLoading ? <PremiumNFTLoading/> : <CarouselNew data={topPreimumNFTs} update={setCarouselUpdated} status={carouselUpdated}/>}
+          { carouselLoading ? <PremiumNFTLoading/> : <PremiumNFTCarousel data={topPreimumNFTs} update={setCarouselUpdated} status={carouselUpdated}/>}
         </section>
   
         <section className='container no-top no-bottom'>

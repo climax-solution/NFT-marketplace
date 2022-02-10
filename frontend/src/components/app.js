@@ -22,7 +22,7 @@ import Auction from './pages/Auction';
 import Activity from './pages/activity';
 import Contact from './pages/contact';
 import FolderItems from './pages/folderNFTs';
-import Profile from './pages/profile';
+import Profile from './pages/Profile';
 import NotFound from './components/404';
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-notifications/lib/notifications.css';

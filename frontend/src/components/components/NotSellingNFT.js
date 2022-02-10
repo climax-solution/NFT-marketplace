@@ -27,7 +27,7 @@ const GlobalStyles = createGlobalStyle`
         }
     }
 `;
-export default function SellingNFT(props) {
+export default function NotSellingNFT(props) {
 
     const dispatch = useDispatch();
     const initUserData = useSelector((state) => state.auth.user);

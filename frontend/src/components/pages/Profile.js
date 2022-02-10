@@ -5,9 +5,9 @@ import axios from "axios";
 import EmailValidator from 'email-validator';
 import { NotificationManager } from "react-notifications";
 import useOnclickOutside from "react-cool-onclickoutside";
-import ColumnZero from '../components/ColumnZero';
-import ColumnZeroTwo from '../components/ColumnZeroTwo';
-import ColumnZeroThree from '../components/ColumnZeroThree';
+import SellingNFT from '../components/SellingNFT';
+import NotSellingNFT from '../components/NotSellingNFT';
+import LikedNFT from '../components/LikedNFT';
 import Loading from "../components/Loading/Loading";
 import Footer from '../components/footer';
 import getWeb3 from "../../utils/getWeb3";
@@ -278,7 +278,7 @@ const Profile = function() {
           !isLoading &&
             (activeTab == 0 && (
               <div id='zero1' className='onStep fadeIn'>
-              <ColumnZero
+              <SellingNFT
                 data={sellingNFT}
                 _web3={web3}
                 _insNFT={NFT}
@@ -293,7 +293,7 @@ const Profile = function() {
           !isLoading &&
             (activeTab == 1  && (
               <div id='zero2' className='onStep fadeIn'>
-              <ColumnZeroTwo
+              <NotSellingNFT
                 data={notSellingNFT}
                 _web3={web3}
                 _insNFT={NFT}
@@ -308,7 +308,7 @@ const Profile = function() {
           !isLoading &&
             (activeTab == 2  && (
               <div id='zero3' className='onStep fadeIn'>
-              <ColumnZeroThree
+              <LikedNFT
                 data={likedNFT}
                 _web3={web3}
                 _insNFT={NFT}

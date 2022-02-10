@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
-import ColumnZero from '../components/ColumnZero';
-import ColumnZeroTwo from '../components/ColumnZeroTwo';
+import SellingNFT from '../components/SellingNFT';
+import NotSellingNFT from '../components/NotSellingNFT';
 import Footer from '../components/footer';
 import { createGlobalStyle } from 'styled-components';
 import { useNavigate, useParams } from "react-router-dom";

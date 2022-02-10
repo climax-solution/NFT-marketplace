@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from "axios";
 import Select from 'react-select'
 import { createGlobalStyle } from 'styled-components';
-import ColumnNew from '../components/ColumnNew';
+import FolderList from '../components/FolderList';
 import Footer from '../components/footer';
 import getWeb3 from '../../utils/getWeb3';
 import categoryOptions from "../../config/category.json";
@@ -173,7 +173,7 @@ const explore = () => {
           </div>
         </div>
         {
-          itemLoading ? <Loading/> : <ColumnNew data={folderList} _insNFT={NFT}/>
+          itemLoading ? <Loading/> : <FolderList data={folderList} _insNFT={NFT}/>
         }
       </section>
 
