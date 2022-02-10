@@ -175,7 +175,7 @@ export default function ({ data, status, update }) {
                                 </span>
                                 <div className="nft__item_price">
                                     {web3.utils.fromWei(price)} BNB
-                                </div>    
+                                </div>
                                 <div className="nft__item_action">
                                   { (item.nftData.owner).toLowerCase() != (initialUser.walletAddress).toLowerCase() && <span onClick={() => buyNow(item.nftData.tokenID)}>Buy now</span>}
                                 </div>
@@ -184,7 +184,7 @@ export default function ({ data, status, update }) {
                                   onClick={() => updateLike(index, item.lastAct)}
                                 >
                                     <i className={`fa fa-heart ${item.lastAct == "9" && item.liked > 0 && "text-danger"}`}></i><span>{item.liked}</span>
-                                </div>                                  
+                                </div>
                             </div> 
                         </div>
                     </div>
