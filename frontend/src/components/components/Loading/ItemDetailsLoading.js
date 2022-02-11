@@ -31,26 +31,26 @@ const ItemDetailsLoading = () => {
                             <p><Skeleton/></p>
 
                             <div className="spacer-40"></div>
-
-                            <div className="de_tab">
-
-                            <ul className="de_nav">
-                                <li id='Mainbtn' className="active"><span >Bids</span></li>
-                                <li id='Mainbtn1' className=''><span>History</span></li>
-                            </ul>
-                            
-                            <div className="de_tab_content">
-                                <div className="tab-1 onStep fadeIn">
-                                    <div className="p_list"><Skeleton/></div>
-                                    <div className="p_list"><Skeleton/></div>
-                                    <div className="p_list"><Skeleton/></div>
-                                    <div className="p_list"><Skeleton/></div>
-                                    <div className="p_list"><Skeleton/></div>
+                            <div className='row'>
+                                <div className="col-md-6 col-12 mb-3">
+                                    <Skeleton className='ratio ratio-1x1'/>
                                 </div>
-                                
+                                <div className="col-md-6 col-12 mb-3">
+                                    <Skeleton className='ratio ratio-1x1'/>
+                                </div>
+                                <div className="col-md-6 col-12 mb-3">
+                                    <Skeleton className='ratio ratio-1x1'/>
+                                </div>
+                                <div className="col-md-6 col-12 mb-3">
+                                    <Skeleton className='ratio ratio-1x1'/>
+                                </div>
+                                <div className="col-md-6 col-12 mb-3">
+                                    <Skeleton className='ratio ratio-1x1'/>
+                                </div>
+                                <div className="col-md-6 col-12 mb-3">
+                                    <Skeleton className='ratio ratio-1x1'/>
+                                </div>
                             </div>
-                            
-                        </div>
                             
                         </div>
                     </div>
