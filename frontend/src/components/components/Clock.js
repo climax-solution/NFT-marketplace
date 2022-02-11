@@ -18,7 +18,7 @@ class Clock extends Component {
     return num < 10 ? "0" + num : num;
   }
   getTimeUntil(deadline) {
-    const time = Date.parse(deadline) - Date.parse(new Date());
+    const time = Date.parse(new Date(deadline)) - Date.parse(new Date());
     if (time < 0) {
       this.setState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
     } else {
