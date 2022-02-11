@@ -52,7 +52,7 @@ const register= () => {
     const [email ,setEmail] = useState('');
     const [username, setUserName] = useState('');
     const [birthday, setBirthDate] = useState('');
-    const [country, setCountry] = useState('');
+    const [country, setCountry] = useState('United States');
     const [phoneNumber ,setPhoneNumber] = useState('');
     const [walletAddress, setWalletAddres] = useState('');
     const [password, setPassword] = useState('');
@@ -233,7 +233,7 @@ const register= () => {
                                     <CountryDropdown
                                         id="country-list"
                                         className="form-control mb-0"
-                                        preferredCountries={['nz', 'us']}
+                                        preferredCountries={['us']}
                                         value={country}
                                         handleChange={e => setCountry(e.target.value)}
 

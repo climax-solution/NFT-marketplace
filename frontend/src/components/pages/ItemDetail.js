@@ -12,6 +12,9 @@ const GlobalStyles = createGlobalStyle`
   header#myHeader.navbar.white {
     background: #212428;
   }
+  .border-grey {
+      border-color: #4e4e4e !important;
+  }
 `;
 const Colection = function() {
 
@@ -36,10 +39,15 @@ const Colection = function() {
         try {
             const { id } = params;
             const item = await Marketplace.methods.getItemNFT(id).call();
-            console.log(item);
-            await axios.get(item.nftData.tokenURI).then(res => {
+            await axios.get(item.nftData.tokenURI).then(async(res) => {
                 const { data } = res;
-                setNFTData({ ...item, ...data});
+                let likes = { liked: 0};
+                await axios.post("http://localhost:7060/activity/get-likes", {tokenID: id, walletAddress: '' }).then(res => {
+                    likes = res.data;
+                }).catch(err => {})
+                setNFTData({ ...item, ...data, ...likes });
+            }).catch(err => {
+
             })
         } catch(err) {
             console.log(err);
@@ -47,19 +55,6 @@ const Colection = function() {
         }
         setLoading(false);
     },[Marketplace])
-
-    const handleBtnClick = () => {
-        setOpenMenu(!openMenu);
-        setOpenMenu1(false);
-        document.getElementById("Mainbtn").classList.add("active");
-        document.getElementById("Mainbtn1").classList.remove("active");
-    };
-    const handleBtnClick1 = () => {
-        setOpenMenu1(!openMenu1);
-        setOpenMenu(false);
-        document.getElementById("Mainbtn1").classList.add("active");
-        document.getElementById("Mainbtn").classList.remove("active");
-    };
     
     return (
         <div>
@@ -89,156 +84,39 @@ const Colection = function() {
                             </div>
                             <div className="col-md-6">
                                 <div className="item_info">
-                                    Auctions ends in 
-                                    <div className="de_countdown">
-                                        <Clock deadline="December, 30, 2021" />
-                                    </div>
+                                    {
+                                        nftData.auctionData.existance && (
+                                            <>
+                                                Auctions ends in 
+                                                <div className="de_countdown">
+                                                    <Clock deadline={nftData.auctionData.endAuction} />
+                                                </div>
+                                            </>
+                                        )
+                                    }
                                     <h2>{nftData.nftName}</h2>
                                     <div className="item_info_counts">
                                         <div className="item_info_type"><i className="fa fa-image"></i>{nftData.category}</div>
-                                        <div className="item_info_like"><i className="fa fa-heart"></i>18</div>
+                                        <div className="item_info_like"><i className="fa fa-heart"></i>{nftData.liked}</div>
                                     </div>
                                     <p>{nftData.nftDesc}</p>
 
                                     <div className="spacer-40"></div>
-
-                                    <div className="de_tab">
-
-                                    <ul className="de_nav">
-                                        <li id='Mainbtn' className="active"><span onClick={handleBtnClick}>Bids</span></li>
-                                        <li id='Mainbtn1' className=''><span onClick={handleBtnClick1}>History</span></li>
-                                    </ul>
-                                    
-                                    <div className="de_tab_content">
-                                        {openMenu && (  
-                                        <div className="tab-1 onStep fadeIn">
-                                            <div className="p_list">
-                                                <div className="p_list_pp">
-                                                    <span>
-                                                        <img className="lazy" src="./img/author/author-1.jpg" alt=""/>
-                                                        <i className="fa fa-check"></i>
-                                                    </span>
-                                                </div>                                    
-                                                <div className="p_list_info">
-                                                    Bid accepted <b>0.005 ETH</b>
-                                                    <span>by <b>Monica Lucas</b> at 6/15/2021, 3:20 AM</span>
-                                                </div>
-                                            </div>
-
-                                            <div className="p_list">
-                                                <div className="p_list_pp">
-                                                    <span>
-                                                        <img className="lazy" src="./img/author/author-2.jpg" alt=""/>
-                                                        <i className="fa fa-check"></i>
-                                                    </span>
-                                                </div>                                    
-                                                <div className="p_list_info">
-                                                    Bid <b>0.005 ETH</b>
-                                                    <span>by <b>Mamie Barnett</b> at 6/14/2021, 5:40 AM</span>
-                                                </div>
-                                            </div>
-
-                                            <div className="p_list">
-                                                <div className="p_list_pp">
-                                                    <span>
-                                                        <img className="lazy" src="./img/author/author-3.jpg" alt=""/>
-                                                        <i className="fa fa-check"></i>
-                                                    </span>
-                                                </div>                                    
-                                                <div className="p_list_info">
-                                                    Bid <b>0.004 ETH</b>
-                                                    <span>by <b>Nicholas Daniels</b> at 6/13/2021, 5:03 AM</span>
-                                                </div>
-                                            </div>
-
-                                            <div className="p_list">
-                                                <div className="p_list_pp">
-                                                    <span>
-                                                        <img className="lazy" src="./img/author/author-4.jpg" alt=""/>
-                                                        <i className="fa fa-check"></i>
-                                                    </span>
-                                                </div>                                    
-                                                <div className="p_list_info">
-                                                    Bid <b>0.003 ETH</b>
-                                                    <span>by <b>Lori Hart</b> at 6/12/2021, 12:57 AM</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        )}
-
-                                        {openMenu1 && ( 
-                                        <div className="tab-2 onStep fadeIn">
-                                            <div className="p_list">
-                                                <div className="p_list_pp">
-                                                    <span>
-                                                        <img className="lazy" src="./img/author/author-5.jpg" alt=""/>
-                                                        <i className="fa fa-check"></i>
-                                                    </span>
-                                                </div>                                    
-                                                <div className="p_list_info">
-                                                    Bid <b>0.005 ETH</b>
-                                                    <span>by <b>Jimmy Wright</b> at 6/14/2021, 6:40 AM</span>
-                                                </div>
-                                            </div>
-
-                                            <div className="p_list">
-                                                <div className="p_list_pp">
-                                                    <span>
-                                                        <img className="lazy" src="./img/author/author-1.jpg" alt=""/>
-                                                        <i className="fa fa-check"></i>
-                                                    </span>
-                                                </div>                                    
-                                                <div className="p_list_info">
-                                                    Bid accepted <b>0.005 ETH</b>
-                                                    <span>by <b>Monica Lucas</b> at 6/15/2021, 3:20 AM</span>
-                                                </div>
-                                            </div>
-
-                                            <div className="p_list">
-                                                <div className="p_list_pp">
-                                                    <span>
-                                                        <img className="lazy" src="./img/author/author-2.jpg" alt=""/>
-                                                        <i className="fa fa-check"></i>
-                                                    </span>
-                                                </div>                                    
-                                                <div className="p_list_info">
-                                                    Bid <b>0.005 ETH</b>
-                                                    <span>by <b>Mamie Barnett</b> at 6/14/2021, 5:40 AM</span>
-                                                </div>
-                                            </div>
-
-                                            <div className="p_list">
-                                                <div className="p_list_pp">
-                                                    <span>
-                                                        <img className="lazy" src="./img/author/author-3.jpg" alt=""/>
-                                                        <i className="fa fa-check"></i>
-                                                    </span>
-                                                </div>                                    
-                                                <div className="p_list_info">
-                                                    Bid <b>0.004 ETH</b>
-                                                    <span>by <b>Nicholas Daniels</b> at 6/13/2021, 5:03 AM</span>
-                                                </div>
-                                            </div>
-
-                                            <div className="p_list">
-                                                <div className="p_list_pp">
-                                                    <span>
-                                                        <img className="lazy" src="./img/author/author-4.jpg" alt=""/>
-                                                        <i className="fa fa-check"></i>
-                                                    </span>
-                                                </div>                                    
-                                                <div className="p_list_info">
-                                                    Bid <b>0.003 ETH</b>
-                                                    <span>by <b>Lori Hart</b> at 6/12/2021, 12:57 AM</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        )}
-                                        
+                                    <h4>Attributes</h4>
+                                    <div className="row">
+                                        {
+                                            nftData.attributes.map((item, index) => {
+                                                return (
+                                                    <div className="col-md-6 col-12 mb-3" key={index}>
+                                                        <div className="border p-5 h-100 border-grey rounded">
+                                                            <h5 className="text-center">{item.trait_type}</h5>
+                                                            <p className="text-center">{item.value}</p>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })
+                                        }
                                     </div>
-                                    
-                                </div>
-                                    
                                 </div>
                             </div>
 

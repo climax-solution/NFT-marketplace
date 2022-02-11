@@ -89,6 +89,9 @@ const Activity= function() {
         setMoreItems(true);
       }
       else setMoreItems(false);
+    }).catch(err => {
+      setLogs([]);
+      setMoreItems(false);
     })
   };
 
@@ -133,7 +136,7 @@ const Activity= function() {
                 dataLength={items.length}
                 next={_loadNextPage}
                 hasMore={moreItems}
-                loader="..."
+                loader={<Loading/>}
                 className='activity-list'
               >
                 {
