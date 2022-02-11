@@ -10,6 +10,7 @@ import NotificationManager from "react-notifications/lib/NotificationManager";
 import { useDispatch, useSelector } from "react-redux";
 import { UPDATE_LOADING_PROCESS } from "../../store/action/auth.action";
 import ReactTooltip from "react-tooltip";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 const GlobalStyles  = createGlobalStyle`
     .owner-check {
@@ -34,19 +35,27 @@ const GlobalStyles  = createGlobalStyle`
 `;
 
 const folderNFTs = (props) => {
+
     const dispatch = useDispatch();
+    const wallet_info = useSelector(({ wallet }) => wallet.wallet_connected);
     const initialUser = useSelector((state) => state.auth.user);
     const params = useParams();
     const [web3, setWeb3] = useState(null);
     const [NFT, setNFT] = useState(null);
     const [Marketplace, setMarketplace] = useState(null);
     const [nfts, setNFTLists] = useState([]);
-    const [restGradList, setRestGradList] = useState([]);
+    const [restList, setRestList] = useState([]);
     const [userData, setUserData] = useState({});
     const [folderName, setFolderName] = useState("Collection");
     const [height, setHeight] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
+    const [loaded, setLoaded] = useState(false);
 
+    useEffect(async () => {
+        if (loaded) {
+            await fetchNFT();
+        }
+    },[loaded])
     useEffect(async() => {
         const { _web3, instanceNFT, instanceMarketplace } = await getWeb3();
         setWeb3(_web3);
@@ -63,6 +72,7 @@ const folderNFTs = (props) => {
     useEffect(() => {
         setUserData(initialUser);
     },[initialUser])
+
     const getInitNFTs = async() => {
         const { id } = params;
         let gradList = await Marketplace.methods.getSubFolderItem(id).call();
@@ -76,22 +86,35 @@ const folderNFTs = (props) => {
             else return 0;
         });
         setFolderName(gradList[1]);
-        await getNFTs(list);
+        setRestList(list);
+        setLoaded(true);
     }
 
-    const getNFTs = async (list) => {
+    const fetchNFT = async () => {
+        let sList = restList;
+        if (sList.length > 8) {
+            sList = sList.slice(0,8);
+            setRestList(restList.slice(8, restList.length));
+        } else setRestList([]);
+
         let mainList = [];
-        for await (let item of list) {
+        for await (let item of sList) {
             try {
                 const { data: nft } = await axios.get(`${item.nftData.tokenURI}`);
-                const { data: likes } = await axios.post(`http://localhost:7060/activity/get-likes`, {tokenID: item.nftData.tokenID, walletAddress: userData.walletAddress });
+                let likes = {};
+                try {
+                    const { data: like } = await axios.post(`http://localhost:7060/activity/get-likes`, {tokenID: item.nftData.tokenID, walletAddress: userData.walletAddress });
+                    likes = like;
+                } catch(err) {
+
+                }
                 mainList.push({ ...item, ...nft, ...likes });
             } catch (err) {
                 console.log(err);
             }
         }
         
-        setNFTLists(mainList);
+        setNFTLists([...nfts, ...mainList]);
         setIsLoading(false);
     }
 
@@ -107,6 +130,17 @@ const folderNFTs = (props) => {
     }
 
     const buyNow = async(id) => {
+
+        if (!initialUser.walletAddress) {
+            NotificationManager.warning("Please log in");
+            return;
+        }
+
+        if (!wallet_info) {
+            NotificationManager.warning("Please connect metamask");
+            return;
+        }
+
         try {
             let { marketData, auctionData } = await Marketplace.methods.getItemNFT(id).call();
             if (marketData.marketStatus && !auctionData.existance) {
@@ -132,6 +166,17 @@ const folderNFTs = (props) => {
     }
 
     const placeBid = async(id) => {
+
+        if (!initialUser.walletAddress) {
+            NotificationManager.warning("Please log in");
+            return;
+        }
+
+        if (!wallet_info) {
+            NotificationManager.warning("Please connect metamask");
+            return;
+        }
+
         let {auctionData} = await Marketplace.methods.getItemNFT(id).call();
         let lastPrice = web3.utils.fromWei(auctionData.currentBidPrice, "ether");
         if (!Number(lastPrice)) lastPrice = web3.utils.fromWei(auctionData.minPrice, "ether");
@@ -178,7 +223,40 @@ const folderNFTs = (props) => {
         }
     }
 
+    const claimNFT = async(id) => {
+        if (!initialUser.walletAddress) {
+            NotificationManager.warning("Please log in");
+            return;
+        }
+
+        if (!wallet_info) {
+            NotificationManager.warning("Please connect metamask");
+            return;
+        }
+
+        try {
+            dispatch(UPDATE_LOADING_PROCESS(true));
+            await Marketplace.methods.claimNFT(id).send({ from: initialUser.walletAddress });
+
+        } catch(err) {
+            NotificationManager.error(err.message);
+        }
+        dispatch(UPDATE_LOADING_PROCESS(false));
+    }
+
     const updateLike = async(idx, act) => {
+
+        if (!initialUser.walletAddress) {
+            NotificationManager.warning("Please log in");
+            return;
+        }
+        
+        if (!wallet_info) {
+            NotificationManager.warning("Please connect metamask");
+            return;
+        }
+
+
         if (!initialUser.walletAddress) return;
         let _act = nfts[idx].liked > 0 && act == "9" ? "10" : "9";
         const data = {
@@ -222,12 +300,20 @@ const folderNFTs = (props) => {
 
                 {
                     !isLoading &&  (
-                        <div className='row'>
+                        <InfiniteScroll
+                            dataLength={nfts.length}
+                            next={fetchNFT}
+                            hasMore={restList.length ? true : false}
+                            loader={<Loading/>}
+                            className="row"
+                        >
                             {
                                 nfts.map( (nft, index) => {
                                     const price = !nft.auctionData.existance ? nft.marketData.price : (Number(nft.auctionData.currentBidPrice) ? nft.auctionData.currentBidPrice : nft.auctionData.minPrice);
                                     const nftOwner =( (nft.nftData.owner).toLowerCase() == (initialUser.walletAddress).toLowerCase());
                                     const bidOwner = (nft.auctionData.currentBidOwner).toLowerCase() == (userData.walletAddress).toLowerCase();
+                                    const claimable = Date.parse(new Date(nft.auctionData.endAuction * 1000)) - Date.parse(new Date());
+                                    console.log(Date.parse(new Date(nft.auctionData.endAuction * 1000)), Date.parse(new Date())); 
                                     return (<div key={index} className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4">
                                         <div className="nft__item m-0 pb-4 justify-content-between h-100">
                                             <div className="nft__item_wrap wap-height">
@@ -237,7 +323,7 @@ const folderNFTs = (props) => {
                                                         nftOwner && 
                                                         <span>
                                                             
-                                                            <a data-tip data-for={`owner-${index}`} className="owner-check"><i className="fal fa-badge-check"/></a>
+                                                            <small data-tip data-for={`owner-${index}`} className="owner-check"><i className="fal fa-badge-check"/></small>
                                                             <ReactTooltip id={`owner-${index}`} type='info' effect="solid">
                                                                 <span>Your NFT</span>
                                                             </ReactTooltip>
@@ -268,12 +354,16 @@ const folderNFTs = (props) => {
                                                 >
                                                         <i className={`fa fa-heart ${nft.lastAct == "9" && nft.liked > 0 && "text-danger"}`}></i><span>{nft.liked}</span>
                                                 </div>
-                                                <div className="trade-btn-group">
+                                                <div className="trade-btn-group mt-2">
                                                     { !nftOwner && nft.marketData.marketStatus && (
                                                         !nft.auctionData.existance
                                                             ? <span className="btn-main w-100" onClick={() => buyNow(nft.nftData.tokenID)} >Buy Now</span>
                                                             : (
-                                                                !bidOwner ? <span className="btn-main w-100" onClick={() => placeBid(nft.nftData.tokenID)}>Place Bid</span> : ""
+                                                                !bidOwner ? <span className="btn-main w-100" onClick={() => placeBid(nft.nftData.tokenID)}>Place Bid</span> : (
+                                                                    claimable < 0 ?
+                                                                    <span className="btn-main w-100" onClick={() => claimNFT(nft.nftData.tokenID)}>Claim NFT</span>
+                                                                    : ""
+                                                                )
                                                             )
                                                         )
                                                     }
@@ -286,7 +376,7 @@ const folderNFTs = (props) => {
                             {
                                 !nfts.length && <Empty/>
                             }
-                        </div>
+                        </InfiniteScroll>
                     )
                 }
             </section>
