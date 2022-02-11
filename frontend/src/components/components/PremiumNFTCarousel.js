@@ -32,6 +32,7 @@ export default function ({ data, status, update }) {
 
   const dispatch = useDispatch();
   const initialUser = useSelector(({ auth }) => auth.user);
+  const wallet_info = useSelector(({ wallet }) => wallet.wallet_connected);
   const [list, setList] = useState([]);
   const [web3, setWEB3] = useState([]);
   const [Marketplace, setMarketplace] = useState([]);
@@ -98,6 +99,12 @@ export default function ({ data, status, update }) {
   }, [data])
 
   const buyNow = async(id) => {
+  
+    if (!wallet_info) {
+      NotificationManager.warning("Please connect metamask");
+      return;
+    }
+
     try {
         dispatch(UPDATE_LOADING_PROCESS(true));
         let { marketData, auctionData } = await Marketplace.methods.getItemNFT(id).call();

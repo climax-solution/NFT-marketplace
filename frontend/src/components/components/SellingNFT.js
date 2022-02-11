@@ -19,6 +19,7 @@ export default function SellingNFT(props) {
 
     const dispatch = useDispatch();
     const initialUser = useSelector(({ auth }) => auth.user);
+    const wallet_info = useSelector(({ wallet }) => wallet.wallet_connected);
 
     const [web3, setWeb3] = useState({});
     const [Marketplace, setMarketplace] = useState({});
@@ -53,6 +54,12 @@ export default function SellingNFT(props) {
     },[loaded])
 
     const putDownSale = async (id) => {
+
+        if (!wallet_info) {
+            NotificationManager.warning("Please connect metamask");
+            return;
+        }
+
         dispatch(UPDATE_LOADING_PROCESS(true));
         try {
             const nft = await Marketplace.methods.getItemNFT(id).call();
@@ -78,6 +85,12 @@ export default function SellingNFT(props) {
     }
 
     const putDownAuction = async (id) => {
+
+        if (!wallet_info) {
+            NotificationManager.warning("Please connect metamask");
+            return;
+        }
+
         dispatch(UPDATE_LOADING_PROCESS(true));
         try {
             const nft = await Marketplace.methods.getItemNFT(id).call();
@@ -107,6 +120,12 @@ export default function SellingNFT(props) {
     }
   
     const updatePremiumNFT = async (id, status) => {
+        
+        if (!wallet_info) {
+            NotificationManager.warning("Please connect metamask");
+            return;
+        }
+
         dispatch(UPDATE_LOADING_PROCESS(true));
         try {
             const owner = await NFT.methods.ownerOf(id).call();
@@ -178,7 +197,7 @@ export default function SellingNFT(props) {
                                 <div className="nft__item_price">
                                     {web3.utils.fromWei(nft.marketData.price, "ether")} BNB
                                 </div>
-                                <div className="pb-4 trade-btn-group">
+                                <div className="pb-4 trade-btn-group mt-2">
                                     { nft.marketData.marketStatus && (
                                         !nft.auctionData.existance ?
                                             <span className="btn-main w-100" onClick={async() => await putDownSale(nft.nftData.tokenID)}>Put down sale</span>

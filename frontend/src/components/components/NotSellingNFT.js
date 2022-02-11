@@ -31,6 +31,8 @@ export default function NotSellingNFT(props) {
 
     const dispatch = useDispatch();
     const initUserData = useSelector((state) => state.auth.user);
+    const wallet_info = useSelector(({ wallet }) => wallet.wallet_connected);
+
     const [web3, setWeb3] = useState({});
     const [NFT, setNFT] = useState({});
     const [Marketplace, setMarketplace] = useState({});
@@ -64,7 +66,12 @@ export default function NotSellingNFT(props) {
     },[loaded])
 
     const putOnSale = async (id) => {
-        console.log(id);
+        
+        if (!wallet_info) {
+            NotificationManager.warning("Please connect metamask");
+            return;
+        }
+
         await Swal.fire({
             title: '<span style="font-size: 22px">PLEASE ENTER PRICE</span>',
             input: 'number',
@@ -111,6 +118,12 @@ export default function NotSellingNFT(props) {
     }
 
     const putOnAuction = async (id) => {
+        
+        if (!wallet_info) {
+            NotificationManager.warning("Please connect metamask");
+            return;
+        }
+
         await Swal.fire({
             title: '<span style="font-size: 22px">PLEASE ENTER AUCTION DETAILS  </span>',
             inputAttributes: {
@@ -210,7 +223,7 @@ export default function NotSellingNFT(props) {
                                 <div className="nft__item_price">
                                     {web3.utils.fromWei(nft.marketData.price, "ether")} BNB
                                 </div>
-                                <div className="pb-4 trade-btn-group">
+                                <div className="pb-4 trade-btn-group mt-2">
                                     { !nft.marketData.marketStatus && <span className="btn-main w-100" onClick={() => putOnSale(nft.nftData.tokenID)}>Put on Sale</span> }
                                     {!nft.auctionData.existance && <span className="btn-main w-100 mt-2" onClick={() => putOnAuction(nft.nftData.tokenID)}>Put on Auction</span> }
                                 </div>
