@@ -55,6 +55,11 @@ export default function SellingNFT(props) {
 
     const putDownSale = async (id) => {
 
+        if (!initialUser.walletAddress) {
+            NotificationManager.warning("Please log in");
+            return;
+        }
+
         if (!wallet_info) {
             NotificationManager.warning("Please connect metamask");
             return;
@@ -85,6 +90,11 @@ export default function SellingNFT(props) {
     }
 
     const putDownAuction = async (id) => {
+
+        if (!initialUser.walletAddress) {
+            NotificationManager.warning("Please log in");
+            return;
+        }
 
         if (!wallet_info) {
             NotificationManager.warning("Please connect metamask");
@@ -121,6 +131,11 @@ export default function SellingNFT(props) {
   
     const updatePremiumNFT = async (id, status) => {
         
+        if (!initialUser.walletAddress) {
+            NotificationManager.warning("Please log in");
+            return;
+        }
+
         if (!wallet_info) {
             NotificationManager.warning("Please connect metamask");
             return;
@@ -173,7 +188,7 @@ export default function SellingNFT(props) {
     }
 
     return (
-        <div className='row'>
+        <>
             <GlobalStyles/>
             <InfiniteScroll
                 dataLength={nfts.length}
@@ -184,7 +199,7 @@ export default function SellingNFT(props) {
             >
                 { nfts.map( (nft, index) => (
                     <div key={index} className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                        <div className="nft__item">
+                        <div className="nft__item h-100 justify-content-between">
                             <div className="nft__item_wrap">
                                 <a>
                                     <img onLoad={onImgLoad} src={nft.image} className="lazy nft__item_preview" alt=""/>
@@ -213,6 +228,6 @@ export default function SellingNFT(props) {
             </InfiniteScroll>
             {!nfts.length && <Empty/>}
             
-        </div>
+        </>
     )
 }

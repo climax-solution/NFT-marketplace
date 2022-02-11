@@ -156,7 +156,7 @@ export default function NotSellingNFT(props) {
                     const nftPrice = web3.utils.toWei(result.value[0], 'ether');
                     await NFT.methods.approve(marketplace_addr, id).send({from : initUserData.walletAddress})
                     .on('receipt', async(rec) => {
-                        await Marketplace.methods.openTradeToAuction(id, nftPrice, result.value[1]).send({ from: initUserData.walletAddress, value: nftPrice / 40 });
+                        await Marketplace.methods.openTradeToAuction(id, nftPrice, Math.floor(result.value[1] * 24)).send({ from: initUserData.walletAddress, value: nftPrice / 40 });
 
                         const data = {
                             tokenID: id,
@@ -197,7 +197,7 @@ export default function NotSellingNFT(props) {
     }
 
     return (
-        <div className='row'>
+        <>
             <GlobalStyles/>
             <InfiniteScroll
                 dataLength={nfts.length}
@@ -208,7 +208,7 @@ export default function NotSellingNFT(props) {
             >
                 {nfts.map( (nft, index) => (
                     <div key={index} className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                        <div className="nft__item">
+                        <div className="nft__item h-100 justify-content-between">
                             <div className="nft__item_wrap" style={{height: `${height}px`}}>
                             <Outer>
                                 <span>
@@ -235,6 +235,6 @@ export default function NotSellingNFT(props) {
 
             {!nfts.length && <Empty/>}
             
-        </div>
+        </>
     )
 }

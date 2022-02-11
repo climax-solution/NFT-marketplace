@@ -145,8 +145,7 @@ const Header= function() {
       if (window.ethereum) {
         const provider = window.ethereum;
         provider.on("accountsChanged", (accounts) => {
-
-          if ((accounts[0]).toLowerCase() != (user_data.walletAddress).toLowerCase()) {
+          if ((accounts[0]).toLowerCase() != (user_data?.walletAddress).toLowerCase()) {
             localStorage.setItem("nftdevelopments-connected", JSON.stringify({ connected: false }));
           }
           else {
@@ -169,7 +168,7 @@ const Header= function() {
 
     const logout = () => {
       localStorage.removeItem("nftdevelopments-token");
-      localStorage.removeItem("nftdevelopments-connected", JSON.stringify({ connected: true }));
+      localStorage.setItem("nftdevelopments-connected", JSON.stringify({ connected: false }));
       dispatch(UPDATE_AUTH({ walletAddress: '' }));
       dispatch(WalletConnect());
       navigate('/');

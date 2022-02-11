@@ -210,57 +210,57 @@ const Profile = function() {
           <div className='spacer-double'></div>
           <div className="col-md-12">
             <div className="d_profile de-flex">
-                  <div className="de-flex-col">
-                      <div className="profile_avatar d-flex" ref={ref}>
-                          <div
-                            className="avatar-image position-relative w-50 overflow-hidden"
-                            onMouseEnter={() => setOpenChange(true)}
-                            onMouseLeave={() => setOpenChange(false)}
-                          >
-                            <img
-                              src={`http://localhost:7060/avatar/${userData.avatar ? userData.avatar : "empty-avatar.png"}`}
-                              className="position-absolute index-avatar"
-                              alt=""
-                              crossOrigin="true"
-                              />
-                            { openChange &&
-                              <label className="avatar-change">
-                                <i className="fa fa-edit edit-btn m-0 d-inline-block"/>
-                                <input
-                                  type="file"
-                                  accept="image/*"
-                                  onChange={updateAvatar}
-                                  hidden
-                                />
-                              </label>
-                            }
-                          </div>
-                          <div className="profile_name w-50">
-                              {
-                                Object.keys(userData).length &&
-                                <h4>
-                                    {`${userData.firstName}  ${userData.lastName}`}
-                                    <span className="profile_username">@{userData.username}</span>
-                                    <span id="wallet" className="profile_wallet mt-1">{userData.walletAddress && ((userData.walletAddress).substr(0, 4) + '...' + (userData.walletAddress).substr(-4))}</span>
-                                    <CopyToClipboard
-                                      text={userData.walletAddress}
-                                      onCopy={copyAlert}
-                                    >
-                                      <button id="btn_copy" className="position-relative ms-2">Copy</button>
-                                    </CopyToClipboard>
-                                </h4>
-                              }
-                          </div>
+              <div className="de-flex-col">
+                  <div className="profile_avatar d-flex" ref={ref}>
+                      <div
+                        className="avatar-image position-relative w-50 overflow-hidden"
+                        onMouseEnter={() => setOpenChange(true)}
+                        onMouseLeave={() => setOpenChange(false)}
+                      >
+                        <img
+                          src={`http://localhost:7060/avatar/${userData.avatar ? userData.avatar : "empty-avatar.png"}`}
+                          className="position-absolute index-avatar"
+                          alt=""
+                          crossOrigin="true"
+                          />
+                        { openChange &&
+                          <label className="avatar-change">
+                            <i className="fa fa-edit edit-btn m-0 d-inline-block"/>
+                            <input
+                              type="file"
+                              accept="image/*"
+                              onChange={updateAvatar}
+                              hidden
+                            />
+                          </label>
+                        }
+                      </div>
+                      <div className="profile_name w-50">
+                          {
+                            Object.keys(userData).length &&
+                            <h4>
+                                {`${userData.firstName}  ${userData.lastName}`}
+                                <span className="profile_username">@{userData.username}</span>
+                                <span id="wallet" className="profile_wallet mt-1">{userData.walletAddress && ((userData.walletAddress).substr(0, 4) + '...' + (userData.walletAddress).substr(-4))}</span>
+                                <CopyToClipboard
+                                  text={userData.walletAddress}
+                                  onCopy={copyAlert}
+                                >
+                                  <button id="btn_copy" className="position-relative ms-2">Copy</button>
+                                </CopyToClipboard>
+                            </h4>
+                          }
                       </div>
                   </div>
-                  {/* <div className="profile_follow de-flex">
-                      <div className="de-flex-col">
-                          <div className="profile_follower">500 followers</div>
-                      </div>
-                      <div className="de-flex-col">
-                          <span className="btn-main">Follow</span>
-                      </div>
-                  </div> */}
+              </div>
+              {/* <div className="profile_follow de-flex">
+                  <div className="de-flex-col">
+                      <div className="profile_follower">500 followers</div>
+                  </div>
+                  <div className="de-flex-col">
+                      <span className="btn-main">Follow</span>
+                  </div>
+              </div> */}
 
               </div>
           </div>

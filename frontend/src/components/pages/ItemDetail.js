@@ -89,7 +89,7 @@ const Colection = function() {
                                             <>
                                                 Auctions ends in 
                                                 <div className="de_countdown">
-                                                    <Clock deadline={nftData.auctionData.endAuction} />
+                                                    <Clock deadline={nftData.auctionData.endAuction * 1000} />
                                                 </div>
                                             </>
                                         )

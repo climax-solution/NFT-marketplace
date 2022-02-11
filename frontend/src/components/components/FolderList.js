@@ -33,9 +33,7 @@ export default function FolderList({data, _insNFT }) {
         let list = restList;
         if (list.length > 8) {
             list = list.slice(0, 8);
-            setRestList(restList.slice(8, restList.length));
         }
-        else setRestList([]);
         let newList = [];
         for await (let item of list) {
             const URI = await NFT.methods.tokenURI(item.wide[0]).call();
@@ -44,10 +42,15 @@ export default function FolderList({data, _insNFT }) {
             }).catch(err => { })
         }
         setFolderList([ ...folderList, ...newList ]);
+        if (restList.length > 8) {
+            setRestList(restList.slice(8, restList.length));
+        }
+        else setRestList([]);
     }
 
     return (
         <>
+            {!loaded && <Loading/>}
             <InfiniteScroll
                 dataLength={folderList.length}
                 next={fetchFolders}
@@ -72,7 +75,7 @@ export default function FolderList({data, _insNFT }) {
                     </div>
                 ))}
             </InfiniteScroll>
-            {!folderList.length && <Empty/>}
+            {!folderList.length && !restList.length && loaded && <Empty/>}
             
         </>
     )

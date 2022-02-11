@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { UPDATE_LOADING_PROCESS } from "../../store/action/auth.action";
 import ReactTooltip from "react-tooltip";
 import InfiniteScroll from "react-infinite-scroll-component";
+import Clock from "../components/Clock";
 
 const GlobalStyles  = createGlobalStyle`
     .owner-check {
@@ -313,9 +314,14 @@ const folderNFTs = (props) => {
                                     const nftOwner =( (nft.nftData.owner).toLowerCase() == (initialUser.walletAddress).toLowerCase());
                                     const bidOwner = (nft.auctionData.currentBidOwner).toLowerCase() == (userData.walletAddress).toLowerCase();
                                     const claimable = Date.parse(new Date(nft.auctionData.endAuction * 1000)) - Date.parse(new Date());
-                                    console.log(Date.parse(new Date(nft.auctionData.endAuction * 1000)), Date.parse(new Date())); 
                                     return (<div key={index} className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4">
                                         <div className="nft__item m-0 pb-4 justify-content-between h-100">
+                                            {
+                                                nft.auctionData.existance &&
+                                                <div className="de_countdown">
+                                                    <Clock deadline={nft.auctionData.endAuction * 1000} />
+                                                </div>
+                                            }
                                             <div className="nft__item_wrap wap-height">
                                                 <a href={`/item-detail/${nft.nftData.tokenID}`} className="position-relative">
                                                     <img onLoad={onImgLoad} src={nft.image} onError={faliedLoadImage} className="lazy nft__item_preview" alt=""/>
