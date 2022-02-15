@@ -27,6 +27,7 @@ import NotFound from './components/404';
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-notifications/lib/notifications.css';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+import 'react-cool-music-player/dist/index.css'
 
 import { UPDATE_AUTH, UPDATE_LOADING_PROCESS } from '../store/action/auth.action';
 

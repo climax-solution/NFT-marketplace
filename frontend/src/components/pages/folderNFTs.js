@@ -12,6 +12,8 @@ import { UPDATE_LOADING_PROCESS } from "../../store/action/auth.action";
 import ReactTooltip from "react-tooltip";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Clock from "../components/Clock";
+import MusicNFT from "../components/musicNFT";
+import ReactPlayer from "react-player";
 
 const GlobalStyles  = createGlobalStyle`
     .owner-check {
@@ -322,30 +324,40 @@ const folderNFTs = (props) => {
                                                     <Clock deadline={nft.auctionData.endAuction * 1000} />
                                                 </div>
                                             }
-                                            <div className="nft__item_wrap wap-height">
-                                                <a href={`/item-detail/${nft.nftData.tokenID}`} className="position-relative">
-                                                    <img onLoad={onImgLoad} src={nft.image} onError={faliedLoadImage} className="lazy nft__item_preview" alt=""/>
-                                                    {
-                                                        nftOwner && 
-                                                        <span>
-                                                            
-                                                            <small data-tip data-for={`owner-${index}`} className="owner-check"><i className="fal fa-badge-check"/></small>
-                                                            <ReactTooltip id={`owner-${index}`} type='info' effect="solid">
-                                                                <span>Your NFT</span>
-                                                            </ReactTooltip>
-                                                        </span>
-                                                    }
-                                                    {
-                                                        bidOwner && 
-                                                        <span>
-                                                            
-                                                            <a data-tip data-for={`bid-${index}`} className="bid-check"><i className="fal fa-clock"/></a>
-                                                            <ReactTooltip id={`bid-${index}`} type='info' effect="solid">
-                                                                <span>Pending Bid</span>
-                                                            </ReactTooltip>
-                                                        </span>
-                                                    }
-                                                </a>
+                                            <div className="nft__item_wrap flex-column position-relative wap-height">
+                                                {
+                                                    (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <a href={`/item-detail/${nft.nftData.tokenID}`} className="position-relative"><img onLoad={onImgLoad} src={nft.image} onError={faliedLoadImage} className="lazy nft__item_preview" alt=""/></a>
+                                                }
+                                                
+                                                {
+                                                    (nft.type && (nft.type).toLowerCase() == 'music') && <MusicNFT data={nft}/>
+                                                }
+
+                                                {
+                                                    (nft.type && (nft.type).toLowerCase() == 'video') &&
+                                                    <ReactPlayer url={nft.asset} config={{ youtube: { playerVars: { origin: 'https://www.youtube.com' } } }} className="lazy nft__item_preview w-100" />
+                                                }
+                                                {
+                                                    nftOwner && 
+                                                    <span>
+                                                        
+                                                        <small data-tip data-for={`owner-${index}`} className="owner-check"><i className="fal fa-badge-check"/></small>
+                                                        <ReactTooltip id={`owner-${index}`} type='info' effect="solid">
+                                                            <span>Your NFT</span>
+                                                        </ReactTooltip>
+                                                    </span>
+                                                }
+                                                {
+                                                    bidOwner && 
+                                                    <span>
+                                                        
+                                                        <a data-tip data-for={`bid-${index}`} className="bid-check"><i className="fal fa-clock"/></a>
+                                                        <ReactTooltip id={`bid-${index}`} type='info' effect="solid">
+                                                            <span>Pending Bid</span>
+                                                        </ReactTooltip>
+                                                    </span>
+                                                }
+                                                
                                             </div>
                                             <div className="nft__item_info mb-0">
                                                 <span>

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Empty from "./Empty";
 import Loading from "./Loading/Loading";
+import ReactPlayer from 'react-player'
 
 export default function FolderList({data, _insNFT }) {
 
@@ -48,6 +49,7 @@ export default function FolderList({data, _insNFT }) {
         else setRestList([]);
     }
 
+    
     return (
         <>
             {!loaded && <Loading/>}
@@ -63,12 +65,18 @@ export default function FolderList({data, _insNFT }) {
                         <div className="nft__item m-0 pb-4">
                             <div className="nft__item_wrap" style={{height: `${height}px`}}>
                                 <a href={`/folder-explorer/${nft.folderIndex}`}>
-                                    <img onLoad={onImgLoad} src={nft.image} className="lazy nft__item_preview" alt=""/>
+                                    
+                                    {
+                                        (!nft.type || nft.type && (nft.type).toLowerCase() != "video") ? <img onLoad={onImgLoad} src={nft.image} className="lazy nft__item_preview" alt=""/>
+                                        :
+                                        <ReactPlayer url={nft.asset} config={{ youtube: { playerVars: { origin: 'https://www.youtube.com' } } }} className="lazy nft__item_preview w-100" />
+                                    }
+
                                 </a>
                             </div>
-                            <div className="nft__item_info mb-0">
+                            <div className="nft__item_info mb-0 mt-1">
                                 <span onClick={()=> window.open(nft.nftLink, "_self")}>
-                                    <h4>{nft.folder}</h4>
+                                    <h4><a href={`/folder-explorer/${nft.folderIndex}`} className="text-decoration-none text-white">{nft.folder}</a></h4>
                                 </span>
                             </div>
                         </div>

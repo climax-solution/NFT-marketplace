@@ -125,8 +125,8 @@ const Header= function() {
       if (user_data?.walletAddress) {
         const { _web3 } = await getWeb3();
         let balance = await _web3.eth.getBalance(user_data.walletAddress);
-        const accounts = await _web3.eth.getAccounts();
-        if ((accounts[0]).toLowerCase() != (user_data.walletAddress).toLowerCase()) {
+        let accounts = await _web3.eth.getAccounts();
+        if (!accounts.length || (accounts[0]).toLowerCase() != (user_data?.walletAddress).toLowerCase()) {
           localStorage.setItem("nftdevelopments-connected", JSON.stringify({ connected: false }));
           dispatch(WalletConnect());
         }
@@ -144,11 +144,17 @@ const Header= function() {
     useEffect(() => {
       if (window.ethereum) {
         const provider = window.ethereum;
-        provider.on("accountsChanged", (accounts) => {
-          if ((accounts[0]).toLowerCase() != (user_data?.walletAddress).toLowerCase()) {
+        provider.on("accountsChanged", async(accounts) => {
+          if (!accounts.length || (accounts[0]).toLowerCase() != (user_data?.walletAddress).toLowerCase()) {
             localStorage.setItem("nftdevelopments-connected", JSON.stringify({ connected: false }));
           }
           else {
+            const { _web3 } = await getWeb3();
+            let balance = await _web3.eth.getBalance(user_data.walletAddress);
+            balance = _web3.utils.fromWei(balance, "ether");
+            let diver = balance.indexOf('.') + 5;
+            balance = balance.slice(0, diver);
+            setETHBalance(balance);
             localStorage.setItem("nftdevelopments-connected", JSON.stringify({ connected: true }));
           }
           dispatch(WalletConnect());

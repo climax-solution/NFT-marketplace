@@ -198,7 +198,7 @@ export default function SellingNFT(props) {
                 className="row"
             >
                 { nfts.map( (nft, index) => (
-                    <div key={index} className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                    <div key={index} className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mt-3">
                         <div className="nft__item h-100 justify-content-between">
                             <div className="nft__item_wrap">
                                 <a>
