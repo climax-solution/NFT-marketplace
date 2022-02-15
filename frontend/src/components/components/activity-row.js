@@ -26,7 +26,6 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 const ActivityItem = ({ data }) => {
-    console.log(data);
     return (
         <>
             <GlobalStyles/>
