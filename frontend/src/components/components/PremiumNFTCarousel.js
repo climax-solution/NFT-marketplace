@@ -118,7 +118,7 @@ export default function ({ data, status, update }) {
                 walletAddress: initialUser?.walletAddress
             }
 
-            await axios.post('http://localhost:7060/activity/create-log', data).then(res =>{
+            await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).then(res =>{
 
             });
 
@@ -141,7 +141,7 @@ export default function ({ data, status, update }) {
       type: _act
     };
 
-    await axios.post("http://localhost:7060/activity/create-log", data).then(res => {
+    await axios.post("http://nftdevelopments.co.nz/activity/create-log", data).then(res => {
       let _list = [];
       list.map((item,index) => {
         const { liked } = item;

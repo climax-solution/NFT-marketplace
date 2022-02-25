@@ -78,7 +78,7 @@ export default function SellingNFT(props) {
                 walletAddress: initialUser.walletAddress
             }
             NotificationManager.success("Success");
-            await axios.post('http://localhost:7060/activity/create-log', data).then(res =>{
+            await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).then(res =>{
 
             });
         } catch(err) {
@@ -118,7 +118,7 @@ export default function SellingNFT(props) {
                 walletAddress: initialUser.walletAddress
             }
             await NotificationManager.success("Success");
-            await axios.post('http://localhost:7060/activity/create-log', data).then(res =>{
+            await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).then(res =>{
 
             });
         } catch(err) {
@@ -156,7 +156,7 @@ export default function SellingNFT(props) {
                 walletAddress: initialUser.walletAddress
             }
             NotificationManager.success("Success");
-            await axios.post('http://localhost:7060/activity/create-log', data).then(res =>{
+            await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).then(res =>{
 
             });
             // await this.getAllPhotos();

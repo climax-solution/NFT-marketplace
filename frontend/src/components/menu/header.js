@@ -324,7 +324,7 @@ const Header= function() {
                     <div className="logout">
                       { user_data?.walletAddress &&
                         <div id="de-click-menu-profile" className="de-menu-profile" onClick={() => btn_icon_pop(!showpop)} ref={refpop}>                           
-                            <img src={`http://localhost:7060/avatar/${userData.avatar ? userData.avatar : "empty-avatar.png"}`}  alt="" crossOrigin="true" className="index-avatar"/>
+                            <img src={`http://nftdevelopments.co.nz/avatar/${userData.avatar ? userData.avatar : "empty-avatar.png"}`}  alt="" crossOrigin="true" className="index-avatar"/>
                             {showpop && 
                               <div className="popshow">
                                 <div className="d-name">

@@ -53,7 +53,7 @@ const app = () => {
     const jwtToekn = localStorage.getItem("nftdevelopments-token");
     dispatch(UPDATE_LOADING_PROCESS(true));
     if (jwtToekn) {
-      await axios.post('http://localhost:7060/auth/check-authentication', {}, { headers :{ Authorization: JSON.parse(jwtToekn) } }).then(res => {
+      await axios.post('http://nftdevelopments.co.nz/auth/check-authentication', {}, { headers :{ Authorization: JSON.parse(jwtToekn) } }).then(res => {
         const { data } = res;
         dispatch(UPDATE_LOADING_PROCESS(false));
         dispatch(UPDATE_AUTH(data));

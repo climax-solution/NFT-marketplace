@@ -35,7 +35,7 @@ const Collection= function() {
     const { instanceMarketplace, _web3 } = await getWeb3();
     setWeb3(_web3);
     setMarketplace(instanceMarketplace);
-    await axios.post('http://localhost:7060/user/get-user-by-username', { username }).then(res => {
+    await axios.post('http://nftdevelopments.co.nz/user/get-user-by-username', { username }).then(res => {
       const { data } = res;
       setUserData(data);
     }).catch(err => {
@@ -101,7 +101,7 @@ const Collection= function() {
             <div className="d_profile">
               <div className="profile_avatar">
                   <div className="d_profile_img">
-                    <img src={`http://localhost:7060/avatar/${userData.avatar}`} className="ratio-1-1" alt="" crossOrigin="true"/>
+                    <img src={`http://nftdevelopments.co.nz/avatar/${userData.avatar}`} className="ratio-1-1" alt="" crossOrigin="true"/>
                     <i className="fa fa-check"></i>
                   </div>
                   

@@ -82,7 +82,7 @@ const Profile = function() {
     const token = localStorage.getItem("nftdevelopments-token");
     const _headers = {headers: {Authorization: JSON.parse(token)}}
     if (token) {
-      await axios.post('http://localhost:7060/user/get-user', {}, _headers).then(async(res) => {
+      await axios.post('http://nftdevelopments.co.nz/user/get-user', {}, _headers).then(async(res) => {
         dispatch(UPDATE_AUTH(res.data));
         const { _web3, instanceNFT, instanceMarketplace } = await getWeb3();
         setWeb3(_web3);
@@ -135,7 +135,7 @@ const Profile = function() {
   //     const token = localStorage.getItem("nftdevelopments-token");
   //     const _headers = {headers: {Authorization: JSON.parse(token)}}
       
-  //     await axios.post("http://localhost:7060/user/get-liked-nfts", {}, _headers).then(async(res) => {
+  //     await axios.post("http://nftdevelopments.co.nz/user/get-liked-nfts", {}, _headers).then(async(res) => {
   //       const { liked } = res.data;
   //       const final = liked;
   //       if (liked.length > 8) final = liked.slice(0, 8);
@@ -159,7 +159,7 @@ const Profile = function() {
       let fileData = new FormData();
       fileData.append("myfile", files[0]);
       await axios.post(
-        "http://localhost:7060/user/update-avatar",
+        "http://nftdevelopments.co.nz/user/update-avatar",
         fileData,
         {
           headers: {
@@ -187,7 +187,7 @@ const Profile = function() {
       return;
     }
 
-    await axios.post("http://localhost:7060/user/update-user", userData, _headers).then(res => {
+    await axios.post("http://nftdevelopments.co.nz/user/update-user", userData, _headers).then(res => {
       const { data } = res;
       dispatch(UPDATE_AUTH(data));
       NotificationManager.success("Updated profile successfully!");
@@ -218,7 +218,7 @@ const Profile = function() {
                         onMouseLeave={() => setOpenChange(false)}
                       >
                         <img
-                          src={`http://localhost:7060/avatar/${userData.avatar ? userData.avatar : "empty-avatar.png"}`}
+                          src={`http://nftdevelopments.co.nz/avatar/${userData.avatar ? userData.avatar : "empty-avatar.png"}`}
                           className="position-absolute index-avatar"
                           alt=""
                           crossOrigin="true"

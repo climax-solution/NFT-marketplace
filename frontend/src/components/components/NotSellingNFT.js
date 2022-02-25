@@ -103,7 +103,7 @@ export default function NotSellingNFT(props) {
                             walletAddress: initUserData.walletAddress
                         }
         
-                        await axios.post('http://localhost:7060/activity/create-log', data).then(res =>{
+                        await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).then(res =>{
         
                         });
                         dispatch(UPDATE_LOADING_PROCESS(false));
@@ -165,7 +165,7 @@ export default function NotSellingNFT(props) {
                             walletAddress: initUserData.walletAddress
                         }
                         NotificationManager.success("Success");
-                        await axios.post('http://localhost:7060/activity/create-log', data).catch(res => {});
+                        await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).catch(res => {});
                         dispatch(UPDATE_LOADING_PROCESS(false));
                     });
                   

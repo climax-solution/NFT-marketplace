@@ -106,7 +106,7 @@ const folderNFTs = (props) => {
                 const { data: nft } = await axios.get(`${item.nftData.tokenURI}`);
                 let likes = {};
                 try {
-                    const { data: like } = await axios.post(`http://localhost:7060/activity/get-likes`, {tokenID: item.nftData.tokenID, walletAddress: userData.walletAddress });
+                    const { data: like } = await axios.post(`http://nftdevelopments.co.nz/activity/get-likes`, {tokenID: item.nftData.tokenID, walletAddress: userData.walletAddress });
                     likes = like;
                 } catch(err) {
 
@@ -156,7 +156,7 @@ const folderNFTs = (props) => {
                     walletAddress: userData.walletAddress
                 }
 
-                await axios.post('http://localhost:7060/activity/create-log', data).then(res =>{
+                await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).then(res =>{
 
                 });
 
@@ -212,7 +212,7 @@ const folderNFTs = (props) => {
                             walletAddress: userData.walletAddress
                         }
         
-                        await axios.post('http://localhost:7060/activity/create-log', data).then(res =>{
+                        await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).then(res =>{
         
                         });
                         NotificationManager.success("Success Bid");
@@ -268,7 +268,7 @@ const folderNFTs = (props) => {
           type: _act
         };
     
-        await axios.post("http://localhost:7060/activity/create-log", data).then(res => {
+        await axios.post("http://nftdevelopments.co.nz/activity/create-log", data).then(res => {
           let _nfts = [];
           nfts.map((item,index) => {
             let { liked } = item;

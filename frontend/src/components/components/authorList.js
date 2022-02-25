@@ -31,7 +31,7 @@ const authorlist= ({ data }) => {
                                         <li key={index}>
                                             <div className="author_list_pp">
                                                 <span>
-                                                    <img className="lazy ratio-1-1" src={`http://localhost:7060/avatar/${item?.avatar}`} alt="" crossOrigin='true'/>
+                                                    <img className="lazy ratio-1-1" src={`http://nftdevelopments.co.nz/avatar/${item?.avatar}`} alt="" crossOrigin='true'/>
                                                     <i className="fa fa-check"></i>
                                                 </span>
                                             </div>                                    

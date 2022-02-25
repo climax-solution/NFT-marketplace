@@ -42,7 +42,7 @@ const Colection = function() {
             await axios.get(item.nftData.tokenURI).then(async(res) => {
                 const { data } = res;
                 let likes = { liked: 0};
-                await axios.post("http://localhost:7060/activity/get-likes", {tokenID: id, walletAddress: '' }).then(res => {
+                await axios.post("http://nftdevelopments.co.nz/activity/get-likes", {tokenID: id, walletAddress: '' }).then(res => {
                     likes = res.data;
                 }).catch(err => {})
                 setNFTData({ ...item, ...data, ...likes });

@@ -137,7 +137,7 @@ const homeone= () => {
       }
       for await (let item of mainList) {
         await axios.post(
-          'http://localhost:7060/activity/get-likes',
+          'http://nftdevelopments.co.nz/activity/get-likes',
           { tokenID: item.nftData.tokenID, walletAddress: initialUser?.walletAddress }
         ).then(res => {
           const { liked, lastAct } = res.data;
@@ -151,7 +151,7 @@ const homeone= () => {
   },[carouselUpdated, initialUser ])
 
   useEffect(async() => {
-    await axios.post('http://localhost:7060/activity/get-top-sellers').then(res => {
+    await axios.post('http://nftdevelopments.co.nz/activity/get-top-sellers').then(res => {
       setTopSeller(res.data);
       setSellerLoading(false);
     }).catch(err => {
