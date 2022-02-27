@@ -104,14 +104,14 @@ const folderNFTs = (props) => {
         for await (let item of sList) {
             try {
                 const { data: nft } = await axios.get(`${item.nftData.tokenURI}`);
-                let likes = {};
-                try {
-                    const { data: like } = await axios.post(`http://nftdevelopments.co.nz/activity/get-likes`, {tokenID: item.nftData.tokenID, walletAddress: userData.walletAddress });
-                    likes = like;
-                } catch(err) {
+                // let likes = {};
+                // try {
+                //     const { data: like } = await axios.post(`http://nftdevelopments.co.nz/activity/get-likes`, {tokenID: item.nftData.tokenID, walletAddress: userData.walletAddress });
+                //     likes = like;
+                // } catch(err) {
 
-                }
-                mainList.push({ ...item, ...nft, ...likes });
+                // }
+                mainList.push({ ...item, ...nft});
             } catch (err) {
                 console.log(err);
             }
@@ -247,40 +247,40 @@ const folderNFTs = (props) => {
         dispatch(UPDATE_LOADING_PROCESS(false));
     }
 
-    const updateLike = async(idx, act) => {
+    // const updateLike = async(idx, act) => {
 
-        if (!initialUser.walletAddress) {
-            NotificationManager.warning("Please log in");
-            return;
-        }
+    //     if (!initialUser.walletAddress) {
+    //         NotificationManager.warning("Please log in");
+    //         return;
+    //     }
         
-        if (!wallet_info) {
-            NotificationManager.warning("Please connect metamask");
-            return;
-        }
+    //     if (!wallet_info) {
+    //         NotificationManager.warning("Please connect metamask");
+    //         return;
+    //     }
 
 
-        if (!initialUser.walletAddress) return;
-        let _act = nfts[idx].liked > 0 && act == "9" ? "10" : "9";
-        const data = {
-          walletAddress: initialUser.walletAddress,
-          tokenID: nfts[idx].nftData.tokenID,
-          type: _act
-        };
+    //     if (!initialUser.walletAddress) return;
+    //     let _act = nfts[idx].liked > 0 && act == "9" ? "10" : "9";
+    //     const data = {
+    //       walletAddress: initialUser.walletAddress,
+    //       tokenID: nfts[idx].nftData.tokenID,
+    //       type: _act
+    //     };
     
-        await axios.post("http://nftdevelopments.co.nz/activity/create-log", data).then(res => {
-          let _nfts = [];
-          nfts.map((item,index) => {
-            let { liked } = item;
-            if (index == idx) {
-              _nfts.push({ ...item, liked: _act == "9" ? liked + 1 : liked - 1, lastAct: _act});
-            }
-            else _nfts.push(item);
-          })
+    //     await axios.post("http://nftdevelopments.co.nz/activity/create-log", data).then(res => {
+    //       let _nfts = [];
+    //       nfts.map((item,index) => {
+    //         let { liked } = item;
+    //         if (index == idx) {
+    //           _nfts.push({ ...item, liked: _act == "9" ? liked + 1 : liked - 1, lastAct: _act});
+    //         }
+    //         else _nfts.push(item);
+    //       })
 
-          setNFTLists(_nfts);
-        })
-    }
+    //       setNFTLists(_nfts);
+    //     })
+    // }
 
     return (
         <div>
@@ -366,12 +366,12 @@ const folderNFTs = (props) => {
                                                 <div className="nft__item_price">
                                                     {web3.utils.fromWei(price, 'ether')}<span>BNB</span>
                                                 </div>
-                                                <div
+                                                {/* <div
                                                     className="nft__item_like"
                                                     onClick={() => updateLike(index, nft.lastAct)}
                                                 >
                                                         <i className={`fa fa-heart ${nft.lastAct == "9" && nft.liked > 0 && "text-danger"}`}></i><span>{nft.liked}</span>
-                                                </div>
+                                                </div> */}
                                                 <div className="trade-btn-group mt-2">
                                                     { !nftOwner && nft.marketData.marketStatus && (
                                                         !nft.auctionData.existance

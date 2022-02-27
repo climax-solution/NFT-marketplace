@@ -176,7 +176,7 @@ export default function ({ data, status, update }) {
                                 </span>
                               </Outer>
                             </div>
-                            <div className="nft__item_info">
+                            <div className="nft__item_info mb-0">
                                 <span onClick={()=> window.open("/#", "_self")}>
                                     <h4>{item.nftName}</h4>
                                 </span>
@@ -185,12 +185,6 @@ export default function ({ data, status, update }) {
                                 </div>
                                 <div className="nft__item_action">
                                   { (item.nftData.owner).toLowerCase() != (initialUser.walletAddress).toLowerCase() && <span onClick={() => buyNow(item.nftData.tokenID)}>Buy now</span>}
-                                </div>
-                                <div
-                                  className="nft__item_like"
-                                  onClick={() => updateLike(index, item.lastAct)}
-                                >
-                                    <i className={`fa fa-heart ${item.lastAct == "9" && item.liked > 0 && "text-danger"}`}></i><span>{item.liked}</span>
                                 </div>
                             </div> 
                         </div>

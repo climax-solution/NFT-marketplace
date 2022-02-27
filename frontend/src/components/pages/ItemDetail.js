@@ -41,11 +41,11 @@ const Colection = function() {
             const item = await Marketplace.methods.getItemNFT(id).call();
             await axios.get(item.nftData.tokenURI).then(async(res) => {
                 const { data } = res;
-                let likes = { liked: 0};
-                await axios.post("http://nftdevelopments.co.nz/activity/get-likes", {tokenID: id, walletAddress: '' }).then(res => {
-                    likes = res.data;
-                }).catch(err => {})
-                setNFTData({ ...item, ...data, ...likes });
+                // let likes = { liked: 0};
+                // await axios.post("http://nftdevelopments.co.nz/activity/get-likes", {tokenID: id, walletAddress: '' }).then(res => {
+                //     likes = res.data;
+                // }).catch(err => {})
+                setNFTData({ ...item, ...data });
             }).catch(err => {
 
             })
@@ -97,7 +97,7 @@ const Colection = function() {
                                     <h2>{nftData.nftName}</h2>
                                     <div className="item_info_counts">
                                         <div className="item_info_type"><i className="fa fa-image"></i>{nftData.category}</div>
-                                        <div className="item_info_like"><i className="fa fa-heart"></i>{nftData.liked}</div>
+                                        {/* <div className="item_info_like"><i className="fa fa-heart"></i>{nftData.liked}</div> */}
                                     </div>
                                     <p>{nftData.nftDesc}</p>
 

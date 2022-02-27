@@ -56,7 +56,7 @@ const app = () => {
       await axios.post('http://nftdevelopments.co.nz/auth/check-authentication', {}, { headers :{ Authorization: JSON.parse(jwtToekn) } }).then(res => {
         const { data } = res;
         dispatch(UPDATE_LOADING_PROCESS(false));
-        dispatch(UPDATE_AUTH(data));
+        dispatch(UPDATE_AUTH(data ? data : {walletAddress: ''}));
       }).catch((err) => {
         dispatch(UPDATE_LOADING_PROCESS(false));
         dispatch(UPDATE_AUTH({
@@ -74,6 +74,7 @@ const app = () => {
 
   }, []);
 
+  console.log(userData);
   if (loadingProcessing)
     return (
       <div className='position-fixed d-flex w-100 h-100 justify-content-center align-items-center'>
