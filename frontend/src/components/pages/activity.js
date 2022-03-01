@@ -1,11 +1,12 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, Suspense, lazy} from 'react';
 import InfiniteScroll from "react-infinite-scroll-component";
-import Footer from '../components/footer';
 import { createGlobalStyle } from 'styled-components';
 import axios from 'axios';
-import ActivityItem from "../components/activity-row";
-import Loading from '../components/Loading/Loading';
-import Empty from '../components/Empty';
+
+const ActivityItem = lazy(() => import("../components/activity-row"));
+const Loading = lazy(() => import('../components/Loading/Loading'));
+const Empty = lazy(() => import('../components/Empty'));
+const Footer = lazy(() => import('../components/footer'));
 
 const GlobalStyles = createGlobalStyle`
   header#myHeader.navbar.white {
@@ -101,56 +102,58 @@ const Activity= function() {
 
   return (
     <div>
-      <GlobalStyles/>
+      <Suspense fallback={<div>Loading...</div>}>
+        <GlobalStyles/>
 
-      <section className='jumbotron breadcumb no-bg'>
-        <div className='mainbreadcumb'>
-          <div className='container'>
-            <div className='row m-10-hor'>
-              <div className='col-12'>
-                <h1 className='text-center'>Activity</h1>
+        <section className='jumbotron breadcumb no-bg'>
+          <div className='mainbreadcumb'>
+            <div className='container'>
+              <div className='row m-10-hor'>
+                <div className='col-12'>
+                  <h1 className='text-center'>Activity</h1>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className='container'>
-        <div className='row'>
+        <section className='container'>
+          <div className='row'>
 
-          <div className="col-md-4">
-            <span className="filter__l">Filter</span>
-            <span className="filter__r" onClick={() =>setActiveTab('')}>Reset</span>
-            <div className="spacer-half"></div>
-            <div className="clearfix"></div>
-            <ul className="activity-filter">
-                <li id='sale' className={activeTab === 0 ? "active" : ""} onClick={() => { setLogs([]); setActiveTab(0); }}><i className="fa fa-shopping-basket"></i>Sales</li>
-                <li id='like' className={activeTab === 1 ? "active" : ""} onClick={() => { setLogs([]); setActiveTab(1); }}><i className="fa fa-heart"></i>Likes</li>
-                <li id='offer' className={activeTab === 2 ? "active" : ""} onClick={() => { setLogs([]); setActiveTab(2); }}><i className="fa fa-gavel"></i>Offers</li>
-                <li id='follow' className={activeTab === 3 ? "active" : ""} onClick={() => { setLogs([]); setActiveTab(3); }}><i className="fa fa-cookie"></i>Followings</li>
-            </ul>
-          </div>
+            <div className="col-md-4">
+              <span className="filter__l">Filter</span>
+              <span className="filter__r" onClick={() =>setActiveTab('')}>Reset</span>
+              <div className="spacer-half"></div>
+              <div className="clearfix"></div>
+              <ul className="activity-filter">
+                  <li id='sale' className={activeTab === 0 ? "active" : ""} onClick={() => { setLogs([]); setActiveTab(0); }}><i className="fa fa-shopping-basket"></i>Sales</li>
+                  <li id='like' className={activeTab === 1 ? "active" : ""} onClick={() => { setLogs([]); setActiveTab(1); }}><i className="fa fa-heart"></i>Likes</li>
+                  <li id='offer' className={activeTab === 2 ? "active" : ""} onClick={() => { setLogs([]); setActiveTab(2); }}><i className="fa fa-gavel"></i>Offers</li>
+                  <li id='follow' className={activeTab === 3 ? "active" : ""} onClick={() => { setLogs([]); setActiveTab(3); }}><i className="fa fa-cookie"></i>Followings</li>
+              </ul>
+            </div>
 
-          <div className="col-md-8">
-              <InfiniteScroll
-                dataLength={items.length}
-                next={_loadNextPage}
-                hasMore={moreItems}
-                loader={<Loading/>}
-                className='activity-list'
-              >
+            <div className="col-md-8">
+                <InfiniteScroll
+                  dataLength={items.length}
+                  next={_loadNextPage}
+                  hasMore={moreItems}
+                  loader={<Loading/>}
+                  className='activity-list'
+                >
+                  {
+                    items.map((item, idx) => <ActivityItem key={idx} data={item}/>)
+                  }
+                </InfiniteScroll>
                 {
-                  items.map((item, idx) => <ActivityItem key={idx} data={item}/>)
+                  !items.length && <Empty/>
                 }
-              </InfiniteScroll>
-              {
-                !items.length && <Empty/>
-              }
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <Footer />
+        <Footer />
+      </Suspense>
     </div>
 
   );

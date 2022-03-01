@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, lazy, Suspense } from "react";
 import { createGlobalStyle } from 'styled-components';
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
@@ -6,13 +6,14 @@ import EmailValidator from 'email-validator';
 import { NotificationManager } from "react-notifications";
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import useOnclickOutside from "react-cool-onclickoutside";
-import SellingNFT from '../components/SellingNFT';
-import NotSellingNFT from '../components/NotSellingNFT';
-import LikedNFT from '../components/LikedNFT';
-import Loading from "../components/Loading/Loading";
-import Footer from '../components/footer';
 import getWeb3 from "../../utils/getWeb3";
 import { UPDATE_AUTH } from "../../store/action/auth.action";
+
+const SellingNFT = lazy(() => import('../components/SellingNFT'));
+const NotSellingNFT = lazy(() => import('../components/NotSellingNFT'));
+const LikedNFT = lazy(() => import('../components/LikedNFT'));
+const Loading = lazy(() => import("../components/Loading/Loading"));
+const Footer = lazy(() => import('../components/footer'));
 
 const GlobalStyles = createGlobalStyle`
   header#myHeader.navbar.white {
@@ -203,257 +204,259 @@ const Profile = function() {
 
   return (
     <div>
-    <GlobalStyles/>
+      <Suspense fallback={<div>Loading...</div>}>
+        <GlobalStyles/>
 
-      <section className='container no-bottom'>
-        <div className='row'>
-          <div className='spacer-double'></div>
-          <div className="col-md-12">
-            <div className="d_profile de-flex">
-              <div className="de-flex-col">
-                  <div className="profile_avatar d-flex" ref={ref}>
-                      <div
-                        className="avatar-image position-relative w-50 overflow-hidden"
-                        onMouseEnter={() => setOpenChange(true)}
-                        onMouseLeave={() => setOpenChange(false)}
-                      >
-                        <img
-                          src={`http://nftdevelopments.co.nz/avatar/${userData.avatar ? userData.avatar : "empty-avatar.png"}`}
-                          className="position-absolute index-avatar"
-                          alt=""
-                          crossOrigin="true"
-                          />
-                        { openChange &&
-                          <label className="avatar-change">
-                            <i className="fa fa-edit edit-btn m-0 d-inline-block"/>
-                            <input
-                              type="file"
-                              accept="image/*"
-                              onChange={updateAvatar}
-                              hidden
+        <section className='container no-bottom'>
+          <div className='row'>
+            <div className='spacer-double'></div>
+            <div className="col-md-12">
+              <div className="d_profile de-flex">
+                <div className="de-flex-col">
+                    <div className="profile_avatar d-flex" ref={ref}>
+                        <div
+                          className="avatar-image position-relative w-50 overflow-hidden"
+                          onMouseEnter={() => setOpenChange(true)}
+                          onMouseLeave={() => setOpenChange(false)}
+                        >
+                          <img
+                            src={`http://nftdevelopments.co.nz/avatar/${userData.avatar ? userData.avatar : "empty-avatar.png"}`}
+                            className="position-absolute index-avatar"
+                            alt=""
+                            crossOrigin="true"
                             />
-                          </label>
-                        }
-                      </div>
-                      <div className="profile_name w-50">
-                          {
-                            Object.keys(userData).length &&
-                            <h4>
-                                {`${userData.firstName}  ${userData.lastName}`}
-                                <span className="profile_username">@{userData.username}</span>
-                                <span id="wallet" className="profile_wallet mt-1">{userData.walletAddress && ((userData.walletAddress).substr(0, 4) + '...' + (userData.walletAddress).substr(-4))}</span>
-                                <CopyToClipboard
-                                  text={userData.walletAddress}
-                                  onCopy={copyAlert}
-                                >
-                                  <button id="btn_copy" className="position-relative ms-2">Copy</button>
-                                </CopyToClipboard>
-                            </h4>
+                          { openChange &&
+                            <label className="avatar-change">
+                              <i className="fa fa-edit edit-btn m-0 d-inline-block"/>
+                              <input
+                                type="file"
+                                accept="image/*"
+                                onChange={updateAvatar}
+                                hidden
+                              />
+                            </label>
                           }
-                      </div>
-                  </div>
-              </div>
-              {/* <div className="profile_follow de-flex">
-                  <div className="de-flex-col">
-                      <div className="profile_follower">500 followers</div>
-                  </div>
-                  <div className="de-flex-col">
-                      <span className="btn-main">Follow</span>
-                  </div>
-              </div> */}
+                        </div>
+                        <div className="profile_name w-50">
+                            {
+                              Object.keys(userData).length &&
+                              <h4>
+                                  {`${userData.firstName}  ${userData.lastName}`}
+                                  <span className="profile_username">@{userData.username}</span>
+                                  <span id="wallet" className="profile_wallet mt-1">{userData.walletAddress && ((userData.walletAddress).substr(0, 4) + '...' + (userData.walletAddress).substr(-4))}</span>
+                                  <CopyToClipboard
+                                    text={userData.walletAddress}
+                                    onCopy={copyAlert}
+                                  >
+                                    <button id="btn_copy" className="position-relative ms-2">Copy</button>
+                                  </CopyToClipboard>
+                              </h4>
+                            }
+                        </div>
+                    </div>
+                </div>
+                {/* <div className="profile_follow de-flex">
+                    <div className="de-flex-col">
+                        <div className="profile_follower">500 followers</div>
+                    </div>
+                    <div className="de-flex-col">
+                        <span className="btn-main">Follow</span>
+                    </div>
+                </div> */}
 
-              </div>
-          </div>
-        </div>
-      </section>
-
-      <section className='container no-top'>
-        <div className='row'>
-          <div className='col-lg-12'>
-              <div className="items_filter">
-                <ul className="de_nav text-left">
-                    <li id='Mainbtn' className={activeTab == 0 ? 'active' : ''}><span onClick={() => setActiveTab(0)}>On Sale</span></li>
-                    <li id='Mainbtn1' className={activeTab == 1 ? 'active' : ''}><span onClick={() => setActiveTab(1)}>Not Sale</span></li>
-                    {/* <li id='Mainbtn2' className=""><span onClick={handleBtnClick2}>Liked</span></li> */}
-                    <li id='Mainbtn3' className={activeTab == 3 ? 'active' : ''}><span onClick={() => setActiveTab(3)}>User Info</span></li>
-                </ul>
+                </div>
             </div>
           </div>
-        </div>
-        {
-          isLoading && <Loading/>
-        }
+        </section>
 
-        {
-          !isLoading &&
-            (activeTab == 0 && (
-              <div id='zero1' className='onStep fadeIn'>
-              <SellingNFT
-                data={sellingNFT}
-                _web3={web3}
-                _insNFT={NFT}
-                _insMarketplace={Marketplace}
-                updateStatus={setSellUpdated}
-                status={sellUpdated}
-              />
+        <section className='container no-top'>
+          <div className='row'>
+            <div className='col-lg-12'>
+                <div className="items_filter">
+                  <ul className="de_nav text-left">
+                      <li id='Mainbtn' className={activeTab == 0 ? 'active' : ''}><span onClick={() => setActiveTab(0)}>On Sale</span></li>
+                      <li id='Mainbtn1' className={activeTab == 1 ? 'active' : ''}><span onClick={() => setActiveTab(1)}>Not Sale</span></li>
+                      {/* <li id='Mainbtn2' className=""><span onClick={handleBtnClick2}>Liked</span></li> */}
+                      <li id='Mainbtn3' className={activeTab == 3 ? 'active' : ''}><span onClick={() => setActiveTab(3)}>User Info</span></li>
+                  </ul>
               </div>
-            ))
-        }
-        {
-          !isLoading &&
-            (activeTab == 1  && (
-              <div id='zero2' className='onStep fadeIn'>
-              <NotSellingNFT
-                data={notSellingNFT}
-                _web3={web3}
-                _insNFT={NFT}
-                _insMarketplace={Marketplace}
-                updateStatus={setNotSellUpdated}
-                status={notSellUpdated}
-              />
-              </div>
-            ))
-        }
-        {
-          !isLoading &&
-            (activeTab == 2  && (
-              <div id='zero3' className='onStep fadeIn'>
-              <LikedNFT
-                data={likedNFT}
-                _web3={web3}
-                _insNFT={NFT}
-                _insMarketplace={Marketplace}
-              />
-              </div>
-            ))
-        }
+            </div>
+          </div>
+          {
+            isLoading && <Loading/>
+          }
 
-        {
-          !isLoading &&
-            (
-              activeTab == 3 && Object.keys(userData).length && (
-              <div id='zero4' className='onStep fadeIn'>
-                <div id="form-create-item" className="form-border row justify-content-center" action="#">
-                  <div className="field-set col-md-8 mg-auto p-4 user-info">
-                      <div className="spacer-single"></div>
-                      <div className="row">
-                        <div className="col-md-6 col-12">
-                          <span>First Name</span>
-                          <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Please enter your first name"
-                            value={userData.firstName}
-                            onChange={(e) => setUserData({ ...userData, firstName: e.target.value })}
+          {
+            !isLoading &&
+              (activeTab == 0 && (
+                <div id='zero1' className='onStep fadeIn'>
+                <SellingNFT
+                  data={sellingNFT}
+                  _web3={web3}
+                  _insNFT={NFT}
+                  _insMarketplace={Marketplace}
+                  updateStatus={setSellUpdated}
+                  status={sellUpdated}
+                />
+                </div>
+              ))
+          }
+          {
+            !isLoading &&
+              (activeTab == 1  && (
+                <div id='zero2' className='onStep fadeIn'>
+                <NotSellingNFT
+                  data={notSellingNFT}
+                  _web3={web3}
+                  _insNFT={NFT}
+                  _insMarketplace={Marketplace}
+                  updateStatus={setNotSellUpdated}
+                  status={notSellUpdated}
+                />
+                </div>
+              ))
+          }
+          {
+            !isLoading &&
+              (activeTab == 2  && (
+                <div id='zero3' className='onStep fadeIn'>
+                <LikedNFT
+                  data={likedNFT}
+                  _web3={web3}
+                  _insNFT={NFT}
+                  _insMarketplace={Marketplace}
+                />
+                </div>
+              ))
+          }
+
+          {
+            !isLoading &&
+              (
+                activeTab == 3 && Object.keys(userData).length && (
+                <div id='zero4' className='onStep fadeIn'>
+                  <div id="form-create-item" className="form-border row justify-content-center" action="#">
+                    <div className="field-set col-md-8 mg-auto p-4 user-info">
+                        <div className="spacer-single"></div>
+                        <div className="row">
+                          <div className="col-md-6 col-12">
+                            <span>First Name</span>
+                            <input
+                              type="text"
+                              className="form-control"
+                              placeholder="Please enter your first name"
+                              value={userData.firstName}
+                              onChange={(e) => setUserData({ ...userData, firstName: e.target.value })}
+                            />
+                          </div>
+                          <div className="col-md-6 col-12">
+                            <span>Last Name</span>
+                            <input
+                              type="text"
+                              className="form-control"
+                              placeholder="Please enter your last name"
+                              value={userData.lastName}
+                              onChange={(e) => setUserData({ ...userData, lastName: e.target.value })}
+                            />
+                          </div>
+                          <div className="col-md-6 col-12">
+                            <span>Email</span>
+                            <input
+                              type="email"
+                              className="form-control"
+                              placeholder="Please enter your email address"
+                              value={userData.email}
+                              onChange={(e) => setUserData({ ...userData, email: e.target.value })}
                           />
+                          </div>
+                          <div className="col-md-6 col-12">
+                            <span>Facebook</span>
+                            <input
+                              type="text"
+                              className="form-control"
+                              placeholder="Please enter your facebook profile link"
+                              value={userData.facebook}
+                              onChange={(e) => setUserData({ ...userData, facebook: e.target.value })}
+                            />
+                          </div>
+                          <div className="col-md-6 col-12">
+                            <span>Instagram</span>
+                            <input
+                              type="text"
+                              className="form-control"
+                              placeholder="Please enter your instagram profile link"
+                              value={userData.instagram}
+                              onChange={(e) => setUserData({ ...userData, instagram: e.target.value })}
+                            />
+                          </div>
+                          <div className="col-md-6 col-12">
+                            <span>Twitter</span>
+                            <input
+                              type="text"
+                              className="form-control"
+                              placeholder="Please enter your twitter profile link"
+                              value={userData.twitter}
+                              onChange={(e) => setUserData({ ...userData, twitter: e.target.value })}
+                            />
+                          </div>
+                          <div className="col-md-6 col-12">
+                            <span>LinkedIn</span>
+                            <input
+                              type="text"
+                              className="form-control"
+                              placeholder="Please enter your linkedin profile link"
+                              value={userData.linkedin}
+                              onChange={(e) => setUserData({ ...userData, linkedin: e.target.value })}
+                            />
+                          </div>
+                          <div className="col-md-6 col-12">
+                            <span>Tik tok</span>
+                            <input
+                              type="text"
+                              className="form-control"
+                              placeholder="Please enter your tiktok profile link"
+                              value={userData.tiktok}
+                              onChange={(e) => setUserData({ ...userData, tiktok: e.target.value })}
+                            />
+                          </div>
+                          <div className="col-md-6 col-12">
+                            <span>Password</span>
+                            <input
+                              type="password"
+                              className="form-control"
+                              placeholder="Please enter your password"
+                              value={userData.password}
+                              onChange={(e) => setUserData({ ...userData, password: e.target.value })}
+                            />
+                          </div>
+                          <div className="col-md-6 col-12">
+                            <span>Confirm Password</span>
+                            <input
+                              type="password"
+                              className="form-control"
+                              placeholder="Please confirm password"
+                              value={userData.confirmPassword}
+                              onChange={(e) => setUserData({ ...userData, confirmPassword: e.target.value })}
+                            />
+                          </div>
                         </div>
-                        <div className="col-md-6 col-12">
-                          <span>Last Name</span>
-                          <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Please enter your last name"
-                            value={userData.lastName}
-                            onChange={(e) => setUserData({ ...userData, lastName: e.target.value })}
-                          />
-                        </div>
-                        <div className="col-md-6 col-12">
-                          <span>Email</span>
-                          <input
-                            type="email"
-                            className="form-control"
-                            placeholder="Please enter your email address"
-                            value={userData.email}
-                            onChange={(e) => setUserData({ ...userData, email: e.target.value })}
+                        <input
+                          type="button"
+                          id="submit"
+                          className="btn-main"
+                          value="Update profile"
+                          onClick={updateUserInfo}
                         />
-                        </div>
-                        <div className="col-md-6 col-12">
-                          <span>Facebook</span>
-                          <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Please enter your facebook profile link"
-                            value={userData.facebook}
-                            onChange={(e) => setUserData({ ...userData, facebook: e.target.value })}
-                          />
-                        </div>
-                        <div className="col-md-6 col-12">
-                          <span>Instagram</span>
-                          <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Please enter your instagram profile link"
-                            value={userData.instagram}
-                            onChange={(e) => setUserData({ ...userData, instagram: e.target.value })}
-                          />
-                        </div>
-                        <div className="col-md-6 col-12">
-                          <span>Twitter</span>
-                          <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Please enter your twitter profile link"
-                            value={userData.twitter}
-                            onChange={(e) => setUserData({ ...userData, twitter: e.target.value })}
-                          />
-                        </div>
-                        <div className="col-md-6 col-12">
-                          <span>LinkedIn</span>
-                          <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Please enter your linkedin profile link"
-                            value={userData.linkedin}
-                            onChange={(e) => setUserData({ ...userData, linkedin: e.target.value })}
-                          />
-                        </div>
-                        <div className="col-md-6 col-12">
-                          <span>Tik tok</span>
-                          <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Please enter your tiktok profile link"
-                            value={userData.tiktok}
-                            onChange={(e) => setUserData({ ...userData, tiktok: e.target.value })}
-                          />
-                        </div>
-                        <div className="col-md-6 col-12">
-                          <span>Password</span>
-                          <input
-                            type="password"
-                            className="form-control"
-                            placeholder="Please enter your password"
-                            value={userData.password}
-                            onChange={(e) => setUserData({ ...userData, password: e.target.value })}
-                          />
-                        </div>
-                        <div className="col-md-6 col-12">
-                          <span>Confirm Password</span>
-                          <input
-                            type="password"
-                            className="form-control"
-                            placeholder="Please confirm password"
-                            value={userData.confirmPassword}
-                            onChange={(e) => setUserData({ ...userData, confirmPassword: e.target.value })}
-                          />
-                        </div>
-                      </div>
-                      <input
-                        type="button"
-                        id="submit"
-                        className="btn-main"
-                        value="Update profile"
-                        onClick={updateUserInfo}
-                      />
+                    </div>
                   </div>
                 </div>
-              </div>
+                )
               )
-            )
-        }
-      </section>
+          }
+        </section>
 
-      <Footer />
+        <Footer />
+      </Suspense>
     </div>
   );
 }

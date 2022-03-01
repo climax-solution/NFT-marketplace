@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, lazy, Suspense } from 'react';
 import axios from "axios";
-import Particle from '../components/Particle';
-import SliderMainParticle from '../components/SliderMainParticle';
-import FeatureBox from '../components/FeatureBox';
-import CarouselCollection from '../components/CarouselCollection';
-import PremiumNFTCarousel from '../components/PremiumNFTCarousel';
-import AuthorList from '../components/authorList';
-import Footer from '../components/footer';
 import { createGlobalStyle } from 'styled-components';
-import getWeb3 from "../../utils/getWeb3";
-import PremiumNFTLoading from '../components/Loading/PremiumNFTLoading';
-import TopSellerLoading from '../components/Loading/TopSellerLoading';
 import { useSelector } from 'react-redux';
+import getWeb3 from "../../utils/getWeb3";
+
+const Particle = lazy(() => import('../components/Particle'));
+const SliderMainParticle = lazy(() => import('../components/SliderMainParticle'));
+const FeatureBox = lazy(() => import('../components/FeatureBox'));
+const PremiumNFTCarousel = lazy(() => import('../components/PremiumNFTCarousel'));
+const AuthorList = lazy(() => import('../components/authorList'));
+const Footer = lazy(() => import('../components/footer'));
+const PremiumNFTLoading = lazy(() => import('../components/Loading/PremiumNFTLoading'));
+const TopSellerLoading = lazy(() => import('../components/Loading/TopSellerLoading'));
 
 const GlobalStyles = createGlobalStyle`
   header#myHeader .logo .d-block{
@@ -115,7 +115,6 @@ const homeone= () => {
   const initialUser = useSelector(({auth}) => auth.user);
   const [topPreimumNFTs, setTopPreimumNFTs] = useState([]);
   const [topSeller, setTopSeller] = useState([]);
-  const [hotCollection, setHotCollection] = useState([]);
   const [carouselLoading, setCarouselLoading] = useState(true);
   const [sellerLoading, setSellerLoading] = useState(true);
   const [carouselUpdated, setCarouselUpdated] = useState(false);
@@ -161,8 +160,9 @@ const homeone= () => {
 
   return (
     <div>
-    <GlobalStyles />
-        <section className="jumbotron no-bg" style={{backgroundImage: `url(${'./img/background/8.jpg'})`}}>
+      <Suspense fallback={<div>Loading...</div>}>
+        <GlobalStyles />
+        <section className="jumbotron no-bg" style={{backgroundImage: `url(${'./img/background/bg.webp'})`}}>
          <Particle/>
            <SliderMainParticle/>
         </section>
@@ -199,8 +199,8 @@ const homeone= () => {
           </div>
         </section>
   
-      <Footer />
-  
+        <Footer />
+      </Suspense>
     </div>
   )
 }

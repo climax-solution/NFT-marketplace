@@ -7,9 +7,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import useOnclickOutside from "react-cool-onclickoutside";
 import { NotificationManager } from "react-notifications";
 import { useSelector, useDispatch } from "react-redux";
-import StyledHeader from "../Styles";
+import "../Styles";
 import { UPDATE_AUTH } from "../../store/action/auth.action";
-import axios from "axios";
 import getWeb3 from "../../utils/getWeb3";
 import { WalletConnect } from "../../store/action/wallet.action";
 

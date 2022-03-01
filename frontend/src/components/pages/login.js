@@ -63,7 +63,7 @@ const login = () => {
     <div>
     <GlobalStyles/>
 
-      <section className='jumbotron breadcumb no-bg' style={{backgroundImage: `url(${'./img/background/6.jpg'})`}}>
+      <section className='jumbotron breadcumb no-bg' style={{backgroundImage: `url(${'./img/background/bg.webp'})`}}>
         <div className='mainbreadcumb'>
           <div className='container'>
             <div className='row align-items-center px-0'>

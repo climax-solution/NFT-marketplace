@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, lazy, Suspense } from 'react';
 import axios from "axios";
-import Select from 'react-select'
+import Select from 'react-select';
 import { createGlobalStyle } from 'styled-components';
-import FolderList from '../components/FolderList';
-import Footer from '../components/footer';
-import getWeb3 from '../../utils/getWeb3';
-import categoryOptions from "../../config/category.json";
-import Loading from '../components/Loading/Loading';
+
+const FolderList = lazy(() => import('../components/FolderList'));
+const Footer = lazy(() => import('../components/footer'));
+const getWeb3 = lazy(() => import('../../utils/getWeb3'));
+const categoryOptions = lazy(() => import("../../config/category.json"));
+const Loading = lazy(() => import('../components/Loading/Loading'));
 
 const customStyles = {
   option: (base, state) => ({
@@ -114,71 +115,73 @@ const explore = () => {
 
   return(
     <div>
-      <GlobalStyles/>
-      <section className='jumbotron breadcumb no-bg'>
-        <div className='mainbreadcumb'>
-          <div className='container'>
-            <div className='row m-10-hor'>
-              <div className='col-12'>
-                <h1 className='text-center'>Explore</h1>
+      <Suspense fallback={<div>Loading...</div>}>
+        <GlobalStyles/>
+        <section className='jumbotron breadcumb no-bg'>
+          <div className='mainbreadcumb'>
+            <div className='container'>
+              <div className='row m-10-hor'>
+                <div className='col-12'>
+                  <h1 className='text-center'>Explore</h1>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <section className='container'>
-        <div className='row'>
-          <div className='col-lg-12'>
-              <div className="items_filter justify-content-between">
-                <div className="row form-dark" id="form_quick_search" name="form_quick_search">
-                    <div className="col">
-                        <input
-                          className="form-control"
-                          id="name_1"
-                          name="name_1"
-                          placeholder="search item here..."
-                          type="text"
-                          value={tmpKwd}
-                          onChange={(e) => setTmpKwd(e.target.value)}
-                        />
-                        <button
-                          id="btn-submit"
-                          onClick={() => {
-                            setRealKwd(tmpKwd);
-                            setFolderList([]);
-                          }}
-                        >
-                          <i className="fa fa-search bg-color-secondary"></i>
-                        </button>
-                        <div className="clearfix"></div>
-                    </div>
-                </div>
-                <div className='dropdownSelect one'>
-                  <Select
-                    className='select1'
-                    styles={customStyles}
-                    menuContainerStyle={{'zIndex': 999}}
-                    value={activeCategory}
-                    options={categoryOptions}
-                    onChange={(value) => {
-                      setCategory(value);
-                      setFolderList([]);
-                    }}
-                  />
-                </div>
-                {/* <div className='dropdownSelect two'><Select className='select1' styles={customStyles} defaultValue={options1[0]} options={options1} /></div> */}
-                {/* <div className='dropdownSelect three'><Select className='select1' styles={customStyles} defaultValue={options2[0]} options={options2} /></div> */}
+        <section className='container'>
+          <div className='row'>
+            <div className='col-lg-12'>
+                <div className="items_filter justify-content-between">
+                  <div className="row form-dark" id="form_quick_search" name="form_quick_search">
+                      <div className="col">
+                          <input
+                            className="form-control"
+                            id="name_1"
+                            name="name_1"
+                            placeholder="search item here..."
+                            type="text"
+                            value={tmpKwd}
+                            onChange={(e) => setTmpKwd(e.target.value)}
+                          />
+                          <button
+                            id="btn-submit"
+                            onClick={() => {
+                              setRealKwd(tmpKwd);
+                              setFolderList([]);
+                            }}
+                          >
+                            <i className="fa fa-search bg-color-secondary"></i>
+                          </button>
+                          <div className="clearfix"></div>
+                      </div>
+                  </div>
+                  <div className='dropdownSelect one'>
+                    <Select
+                      className='select1'
+                      styles={customStyles}
+                      menuContainerStyle={{'zIndex': 999}}
+                      value={activeCategory}
+                      options={categoryOptions}
+                      onChange={(value) => {
+                        setCategory(value);
+                        setFolderList([]);
+                      }}
+                    />
+                  </div>
+                  {/* <div className='dropdownSelect two'><Select className='select1' styles={customStyles} defaultValue={options1[0]} options={options1} /></div> */}
+                  {/* <div className='dropdownSelect three'><Select className='select1' styles={customStyles} defaultValue={options2[0]} options={options2} /></div> */}
+              </div>
             </div>
           </div>
-        </div>
-        {
-          itemLoading ? <Loading/> : <FolderList data={folderList} _insNFT={NFT}/>
-        }
-      </section>
+          {
+            itemLoading ? <Loading/> : <FolderList data={folderList} _insNFT={NFT}/>
+          }
+        </section>
 
 
-      <Footer />
+        <Footer />
+      </Suspense>
     </div>
   )
 };

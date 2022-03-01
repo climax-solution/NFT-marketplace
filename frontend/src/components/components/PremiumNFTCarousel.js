@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, lazy, Suspense } from "react";
 import Slider from "react-slick";
 import styled, { createGlobalStyle } from "styled-components";
-import Empty from "./Empty";
 import getWeb3 from "../../utils/getWeb3";
-import PremiumNFTLoading from './Loading/PremiumNFTLoading';
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import axios from "axios";
@@ -12,6 +10,9 @@ import { NotificationManager } from "react-notifications";
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { UPDATE_LOADING_PROCESS } from "../../store/action/auth.action";
+
+const PremiumNFTLoading = lazy(() => import('./Loading/PremiumNFTLoading'));
+const Empty = lazy(() => import("./Empty"));
 
 const Outer = styled.div`
   display: flex;
@@ -156,47 +157,49 @@ export default function ({ data, status, update }) {
 
   return (
     <div className='nft'>
-      <GlobalStyles/>
-      { carouselLoading && <PremiumNFTLoading/> }
-      {
-        !carouselLoading && (
-          <Slider {...settings}>
-            {
-              list.map((item, index) => {
-                const { auctionData: auction, marketData: market } = item;
-                const price = !auction.existance ? market.price : (auction.currentBidPrice ? auction.currentBidPrice : auction.minPrice);
-                return (
-                  <div className='itm' key={index}>
-                    <div className="d-item">
-                        <div className="nft__item">
-                            <div className="nft__item_wrap">
-                              <Outer>
-                                <span>
-                                    <img src={item.image} className="lazy nft__item_preview" alt=""/>
-                                </span>
-                              </Outer>
-                            </div>
-                            <div className="nft__item_info mb-0">
-                                <span onClick={()=> window.open("/#", "_self")}>
-                                    <h4>{item.nftName}</h4>
-                                </span>
-                                <div className="nft__item_price">
-                                    {web3.utils.fromWei(price)} BNB
-                                </div>
-                                <div className="nft__item_action">
-                                  { (item.nftData.owner).toLowerCase() != (initialUser.walletAddress).toLowerCase() && <span onClick={() => buyNow(item.nftData.tokenID)}>Buy now</span>}
-                                </div>
-                            </div> 
-                        </div>
+      <Suspense fallback={<div>Loading...</div>}>
+        <GlobalStyles/>
+        { carouselLoading && <PremiumNFTLoading/> }
+        {
+          !carouselLoading && (
+            <Slider {...settings}>
+              {
+                list.map((item, index) => {
+                  const { auctionData: auction, marketData: market } = item;
+                  const price = !auction.existance ? market.price : (auction.currentBidPrice ? auction.currentBidPrice : auction.minPrice);
+                  return (
+                    <div className='itm' key={index}>
+                      <div className="d-item">
+                          <div className="nft__item">
+                              <div className="nft__item_wrap">
+                                <Outer>
+                                  <span>
+                                      <img src={item.image} className="lazy nft__item_preview" alt=""/>
+                                  </span>
+                                </Outer>
+                              </div>
+                              <div className="nft__item_info mb-0">
+                                  <span onClick={()=> window.open("/#", "_self")}>
+                                      <h4>{item.nftName}</h4>
+                                  </span>
+                                  <div className="nft__item_price">
+                                      {web3.utils.fromWei(price)} BNB
+                                  </div>
+                                  <div className="nft__item_action">
+                                    { (item.nftData.owner).toLowerCase() != (initialUser.walletAddress).toLowerCase() && <span onClick={() => buyNow(item.nftData.tokenID)}>Buy now</span>}
+                                  </div>
+                              </div> 
+                          </div>
+                      </div>
                     </div>
-                  </div>
-                )
-              })
-            }
-          </Slider>
-        )
-      }
-      { !list.length && !carouselLoading && <Empty/> }
+                  )
+                })
+              }
+            </Slider>
+          )
+        }
+        { !list.length && !carouselLoading && <Empty/> }
+        </Suspense>
     </div>
   )
 }
