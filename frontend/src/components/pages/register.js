@@ -43,7 +43,7 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 
-const register= () => {
+const Register= () => {
 
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -319,4 +319,4 @@ const register= () => {
 
     );
 }
-export default register;
+export default Register;

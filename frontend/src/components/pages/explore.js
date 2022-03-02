@@ -1,10 +1,10 @@
 import React, { useEffect, useState, lazy, Suspense } from 'react';
 import Select from 'react-select';
 import { createGlobalStyle } from 'styled-components';
+import getWeb3 from '../../utils/getWeb3';
 
 const FolderList = lazy(() => import('../components/FolderList'));
 const Footer = lazy(() => import('../components/footer'));
-const getWeb3 = lazy(() => import('../../utils/getWeb3'));
 const categoryOptions = lazy(() => import("../../config/category.json"));
 const Loading = lazy(() => import('../components/Loading/Loading'));
 

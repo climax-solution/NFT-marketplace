@@ -2,7 +2,6 @@ import React, { useEffect, useState, Fragment } from "react";
 import Breakpoint, { BreakpointProvider, setDefaultBreakpoints } from "react-socks";
 import { createGlobalStyle } from 'styled-components';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { header } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import useOnclickOutside from "react-cool-onclickoutside";
 import { NotificationManager } from "react-notifications";
@@ -14,7 +13,7 @@ import { WalletConnect } from "../../store/action/wallet.action";
 const GlobalStyles = createGlobalStyle`
   .navbar {
     .light-logo {
-      width: 130px;
+      width: 100px;
       height: 70px;
     }
     .mainside{
@@ -79,7 +78,7 @@ const Header= function() {
 
     const [ethBalance, setETHBalance] = useState(0);
     const [userData, setUserData] = useState({});
-    const [openMenu, setOpenMenu] = React.useState(false);
+    const [openMenu, setOpenMenu] = useState(false);
     const navigate = useNavigate();
 
     const closeMenu = () => {

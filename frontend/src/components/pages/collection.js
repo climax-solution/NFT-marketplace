@@ -20,7 +20,6 @@ const Collection= function() {
   const params = useParams();
   const navigate = useNavigate();
   const [Marketplace, setMarketplace] = useState(null);
-  const [web3, setWeb3] = useState(null);
   const [userData, setUserData] = useState({});
   const [nfts, setNFTs] = useState([]);
   const [restList, setRestList] = useState([]);
@@ -28,8 +27,7 @@ const Collection= function() {
 
   useEffect(async () => {
     const { username } = params;
-    const { instanceMarketplace, _web3 } = await getWeb3();
-    setWeb3(_web3);
+    const { instanceMarketplace } = await getWeb3();
     setMarketplace(instanceMarketplace);
     await axios.post('http://nftdevelopments.co.nz/user/get-user-by-username', { username }).then(res => {
       const { data } = res;

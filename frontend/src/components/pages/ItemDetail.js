@@ -14,35 +14,20 @@ const GlobalStyles = createGlobalStyle`
       border-color: #4e4e4e !important;
   }
 `;
-const Colection = function() {
+
+const NFTItem = function() {
 
     const params = useParams();
-    const [web3, setWeb3] = useState(null);
-    const [NFT, setNFT] = useState(null);
-    const [Marketplace, setMarketplace] = useState(null);
-    const [openMenu, setOpenMenu] = React.useState(true);
-    const [openMenu1, setOpenMenu1] = React.useState(false);
     const [nftData, setNFTData] = useState({});
     const [loading, setLoading] = useState(true);
 
     useEffect(async() => {
-        const { _web3, instanceNFT, instanceMarketplace } = await getWeb3();
-        setWeb3(_web3);
-        setNFT(instanceNFT);
-        setMarketplace(instanceMarketplace);
-    },[])
-
-    useEffect(async() => {
-        if (!Marketplace) return;
+        const { instanceMarketplace: Marketplace } = await getWeb3();
         try {
             const { id } = params;
             const item = await Marketplace.methods.getItemNFT(id).call();
             await axios.get(item.nftData.tokenURI).then(async(res) => {
                 const { data } = res;
-                // let likes = { liked: 0};
-                // await axios.post("http://nftdevelopments.co.nz/activity/get-likes", {tokenID: id, walletAddress: '' }).then(res => {
-                //     likes = res.data;
-                // }).catch(err => {})
                 setNFTData({ ...item, ...data });
             }).catch(err => {
 
@@ -52,8 +37,8 @@ const Colection = function() {
             setNFTData({});
         }
         setLoading(false);
-    },[Marketplace])
-    
+    },[])
+
     return (
         <div>
             <Suspense fallback={<div>Loading...</div>}>
@@ -96,7 +81,6 @@ const Colection = function() {
                                         <h2>{nftData.nftName}</h2>
                                         <div className="item_info_counts">
                                             <div className="item_info_type"><i className="fa fa-image"></i>{nftData.category}</div>
-                                            {/* <div className="item_info_like"><i className="fa fa-heart"></i>{nftData.liked}</div> */}
                                         </div>
                                         <p>{nftData.nftDesc}</p>
 
@@ -129,4 +113,4 @@ const Colection = function() {
         </div>
     );
 }
-export default Colection;
+export default NFTItem;
