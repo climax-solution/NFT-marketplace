@@ -42,7 +42,6 @@ const GlobalStyles = createGlobalStyle`
     }
 `;
 
-
 const Register= () => {
 
     const [firstName, setFirstName] = useState('');

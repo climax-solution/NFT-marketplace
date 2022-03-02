@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import "./assets/animated.css";
 
-import '../node_modules/elegant-icons/style.css';
+import 'elegant-icons/style.css';
 import './assets/style.scss';
 import App from './components/app';
 import * as serviceWorker from './serviceWorker';

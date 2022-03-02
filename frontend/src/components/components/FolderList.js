@@ -27,13 +27,6 @@ export default function FolderList({data, _insNFT }) {
         if (list.length > 8) {
             list = list.slice(0, 8);
         }
-        // let newList = [];
-        // for await (let item of list) {
-        //     const URI = await NFT.methods.tokenURI(item.wide[0]).call();
-        //     await axios.get(URI).then(res => {
-        //         newList.push({ ...item, ...res.data});
-        //     }).catch(err => { })
-        // }
         setFolderList([ ...folderList, ...list ]);
         if (restList.length > 8) {
             setRestList(restList.slice(8, restList.length));

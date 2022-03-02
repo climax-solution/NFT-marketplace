@@ -24,6 +24,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import 'react-notifications/lib/notifications.css';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import 'react-cool-music-player/dist/index.css'
+// import 'react-country-dropdown/dist/index.css';
 
 import { UPDATE_AUTH, UPDATE_LOADING_PROCESS } from '../store/action/auth.action';
 
@@ -32,11 +33,6 @@ const GlobalStyles = createGlobalStyle`
     scroll-behavior: unset;
   }
 `;
-
-export const ScrollTop = ({ children, location }) => {
-  React.useEffect(() => window.scrollTo(0,0), [location])
-  return children
-}
 const history = createBrowserHistory();
 
 const app = () => {

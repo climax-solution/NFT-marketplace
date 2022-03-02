@@ -14,12 +14,6 @@ const PremiumNFTLoading = lazy(() => import('../components/Loading/PremiumNFTLoa
 const TopSellerLoading = lazy(() => import('../components/Loading/TopSellerLoading'));
 
 const GlobalStyles = createGlobalStyle`
-  header#myHeader .logo .d-block{
-    display: none !important;
-  }
-  header#myHeader .logo .d-none{
-    display: block !important;
-  }
   .item-dropdown{
     .dropdown{
       a{

@@ -239,7 +239,6 @@ const Profile = function() {
                   <ul className="de_nav text-left">
                       <li id='Mainbtn' className={activeTab == 0 ? 'active' : ''}><span onClick={() => setActiveTab(0)}>On Sale</span></li>
                       <li id='Mainbtn1' className={activeTab == 1 ? 'active' : ''}><span onClick={() => setActiveTab(1)}>Not Sale</span></li>
-                      {/* <li id='Mainbtn2' className=""><span onClick={handleBtnClick2}>Liked</span></li> */}
                       <li id='Mainbtn3' className={activeTab == 3 ? 'active' : ''}><span onClick={() => setActiveTab(3)}>User Info</span></li>
                   </ul>
               </div>

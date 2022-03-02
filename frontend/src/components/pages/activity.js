@@ -9,9 +9,6 @@ const Empty = lazy(() => import('../components/Empty'));
 const Footer = lazy(() => import('../components/footer'));
 
 const GlobalStyles = createGlobalStyle`
-  header#myHeader.navbar.white {
-    background: #212428;
-  }
   .activity-list li:after, .fa, .fas {
     font-family: "Font Awesome 5 Pro" !important;
   }
