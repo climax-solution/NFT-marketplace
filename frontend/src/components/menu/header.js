@@ -14,7 +14,8 @@ import { WalletConnect } from "../../store/action/wallet.action";
 const GlobalStyles = createGlobalStyle`
   .navbar {
     .light-logo {
-      width: 100px !important;
+      width: 130px;
+      height: 70px;
     }
     .mainside{
       .connect-wal{

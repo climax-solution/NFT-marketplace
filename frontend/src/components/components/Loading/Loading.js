@@ -1,5 +1,3 @@
-import { useState } from "react"
-import Skeleton, { SkeletonTheme } from 'react-loading-skeleton'
 import { createGlobalStyle } from 'styled-components';
 
 const GlobalStyles = createGlobalStyle`

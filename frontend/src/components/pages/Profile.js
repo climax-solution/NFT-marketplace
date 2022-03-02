@@ -11,7 +11,6 @@ import { UPDATE_AUTH } from "../../store/action/auth.action";
 
 const SellingNFT = lazy(() => import('../components/SellingNFT'));
 const NotSellingNFT = lazy(() => import('../components/NotSellingNFT'));
-const LikedNFT = lazy(() => import('../components/LikedNFT'));
 const Loading = lazy(() => import("../components/Loading/Loading"));
 const Footer = lazy(() => import('../components/footer'));
 
@@ -67,7 +66,6 @@ const Profile = function() {
   const [Marketplace, setMarketplace] = useState({});
   const [sellingNFT, setSellingNFT] = useState([]);
   const [notSellingNFT, setNotSellingNFT] = useState([]);
-  const [likedNFT, setLikedNFT] = useState({});
 
   const [sellUpdated, setSellUpdated] = useState(false);
   const [notSellUpdated, setNotSellUpdated] = useState(false);
@@ -277,19 +275,6 @@ const Profile = function() {
                   _insMarketplace={Marketplace}
                   updateStatus={setNotSellUpdated}
                   status={notSellUpdated}
-                />
-                </div>
-              ))
-          }
-          {
-            !isLoading &&
-              (activeTab == 2  && (
-                <div id='zero3' className='onStep fadeIn'>
-                <LikedNFT
-                  data={likedNFT}
-                  _web3={web3}
-                  _insNFT={NFT}
-                  _insMarketplace={Marketplace}
                 />
                 </div>
               ))
