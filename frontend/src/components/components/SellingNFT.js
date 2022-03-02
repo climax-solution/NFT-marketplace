@@ -126,7 +126,7 @@ export default function SellingNFT(props) {
             console.log(id, "==>" ,err);
             NotificationManager.error("Failed");
         }
-        await dispatch(UPDATE_LOADING_PROCESS(false));
+        dispatch(UPDATE_LOADING_PROCESS(false));
         await props.updateStatus(!props.status);
     }
   
