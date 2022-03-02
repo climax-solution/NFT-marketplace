@@ -8,9 +8,6 @@ import Footer from '../components/footer';
 import { UPDATE_AUTH } from '../../store/action/auth.action';
 
 const GlobalStyles = createGlobalStyle`
-  header#myHeader.navbar.white {
-    
-  }
   .box-login p{
     color: #a2a2a2 !important;
   }

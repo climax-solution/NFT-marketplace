@@ -12,9 +12,6 @@ import 'react-phone-input-2/lib/style.css';
 const Footer = lazy(() => import('../components/footer'));
 
 const GlobalStyles = createGlobalStyle`
-    header#myHeader.navbar.white {
-        background: #212428;
-    }
     .country-select {
         display: block;
     }

@@ -16,9 +16,6 @@ const Loading = lazy(() => import("../components/Loading/Loading"));
 const Footer = lazy(() => import('../components/footer'));
 
 const GlobalStyles = createGlobalStyle`
-  header#myHeader.navbar.white {
-    background: #212428;
-  }
   .ml-12 {
     margin-left: 12px;
   }

@@ -10,9 +10,6 @@ const Empty = lazy(() => import("../components/Empty"));
 const ItemDetailsLoading = lazy(() => import("../components/Loading/ItemDetailsLoading"));
 
 const GlobalStyles = createGlobalStyle`
-  header#myHeader.navbar.white {
-    background: #212428;
-  }
   .border-grey {
       border-color: #4e4e4e !important;
   }
