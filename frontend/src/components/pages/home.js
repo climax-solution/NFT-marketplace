@@ -128,16 +128,7 @@ const homeone= () => {
           mainList.push({ ...item, ...data});
         })
       }
-      // for await (let item of mainList) {
-      //   await axios.post(
-      //     'http://nftdevelopments.co.nz/activity/get-likes',
-      //     { tokenID: item.nftData.tokenID, walletAddress: initialUser?.walletAddress }
-      //   ).then(res => {
-      //     const { liked, lastAct } = res.data;
-      //     item["liked"] = liked; item["lastAct"] = lastAct;
-      //   })
-      // }
-      
+            
       setTopPreimumNFTs(mainList);
     } catch(err) { }
     setCarouselLoading(false);
