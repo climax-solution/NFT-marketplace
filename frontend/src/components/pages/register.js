@@ -146,7 +146,6 @@ const register= () => {
         };
 
         await axios.post("http://nftdevelopments.co.nz/auth/register", data).then(res => {
-           const { sucess, token } = res.data;
            toast.success("You have registered successfully!", { theme: "colored" });
 
         }).catch(err => {

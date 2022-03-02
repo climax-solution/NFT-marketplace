@@ -1,5 +1,4 @@
 import React, { useEffect, useState, lazy, Suspense } from 'react';
-import axios from "axios";
 import Select from 'react-select';
 import { createGlobalStyle } from 'styled-components';
 
@@ -78,7 +77,6 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 const explore = () => {
-  const [web3, setWeb3] = useState(null);
   const [NFT, setNFT] = useState(null);
   const [Marketplace, setMarketplace] = useState(null);
   const [folderList, setFolderList] = useState([]);
@@ -88,8 +86,7 @@ const explore = () => {
   const [tmpKwd, setTmpKwd] = useState('');
 
   useEffect(async() => {
-    const { _web3, instanceNFT, instanceMarketplace } = await getWeb3();
-    setWeb3(web3);
+    const { instanceNFT, instanceMarketplace } = await getWeb3();
     setNFT(instanceNFT);
     setMarketplace(instanceMarketplace);
     
@@ -169,8 +166,6 @@ const explore = () => {
                       }}
                     />
                   </div>
-                  {/* <div className='dropdownSelect two'><Select className='select1' styles={customStyles} defaultValue={options1[0]} options={options1} /></div> */}
-                  {/* <div className='dropdownSelect three'><Select className='select1' styles={customStyles} defaultValue={options2[0]} options={options2} /></div> */}
               </div>
             </div>
           </div>

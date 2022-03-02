@@ -11,9 +11,6 @@ const Loading = lazy(() => import("../components/Loading/Loading"));
 const Footer = lazy(() => import('../components/footer'));
 
 const GlobalStyles = createGlobalStyle`
-  header#myHeader.navbar.white {
-    background: #212428;
-  }
   .ratio-1-1 {
     aspect-ratio: 1;
   }
@@ -146,9 +143,6 @@ const Collection= function() {
                               <span onClick={()=> window.open(nft.nftLink, "_self")}>
                                   <h4>{nft.nftName}</h4>
                               </span>
-                              <div className="nft__item_price">
-                                  {/* {web3.utils.fromWei(nft.marketData.price, "ether")} BNB */}
-                              </div>
                           </div> 
                       </div>
                   </div>
@@ -160,8 +154,6 @@ const Collection= function() {
               !loaded && <Loading/>
             }
         </section>
-
-
         <Footer />
       </Suspense>
     </div>

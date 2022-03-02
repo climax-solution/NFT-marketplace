@@ -127,29 +127,6 @@ const Profile = function() {
     }
   },[Marketplace, activeTab, sellUpdated, notSellUpdated]);
 
-  // useEffect(async() => {
-  //   if (Object.keys(userData).length && Marketplace && activeTab) {
-  //     setLoading(true);
-  //     const token = localStorage.getItem("nftdevelopments-token");
-  //     const _headers = {headers: {Authorization: JSON.parse(token)}}
-      
-  //     await axios.post("http://nftdevelopments.co.nz/user/get-liked-nfts", {}, _headers).then(async(res) => {
-  //       const { liked } = res.data;
-  //       const final = liked;
-  //       if (liked.length > 8) final = liked.slice(0, 8);
-  //       const list = [];
-  //       for await(let item of final) {
-  //         const _item = await Marketplace.methods.getItemNFT(item.tokenID).call();
-  //         list.push(_item);
-  //       }
-
-  //     }).catch(err => {
-  //       setLoading(false);
-  //     })
-  //     setLoading(false);
-  //   }
-  // }, [activeTab])
-
   const updateAvatar = async(e) => {
     const files = e.target.files;
     const token = localStorage.getItem("nftdevelopments-token");
@@ -252,15 +229,6 @@ const Profile = function() {
                         </div>
                     </div>
                 </div>
-                {/* <div className="profile_follow de-flex">
-                    <div className="de-flex-col">
-                        <div className="profile_follower">500 followers</div>
-                    </div>
-                    <div className="de-flex-col">
-                        <span className="btn-main">Follow</span>
-                    </div>
-                </div> */}
-
                 </div>
             </div>
           </div>
