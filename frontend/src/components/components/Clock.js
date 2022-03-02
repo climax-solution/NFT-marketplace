@@ -10,13 +10,16 @@ class Clock extends Component {
       seconds: 0
     };
   }
+
   componentDidMount() {
     this.getTimeUntil(this.props.deadline);
     setInterval(() => this.getTimeUntil(this.props.deadline), 1000);
   }
+
   leading0(num) {
     return num < 10 ? "0" + num : num;
   }
+
   getTimeUntil(deadline) {
     const time = Date.parse(new Date(deadline)) - Date.parse(new Date());
     if (time < 0) {
@@ -29,12 +32,14 @@ class Clock extends Component {
       this.setState({ days, hours, minutes, seconds });
     }
   }
+
   componentWillUnmount() {
     // fix Warning: Can't perform a React state update on an unmounted component
     this.setState = (state,callback)=>{
         return;
     };
   }
+  
   render() {
     return (
       <div>

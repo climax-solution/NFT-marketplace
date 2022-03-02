@@ -1,6 +1,7 @@
 import React from 'react';
 import Reveal from 'react-awesome-reveal';
 import { keyframes } from "@emotion/react";
+import { createGlobalStyle } from 'styled-components';
 
 const fadeInUp = keyframes`
   0% {
@@ -26,9 +27,20 @@ const inline = keyframes`
    }
 `;
 
+const GlobalStyles = createGlobalStyle`
+  p.lead{
+    color: #a2a2a2;
+  }
+  #tsparticles{
+    top: 0;
+  }
+`;
+
 const slidermainparticle= () => (
- <div className="container">
-    <div className="row align-items-center">
+  <>
+    <GlobalStyles/>
+    <div className="container">
+      <div className="row align-items-center">
           <div className="col-md-6">
               <div className="spacer-single"></div>
               <h6> <span className="text-uppercase color">NFT Developments Marketplace</span></h6>
@@ -47,11 +59,12 @@ const slidermainparticle= () => (
               </Reveal>
           </div>
           <div className="col-md-6 xs-hide">
-          <Reveal className='onStep d-inline' keyframes={inline} delay={300} duration={1200} triggerOnce>
-              <img src="./img/misc/banner-mark.webp" className="img-fluid w-100 h-100" alt=""/>
-          </Reveal>
+            <Reveal className='onStep d-inline' keyframes={inline} delay={300} duration={1200} triggerOnce>
+                <img src="./img/misc/banner-mark.webp" className="img-fluid w-100 h-100" alt=""/>
+            </Reveal>
           </div>
       </div>
     </div>
+  </>
 );
 export default slidermainparticle;

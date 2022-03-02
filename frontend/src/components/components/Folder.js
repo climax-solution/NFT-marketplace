@@ -29,7 +29,6 @@ const Folder = (props) => {
         }
     },[props])
 
-    console.log(loading);
     return (
         <>
         <GlobalStyles/>
@@ -45,9 +44,6 @@ const Folder = (props) => {
                             <div className="nft__item_info">
                                 <span>
                                     <h4><Skeleton/></h4>
-                                </span>
-                                <span className="d-block mb-4">
-                                    <Skeleton/>
                                 </span>
                             </div>
                         </div>
