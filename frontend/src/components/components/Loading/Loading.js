@@ -12,7 +12,7 @@ export default function Loading() {
         <>
             <GlobalStyles/>
             <div>
-                <div class="cssLoader17"></div>
+                <div className="cssLoader17"></div>
             </div>
         </>
     )

@@ -29,6 +29,7 @@ const GlobalStyles = createGlobalStyle`
     max-width: 324px;
   }
 `;
+
 export default function ({ data, status, update }) {
 
   const dispatch = useDispatch();
@@ -131,28 +132,6 @@ export default function ({ data, status, update }) {
         NotificationManager.error("Buy failed");
     }
     dispatch(UPDATE_LOADING_PROCESS(false));
-  }
-
-  const updateLike = async(idx, act) => {
-    if (!initialUser.walletAddress) return;
-    let _act = list[idx].liked > 0 && act == "9" ? "10" : "9";
-    const data = {
-      walletAddress: initialUser.walletAddress,
-      tokenID: list[idx].nftData.tokenID,
-      type: _act
-    };
-
-    await axios.post("http://nftdevelopments.co.nz/activity/create-log", data).then(res => {
-      let _list = [];
-      list.map((item,index) => {
-        const { liked } = item;
-        if (index == idx) {
-          _list.push({ ...item, liked: _act == "9" ? liked + 1 : liked - 1, lastAct: _act});
-        }
-        else _list.push(item);
-      })
-      setList(_list);
-    })
   }
 
   return (
