@@ -709,7 +709,7 @@ p.lead {
     }
   }
   .dropdown-toggle::after{
-    font-family: FontAwesome;
+    font-family: "Font Awesome 5 Pro";
     content: "\f078";
     color: rgba(255, 255, 255, .5);
     padding-left: 2px;
@@ -1305,7 +1305,7 @@ p.lead {
 }
 .previousButton::before, .nextButton::before{
     content:"\f054";
-    font-family: FontAwesome;
+    font-family: "Font Awesome 5 Pro";
     font-size: 1.3rem;
     font-style: normal;
     font-weight: normal;
@@ -1931,7 +1931,7 @@ footer{
       i{
         font-style: normal;
         &:before{
-        font-family: "FontAwesome";
+        font-family: "Font Awesome 5 Pro";
         font-size: 18px;
         content: "\f106";
         color: #fff !important;
@@ -2413,7 +2413,7 @@ address {
       }
       &:after {
         content: "\f00c";
-        font-family: "FontAwesome";
+        font-family: "Font Awesome 5 Pro";
         margin-right: 15px;
         float: right;
         position: absolute;
@@ -2822,7 +2822,7 @@ i.font60 {
         &::before {
           content: "\f053" !important;
           font-size: 1rem;
-          font-family: FontAwesome !important;
+          font-family: 'Font Awesome 5 Pro' !important;
           font-style: normal;
           font-weight: normal;
           color: $white;
@@ -2851,7 +2851,7 @@ i.font60 {
       &::before {
         content: "\f054" !important;
         font-size: 1rem;
-        font-family: FontAwesome !important;
+        font-family: 'Font Awesome 5 Pro' !important;
         font-style: normal;
         font-weight: normal;
         color: $white;
@@ -3228,7 +3228,7 @@ i.font60 {
           display: block;
           content: "\f053" !important;
           font-size: .9rem;
-          font-family: FontAwesome !important;
+          font-family: 'Font Awesome 5 Pro' !important;
           font-style: normal;
           font-weight: normal;
           color: $black;
@@ -3255,7 +3255,7 @@ i.font60 {
         display: block;
         content: "\f054" !important;
         font-size: .9rem;
-        font-family: FontAwesome !important;
+        font-family: 'Font Awesome 5 Pro' !important;
         font-style: normal;
         font-weight: normal;
         color: $black;
@@ -3989,7 +3989,7 @@ img.img-rounded{
       position: absolute;
       content: '';
       display: inline-block;
-      font-family: "FontAwesome";
+      font-family: "Font Awesome 5 Pro";
       margin-right: 10px;
       border: solid 2px rgba(255,255,255,.2);
       width: 16px;
@@ -4273,7 +4273,7 @@ img.img-rounded{
 
 
 .play-pause:before{
-  font-family: FontAwesome;
+  font-family: "Font Awesome 5 Pro";
   content: "\f04b";
   font-size: 24px;
   color: #ffffff;
