@@ -1,8 +1,5 @@
-import React, { useEffect, useState, lazy, Suspense } from 'react';
-import axios from "axios";
+import React, { lazy, Suspense } from 'react';
 import { createGlobalStyle } from 'styled-components';
-import { useSelector } from 'react-redux';
-import getWeb3 from "../../utils/getWeb3";
 import Loading from '../components/Loading/Loading';
 
 const Particle = lazy(() => import('../components/Particle'));
@@ -11,8 +8,6 @@ const FeatureBox = lazy(() => import('../components/FeatureBox'));
 const PremiumNFTCarousel = lazy(() => import('../components/PremiumNFTCarousel'));
 const AuthorList = lazy(() => import('../components/authorList'));
 const Footer = lazy(() => import('../components/footer'));
-const PremiumNFTLoading = lazy(() => import('../components/Loading/PremiumNFTLoading'));
-const TopSellerLoading = lazy(() => import('../components/Loading/TopSellerLoading'));
 
 const GlobalStyles = createGlobalStyle`
   .item-dropdown{
@@ -106,75 +101,19 @@ const GlobalStyles = createGlobalStyle`
 
 
 const homeone= () => {
-
-  const initialUser = useSelector(({auth}) => auth.user);
-  const [topPreimumNFTs, setTopPreimumNFTs] = useState([]);
-  const [topSeller, setTopSeller] = useState([]);
-  const [carouselLoading, setCarouselLoading] = useState(true);
-  const [sellerLoading, setSellerLoading] = useState(true);
-  const [carouselUpdated, setCarouselUpdated] = useState(false);
-
-  useEffect(async() => {
-    if (initialUser.walletAddress == undefined) return;
-    try {
-      const { instanceMarketplace } = await getWeb3();
-      let list = await instanceMarketplace.methods.getPremiumNFTList().call();
-      list = list.filter(item => item.marketData.premiumStatus);
-      list.sort((before, after) => before.marketData.price - after.marketData.price);
-      if (list.length > 10) list = list.slice(0, 10);
-      let mainList = [];
-      for await (let item of list) {
-        await axios.get(item.nftData.tokenURI).then(res => {
-          const { data } = res;
-          mainList.push({ ...item, ...data});
-        })
-      }
-            
-      setTopPreimumNFTs(mainList);
-    } catch(err) { }
-    setCarouselLoading(false);
-  },[carouselUpdated, initialUser ])
-
-  useEffect(async() => {
-    await axios.post('http://nftdevelopments.co.nz/activity/get-top-sellers').then(res => {
-      setTopSeller(res.data);
-      setSellerLoading(false);
-    }).catch(err => {
-      setSellerLoading(false);
-    })
-  },[]);
-
   return (
     <div>
       <Suspense fallback={<Loading/>}>
         <GlobalStyles />
         <section className="jumbotron no-bg" style={{backgroundImage: `url(${'./img/background/bg.webp'})`}}>
-         <Particle/>
-           <SliderMainParticle/>
+          <Particle/>
+          <SliderMainParticle/>
         </section>
-    
-        <section className='container no-top no-bottom'>
-          <div className='row'>
-            <div className="spacer-double"></div>
-            <div className='col-lg-12 mb-2'>
-                <h2>Premium NFTs</h2>
-            </div>
-          </div> 
-          { carouselLoading ? <PremiumNFTLoading/> : <PremiumNFTCarousel data={topPreimumNFTs} update={setCarouselUpdated} status={carouselUpdated}/>}
-        </section>
-  
-        <section className='container no-top no-bottom'>
-          <div className='row'>
-            <div className="spacer-double"></div>
-            <div className='col-lg-12'>
-                <h2>Top Sellers</h2>
-            </div>
-            <div className='col-lg-12 mt-5'>
-              { sellerLoading ? <TopSellerLoading/> : <AuthorList data={topSeller}/>}
-            </div>
-          </div>
-        </section>
-    
+        
+        <PremiumNFTCarousel/>
+        
+        <AuthorList/>
+        
         <section className='container no-top'>
           <div className='row'>
               <div className="spacer-double"></div>

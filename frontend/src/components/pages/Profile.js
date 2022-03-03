@@ -49,6 +49,12 @@ const GlobalStyles = createGlobalStyle`
     border: 1px solid #333;
     border-radius: 5px;
   }
+
+  .trade-btn-group {
+    span {
+        padding: 2px 10px;
+    }
+  }
 `;
 
 const Profile = function() {

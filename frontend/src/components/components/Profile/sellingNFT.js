@@ -159,32 +159,17 @@ export default function NFTItem({ data, Marketplace }) {
     return (
         <>
             <GlobalStyles/>
-            {
-                isLoading ? (
-                    <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 pb-3">
-                        <div className="nft__item">
-                            <div className="nft__item_wrap">
+            <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mt-3">
+                <div className="nft__item h-100 justify-content-between">
+                    <div className="nft__item_wrap">
+                        {
+                            isLoading ? (
                                 <span>
                                     <Skeleton className="lazy nft__item_preview ratio ratio-1x1"/>
                                 </span>
-                            </div>
-                            <div className="nft__item_info">
-                                <span>
-                                    <h4><Skeleton/></h4>
-                                </span>
-                            </div>
-                            <div className="nft__item_info">
-                                <span>
-                                    <h4><Skeleton/></h4>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                )
-                : (
-                    <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mt-3">
-                        <div className="nft__item h-100 justify-content-between">
-                            <div className="nft__item_wrap">
+                            )
+                            :
+                            <>
                                 {
                                     (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <a href={`/item-detail/${nft.nftData.tokenID}`} className="position-relative"><img src={nft.image} className="lazy nft__item_preview" alt=""/></a>
                                 }
@@ -196,15 +181,21 @@ export default function NFTItem({ data, Marketplace }) {
                                 {
                                     (nft.type && (nft.type).toLowerCase() == 'video') && <VideoArt data={nft.asset}/>
                                 }
-                            </div>
-                            <div className="nft__item_info">
-                                <span onClick={()=> window.open(nft.nftLink, "_self")}>
-                                    <h4>{nft.nftName}</h4>
-                                </span>
-                                <div className="nft__item_price">
-                                    {web3.utils.fromWei(nft.marketData.price, "ether")} BNB
-                                </div>
-                                <div className="pb-4 trade-btn-group mt-2">
+                            </>
+                        }
+                    </div>
+                    <div className="nft__item_info">
+                        <span onClick={()=> window.open(nft.nftLink, "_self")}>
+                            <h4>{ isLoading ? <Skeleton/> : nft.nftName }</h4>
+                        </span>
+                        <div className="nft__item_price">
+                            { isLoading ? <Skeleton/> : <>{web3.utils.fromWei(nft.marketData.price, "ether")} BNB </>}
+                        </div>
+                        <div className="pb-4 trade-btn-group mt-2">
+                            {
+                                isLoading ? <Skeleton/>
+                                :
+                                <>
                                     { nft.marketData.marketStatus && (
                                         !nft.auctionData.existance ?
                                             <span className="btn-main w-100" onClick={() => putDownSale(nft.nftData.tokenID)}>Put down sale</span>
@@ -212,12 +203,12 @@ export default function NFTItem({ data, Marketplace }) {
                                         )
                                     }
                                     { !nft.auctionData.existance && (!nft.marketData.premiumStatus ? <span className="btn-main mt-2 w-100" onClick={async() => await updatePremiumNFT(nft.nftData.tokenID, true)}>To Preimum</span> : <span className="btn-main mt-2 w-100"  onClick={() => updatePremiumNFT(nft.nftData.tokenID, false)}>To Normal</span>) }
-                                </div>
-                            </div> 
+                                </>
+                            }
                         </div>
-                    </div>
-                )
-            }
+                    </div> 
+                </div>
+            </div>
         </>
     )
 }

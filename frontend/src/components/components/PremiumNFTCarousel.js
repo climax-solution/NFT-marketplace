@@ -7,22 +7,16 @@ import { useDispatch } from "react-redux";
 import axios from "axios";
 import { NotificationManager } from "react-notifications";
 
+
+import { UPDATE_LOADING_PROCESS } from "../../store/action/auth.action";
+import MusicArt from "./Asset/music";
+import VideoArt from "./Asset/video";
+
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { UPDATE_LOADING_PROCESS } from "../../store/action/auth.action";
 
 const PremiumNFTLoading = lazy(() => import('./Loading/PremiumNFTLoading'));
 const Empty = lazy(() => import("./Empty"));
-
-const Outer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-content: center;
-  align-items: center;
-  height: 260px;
-  overflow: hidden;
-  border-radius: 8px;
-`;
 
 const GlobalStyles = createGlobalStyle`
   .slick-slide {
@@ -35,6 +29,7 @@ export default function ({ data, status, update }) {
   const dispatch = useDispatch();
   const initialUser = useSelector(({ auth }) => auth.user);
   const wallet_info = useSelector(({ wallet }) => wallet.wallet_connected);
+
   const [list, setList] = useState([]);
   const [web3, setWEB3] = useState([]);
   const [Marketplace, setMarketplace] = useState([]);
@@ -91,14 +86,14 @@ export default function ({ data, status, update }) {
 
   useEffect(async () => {
     const { _web3, instanceMarketplace } = await getWeb3();
+    console.log(_web3);
     setWEB3(_web3);
     setMarketplace(instanceMarketplace);
-    setCarouselLoading(false);
   },[])
 
-  useEffect(() => {
-    setList(data);
-  }, [data])
+  useEffect(async() => {
+    if (Marketplace) await fetchNFT();
+  },[initialUser, Marketplace])
 
   const buyNow = async(id) => {
   
@@ -134,51 +129,90 @@ export default function ({ data, status, update }) {
     dispatch(UPDATE_LOADING_PROCESS(false));
   }
 
+  const fetchNFT = async() => {
+    if (initialUser.walletAddress == undefined) return;
+    setCarouselLoading(true);
+    try {
+      let list = await Marketplace.methods.getPremiumNFTList().call();
+      list = list.filter(item => item.marketData.premiumStatus);
+      list.sort((before, after) => before.marketData.price - after.marketData.price);
+      if (list.length > 10) list = list.slice(0, 10);
+      let mainList = [];
+      for await (let item of list) {
+        await axios.get(item.nftData.tokenURI).then(res => {
+          const { data } = res;
+          mainList.push({ ...item, ...data});
+        })
+      }
+            
+      setList(mainList);
+    } catch(err) { }
+    setCarouselLoading(false);
+  }
+
+  const faliedLoadImage = (e) => {
+    e.target.src="/img/empty.jfif";
+  }
+
   return (
-    <div className='nft'>
-      <Suspense fallback={<div>Loading...</div>}>
-        <GlobalStyles/>
-        { carouselLoading && <PremiumNFTLoading/> }
-        {
-          !carouselLoading && (
-            <Slider {...settings}>
-              {
-                list.map((item, index) => {
-                  const { auctionData: auction, marketData: market } = item;
-                  const price = !auction.existance ? market.price : (auction.currentBidPrice ? auction.currentBidPrice : auction.minPrice);
-                  return (
-                    <div className='itm' key={index}>
-                      <div className="d-item">
-                          <div className="nft__item">
-                              <div className="nft__item_wrap">
-                                <Outer>
-                                  <span>
-                                      <img src={item.image} className="lazy nft__item_preview" alt=""/>
-                                  </span>
-                                </Outer>
-                              </div>
-                              <div className="nft__item_info mb-0">
-                                  <span onClick={()=> window.open("/#", "_self")}>
-                                      <h4>{item.nftName}</h4>
-                                  </span>
-                                  <div className="nft__item_price">
-                                      {web3.utils.fromWei(price)} BNB
-                                  </div>
-                                  <div className="nft__item_action">
-                                    { (item.nftData.owner).toLowerCase() != (initialUser.walletAddress).toLowerCase() && <span onClick={() => buyNow(item.nftData.tokenID)}>Buy now</span>}
-                                  </div>
-                              </div> 
-                          </div>
+    <section className='container no-top no-bottom'>
+      <div className='row'>
+        <div className="spacer-double"></div>
+        <div className='col-lg-12 mb-2'>
+            <h2>Premium NFTs</h2>
+        </div>
+      </div> 
+      <div className='nft'>
+        <Suspense fallback={<div>Loading...</div>}>
+          <GlobalStyles/>
+          { carouselLoading && <PremiumNFTLoading/> }
+          {
+            !carouselLoading && (
+              <Slider {...settings}>
+                {
+                  list.map((nft, index) => {
+                    const { auctionData: auction, marketData: market } = nft;
+                    const price = !auction.existance ? market.price : (auction.currentBidPrice ? auction.currentBidPrice : auction.minPrice);
+                    return (
+                      <div className='itm' key={index}>
+                        <div className="d-item">
+                            <div className="nft__item">
+                                <div className="nft__item_wrap">
+                                  {
+                                      (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <a href={`/item-detail/${nft.nftData.tokenID}`}><img src={nft.image} onError={faliedLoadImage} className="lazy nft__item_preview" alt=""/></a>
+                                  }
+
+                                  {
+                                      (nft.type && (nft.type).toLowerCase() == 'music') && <MusicArt data={nft} link={`/item-detail/${nft.nftData.tokenID}`}/>
+                                  }
+
+                                  {
+                                      (nft.type && (nft.type).toLowerCase() == 'video') && <VideoArt data={nft.asset}/>
+                                  }
+                                </div>
+                                <div className="nft__item_info mb-0">
+                                    <span onClick={()=> window.open("/#", "_self")}>
+                                        <h4>{nft.nftName}</h4>
+                                    </span>
+                                    <div className="nft__item_price">
+                                        {web3.utils.fromWei(price)} BNB
+                                    </div>
+                                    <div className="nft__item_action">
+                                      { (nft.nftData.owner).toLowerCase() != (initialUser.walletAddress).toLowerCase() && <span onClick={() => buyNow(nft.nftData.tokenID)}>Buy now</span>}
+                                    </div>
+                                </div> 
+                            </div>
+                        </div>
                       </div>
-                    </div>
-                  )
-                })
-              }
-            </Slider>
-          )
-        }
-        { !list.length && !carouselLoading && <Empty/> }
-        </Suspense>
-    </div>
+                    )
+                  })
+                }
+              </Slider>
+            )
+          }
+          { !list.length && !carouselLoading && <Empty/> }
+          </Suspense>
+      </div>
+    </section>
   )
 }

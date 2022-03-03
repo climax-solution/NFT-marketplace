@@ -1,23 +1,13 @@
 import React, { useState, useEffect, lazy, Suspense } from "react";
-import { NotificationManager } from "react-notifications";
 import { useDispatch, useSelector } from "react-redux";
-import { createGlobalStyle } from "styled-components";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { UPDATE_LOADING_PROCESS } from "../../store/action/auth.action";
-import axios from "axios";
 import getWeb3 from "../../utils/getWeb3";
 import NFTItem from "./Profile/sellingNFT";
 
 const Empty = lazy(() => import("./Empty"));
 const Loading = lazy(() => import("./Loading/Loading"));
 
-const GlobalStyles = createGlobalStyle`
-    .trade-btn-group {
-        span {
-            padding: 2px 10px;
-        }
-    }
-`;
 export default function SellingNFT(props) {
 
     const dispatch = useDispatch();
@@ -26,7 +16,6 @@ export default function SellingNFT(props) {
     const [nfts, setNFTs] = useState([]);
     const [marketContract, setMarketContract] = useState({});
     const [restList, setRestList] = useState([]);
-    const [height, setHeight] = useState(0);
     const [loaded, setLoaded] = useState(false);
     
     useEffect(async() => {
@@ -61,7 +50,6 @@ export default function SellingNFT(props) {
     return (
         <>
             <Suspense fallback={<div>Loading...</div>}>
-                <GlobalStyles/>
                 <InfiniteScroll
                     dataLength={nfts.length}
                     next={fetchNFT}

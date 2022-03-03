@@ -13,28 +13,28 @@ const Footer = lazy(() => import('../components/footer'));
 
 const GlobalStyles = createGlobalStyle`
     .country-select {
-        display: block;
+        display: block !important;
     }
     .react-tel-input {
         .form-control {
             width: 100% !important;
             height: auto !important;
-            background: transparent;
-            border-color: rgba(255,2555,255, 0.1);
+            background: transparent !important;
+            border-color: rgba(255,2555,255, 0.1) !important;
         }
 
         .form-control:focus {
             color: #212529;
-            background-color: #fff;
+            background-color: #fff !important;
             border-color: #86b7fe;
             outline: 0;
             box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%);
         }
 
         .flag-dropdown {
-            background: transparent;
-            border: none;
-            border-right: 1px solid rgba(255,255,255,0.1);
+            background: transparent !important;
+            border: none !important;
+            border-right: 1px solid rgba(255,255,255,0.1) !important;
         }
         .form-control:focus + .flag-dropdown {
             border-color: #cacaca;
