@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function MusicArt({ data }) {
+export default function MusicArt({ data, link }) {
 
     const [isPlay, setPlay] = useState(false);
 
@@ -21,7 +21,7 @@ export default function MusicArt({ data }) {
                 
                 <div className={`circle-ripple ${isPlay ? 'd-block' : 'd-none'}`}/>
             </div>
-            <a href="02_dark-item-details-audio.html" className="w-100">
+            <a href={link} className="w-100">
                 <img src={data.image} className="lazy nft__item_preview" alt=""/>
             </a>
         </>
