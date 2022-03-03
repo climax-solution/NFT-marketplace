@@ -6,7 +6,6 @@ import { createGlobalStyle } from 'styled-components';
 import { NotificationContainer } from 'react-notifications';
 import { ToastContainer } from 'react-toastify';
 import { useSelector, useDispatch } from "react-redux";
-import {  ThreeDots } from 'react-loader-spinner';
 import ScrollToTopBtn from './menu/ScrollToTop';
 import Header from './menu/header';
 import Home from './pages/home';
@@ -22,7 +21,6 @@ import NotFound from './components/404';
 
 import 'react-toastify/dist/ReactToastify.css';
 import 'react-notifications/lib/notifications.css';
-import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 import 'react-cool-music-player/dist/index.css'
 // import 'react-country-dropdown/dist/index.css';
 
@@ -67,7 +65,6 @@ const app = () => {
 
   }, []);
 
-  console.log(userData);
   if (loadingProcessing)
     return (
       <Loading/>

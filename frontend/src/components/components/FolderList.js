@@ -5,15 +5,15 @@ const Empty = lazy(() => import("./Empty"));
 const Loading = lazy(() => import("./Loading/Loading"));
 const Folder = lazy(() => import("./Folder"));
 
-export default function FolderList({data, _insNFT }) {
+export default function FolderList({data, _insMarketplace }) {
 
-    const [NFT, setNFT] = useState({});
+    const [Marketplace, setMarketplace] = useState({});
     const [folderList, setFolderList] = useState([]);
     const [restList, setRestList] = useState([{},{}]);
     const [loaded, setLoaded] = useState(false);
 
     useEffect(async() => {
-        setNFT(_insNFT);
+        setMarketplace(_insMarketplace);
         setRestList(data);
         setLoaded(true);
     },[data])
@@ -47,7 +47,7 @@ export default function FolderList({data, _insNFT }) {
                     className="row"
                 >
                     { folderList.map( (nft, index) => (
-                        <Folder init_nft={nft} NFT={NFT} key={index}/>
+                        <Folder init_nft={nft} Marketplace={Marketplace} key={index}/>
                     ))}
                 </InfiniteScroll>
                 {!folderList.length && !restList.length && loaded && <Empty/>}

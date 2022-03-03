@@ -4,6 +4,9 @@ import { useParams } from "react-router-dom";
 import getWeb3 from "../../utils/getWeb3";
 import axios from "axios";
 import Attr from "../components/ItemDetails/attributes";
+import MusicArt from "../components/Asset/music";
+import VideoArt from "../components/Asset/video";
+import Loading from "../components/Loading/Loading";
 
 const Clock = lazy(() => import("../components/Clock"));
 const Footer = lazy(() => import('../components/footer'));
@@ -19,7 +22,7 @@ const GlobalStyles = createGlobalStyle`
 const NFTItem = function() {
 
     const params = useParams();
-    const [nftData, setNFTData] = useState({});
+    const [nft, setNFTData] = useState({});
     const [loading, setLoading] = useState(true);
 
     useEffect(async() => {
@@ -40,9 +43,13 @@ const NFTItem = function() {
         setLoading(false);
     },[])
 
+    const faliedLoadImage = (e) => {
+        e.target.src="/img/empty.jfif";
+    }
+
     return (
         <div>
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={<Loading/>}>
                 <GlobalStyles/>
                 <section className='jumbotron breadcumb no-bg'>
                     <div className='mainbreadcumb'>
@@ -60,39 +67,49 @@ const NFTItem = function() {
                 }
                 {
                     !loading && (
-                        Object.keys(nftData).length ?
+                        Object.keys(nft).length ?
                             <section className='container'>
                                 <div className='row mt-md-5 pt-md-4'>
 
                                 <div className="col-md-6 text-center">
-                                    <img src={nftData.image} className="img-fluid img-rounded mb-sm-30" alt=""/>
+                                    {
+                                        (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={faliedLoadImage} className="img-fluid img-rounded mb-sm-30" alt=""/>
+                                    }
+
+                                    {
+                                        (nft.type && (nft.type).toLowerCase() == 'music') && <MusicArt data={nft} link={``}/>
+                                    }
+
+                                    {
+                                        (nft.type && (nft.type).toLowerCase() == 'video') && <VideoArt data={nft.asset}/>
+                                    }
                                 </div>
                                 <div className="col-md-6">
                                     <div className="item_info">
                                         {
-                                            nftData.auctionData.existance && (
+                                            nft.auctionData.existance && (
                                                 <>
                                                     Auctions ends in 
                                                     <div className="de_countdown">
-                                                        <Clock deadline={nftData.auctionData.endAuction * 1000} />
+                                                        <Clock deadline={nft.auctionData.endAuction * 1000} />
                                                     </div>
                                                 </>
                                             )
                                         }
-                                        <h2>{nftData.nftName}</h2>
+                                        <h2>{nft.nftName}</h2>
                                         <div className="item_info_counts">
-                                            <div className="item_info_type"><i className="fa fa-image"></i>{nftData.category}</div>
+                                            <div className="item_info_type"><i className="fa fa-image"></i>{nft.category}</div>
                                         </div>
-                                        <p>{nftData.nftDesc}</p>
+                                        <p>{nft.nftDesc}</p>
 
                                         <div className="spacer-40"></div>
-                                        <Attr data={nftData.attributes}/>
+                                        <Attr data={nft.attributes}/>
                                     </div>
                                 </div>
 
                                 </div>
                             </section>
-                        : !Object.keys(nftData).length && <Empty/>
+                        : !Object.keys(nft).length && <Empty/>
                     )
                 }
                 <Footer />

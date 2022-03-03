@@ -3,6 +3,8 @@ import axios from "axios";
 import Skeleton from 'react-loading-skeleton'
 import { createGlobalStyle } from 'styled-components';
 import ReactPlayer from 'react-player'
+import MusicArt from "./Asset/music";
+import VideoArt from "./Asset/video";
 
 const GlobalStyles = createGlobalStyle`
    .react-loading-skeleton {
@@ -17,11 +19,11 @@ const Folder = (props) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(async() => {
-        if (props?.NFT) {
-            const { init_nft, NFT } = props;
-            const URI = await NFT.methods.tokenURI(init_nft.wide[0]).call();
-            await axios.get(URI).then(res => {
-                setNFT({ ...init_nft, ...res.data});
+        if (props?.Marketplace) {
+            const { init_nft, Marketplace } = props;
+            const URI = await Marketplace.methods.getItemNFT(init_nft.wide[0]).call();
+            await axios.get(URI.nftData.tokenURI).then(res => {
+                setNFT({ ...init_nft, ...URI, ...res.data});
             }).catch(err => {
                 console.log(err);
             })
@@ -52,15 +54,19 @@ const Folder = (props) => {
                 <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4">
                     <div className="nft__item m-0 pb-4 h-100 justify-content-between">
                         <div className="nft__item_wrap ratio-1x1">
-                            <a href={`/folder-explorer/${nft.folderIndex}`}>
-                                
-                                {
-                                    (!nft.type || nft.type && (nft.type).toLowerCase() != "video") ? <img src={nft.image} className="lazy nft__item_preview" alt=""/>
-                                    :
-                                    <ReactPlayer url={nft.asset} config={{ youtube: { playerVars: { origin: 'https://www.youtube.com' } } }} className="lazy nft__item_preview w-100" />
-                                }
+                            
+                            {
+                                (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <a href={`/folder-explorer/${nft.folderIndex}`}><img src={nft.image} className="lazy nft__item_preview" alt=""/></a>
+                            }
+
+                            {
+                                (nft.type && (nft.type).toLowerCase() == 'music') && <MusicArt data={nft} link={`/folder-explorer/${nft.folderIndex}`}/>
+                            }
+
+                            {
+                                (nft.type && (nft.type).toLowerCase() == 'video') && <VideoArt data={nft.asset}/>
+                            }
         
-                            </a>
                         </div>
                         <div className="nft__item_info mb-0 mt-1">
                             <span>

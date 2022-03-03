@@ -3,6 +3,7 @@ import axios from "axios";
 import { createGlobalStyle } from 'styled-components';
 import { useSelector } from 'react-redux';
 import getWeb3 from "../../utils/getWeb3";
+import Loading from '../components/Loading/Loading';
 
 const Particle = lazy(() => import('../components/Particle'));
 const SliderMainParticle = lazy(() => import('../components/SliderMainParticle'));
@@ -145,7 +146,7 @@ const homeone= () => {
 
   return (
     <div>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Loading/>}>
         <GlobalStyles />
         <section className="jumbotron no-bg" style={{backgroundImage: `url(${'./img/background/bg.webp'})`}}>
          <Particle/>

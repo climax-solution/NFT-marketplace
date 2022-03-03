@@ -2,11 +2,11 @@ import React, { useEffect, useState, lazy, Suspense } from 'react';
 import Select from 'react-select';
 import { createGlobalStyle } from 'styled-components';
 import getWeb3 from '../../utils/getWeb3';
+import categoryOptions from "../../config/category.json";
+import Loading from '../components/Loading/Loading';
 
 const FolderList = lazy(() => import('../components/FolderList'));
 const Footer = lazy(() => import('../components/footer'));
-const categoryOptions = lazy(() => import("../../config/category.json"));
-const Loading = lazy(() => import('../components/Loading/Loading'));
 
 const customStyles = {
   option: (base, state) => ({
@@ -77,7 +77,6 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 const explore = () => {
-  const [NFT, setNFT] = useState(null);
   const [Marketplace, setMarketplace] = useState(null);
   const [folderList, setFolderList] = useState([]);
   const [activeCategory, setCategory] = useState({ value:'', label: 'All categories' });
@@ -86,8 +85,7 @@ const explore = () => {
   const [tmpKwd, setTmpKwd] = useState('');
 
   useEffect(async() => {
-    const { instanceNFT, instanceMarketplace } = await getWeb3();
-    setNFT(instanceNFT);
+    const { instanceMarketplace } = await getWeb3();
     setMarketplace(instanceMarketplace);
     
   },[])
@@ -112,7 +110,7 @@ const explore = () => {
 
   return(
     <div>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Loading/>}>
         <GlobalStyles/>
         <section className='jumbotron breadcumb no-bg'>
           <div className='mainbreadcumb'>
@@ -145,7 +143,7 @@ const explore = () => {
                             id="btn-submit"
                             onClick={() => {
                               setRealKwd(tmpKwd);
-                              setFolderList([]);
+                              // setFolderList([]);
                             }}
                           >
                             <i className="fa fa-search bg-color-secondary"></i>
@@ -162,7 +160,7 @@ const explore = () => {
                       options={categoryOptions}
                       onChange={(value) => {
                         setCategory(value);
-                        setFolderList([]);
+                        // setFolderList([]);
                       }}
                     />
                   </div>
@@ -170,7 +168,7 @@ const explore = () => {
             </div>
           </div>
           {
-            itemLoading ? <Loading/> : <FolderList data={folderList} _insNFT={NFT}/>
+            itemLoading ? <Loading/> : <FolderList data={folderList} _insMarketplace={Marketplace}/>
           }
         </section>
 
