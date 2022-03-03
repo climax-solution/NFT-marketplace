@@ -27,6 +27,7 @@ import 'react-cool-music-player/dist/index.css'
 // import 'react-country-dropdown/dist/index.css';
 
 import { UPDATE_AUTH, UPDATE_LOADING_PROCESS } from '../store/action/auth.action';
+import Loading from './components/Loading/Loading';
 
 const GlobalStyles = createGlobalStyle`
   :root {
@@ -69,9 +70,7 @@ const app = () => {
   console.log(userData);
   if (loadingProcessing)
     return (
-      <div className='position-fixed d-flex w-100 h-100 justify-content-center align-items-center'>
-        <ThreeDots />
-      </div>
+      <Loading/>
     )
   return (
     <div className="wraper">
