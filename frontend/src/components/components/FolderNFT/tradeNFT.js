@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { lazy, useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { NotificationManager } from "react-notifications";
 import { useDispatch, useSelector } from "react-redux";
@@ -8,14 +8,34 @@ import { createGlobalStyle } from "styled-components";
 import Swal from "sweetalert2";
 import { UPDATE_LOADING_PROCESS } from "../../../store/action/auth.action";
 import getWeb3 from "../../../utils/getWeb3";
-import MusicArt from "../Asset/music";
-import VideoArt from "../Asset/video";
-import Clock from "../Clock";
+
+const MusicArt = lazy(() => import("../Asset/music"));
+const VideoArt = lazy(() => import("../Asset/video"));
+const Clock = lazy(() => import("../Clock"));
 
 const GlobalStyles = createGlobalStyle`
     .react-loading-skeleton {
         background-color: #2a2b2c !important;
         background-image: linear-gradient(90deg ,#2a2b2c,#444,#2a2b2c ) !important;
+    }
+    .owner-check {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        font-size: 25px !important;
+        color: turquoise;
+    }
+
+    .bid-check {
+        position: absolute;
+        right: 15px;
+        bottom: 15px;
+        font-size: 25px !important;
+        color: turquoise;
+    }
+
+    .wap-height {
+        height: calc(100% - 120px);
     }
 `;
 
