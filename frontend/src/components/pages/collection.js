@@ -3,8 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import getWeb3 from "../../utils/getWeb3";
 import InfiniteScroll from "react-infinite-scroll-component";
+import Loading from "../components/Loading/Loading";
 
-const Loading = lazy(() => import("../components/Loading/Loading"));
 const Footer = lazy(() => import('../components/footer'));
 const NFTItem = lazy(() => import("../components/Collection/nftItem"));
 const Banner = lazy(() => import("../components/Collection/banner"));
@@ -50,7 +50,7 @@ const Collection= function() {
 
   return (
     <div>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Loading/>}>
         <Banner userData={userData} />
         <section className='container no-top'>
             <InfiniteScroll

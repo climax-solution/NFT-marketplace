@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import axios from "axios";
 import Skeleton from 'react-loading-skeleton'
 import { createGlobalStyle } from 'styled-components';
-import MusicArt from "./Asset/music";
-import VideoArt from "./Asset/video";
+import Loading from "./Loading/Loading";
+
+const MusicArt = lazy(() => import("./Asset/music"));
+const VideoArt = lazy(() => import("./Asset/video"));
 
 const GlobalStyles = createGlobalStyle`
    .react-loading-skeleton {
@@ -33,39 +35,41 @@ const Folder = (props) => {
     return (
         <>
             <GlobalStyles/>
-            <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4">
-                <div className="nft__item m-0 pb-4 h-100 justify-content-between">
-                    <div className="nft__item_wrap ratio-1x1">
-                        {
-                            loading ? (
-                                <span>
-                                    <Skeleton className="lazy nft__item_preview ratio ratio-1x1"/>
-                                </span>
-                            ) :
-                            <>
-                                {
-                                    (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <a href={`/folder-explorer/${nft.folderIndex}`}><img src={nft.image} className="lazy nft__item_preview" alt=""/></a>
-                                }
+            <Suspense fallback={<Loading/>}>
+                <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4">
+                    <div className="nft__item m-0 pb-4 h-100 justify-content-between">
+                        <div className="nft__item_wrap ratio-1x1">
+                            {
+                                loading ? (
+                                    <span>
+                                        <Skeleton className="lazy nft__item_preview ratio ratio-1x1"/>
+                                    </span>
+                                ) :
+                                <>
+                                    {
+                                        (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <a href={`/folder-explorer/${nft.folderIndex}`}><img src={nft.image} className="lazy nft__item_preview" alt=""/></a>
+                                    }
 
-                                {
-                                    (nft.type && (nft.type).toLowerCase() == 'music') && <MusicArt data={nft} link={`/folder-explorer/${nft.folderIndex}`}/>
-                                }
+                                    {
+                                        (nft.type && (nft.type).toLowerCase() == 'music') && <MusicArt data={nft} link={`/folder-explorer/${nft.folderIndex}`}/>
+                                    }
 
-                                {
-                                    (nft.type && (nft.type).toLowerCase() == 'video') && <VideoArt data={nft.asset}/>
-                                }
-                            </>
-                        }
-                    </div>
-                    <div className="nft__item_info mb-0 mt-1">
-                        <span>
-                            <h4>
-                                {
-                                    loading ? <Skeleton/> : <a href={`/folder-explorer/${nft.folderIndex}`} className="text-decoration-none text-white">{nft.folder}</a>}</h4>
-                        </span>
+                                    {
+                                        (nft.type && (nft.type).toLowerCase() == 'video') && <VideoArt data={nft.asset}/>
+                                    }
+                                </>
+                            }
+                        </div>
+                        <div className="nft__item_info mb-0 mt-1">
+                            <span>
+                                <h4>
+                                    {
+                                        loading ? <Skeleton/> : <a href={`/folder-explorer/${nft.folderIndex}`} className="text-decoration-none text-white">{nft.folder}</a>}</h4>
+                            </span>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </Suspense>
         </>
     )
 }

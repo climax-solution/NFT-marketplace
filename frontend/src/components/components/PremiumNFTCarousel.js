@@ -1,23 +1,23 @@
 import React, { useEffect, useState, lazy, Suspense } from "react";
 import Slider from "react-slick";
 import { createGlobalStyle } from "styled-components";
-import getWeb3 from "../../utils/getWeb3";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import axios from "axios";
+import { Link } from "react-router-dom";
 import { NotificationManager } from "react-notifications";
-
+import Loading from "./Loading/Loading";
 
 import { UPDATE_LOADING_PROCESS } from "../../store/action/auth.action";
-import MusicArt from "./Asset/music";
-import VideoArt from "./Asset/video";
+import getWeb3 from "../../utils/getWeb3";
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { Link } from "react-router-dom";
 
 const PremiumNFTLoading = lazy(() => import('./Loading/PremiumNFTLoading'));
 const Empty = lazy(() => import("./Empty"));
+const MusicArt = lazy(() => import("./Asset/music"));
+const VideoArt = lazy(() => import("./Asset/video"));
 
 const GlobalStyles = createGlobalStyle`
   .slick-track {
@@ -169,7 +169,7 @@ export default function ({ status, update }) {
         </div>
       </div> 
       <div className='nft'>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<Loading/>}>
           <GlobalStyles/>
           { carouselLoading && <PremiumNFTLoading/> }
           {

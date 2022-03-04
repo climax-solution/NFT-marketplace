@@ -5,6 +5,11 @@ import UserInfo from "../components/Profile/userInfo";
 import ManageInfo from "../components/Profile/manageInfo";
 import Loading from "../components/Loading/Loading";
 
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from "react-redux";
+import { UPDATE_AUTH } from "../../store/action/auth.action";
+import { WalletConnect } from "../../store/action/wallet.action";
+
 const SellingNFT = lazy(() => import('../components/SellingNFT'));
 const NotSellingNFT = lazy(() => import('../components/NotSellingNFT'));
 const Footer = lazy(() => import('../components/footer'));
@@ -54,7 +59,18 @@ const GlobalStyles = createGlobalStyle`
 
 const Profile = function() {
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [activeTab, setActiveTab] = useState(0);
+
+  const logout = () => {
+    localStorage.removeItem("nftdevelopments-token");
+    localStorage.setItem("nftdevelopments-connected", JSON.stringify({ connected: false }));
+    dispatch(UPDATE_AUTH({ walletAddress: '' }));
+    dispatch(WalletConnect());
+    navigate('/');
+  }
 
   return (
     <div>
@@ -72,7 +88,12 @@ const Profile = function() {
                         <UserInfo/>
                     </div>
                 </div>
+                <div className="profile_follow de-flex">
+                  <div className="de-flex-col">
+                      <span className="btn-main" onClick={logout}>Sign out</span>
+                  </div>
                 </div>
+              </div>
             </div>
           </div>
         </section>

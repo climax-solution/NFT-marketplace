@@ -5,7 +5,6 @@ import { NotificationManager } from "react-notifications";
 import { UPDATE_AUTH } from "../../../store/action/auth.action";
 import axios from "axios";
 
-
 export default function ManageInfo() {
     
     const dispatch = useDispatch();

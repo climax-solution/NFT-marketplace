@@ -1,33 +1,11 @@
-import React, {  useEffect, useState } from "react";
+import React, {  lazy, Suspense, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { createGlobalStyle } from 'styled-components';
 import getWeb3 from "../../utils/getWeb3";
 import Empty from "../components/Empty";
 import Loading from "../components/Loading/Loading";
 import InfiniteScroll from "react-infinite-scroll-component";
-import TradeNFT from "../components/FolderNFT/tradeNFT";
 
-const GlobalStyles  = createGlobalStyle`
-    .owner-check {
-        position: absolute;
-        right: 15px;
-        top: 15px;
-        font-size: 25px !important;
-        color: turquoise;
-    }
-
-    .bid-check {
-        position: absolute;
-        right: 15px;
-        bottom: 15px;
-        font-size: 25px !important;
-        color: turquoise;
-    }
-
-    .wap-height {
-        height: calc(100% - 120px);
-    }
-`;
+const TradeNFT = lazy(() => import("../components/FolderNFT/tradeNFT"));
 
 const folderNFTs = () => {
 
@@ -37,13 +15,12 @@ const folderNFTs = () => {
     const [restList, setRestList] = useState([]);
     const [folderName, setFolderName] = useState("Collection");
     const [isLoading, setIsLoading] = useState(true);
-    const [loaded, setLoaded] = useState(false);
 
     useEffect(async () => {
-        if (loaded) {
+        if (!isLoading) {
             await fetchNFT();
         }
-    },[loaded])
+    },[isLoading])
     useEffect(async() => {
         const { instanceMarketplace } = await getWeb3();
         setMarketplace(instanceMarketplace);
@@ -70,7 +47,7 @@ const folderNFTs = () => {
 
         setFolderName(gradList[1]);
         setRestList(list);
-        setLoaded(true);
+        setIsLoading(false);
     }
 
     const fetchNFT = async () => {
@@ -81,51 +58,51 @@ const folderNFTs = () => {
         } else setRestList([]);
         
         setNFTLists([...nfts, ...list]);
-        setIsLoading(false);
     }
 
     return (
         <div>
-            <GlobalStyles/>
-            <section className='jumbotron breadcumb no-bg'>
-                <div className='mainbreadcumb'>
-                    <div className='container'>
-                        <div className='row m-10-hor'>
-                        <div className='col-12'>
-                            <h1 className='text-center'>{folderName}</h1>
-                        </div>
+            <Suspense fallback={<Loading/>}>
+                <section className='jumbotron breadcumb no-bg'>
+                    <div className='mainbreadcumb'>
+                        <div className='container'>
+                            <div className='row m-10-hor'>
+                            <div className='col-12'>
+                                <h1 className='text-center'>{folderName}</h1>
+                            </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </section>
-            <section className='container'>
-                {
-                    isLoading && <Loading/>
-                }
+                </section>
+                <section className='container'>
+                    {
+                        isLoading && <Loading/>
+                    }
 
-                {
-                    !isLoading &&  (
-                        <InfiniteScroll
-                            dataLength={nfts.length}
-                            next={fetchNFT}
-                            hasMore={restList.length ? true : false}
-                            loader={<Loading/>}
-                            className="row"
-                        >
-                            {
-                                nfts.map( (nft, index) => {
-                                    return (
-                                        <TradeNFT data={nft} key={index}/>
-                                    )
-                                })
-                            }
-                        </InfiniteScroll>)
-                }
-                {
-                    !isLoading && !nfts.length && <Empty/>
-                }
-                
-            </section>
+                    {
+                        !isLoading &&  (
+                            <InfiniteScroll
+                                dataLength={nfts.length}
+                                next={fetchNFT}
+                                hasMore={restList.length ? true : false}
+                                loader={<Loading/>}
+                                className="row"
+                            >
+                                {
+                                    nfts.map( (nft, index) => {
+                                        return (
+                                            <TradeNFT data={nft} key={index}/>
+                                        )
+                                    })
+                                }
+                            </InfiniteScroll>)
+                    }
+                    {
+                        !isLoading && !nfts.length && <Empty/>
+                    }
+                    
+                </section>
+            </Suspense>
         </div>
 
     );
