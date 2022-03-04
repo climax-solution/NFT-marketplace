@@ -8,6 +8,9 @@ import PhoneInput from 'react-phone-input-2'
 import walletValidator from 'wallet-address-validator';
 import EmailValidator from 'email-validator';
 import 'react-phone-input-2/lib/style.css';
+import { UPDATE_AUTH } from '../../store/action/auth.action';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 const Footer = lazy(() => import('../components/footer'));
 
@@ -44,6 +47,9 @@ const GlobalStyles = createGlobalStyle`
 
 const Register= () => {
 
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [email ,setEmail] = useState('');
@@ -145,8 +151,11 @@ const Register= () => {
         };
 
         await axios.post("http://nftdevelopments.co.nz/auth/register", data).then(res => {
-           toast.success("You have registered successfully!", { theme: "colored" });
 
+            const { user } = res.data;
+            toast.success("You have registered successfully!", { theme: "colored" });
+            dispatch(UPDATE_AUTH(user));
+            navigate("/profile");
         }).catch(err => {
             const { error } = err.response.data;
             toast.error(error, { theme: "colored" });

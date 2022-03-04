@@ -1,17 +1,12 @@
-import React, { useEffect, useState, lazy, Suspense } from "react";
+import React, { useState, lazy, Suspense } from "react";
 import { createGlobalStyle } from 'styled-components';
-import { useSelector, useDispatch } from "react-redux";
-import axios from "axios";
-import useOnclickOutside from "react-cool-onclickoutside";
-import getWeb3 from "../../utils/getWeb3";
-import { UPDATE_AUTH } from "../../store/action/auth.action";
 import Avatar from "../components/Profile/avatar";
 import UserInfo from "../components/Profile/userInfo";
 import ManageInfo from "../components/Profile/manageInfo";
+import Loading from "../components/Loading/Loading";
 
 const SellingNFT = lazy(() => import('../components/SellingNFT'));
 const NotSellingNFT = lazy(() => import('../components/NotSellingNFT'));
-const Loading = lazy(() => import("../components/Loading/Loading"));
 const Footer = lazy(() => import('../components/footer'));
 
 const GlobalStyles = createGlobalStyle`
@@ -60,22 +55,10 @@ const GlobalStyles = createGlobalStyle`
 const Profile = function() {
 
   const [activeTab, setActiveTab] = useState(0);
-  const ref = useOnclickOutside(() => {
-  });
-
-  useEffect(async() => {
-    const token = localStorage.getItem("nftdevelopments-token");
-    const _headers = {headers: {Authorization: JSON.parse(token)}}
-    if (token) {
-      await axios.post('http://nftdevelopments.co.nz/user/get-user', {}, _headers).then(res =>{
-      }).catch(err => {
-      })
-    }
-  },[]);
 
   return (
     <div>
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<Loading/>}>
         <GlobalStyles/>
 
         <section className='container no-bottom'>
@@ -84,7 +67,7 @@ const Profile = function() {
             <div className="col-md-12">
               <div className="d_profile de-flex">
                 <div className="de-flex-col">
-                    <div className="profile_avatar d-flex" ref={ref}>
+                    <div className="profile_avatar d-flex">
                         <Avatar/>
                         <UserInfo/>
                     </div>
@@ -100,7 +83,7 @@ const Profile = function() {
                 <div className="items_filter">
                   <ul className="de_nav text-left">
                       <li id='Mainbtn' className={activeTab == 0 ? 'active' : ''}><span onClick={() => setActiveTab(0)}>On Sale</span></li>
-                      <li id='Mainbtn1' className={activeTab == 1 ? 'active' : ''}><span onClick={() => setActiveTab(1)}>Not Sale</span></li>
+                      <li id='Mainbtn1' className={activeTab == 1 ? 'active' : ''}><span onClick={() => setActiveTab(1)}>Collected</span></li>
                       <li id='Mainbtn3' className={activeTab == 2 ? 'active' : ''}><span onClick={() => setActiveTab(2)}>User Info</span></li>
                   </ul>
               </div>

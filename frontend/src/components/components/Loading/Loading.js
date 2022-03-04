@@ -11,7 +11,7 @@ export default function Loading() {
     return (
         <>
             <GlobalStyles/>
-            <div>
+            <div className='css-loader'>
                 <div className="cssLoader17"></div>
             </div>
         </>

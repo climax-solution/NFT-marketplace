@@ -46,9 +46,9 @@ const login = () => {
     };
     await axios.post("http://nftdevelopments.co.nz/auth/login", data).then(res => {
       toast.success("You have logined successfully", {theme: "colored"});
-      const { token } = res.data;
+      const { token, user } = res.data;
       localStorage.setItem("nftdevelopments-token", JSON.stringify(token));
-      dispatch(UPDATE_AUTH(token));
+      dispatch(UPDATE_AUTH(user));
       navigate('/profile');
     }).catch(err => {
       const { error } = err.response.data;
