@@ -43,7 +43,7 @@ const NFTItem = function() {
         setLoading(false);
     },[])
 
-    const faliedLoadImage = (e) => {
+    const failedLoadImage = (e) => {
         e.target.src="/img/empty.jfif";
     }
 
@@ -56,7 +56,7 @@ const NFTItem = function() {
                         <div className='container'>
                             <div className='row m-10-hor'>
                             <div className='col-12'>
-                                <h1 className='text-center'>Item Details</h1>
+                                <h1 className='text-center'>NFT Infos</h1>
                             </div>
                             </div>
                         </div>
@@ -73,7 +73,7 @@ const NFTItem = function() {
 
                                 <div className="col-md-6 text-center">
                                     {
-                                        (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={faliedLoadImage} className="img-fluid img-rounded mb-sm-30" alt=""/>
+                                        (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} className="img-fluid img-rounded mb-sm-30" alt=""/>
                                     }
 
                                     {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, lazy, Suspense } from "react";
 import Slider from "react-slick";
-import styled, { createGlobalStyle } from "styled-components";
+import { createGlobalStyle } from "styled-components";
 import getWeb3 from "../../utils/getWeb3";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
@@ -14,17 +14,23 @@ import VideoArt from "./Asset/video";
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { Link } from "react-router-dom";
 
 const PremiumNFTLoading = lazy(() => import('./Loading/PremiumNFTLoading'));
 const Empty = lazy(() => import("./Empty"));
 
 const GlobalStyles = createGlobalStyle`
-  .slick-slide {
-    max-width: 324px;
+  .slick-track {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  .text-grey {
+    color: #a2a2a2;
   }
 `;
 
-export default function ({ data, status, update }) {
+export default function ({ status, update }) {
 
   const dispatch = useDispatch();
   const initialUser = useSelector(({ auth }) => auth.user);
@@ -44,7 +50,7 @@ export default function ({ data, status, update }) {
       {
         breakpoint: 1900,
         settings: {
-          slidesToShow:  list.length >= 4 ? 4 : 1,
+          slidesToShow: 4,
           slidesToScroll: 1,
           infinite: true,
         }
@@ -52,21 +58,21 @@ export default function ({ data, status, update }) {
       {
         breakpoint: 1600,
         settings: {
-          slidesToShow:  list.length >= 4 ? 4 : 1,
+          slidesToShow:  4,
           slidesToScroll: 1,
           infinite: true
         }
       },
       {
-        breakpoint: 1024,
+        breakpoint: 1200,
         settings: {
-          slidesToShow:  list.length >= 3 ? 3 : 1,
+          slidesToShow:  3,
           slidesToScroll: 1,
           infinite: true
         }
       },
       {
-        breakpoint: 600,
+        breakpoint: 800,
         settings: {
           slidesToShow:  2,
           slidesToScroll: 1,
@@ -150,7 +156,7 @@ export default function ({ data, status, update }) {
     setCarouselLoading(false);
   }
 
-  const faliedLoadImage = (e) => {
+  const failedLoadImage = (e) => {
     e.target.src="/img/empty.jfif";
   }
 
@@ -179,7 +185,7 @@ export default function ({ data, status, update }) {
                             <div className="nft__item">
                                 <div className="nft__item_wrap">
                                   {
-                                      (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <a href={`/item-detail/${nft.nftData.tokenID}`}><img src={nft.image} onError={faliedLoadImage} className="lazy nft__item_preview" alt=""/></a>
+                                      (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <a href={`/item-detail/${nft.nftData.tokenID}`}><img src={nft.image} onError={failedLoadImage} className="lazy nft__item_preview" alt=""/></a>
                                   }
 
                                   {
@@ -191,8 +197,8 @@ export default function ({ data, status, update }) {
                                   }
                                 </div>
                                 <div className="nft__item_info mb-0">
-                                    <span onClick={()=> window.open("/#", "_self")}>
-                                        <h4>{nft.nftName}</h4>
+                                    <span>
+                                        <h4><Link to={`/item-detail/${nft.nftData.tokenID}`} className="text-decoration-none text-grey">{nft.nftName}</Link></h4>
                                     </span>
                                     <div className="nft__item_price">
                                         {web3.utils.fromWei(price)} BNB

@@ -14,7 +14,7 @@ export default function NFTItem({ data }) {
         setLoading(false);
     },[data])
 
-    const faliedLoadImage = (e) => {
+    const failedLoadImage = (e) => {
         e.target.src="/img/empty.jfif";
     }
       
@@ -31,7 +31,7 @@ export default function NFTItem({ data }) {
                         :
                         <>
                             {
-                                (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <a href={`/item-detail/${nft.nftData.tokenID}`}><img src={nft.image} onError={faliedLoadImage} className="lazy nft__item_preview" alt=""/></a>
+                                (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <a href={`/item-detail/${nft.nftData.tokenID}`}><img src={nft.image} onError={failedLoadImage} className="lazy nft__item_preview" alt=""/></a>
                             }
 
                             {
@@ -45,7 +45,7 @@ export default function NFTItem({ data }) {
                     }
                 </div>
                 <div className="nft__item_info">
-                    <span onClick={()=> window.open(nft.nftLink, "_self")}>
+                    <span>
                         <h4>{ isLoading ? nft.nftName : <Skeleton/>}</h4>
                     </span>
                 </div> 

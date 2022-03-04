@@ -11,7 +11,7 @@ export default function VideoArt({ link }) {
                     }
                 }
             }}
-            className="lazy nft__item_preview w-100"
+            className="lazy nft__item_preview w-100 h-100"
         />
     )
 }

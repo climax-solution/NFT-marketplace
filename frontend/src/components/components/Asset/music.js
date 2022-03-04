@@ -10,6 +10,10 @@ export default function MusicArt({ data, link }) {
         else document.getElementsByClassName(`track-${data.nftData.tokenID}`)[0].pause();
     }
     
+    const failedLoadImage = (e) => {
+        e.target.src = "/img/background/2.jpg";
+    }
+
     return (
         <>
             <div className="nft_type_wrap">
@@ -22,7 +26,7 @@ export default function MusicArt({ data, link }) {
                 <div className={`circle-ripple ${isPlay ? 'd-block' : 'd-none'}`}/>
             </div>
             <a href={link} className="w-100">
-                <img src={data.image} className="lazy nft__item_preview" alt=""/>
+                <img src={data.image} onError={failedLoadImage} className="lazy nft__item_preview" alt=""/>
             </a>
         </>
     )

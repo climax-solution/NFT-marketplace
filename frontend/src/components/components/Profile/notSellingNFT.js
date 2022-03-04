@@ -156,6 +156,10 @@ export default function NotSaleNFT({ data, NFT, Marketplace }) {
         }
     },[data])
 
+    const failedLoadImage = (e) => {
+        e.target.src="/img/empty.jfif";
+    }
+
     return (
         <>
         <GlobalStyles/>
@@ -171,7 +175,7 @@ export default function NotSaleNFT({ data, NFT, Marketplace }) {
                         :
                         <>
                             {
-                                (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <a href={`/item-detail/${nft.nftData.tokenID}`} className="position-relative"><img src={nft.image} className="lazy nft__item_preview" alt=""/></a>
+                                (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <a href={`/item-detail/${nft.nftData.tokenID}`} className="position-relative"><img src={nft.image} onError={failedLoadImage} className="lazy nft__item_preview" alt=""/></a>
                             }
 
                             {

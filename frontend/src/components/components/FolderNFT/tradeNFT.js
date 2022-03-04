@@ -57,7 +57,7 @@ export default function TradeNFT({ data }) {
         setLoading(false);
     },[data])
 
-    const faliedLoadImage = (e) => {
+    const failedLoadImage = (e) => {
         e.target.src="/img/empty.jfif";
     }
 
@@ -214,7 +214,7 @@ export default function TradeNFT({ data }) {
                             <div className="nft__item_wrap flex-column position-relative wap-height">
                                 
                                 {
-                                    (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <a href={`/item-detail/${nft.nftData.tokenID}`}><img src={nft.image} onError={faliedLoadImage} className="lazy nft__item_preview" alt=""/></a>
+                                    (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <a href={`/item-detail/${nft.nftData.tokenID}`}><img src={nft.image} onError={failedLoadImage} className="lazy nft__item_preview" alt=""/></a>
                                 }
 
                                 {
