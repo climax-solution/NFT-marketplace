@@ -97,6 +97,7 @@ const NFTItem = function() {
                                             )
                                         }
                                         <h2>{nft.nftName}</h2>
+                                        <h5>TOKEN ID : {nft.nftData.tokenID}</h5>
                                         <div className="item_info_counts">
                                             <div className="item_info_type"><i className="fa fa-image"></i>{nft.category}</div>
                                         </div>

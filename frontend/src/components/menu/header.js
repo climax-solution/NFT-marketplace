@@ -214,16 +214,6 @@ const Header= function() {
                             className="img-fluid d-block light-logo"
                             alt="#"
                           />
-                          <img
-                            src="/img/logo-light.png light-logo"
-                            className="img-fluid d-3"
-                            alt="#"
-                          />
-                          <img
-                            src="/img/logo-light.png"
-                            className="img-fluid d-none light-logo"
-                            alt="#"
-                          />
                         </Link>
                       </div>
                   </div>
