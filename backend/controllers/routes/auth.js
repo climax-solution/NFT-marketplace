@@ -32,7 +32,8 @@ router.post('/login', async(req, res) => {
 
             return res.status(200).json({
                 success: true,
-                token: `Bearer ${token}`
+                token: `Bearer ${token}`,
+                user: existingUserName
             });
         }
         else {
