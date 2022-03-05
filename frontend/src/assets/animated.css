@@ -2701,7 +2701,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   display: flex;
   align-items: center;
   z-index: 9999;
-  background: rgba(0,0,0,0.6);
+  background: #000;
 }
 
 .cssLoader17 {

@@ -55,6 +55,11 @@ const GlobalStyles = createGlobalStyle`
         padding: 2px 10px;
     }
   }
+
+  .mn-h-300px {
+    min-height: 300px;
+  }
+
 `;
 
 const Profile = function() {
@@ -113,14 +118,14 @@ const Profile = function() {
 
           {
               activeTab == 0 && (
-                <div id='zero1' className='onStep fadeIn'>
+                <div id='zero1' className='onStep fadeIn mn-h-300px'>
                 <SellingNFT/>
                 </div>
               )
           }
           {
               activeTab == 1  && (
-                <div id='zero2' className='onStep fadeIn'>
+                <div id='zero2' className='onStep fadeIn mn-h-300px'>
                   <NotSellingNFT/>
                 </div>
               )

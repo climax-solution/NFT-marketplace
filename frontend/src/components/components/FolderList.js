@@ -1,9 +1,9 @@
 import React, { useState, useEffect, lazy, Suspense } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-import Loading from "./Loading/Loading";
 
 const Empty = lazy(() => import("./Empty"));
 const Folder = lazy(() => import("./Folder"));
+const PremiumNFTLoading = lazy(() => import("./Loading/PremiumNFTLoading"));
 
 export default function FolderList({data, _insMarketplace }) {
 
@@ -36,12 +36,12 @@ export default function FolderList({data, _insMarketplace }) {
 
     
     return (
-        <Suspense fallback={<Loading/>}>
+        <Suspense fallback={<PremiumNFTLoading/>}>
             <InfiniteScroll
                 dataLength={folderList.length}
                 next={fetchFolders}
                 hasMore={restList.length ? true : false}
-                loader={<Loading/>}
+                loader={<PremiumNFTLoading/>}
                 className="row"
             >
                 { folderList.map( (nft, index) => (

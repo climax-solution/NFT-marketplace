@@ -67,7 +67,7 @@ const login = () => {
               <div className="col-lg-4 offset-lg-4 m-auto px-0">
                 <div className="box-login">
                   <h3 className="mb10">Sign In</h3>
-                  <p>Login using an existing account or create a new account <span>here</span>.</p>
+                  <p>Login using an existing account or create a new account <span onClick={() => navigate('/register')}>here</span>.</p>
                   <div name="contactForm" id='contact_form' className="form-border" action='#'>
 
                     <div className="field-set">

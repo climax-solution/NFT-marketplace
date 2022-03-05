@@ -175,7 +175,7 @@ const Register= () => {
                     <div className='spacer-double'></div>
                     <div className="col-md-8 offset-md-2">
                     <h3>Don't have an account? Register now.</h3>
-                                    <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                    <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
 
                     <div className="spacer-10"></div>
 
@@ -300,7 +300,7 @@ const Register= () => {
                                     <div className="field-set">
                                         <label>Re-enter Password:</label>
                                         <input type='password' name='re-password' id='re-password' className="form-control mb-0" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)}/>
-                                                                            {
+                                        {
                                             <label className='text-danger'>{confirmPasswordStatus}</label>
                                         }
                                     </div>

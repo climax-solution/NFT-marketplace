@@ -147,7 +147,8 @@ const Header= function() {
   const connectWallet = async() => {
     try {
       const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-      if ((accounts[0]).toLowerCase() != (user_data.walletAddress).toLowerCase()) throw new Error("Please connect correct account");
+      console.log(accounts, user_data.walletAddress);
+      if ((accounts[0]).toLowerCase() != (user_data.walletAddress).toLowerCase()) throw new Error("Please switch account and connect.");
       else {
         localStorage.setItem("nftdevelopments-connected", JSON.stringify({ connected: true }));
         dispatch(WalletConnect());

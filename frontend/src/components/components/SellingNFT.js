@@ -2,17 +2,10 @@ import React, { useState, useEffect, lazy, Suspense } from "react";
 import { useSelector } from "react-redux";
 import InfiniteScroll from "react-infinite-scroll-component";
 import getWeb3 from "../../utils/getWeb3";
-import Loading from "./Loading/Loading";
-import { createGlobalStyle } from "styled-components";
+import PremiumNFTLoading from "./Loading/PremiumNFTLoading";
 
 const Empty = lazy(() => import("./Empty"));
 const NFTItem = lazy(() => import("./Profile/sellingNFT"));
-
-const GlobalStyles = createGlobalStyle`
-    .mn-h-300px {
-        min-height: 300px;
-    }
-`;
 
 export default function SellingNFT() {
 
@@ -54,14 +47,13 @@ export default function SellingNFT() {
 
     return (
         <>
-            <GlobalStyles/>
-            <Suspense fallback={<Loading/>}>
+            <Suspense fallback={<PremiumNFTLoading/>}>
                 <InfiniteScroll
                     dataLength={nfts.length}
                     next={fetchNFT}
                     hasMore={restList.length ? true : false}
-                    loader={<Loading/>}
-                    className="row mn-h-300px"
+                    loader={<PremiumNFTLoading/>}
+                    className="row"
                 >
                     { nfts.map( (nft, index) => (
                         <NFTItem data={nft} key={index} Marketplace={marketContract}/>

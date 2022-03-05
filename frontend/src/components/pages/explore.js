@@ -7,6 +7,7 @@ import Loading from '../components/Loading/Loading';
 
 const FolderList = lazy(() => import('../components/FolderList'));
 const Footer = lazy(() => import('../components/footer'));
+const PremiumNFTLoading = lazy(() => import('../components/Loading/PremiumNFTLoading'));
 
 const customStyles = {
   option: (base, state) => ({
@@ -168,7 +169,7 @@ const explore = () => {
             </div>
           </div>
           {
-            itemLoading ? <Loading/> : <FolderList data={folderList} _insMarketplace={Marketplace}/>
+            itemLoading ? <PremiumNFTLoading/> : <FolderList data={folderList} _insMarketplace={Marketplace}/>
           }
         </section>
 

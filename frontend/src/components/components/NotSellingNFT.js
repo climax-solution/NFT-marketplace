@@ -3,18 +3,10 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { useSelector } from "react-redux";
 import NotSaleNFT from "./Profile/notSellingNFT";
 import getWeb3 from "../../utils/getWeb3";
-import { createGlobalStyle } from "styled-components";
+import PremiumNFTLoading from "./Loading/PremiumNFTLoading";
 
 const Empty = lazy(() => import("./Empty"));
-const Loading = lazy(() => import("./Loading/Loading"));
-
-const GlobalStyles = createGlobalStyle`
-    .mn-h-300px {
-        min-height: 300px;
-    }
-`;
-
-export default function NotSellingNFT(props) {
+export default function NotSellingNFT() {
 
     const initUserData = useSelector((state) => state.auth.user);
 
@@ -56,14 +48,13 @@ export default function NotSellingNFT(props) {
 
     return (
         <>
-            <GlobalStyles/>
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={<PremiumNFTLoading/>}>
                 <InfiniteScroll
                     dataLength={nfts.length}
                     next={fetchNFT}
                     hasMore={restList.length ? true : false}
-                    loader={<Loading/>}
-                    className="row mn-h-300px"
+                    loader={<PremiumNFTLoading/>}
+                    className="row"
                 >
                     {nfts.map( (nft, index) => (
                         <NotSaleNFT data={nft} key={index} NFT={nftContract} Marketplace={marketContract}/>

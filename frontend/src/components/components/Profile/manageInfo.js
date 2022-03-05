@@ -2,20 +2,27 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import EmailValidator from 'email-validator';
 import { NotificationManager } from "react-notifications";
-import { UPDATE_AUTH } from "../../../store/action/auth.action";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { UPDATE_AUTH } from "../../../store/action/auth.action";
+import { WalletConnect } from "../../../store/action/wallet.action";
+import Loading from "../Loading/Loading";
 
 export default function ManageInfo() {
     
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     const initUserData = useSelector((state) => state.auth.user);
     const [userData, setUserData] = useState({});
+    const [isLoading, setLoading] = useState(false);
+
     useEffect(() => {
         if (initUserData) setUserData(initUserData);
     },[initUserData])
 
     const updateUserInfo = async() => {
-        const { firstName, lastName, email, password, confirmPassword } = initUserData;
+        const { firstName, lastName, email, password, confirmPassword } = userData;
         if (!firstName || !lastName || !EmailValidator.validate(email)) {
           NotificationManager.warning("You must input first name, last name, email correctly!");
           return;
@@ -25,19 +32,34 @@ export default function ManageInfo() {
           NotificationManager.warning("Please confirm your password!");
           return;
         }
-    
-        await axios.post("http://nftdevelopments.co.nz/user/update-user", initUserData, _headers).then(res => {
+        
+        const jwtToken = localStorage.getItem("nftdevelopments-token");
+        const _headers = { headers :{ Authorization: JSON.parse(jwtToken) } };
+
+        setLoading(true);
+        await axios.post("http://nftdevelopments.co.nz/user/update-user", userData, _headers).then(res => {
           const { data } = res;
           dispatch(UPDATE_AUTH(data));
           NotificationManager.success("Updated profile successfully!");
         }).catch(err => {
           const { error } = err.response.data;
           NotificationManager.error(error);
+          logout();
         })
+        setLoading(false);
       }
+
+    const logout = () => {
+      localStorage.removeItem("nftdevelopments-token");
+      localStorage.setItem("nftdevelopments-connected", JSON.stringify({ connected: false }));
+      dispatch(UPDATE_AUTH({ walletAddress: '' }));
+      dispatch(WalletConnect());
+      navigate('/');
+    }
 
     return(
         <>
+          { isLoading && <Loading/> }
             {
                 Object.keys(userData).length && (
                     <div id='zero4' className='onStep fadeIn'>

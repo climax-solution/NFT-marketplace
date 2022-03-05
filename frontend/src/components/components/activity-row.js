@@ -4,11 +4,11 @@ import { createGlobalStyle } from "styled-components";
 const action = [
     ["action-buy","Buy"],
     ["action-sell","Put On Sale"],
-    ["action-down-sell","Put Down Sale"],
+    ["action-down-sell","Removed On Sale"],
     ["action-to-premium","Covert To Premium NFT"],
     ["action-to-normal","Covert To Normal NFT"],
     ["action-on-auction","Put On Auction"],
-    ["action-down-auction","Put Down Auction"],
+    ["action-down-auction","Removed On Auction"],
     ["action-make-bid","Make Offer"],
     ["action-withdraw-bid","Withdraw Offer"],
     ["action-like","Make Liking NFT"],
