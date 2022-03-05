@@ -46,6 +46,9 @@ export default function ManageInfo() {
           NotificationManager.error(error);
           logout();
         })
+
+        setUserData({ ...userData, password: '', confirmPassword: '' });
+        
         setLoading(false);
       }
 

@@ -45,7 +45,7 @@ const authorlist= () => {
                                                 </div>                                    
                                                 <div className="author_list_info">
                                                     <span>{item.firstName + "  " + item.lastName}</span><br/>
-                                                    <span className="bot d-inline-block">{web3.utils.fromWei((item.price).toString(), "ether")} ETH</span>
+                                                    <span className="bot d-inline-block">{web3.utils.fromWei((item.price).toString(), "ether")} BNB</span>
                                                 </div>
                                             </li>
                                         )

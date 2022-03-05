@@ -99,6 +99,11 @@ export default function TradeNFT({ data }) {
         try {
             let { marketData, auctionData } = await Marketplace.methods.getItemNFT(id).call();
             if (marketData.marketStatus && !auctionData.existance) {
+                const _bnbBalance = await web3.eth.getBalance(userData.walletAddress);
+                const _estGas = await Marketplace.methods.buyNFT(id).estimateGas({ from: userData.walletAddress, value: price})
+
+                if (Number(marketData.price) + Number(_estGas) > Number(_bnbBalance)) throw new Error("BNB balance is not enough");
+
                 await Marketplace.methods.buyNFT(id).send({ from: userData.walletAddress, value: marketData.price });
 
                 const data = {
@@ -110,13 +115,12 @@ export default function TradeNFT({ data }) {
 
                 await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).then(res =>{
 
-                });
+                }).catch(err => { });
 
                 NotificationManager.success("Buy success");
             }
         } catch(err) {
-            console.log(err);
-            NotificationManager.error("Buy failed");
+            NotificationManager.error(err.message);
         }
     }
 
@@ -155,7 +159,12 @@ export default function TradeNFT({ data }) {
                 }).then(async(res) => {
                     if (res.isConfirmed) {
                         const price = web3.utils.toWei(res.value, "ether");
-                       dispatch(UPDATE_LOADING_PROCESS(true));
+                        const _bnbBalance = await web3.eth.getBalance(userData.walletAddress);
+                        const _estGas = await Marketplace.methods.placeBid(id).estimateGas({ from: userData.walletAddress, value: price})
+
+                        if (Number(marketData.price) + Number(_estGas) > Number(_bnbBalance)) throw new Error("BNB balance is not enough");
+
+                        dispatch(UPDATE_LOADING_PROCESS(true));
                         await Marketplace.methods.placeBid(id).send({ from: userData.walletAddress, value: price});
                         const data = {
                             tokenID: id,
@@ -166,13 +175,13 @@ export default function TradeNFT({ data }) {
         
                         await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).then(res =>{
         
-                        });
+                        }).catch(err => { });
                         NotificationManager.success("Success Bid");
                         dispatch(UPDATE_LOADING_PROCESS(false));
                     }
                 });
             } catch(err) {
-                NotificationManager.error("Failed Bid");
+                NotificationManager.error(err.message);
                 dispatch(UPDATE_LOADING_PROCESS(false));
            }
         }
@@ -190,6 +199,11 @@ export default function TradeNFT({ data }) {
         }
 
         try {
+            const _bnbBalance = await web3.eth.getBalance(userData.walletAddress);
+            const _estGas = await Marketplace.methods.claimNFT(id).estimateGas({ from: userData.walletAddress });
+
+            if (Number(marketData.price) + Number(_estGas) > Number(_bnbBalance)) throw new Error("BNB balance is not enough");
+
             dispatch(UPDATE_LOADING_PROCESS(true));
             await Marketplace.methods.claimNFT(id).send({ from: userData.walletAddress });
 

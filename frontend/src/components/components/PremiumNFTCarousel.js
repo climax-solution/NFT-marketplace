@@ -109,9 +109,16 @@ export default function ({ status, update }) {
     }
 
     try {
+
         dispatch(UPDATE_LOADING_PROCESS(true));
         let { marketData, auctionData } = await Marketplace.methods.getItemNFT(id).call();
         if (marketData.marketStatus && !auctionData.existance) {
+
+            const _bnbBalance = await web3.eth.getBalance(userData.walletAddress);
+            const _estGas = await Marketplace.methods.buyNFT(id).send({ from: initialUser?.walletAddress, value: marketData.price });
+
+            if (Number(marketData.price) + Number(_estGas) > Number(_bnbBalance)) throw new Error("BNB balance is not enough");
+
             await Marketplace.methods.buyNFT(id).send({ from: initialUser?.walletAddress, value: marketData.price });
 
             const data = {
@@ -123,7 +130,7 @@ export default function ({ status, update }) {
 
             await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).then(res =>{
 
-            });
+            }).catch(err => { });
 
             update(!status);
             NotificationManager.success("Buy success");

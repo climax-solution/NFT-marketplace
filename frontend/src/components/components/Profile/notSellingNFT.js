@@ -62,6 +62,13 @@ export default function NotSaleNFT({ data, NFT, Marketplace }) {
                 dispatch(UPDATE_LOADING_PROCESS(true));
                 try {
                     const nftPrice = web3.utils.toWei((result.value).toString(), 'ether');
+                    
+                    const _bnbBalance = await web3.eth.getBalance(userData.walletAddress);
+                    const _estApproveGas = await NFT.methods.approve(marketplace_addr, id).send({from : initialUser.walletAddress });
+                    const _estClaimGas = await Marketplace.methods.openTradeToDirect(id).send({ from: initialUser.walletAddress, value: nftPrice / 40 });
+
+                    if (Number(nftPrice / 40) + Number(_estApproveGas) + Number(_estClaimGas) > Number(_bnbBalance)) throw new Error("BNB balance is not enough");
+
                     await NFT.methods.approve(marketplace_addr, id).send({from : initialUser.walletAddress})
                     .on('receipt', async(rec) => {
                         await Marketplace.methods.openTradeToDirect(id).send({ from: initialUser.walletAddress, value: nftPrice / 40 });
@@ -75,13 +82,12 @@ export default function NotSaleNFT({ data, NFT, Marketplace }) {
         
                         await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).then(res =>{
         
-                        });
+                        }).catch(err => { });
                         dispatch(UPDATE_LOADING_PROCESS(false));
                     });
                   
                 } catch(err) {
-                    console.log(err);
-                    NotificationManager.error("Failed");
+                    NotificationManager.error(err.message);
                     dispatch(UPDATE_LOADING_PROCESS(false));
                 }
             }
@@ -125,6 +131,13 @@ export default function NotSaleNFT({ data, NFT, Marketplace }) {
                 dispatch(UPDATE_LOADING_PROCESS(true));
                 try {
                     const nftPrice = web3.utils.toWei(result.value[0], 'ether');
+                    
+                    const _bnbBalance = await web3.eth.getBalance(userData.walletAddress);
+                    const _estApproveGas = await NFT.methods.approve(marketplace_addr, id).send({from : initialUser.walletAddress });
+                    const _estClaimGas = await Marketplace.methods.openTradeToAuction(id, nftPrice, Math.floor(result.value[1] * 24)).send({ from: initialUser.walletAddress, value: nftPrice / 40 });
+
+                    if (Number(nftPrice / 40) + Number(_estApproveGas) + Number(_estClaimGas) > Number(_bnbBalance)) throw new Error("BNB balance is not enough");
+
                     await NFT.methods.approve(marketplace_addr, id).send({from : initialUser.walletAddress})
                     .on('receipt', async(rec) => {
                         await Marketplace.methods.openTradeToAuction(id, nftPrice, Math.floor(result.value[1] * 24)).send({ from: initialUser.walletAddress, value: nftPrice / 40 });
@@ -136,12 +149,12 @@ export default function NotSaleNFT({ data, NFT, Marketplace }) {
                             walletAddress: initialUser.walletAddress
                         }
                         NotificationManager.success("Success");
-                        await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).catch(res => {});
+                        await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).catch(res => {}).catch(err => { });
                         dispatch(UPDATE_LOADING_PROCESS(false));
                     });
                   
                 } catch(err) {
-                    NotificationManager.error("Failed");
+                    NotificationManager.error(err.message);
                     dispatch(UPDATE_LOADING_PROCESS(false));
                 }
             }
