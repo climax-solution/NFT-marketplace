@@ -45,6 +45,7 @@ export default function ({ status, update }) {
     dots: false,
     speed: 500,
     initialSlide: 0,
+    autoplay: true,
     adaptiveHeight: 300,
     responsive: [
       {
@@ -87,7 +88,10 @@ export default function ({ status, update }) {
           dots: true
         }
       }
-    ]
+    ],
+    infinite: true,
+    autoplaySpeed: 2000,
+    cssEase: "linear"
   };
 
   useEffect(async () => {

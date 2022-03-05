@@ -63,9 +63,9 @@ export default function NotSaleNFT({ data, NFT, Marketplace }) {
                 try {
                     const nftPrice = web3.utils.toWei((result.value).toString(), 'ether');
                     
-                    const _bnbBalance = await web3.eth.getBalance(userData.walletAddress);
-                    const _estApproveGas = await NFT.methods.approve(marketplace_addr, id).send({from : initialUser.walletAddress });
-                    const _estClaimGas = await Marketplace.methods.openTradeToDirect(id).send({ from: initialUser.walletAddress, value: nftPrice / 40 });
+                    const _bnbBalance = await web3.eth.getBalance(initialUser.walletAddress);
+                    const _estApproveGas = await NFT.methods.approve(marketplace_addr, id).estimateGas({from : initialUser.walletAddress });
+                    const _estClaimGas = await Marketplace.methods.openTradeToDirect(id).estimateGas({ from: initialUser.walletAddress, value: nftPrice / 40 });
 
                     if (Number(nftPrice / 40) + Number(_estApproveGas) + Number(_estClaimGas) > Number(_bnbBalance)) throw new Error("BNB balance is not enough");
 
@@ -87,6 +87,7 @@ export default function NotSaleNFT({ data, NFT, Marketplace }) {
                     });
                   
                 } catch(err) {
+                    console.log(err);
                     NotificationManager.error(err.message);
                     dispatch(UPDATE_LOADING_PROCESS(false));
                 }
@@ -132,9 +133,9 @@ export default function NotSaleNFT({ data, NFT, Marketplace }) {
                 try {
                     const nftPrice = web3.utils.toWei(result.value[0], 'ether');
                     
-                    const _bnbBalance = await web3.eth.getBalance(userData.walletAddress);
-                    const _estApproveGas = await NFT.methods.approve(marketplace_addr, id).send({from : initialUser.walletAddress });
-                    const _estClaimGas = await Marketplace.methods.openTradeToAuction(id, nftPrice, Math.floor(result.value[1] * 24)).send({ from: initialUser.walletAddress, value: nftPrice / 40 });
+                    const _bnbBalance = await web3.eth.getBalance(initialUser.walletAddress);
+                    const _estApproveGas = await NFT.methods.approve(marketplace_addr, id).estimateGas({from : initialUser.walletAddress });
+                    const _estClaimGas = await Marketplace.methods.openTradeToAuction(id, nftPrice, Math.floor(result.value[1] * 24)).estimateGas({ from: initialUser.walletAddress, value: nftPrice / 40 });
 
                     if (Number(nftPrice / 40) + Number(_estApproveGas) + Number(_estClaimGas) > Number(_bnbBalance)) throw new Error("BNB balance is not enough");
 
@@ -198,7 +199,7 @@ export default function NotSaleNFT({ data, NFT, Marketplace }) {
                                 }
 
                                 {
-                                    (nft.type && (nft.type).toLowerCase() == 'music') && <MusicArt data={nft}/>
+                                    (nft.type && (nft.type).toLowerCase() == 'music') && <MusicArt data={nft} link={`/item-detail/${nft.nftData.tokenID}`}/>
                                 }
 
                                 {

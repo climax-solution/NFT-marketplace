@@ -17,7 +17,7 @@ export default function MusicArt({ data, link }) {
     }
 
     return (
-        <>
+        <div className="d-flex align-items-center position-relative">
             <div className="nft_type_wrap">
                 <audio className={`track-${data.nftData.tokenID}`} src={data.asset} type="audio/mpeg"/>
 
@@ -27,9 +27,9 @@ export default function MusicArt({ data, link }) {
                 
                 <div className={`circle-ripple ${isPlay ? 'd-block' : 'd-none'}`}/>
             </div>
-            <span onClick={() => navigate('/' + link)} className="w-100">
+            <span onClick={() => link ? navigate(link) : null } className="w-100 text-center" role="button">
                 <img src={data.image} onError={failedLoadImage} className="lazy nft__item_preview" alt=""/>
             </span>
-        </>
+        </div>
     )
 }

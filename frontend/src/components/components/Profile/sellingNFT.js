@@ -48,8 +48,8 @@ export default function NFTItem({ data, Marketplace }) {
             const nft = await Marketplace.methods.getItemNFT(id).call();
             const buyAmount = nft.marketData.price;
 
-            const _bnbBalance = await web3.eth.getBalance(userData.walletAddress);
-            const _estGas = await Marketplace.methods.closeTradeToDirect(id).send({ from: initialUser.walletAddress, value: buyAmount / 40 });
+            const _bnbBalance = await web3.eth.getBalance(initialUser.walletAddress);
+            const _estGas = await Marketplace.methods.closeTradeToDirect(id).estimateGas({ from: initialUser.walletAddress, value: buyAmount / 40 });
 
             if (Number(buyAmount / 40) + Number(_estGas) > Number(_bnbBalance)) throw new Error("BNB balance is not enough");
 
@@ -94,8 +94,8 @@ export default function NFTItem({ data, Marketplace }) {
             }
             const buyAmount = nft.marketData.price;
 
-            const _bnbBalance = await web3.eth.getBalance(userData.walletAddress);
-            const _estGas = await Marketplace.methods.closeTradeToAuction(id).send({ from: initialUser.walletAddress, value: buyAmount / 40 });
+            const _bnbBalance = await web3.eth.getBalance(initialUser.walletAddress);
+            const _estGas = await Marketplace.methods.closeTradeToAuction(id).estimateGas({ from: initialUser.walletAddress, value: buyAmount / 40 });
 
             if (Number(buyAmount / 40) + Number(_estGas) > Number(_bnbBalance)) throw new Error("BNB balance is not enough");
 
@@ -136,8 +136,8 @@ export default function NFTItem({ data, Marketplace }) {
             const nft = await Marketplace.methods.getItemNFT(id).call();
             const tax = nft.marketData.price;
             
-            const _bnbBalance = await web3.eth.getBalance(userData.walletAddress);
-            const _estGas = await Marketplace.methods.updatePremiumStatus(id, status).send({ from: initialUser.walletAddress, value: tax / 20});;
+            const _bnbBalance = await web3.eth.getBalance(initialUser.walletAddress);
+            const _estGas = await Marketplace.methods.updatePremiumStatus(id, status).estimateGas({ from: initialUser.walletAddress, value: tax / 20});;
 
             if (Number(tax / 20) + Number(_estGas) > Number(_bnbBalance)) throw new Error("BNB balance is not enough");
 
