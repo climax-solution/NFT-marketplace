@@ -71,7 +71,7 @@ const NFTItem = function() {
                             <section className='container'>
                                 <div className='row mt-md-5 pt-md-4'>
 
-                                <div className="col-md-6 text-center">
+                                <div className="col-md-6 col-sm-12">
                                     {
                                         (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} className="img-fluid img-rounded mb-sm-30" alt=""/>
                                     }
@@ -84,7 +84,7 @@ const NFTItem = function() {
                                         (nft.type && (nft.type).toLowerCase() == 'video') && <VideoArt data={nft.asset}/>
                                     }
                                 </div>
-                                <div className="col-md-6">
+                                <div className="col-md-6 col-sm-12">
                                     <div className="item_info">
                                         {
                                             nft.auctionData.existance && (
