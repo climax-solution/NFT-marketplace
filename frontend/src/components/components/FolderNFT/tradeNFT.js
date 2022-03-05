@@ -103,6 +103,8 @@ export default function TradeNFT({ data }) {
                 const _estGas = await Marketplace.methods.buyNFT(id).estimateGas({ from: userData.walletAddress, value: price})
 
                 if (Number(marketData.price) + Number(_estGas) > Number(_bnbBalance)) throw new Error("BNB balance is not enough");
+                
+                dispatch(UPDATE_LOADING_PROCESS(true));
 
                 await Marketplace.methods.buyNFT(id).send({ from: userData.walletAddress, value: marketData.price });
 
@@ -122,6 +124,7 @@ export default function TradeNFT({ data }) {
         } catch(err) {
             NotificationManager.error(err.message);
         }
+        dispatch(UPDATE_LOADING_PROCESS(false));
     }
 
     const placeBid = async(id) => {
