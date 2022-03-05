@@ -2,6 +2,7 @@ import axios from "axios";
 import { lazy, useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { NotificationManager } from "react-notifications";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import ReactTooltip from "react-tooltip";
 import { createGlobalStyle } from "styled-components";
@@ -42,6 +43,8 @@ const GlobalStyles = createGlobalStyle`
 export default function TradeNFT({ data }) {
     
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     const wallet_info = useSelector(({ wallet }) => wallet.wallet_connected);
     const userData = useSelector((state) => state.auth.user);
 
@@ -234,7 +237,7 @@ export default function TradeNFT({ data }) {
                             <div className="nft__item_wrap flex-column position-relative wap-height">
                                 
                                 {
-                                    (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <a href={`/item-detail/${nft.nftData.tokenID}`}><img src={nft.image} onError={failedLoadImage} className="lazy nft__item_preview" alt=""/></a>
+                                    (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} className="lazy nft__item_preview" role="button" onClick={() => navigate(`/item-detail/${nft.nftData.tokenID}`)} alt=""/>
                                 }
 
                                 {
@@ -269,7 +272,7 @@ export default function TradeNFT({ data }) {
                             </div>
                             <div className="nft__item_info mb-0">
                                 <span>
-                                    <h4>{nft.nftName}</h4>
+                                    <h4 onClick={() => navigate(`/item-detail/${nft.nftData.tokenID}`)}>{nft.nftName}</h4>
                                 </span>
                                 <div className="nft__item_price">
                                     {web3.utils.fromWei(price, 'ether')}<span>BNB</span>

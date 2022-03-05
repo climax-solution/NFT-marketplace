@@ -3,6 +3,7 @@ import axios from "axios";
 import Skeleton from 'react-loading-skeleton'
 import { createGlobalStyle } from 'styled-components';
 import Loading from "./Loading/Loading";
+import { useNavigate } from "react-router-dom";
 
 const MusicArt = lazy(() => import("./Asset/music"));
 const VideoArt = lazy(() => import("./Asset/video"));
@@ -15,6 +16,8 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 const Folder = (props) => {
+
+    const navigate = useNavigate();
 
     const [nft, setNFT] = useState({});
     const [loading, setLoading] = useState(true);
@@ -47,7 +50,7 @@ const Folder = (props) => {
                                 ) :
                                 <>
                                     {
-                                        (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <a href={`/folder-explorer/${nft.folderIndex}`}><img src={nft.image} className="lazy nft__item_preview" alt=""/></a>
+                                        (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} className="lazy nft__item_preview" onClick={() => navigate(`/folder-explorer/${nft.folderIndex}`)} role="button" alt=""/>
                                     }
 
                                     {
@@ -64,7 +67,7 @@ const Folder = (props) => {
                             <span>
                                 <h4>
                                     {
-                                        loading ? <Skeleton/> : <a href={`/folder-explorer/${nft.folderIndex}`} className="text-decoration-none text-white">{nft.folder}</a>}</h4>
+                                        loading ? <Skeleton/> : <span onClick={() => navigate(`/folder-explorer/${nft.folderIndex}`)} className="text-white">{nft.folder}</span>}</h4>
                             </span>
                         </div>
                     </div>

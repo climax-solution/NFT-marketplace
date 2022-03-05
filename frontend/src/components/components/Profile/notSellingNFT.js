@@ -2,6 +2,7 @@ import axios from "axios";
 import { lazy, Suspense, useEffect, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { NotificationManager } from "react-notifications";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { createGlobalStyle } from "styled-components";
 import Swal from "sweetalert2";
@@ -29,6 +30,8 @@ export default function NotSaleNFT({ data, NFT, Marketplace }) {
     const [isLoading, setLoading] = useState(true);
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     const initialUser = useSelector(({ auth }) => auth.user);
     const wallet_info = useSelector(({ wallet }) => wallet.wallet_connected);
 
@@ -178,7 +181,7 @@ export default function NotSaleNFT({ data, NFT, Marketplace }) {
                             :
                             <>
                                 {
-                                    (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <a href={`/item-detail/${nft.nftData.tokenID}`} className="position-relative"><img src={nft.image} onError={failedLoadImage} className="lazy nft__item_preview" alt=""/></a>
+                                    (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} role="button" className="lazy nft__item_preview" onClick={() => navigate(`/item-detail/${nft.nftData.tokenID}`)} alt=""/>
                                 }
 
                                 {
@@ -192,8 +195,8 @@ export default function NotSaleNFT({ data, NFT, Marketplace }) {
                         }
                     </div>
                     <div className="nft__item_info">
-                        <span onClick={()=> window.open(nft.nftLink, "_self")}>
-                            <h4>{ isLoading ? <Skeleton/> : nft.nftName }</h4>
+                        <span>
+                            <h4 onClick={() => !isLoading ? navigate(`/item-detail/${nft.nftData.tokenID}`) : null }>{ isLoading ? <Skeleton/> : nft.nftName }</h4>
                         </span>
                         <div className="nft__item_price">
                             { isLoading ? <Skeleton/> : <>{web3.utils.fromWei(nft.marketData.price, "ether")} BNB</> }

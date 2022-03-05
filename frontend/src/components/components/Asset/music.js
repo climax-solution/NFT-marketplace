@@ -1,8 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function MusicArt({ data, link }) {
 
     const [isPlay, setPlay] = useState(false);
+    const navigate = useNavigate();
 
     const playMusic = () => {
         setPlay(!isPlay);
@@ -25,9 +27,9 @@ export default function MusicArt({ data, link }) {
                 
                 <div className={`circle-ripple ${isPlay ? 'd-block' : 'd-none'}`}/>
             </div>
-            <a href={link} className="w-100">
+            <span onClick={() => navigate('/' + link)} className="w-100">
                 <img src={data.image} onError={failedLoadImage} className="lazy nft__item_preview" alt=""/>
-            </a>
+            </span>
         </>
     )
 }
