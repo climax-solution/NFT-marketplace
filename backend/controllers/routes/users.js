@@ -121,4 +121,23 @@ router.post('/get-user-by-username', async(req, res) => {
 
 })
 
+router.post('/check-existing-user', async(req, res) => {
+    try {
+        const { data } = req.body;
+        const user = await UserSchema.findOne(data);
+        if (!user) {
+            return res.status(200).json({
+                status: false,
+                error: ""
+            });
+        }
+
+        res.status(400).json({ status: true, error: '' });
+    } catch (err) {
+        res.status(400).json({
+            status: false,
+            error: "Your request is restricted"
+        })
+    }
+})
 module.exports = router;
