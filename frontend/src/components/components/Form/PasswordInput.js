@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 
-export default function TextInput({ label, _request, update }) {
+export default function TextInput({ label, _request, _equal, update }) {
 
     const [value, setValue] = useState('');
     const [status, setStatus] = useState("");
@@ -18,6 +18,13 @@ export default function TextInput({ label, _request, update }) {
     useEffect(() => {
         if (_request) checkValue();
     },[_request])
+
+    useEffect(() => {
+        if (_request) {
+            if (!_equal) setStatus('Please confirm password');
+            else checkValue();
+        }
+    },[_equal])
 
     return (
         <div className="col-md-6">

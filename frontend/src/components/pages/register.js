@@ -85,7 +85,10 @@ const Register= () => {
         else if (!validator.isEthereumAddress(walletAddress)) flag = 1;
         if (!password) flag = 1;
         if (!confirmPassword || password && confirmPassword && password !== confirmPassword) flag = 1;
-        if (flag) return;
+        if (flag) {
+            setUpdate(true);
+            return;
+        }
 
         const data = {
             username,
@@ -133,14 +136,12 @@ const Register= () => {
                                     _key={"firstname"}
                                     _request={update}
                                     _request={update}
-
                                 />
                                 <TextInput
                                     label={"Last Name"}
                                     update={setLastName}
                                     _key={"lastname"}
                                     _request={update}
-
                                 />
                                 <TextInput
                                     label={"Email"}
@@ -148,7 +149,6 @@ const Register= () => {
                                     _key={"email"}
                                     checkable={true}
                                     _request={update}
-
                                 />
                                 <TextInput
                                     label={"Choose a Username"}
@@ -156,47 +156,44 @@ const Register= () => {
                                     _key={"username"}
                                     checkable={true}
                                     _request={update}
-
                                 />
                                 <DateInput
                                     label={"Birth date"}
                                     update={setBirthDate}
                                     _request={update}
-
                                 />
 
                                 <CountryList
                                     update={setCountry}
                                     _request={update}
-
                                 />
 
                                 <PhoneInput
                                     label={"Phone"}
                                     update={setPhoneNumber}
                                     _request={update}
-
                                 />
+
                                 <TextInput
                                     label={"Wallet Address"}
                                     update={setWalletAddres}
                                     _key={"walletAddress"}
                                     checkable={true}
                                     _request={update}
-
                                 />
+
                                 <PasswordInput
                                     label={"Password"}
                                     update={setPassword}
                                     _request={update}
-
+                                    _equal = {password && confirmPassword ? password === confirmPassword : true}
                                 />
 
                                 <PasswordInput
                                     label={"Re-enter Password"}
                                     update={setConfirmPassword}
                                     _request={update}
-
+                                    _equal = {password && confirmPassword ? password === confirmPassword : true}
                                 />
 
                                 <div className="col-md-12">
