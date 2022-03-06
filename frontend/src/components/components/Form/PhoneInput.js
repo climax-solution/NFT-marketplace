@@ -1,8 +1,11 @@
 import axios from "axios";
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import PhoneInput from "react-phone-input-2";
+import { phone } from "phone";
 
-export default function TextInput({ label, key, checkable, update }) {
+import 'react-phone-input-2/lib/style.css';
+
+export default function TextInput({ label, key, _request, checkable, update }) {
 
     const [value, setValue] = useState('');
     const [status, setStatus] = useState("");
@@ -14,18 +17,31 @@ export default function TextInput({ label, key, checkable, update }) {
         }
 
         if (checkable) {
+            update("");
+            
+            const valid = phone(value);
+            if (!valid.isValid) {
+                setStatus("Phone number is invalid");
+                return;
+            }
+
             await axios.post('http://nftdevelopments.co.nz/users/check-existing-user', {key: arg}).then(res => {
                 setValue(arg);
                 update(arg);
+                setStatus('');
             }).catch(err => {
                 const { error } = err.response.data;
                 if (!error) {
                     setStatus('Already existing ' + key);
                 }
-                update(arg);
+                update("");
             })
         }
     }
+
+    useEffect(() => {
+        if (_request) checkValue();
+    },[_request])
 
     return (
         <div className="col-md-6">
@@ -44,7 +60,7 @@ export default function TextInput({ label, key, checkable, update }) {
                     onBlur={checkValue}
                 />
                 {
-                    <span className='text-danger'>{status}</span>
+                    <label className='text-danger f-12px'>{status}</label>
                 }
             </div>
         </div>

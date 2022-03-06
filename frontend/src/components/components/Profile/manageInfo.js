@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import EmailValidator from 'email-validator';
+import validator from "validator";
 import { NotificationManager } from "react-notifications";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -23,7 +23,7 @@ export default function ManageInfo() {
 
     const updateUserInfo = async() => {
         const { firstName, lastName, email, password, confirmPassword } = userData;
-        if (!firstName || !lastName || !EmailValidator.validate(email)) {
+        if (!firstName || !lastName || !validator.isEmail(email)) {
           NotificationManager.warning("You must input first name, last name, email correctly!");
           return;
         }

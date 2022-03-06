@@ -54,7 +54,7 @@ const featurebox= () => (
                   <h4 className="">Add your NFT's</h4>
                 </Reveal>
                 <Reveal className='onStep' keyframes={fadeInUp} delay={200} duration={600} triggerOnce>
-                  <p className="">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem.</p>
+                  <p className="">Click here to learn how to add your NFTs to the NFTD Marketplace.</p>
                 </Reveal>
               </div>
               <i className="wm icon_cloud-upload_alt"></i>
@@ -71,7 +71,7 @@ const featurebox= () => (
                   <h4 className="">Sell your NFT's</h4>
                 </Reveal>
                 <Reveal className='onStep' keyframes={fadeInUp} delay={200} duration={600} triggerOnce>
-                  <p className="">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem.</p>
+                  <p className="">Click here to learn how to sell your NFTs to the NFTD Marketplace.</p>
                 </Reveal>
               </div>
               <i className="wm icon_tags_alt"></i>

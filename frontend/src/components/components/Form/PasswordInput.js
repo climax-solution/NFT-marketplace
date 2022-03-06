@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react"
 
-
 export default function TextInput({ label, _request, update }) {
 
     const [value, setValue] = useState('');
@@ -9,14 +8,11 @@ export default function TextInput({ label, _request, update }) {
     const checkValue = async() => {
         if (!value) {
             setStatus('This field is required.');
-            update('');
+            update("");
             return;
         }
 
-        else {
-            update(value);
-            setStatus('');
-        }
+        update(value);
     }
 
     useEffect(() => {
@@ -28,15 +24,15 @@ export default function TextInput({ label, _request, update }) {
             <div className="field-set">
                 <label>{label}:</label>
                 <input
-                    type='date'
-                    name='birth-date'
+                    type='password'
+                    name={label}
                     className="form-control mb-0"
                     value={value}
                     onChange={(e) => {
                         setValue(e.target.value);
-                        setStatus('');
+                        setStatus("");
                     }}
-                    onBlur={checkValue}
+                    onBlur={() => checkValue()}
                 />
                 {
                     <label className='text-danger f-12px'>{status}</label>
