@@ -123,16 +123,40 @@ router.post('/get-user-by-username', async(req, res) => {
 
 router.post('/check-existing-user', async(req, res) => {
     try {
-        const { data } = req.body;
-        const user = await UserSchema.findOne(data);
-        if (!user) {
+        const data = req.body;
+        const keys = Object.keys(data);
+        let _result = await UserSchema.aggregate([
+            {
+                $addFields: {
+                    exist: {
+                        $regexMatch: {
+                            input: "$" + keys[0],
+                            regex: new RegExp(data[keys[0]], "i")
+                        }
+                    }
+                }
+            },
+            {
+                "$redact": {
+                    "$cond": [
+                        { "$eq": [ { "$strLenCP": "$" + keys[0] }, data[keys[0]].length] },
+                        "$$KEEP",
+                        "$$PRUNE"
+                    ]
+                }
+            }
+        ]);
+
+        _result = _result.filter(item => item.exist === true);
+
+        if (!_result.length) {
             return res.status(200).json({
                 status: false,
                 error: ""
             });
         }
 
-        res.status(400).json({ status: true, error: '' });
+        res.status(400).json({ status: true, error: "" });
     } catch (err) {
         res.status(400).json({
             status: false,
@@ -140,4 +164,5 @@ router.post('/check-existing-user', async(req, res) => {
         })
     }
 })
+
 module.exports = router;
