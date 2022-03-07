@@ -1,6 +1,5 @@
 import axios from "axios";
 import { lazy, useEffect, useState } from "react";
-import Skeleton from "react-loading-skeleton";
 import { NotificationManager } from "react-notifications";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,18 +9,12 @@ import Swal from "sweetalert2";
 import { UPDATE_LOADING_PROCESS } from "../../../store/action/auth.action";
 import getWeb3 from "../../../utils/getWeb3";
 
-import addresses from "../../../config/address.json";
-const { marketplace_addr, nft_addr } = addresses;
-
 const MusicArt = lazy(() => import("../Asset/music"));
 const VideoArt = lazy(() => import("../Asset/video"));
+const ItemLoading = lazy(() => import("../Loading/ItemLoading"));
 const Clock = lazy(() => import("../Clock"));
 
 const GlobalStyles = createGlobalStyle`
-    .react-loading-skeleton {
-        background-color: #2a2b2c !important;
-        background-image: linear-gradient(90deg ,#2a2b2c,#444,#2a2b2c ) !important;
-    }
     .owner-check {
         position: absolute;
         right: 15px;
@@ -221,28 +214,7 @@ export default function TradeNFT({ data }) {
         <>
             <GlobalStyles/>
             {
-                isLoading ? (
-                    <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 pb-3">
-                        <div className="nft__item">
-                            <div className="nft__item_wrap">
-                                <span>
-                                    <Skeleton className="lazy nft__item_preview ratio ratio-1x1"/>
-                                </span>
-                            </div>
-                            <div className="nft__item_info">
-                                <span>
-                                    <h4><Skeleton/></h4>
-                                </span>
-                                <span>
-                                    <h4><Skeleton/></h4>
-                                </span>
-                                <span>
-                                    <h4><Skeleton/></h4>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                )
+                isLoading ? <ItemLoading/>
                 : (
                     <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4">
                         <div className="nft__item m-0 pb-4 justify-content-between h-100">

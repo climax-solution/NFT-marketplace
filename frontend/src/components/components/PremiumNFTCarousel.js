@@ -179,7 +179,7 @@ export default function ({ status, update }) {
         </div>
       </div> 
       <div className='nft'>
-        <Suspense fallback={<Loading/>}>
+        <Suspense fallback={<PremiumNFTLoading/>}>
           <GlobalStyles/>
           { carouselLoading && <PremiumNFTLoading/> }
           {

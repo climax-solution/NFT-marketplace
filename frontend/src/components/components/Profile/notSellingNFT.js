@@ -1,27 +1,18 @@
 import axios from "axios";
 import { lazy, Suspense, useEffect, useState } from "react";
-import Skeleton from "react-loading-skeleton";
 import { NotificationManager } from "react-notifications";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { createGlobalStyle } from "styled-components";
 import Swal from "sweetalert2";
 import { UPDATE_LOADING_PROCESS } from "../../../store/action/auth.action";
 import getWeb3 from "../../../utils/getWeb3";
 import addresses from "../../../config/address.json";
-import Loading from "../Loading/Loading";
 
 const { marketplace_addr } = addresses;
 
 const MusicArt = lazy(() => import("../Asset/music"));
 const VideoArt = lazy(() => import("../Asset/video"));
-
-const GlobalStyles = createGlobalStyle`
-   .react-loading-skeleton {
-        background-color: #2a2b2c !important;
-        background-image: linear-gradient(90deg ,#2a2b2c,#444,#2a2b2c ) !important;
-    }
-`;
+const ItemLoading = lazy(() => import("../Loading/ItemLoading"));
 
 export default function NotSaleNFT({ data, NFT, Marketplace }) {
 
@@ -180,20 +171,13 @@ export default function NotSaleNFT({ data, NFT, Marketplace }) {
     }
 
     return (
-        <>
-        <GlobalStyles/>
-        <Suspense fallback={<Loading/>}>
-            <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                <div className="nft__item h-100 justify-content-between">
-                    <div className="nft__item_wrap">
-                        {
-                            isLoading ? (
-                                <span>
-                                    <Skeleton className="lazy nft__item_preview ratio ratio-1x1"/>
-                                </span>
-                            )
-                            :
-                            <>
+        <Suspense fallback={<ItemLoading/>}>
+            {
+                isLoading ? <ItemLoading/>
+                : (
+                    <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                        <div className="nft__item h-100 justify-content-between">
+                            <div className="nft__item_wrap">
                                 {
                                     (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} role="button" className="lazy nft__item_preview" onClick={() => navigate(`/item-detail/${nft.nftData.tokenID}`)} alt=""/>
                                 }
@@ -205,29 +189,21 @@ export default function NotSaleNFT({ data, NFT, Marketplace }) {
                                 {
                                     (nft.type && (nft.type).toLowerCase() == 'video') && <VideoArt data={nft.asset}/>
                                 }
-                            </>
-                        }
-                    </div>
-                    <div className="nft__item_info">
-                        <span>
-                            <h4 onClick={() => !isLoading ? navigate(`/item-detail/${nft.nftData.tokenID}`) : null }>{ isLoading ? <Skeleton/> : nft.nftName }</h4>
-                        </span>
-                        <div className="nft__item_price">
-                            { isLoading ? <Skeleton/> : <>{web3.utils.fromWei(nft.marketData.price, "ether")} BNB</> }
-                        </div>
-                        <div className="pb-4 trade-btn-group mt-2">
-                            {
-                                isLoading ? <Skeleton/>
-                                : <>
+                            </div>
+                            <div className="nft__item_info">
+                                <span>
+                                    <h4 onClick={() => !isLoading ? navigate(`/item-detail/${nft.nftData.tokenID}`) : null }>{ nft.nftName }</h4>
+                                </span>
+                                <div className="nft__item_price">{ web3.utils.fromWei(nft.marketData.price, "ether")} BNB </div>
+                                <div className="pb-4 trade-btn-group mt-2">
                                     { !nft.marketData.marketStatus && <span className="btn-main w-100" onClick={() => putOnSale(nft.nftData.tokenID)}>Put on Sale</span> }
                                     {!nft.auctionData.existance && <span className="btn-main w-100 mt-2" onClick={() => putOnAuction(nft.nftData.tokenID)}>Put on Auction</span> }
-                                </>
-                            }
+                                </div>
+                            </div> 
                         </div>
-                    </div> 
-                </div>
-            </div>
+                    </div>
+                )
+            }
         </Suspense>
-        </>
     )
 }

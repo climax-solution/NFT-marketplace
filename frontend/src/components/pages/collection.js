@@ -8,6 +8,7 @@ import Loading from "../components/Loading/Loading";
 const Footer = lazy(() => import('../components/footer'));
 const NFTItem = lazy(() => import("../components/Collection/nftItem"));
 const Banner = lazy(() => import("../components/Collection/banner"));
+const PremiumNFTLoading = lazy(() => import("../components/Loading/PremiumNFTLoading"));
 
 const Collection= function() {
   const params = useParams();
@@ -57,7 +58,7 @@ const Collection= function() {
               dataLength={nfts.length}
               next={fetchNFT}
               hasMore={restList.length ? true : false}
-              loader={<Loading/>}
+              loader={<PremiumNFTLoading/>}
               className="row"
             >
               {

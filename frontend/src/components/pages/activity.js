@@ -135,7 +135,7 @@ const Activity= function() {
                   dataLength={items.length}
                   next={_loadNextPage}
                   hasMore={moreItems}
-                  loader={<Loading/>}
+                  loader={"...."}
                   className='activity-list'
                 >
                   {

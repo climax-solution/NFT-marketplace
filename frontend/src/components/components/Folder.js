@@ -2,8 +2,8 @@ import { lazy, Suspense, useEffect, useState } from "react";
 import axios from "axios";
 import Skeleton from 'react-loading-skeleton'
 import { createGlobalStyle } from 'styled-components';
-import Loading from "./Loading/Loading";
 import { useNavigate } from "react-router-dom";
+import ItemLoading from "./Loading/ItemLoading";
 
 const MusicArt = lazy(() => import("./Asset/music"));
 const VideoArt = lazy(() => import("./Asset/video"));
@@ -38,7 +38,7 @@ const Folder = (props) => {
     return (
         <>
             <GlobalStyles/>
-            <Suspense fallback={<Loading/>}>
+            <Suspense fallback={<ItemLoading/>}>
                 <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4">
                     <div className="nft__item m-0 pb-4 h-100 justify-content-between">
                         <div className="nft__item_wrap ratio-1x1">

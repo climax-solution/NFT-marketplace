@@ -2,10 +2,11 @@ import React, {  lazy, Suspense, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import getWeb3 from "../../utils/getWeb3";
 import Empty from "../components/Empty";
-import Loading from "../components/Loading/Loading";
 import InfiniteScroll from "react-infinite-scroll-component";
+import Loading from "../components/Loading/Loading";
 
 const TradeNFT = lazy(() => import("../components/FolderNFT/tradeNFT"));
+const PremiumNFTLoading = lazy(() => import("../components/Loading/PremiumNFTLoading"));
 
 const folderNFTs = () => {
 
@@ -76,16 +77,15 @@ const folderNFTs = () => {
                 </section>
                 <section className='container'>
                     {
-                        isLoading && <Loading/>
+                        isLoading && <PremiumNFTLoading/>
                     }
-
                     {
                         !isLoading &&  (
                             <InfiniteScroll
                                 dataLength={nfts.length}
                                 next={fetchNFT}
                                 hasMore={restList.length ? true : false}
-                                loader={<Loading/>}
+                                loader={<PremiumNFTLoading/>}
                                 className="row"
                             >
                                 {
