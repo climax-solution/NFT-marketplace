@@ -50,6 +50,11 @@ export default function TextInput({ label, _request,  _key, checkable, update })
 
             setChecking(false);
         }
+
+        else {
+            setStatus('');
+            update(value);
+        }
     }
 
     useEffect(async() => {

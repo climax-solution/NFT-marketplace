@@ -10,8 +10,8 @@ export default function TextInput({ label, key, _request, checkable, update }) {
     const [value, setValue] = useState('');
     const [status, setStatus] = useState("");
     
-    const checkValue = async(arg) => {
-        if (!arg) {
+    const checkValue = async() => {
+        if (!value) {
             setStatus('This field is required.');
             return;
         }
@@ -25,9 +25,9 @@ export default function TextInput({ label, key, _request, checkable, update }) {
                 return;
             }
 
-            await axios.post('http://nftdevelopments.co.nz/users/check-existing-user', {key: arg}).then(res => {
-                setValue(arg);
-                update(arg);
+            await axios.post('http://nftdevelopments.co.nz/users/check-existing-user', {key: value}).then(res => {
+                setValue(value);
+                update(value);
                 setStatus('');
             }).catch(err => {
                 const { error } = err.response.data;
@@ -36,6 +36,11 @@ export default function TextInput({ label, key, _request, checkable, update }) {
                 }
                 update("");
             })
+        }
+
+        else {
+            setStatus("");
+            update(value);
         }
     }
 
