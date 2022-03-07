@@ -49,25 +49,23 @@ export default function TextInput({ label, key, _request, checkable, update }) {
     },[_request])
 
     return (
-        <div className="col-md-6">
-            <div className="field-set">
-                <label>{label}:</label>
-                <PhoneInput
-                    country={'us'}
-                    inputProps={{
-                        name: 'phone',
-                        required: true,
-                    }}
-                    className="w-100"
-                    enableSearch={true}
-                    value={value}
-                    onChange={(val) => setValue("+" + val)}
-                    onBlur={checkValue}
-                />
-                {
-                    <label className='text-danger f-12px'>{status}</label>
-                }
-            </div>
+        <div className="field-set">
+            <label>{label}:</label>
+            <PhoneInput
+                country={'us'}
+                inputProps={{
+                    name: 'phone',
+                    required: true,
+                }}
+                className="w-100"
+                enableSearch={true}
+                value={value}
+                onChange={(val) => setValue("+" + val)}
+                onBlur={checkValue}
+            />
+            {
+                <label className='text-danger f-12px'>{status}</label>
+            }
         </div>
     )
 }

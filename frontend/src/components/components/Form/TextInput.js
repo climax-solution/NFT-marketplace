@@ -62,25 +62,23 @@ export default function TextInput({ label, _request,  _key, checkable, update })
     },[_request])
 
     return (
-        <div className="col-md-6">
-            <div className="field-set">
-                <label>{label}:</label>
-                <input
-                    type={ _key === 'email' ? 'email' : 'text'}
-                    name={label}
-                    className="form-control mb-0"
-                    value={value}
-                    onChange={(e) => {
-                        setValue(e.target.value);
-                        setStatus("");
-                    }}
-                    onBlur={() => checkValue()}
-                    readOnly={checking}
-                />
-                {
-                    <label className='text-danger f-12px'>{status}</label>
-                }
-            </div>
+        <div className="field-set">
+            <label>{label}:</label>
+            <input
+                type={ _key === 'email' ? 'email' : 'text'}
+                name={label}
+                className="form-control mb-0"
+                value={value}
+                onChange={(e) => {
+                    setValue(e.target.value);
+                    setStatus("");
+                }}
+                onBlur={() => checkValue()}
+                readOnly={checking}
+            />
+            {
+                <label className='text-danger f-12px'>{status}</label>
+            }
         </div>
     )
 }

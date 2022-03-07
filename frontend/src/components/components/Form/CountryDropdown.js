@@ -18,31 +18,29 @@ export default function CountryList({ update }) {
     }
 
     return (
-        <div className="col-md-6">
-            <div className="field-set">
-                <label>Country:</label>
-                <CountryDropdown
-                    id="country-list"
-                    className="form-control mb-0"
-                    preferredCountries={['nz']}
-                    value={value}
-                    handleChange={e => {
-                        setValue(e.target.value);
-                        update(e.target.value);
-                    }}
+        <div className="field-set">
+            <label>Country:</label>
+            <CountryDropdown
+                id="country-list"
+                className="form-control mb-0"
+                preferredCountries={['nz']}
+                value={value}
+                handleChange={e => {
+                    setValue(e.target.value);
+                    update(e.target.value);
+                }}
 
-                    isValid={(inputNumber, country, countries) => {
-                            return countries.some((country) => {
-                            return inputNumber;
-                        });
-                    }}
+                isValid={(inputNumber, country, countries) => {
+                        return countries.some((country) => {
+                        return inputNumber;
+                    });
+                }}
 
-                    
-                />
-                {
-                    <label className='text-danger f-12px'>{status}</label>
-                }
-            </div>
+                
+            />
+            {
+                <label className='text-danger f-12px'>{status}</label>
+            }
         </div>
     )
 }

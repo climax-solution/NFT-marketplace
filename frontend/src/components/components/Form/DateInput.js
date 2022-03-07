@@ -24,24 +24,22 @@ export default function TextInput({ label, _request, update }) {
     },[_request])
 
     return (
-        <div className="col-md-6">
-            <div className="field-set">
-                <label>{label}:</label>
-                <input
-                    type='date'
-                    name='birth-date'
-                    className="form-control mb-0"
-                    value={value}
-                    onChange={(e) => {
-                        setValue(e.target.value);
-                        setStatus('');
-                    }}
-                    onBlur={checkValue}
-                />
-                {
-                    <label className='text-danger f-12px'>{status}</label>
-                }
-            </div>
+        <div className="field-set">
+            <label>{label}:</label>
+            <input
+                type='date'
+                name='birth-date'
+                className="form-control mb-0"
+                value={value}
+                onChange={(e) => {
+                    setValue(e.target.value);
+                    setStatus('');
+                }}
+                onBlur={checkValue}
+            />
+            {
+                <label className='text-danger f-12px'>{status}</label>
+            }
         </div>
     )
 }
