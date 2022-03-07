@@ -16,6 +16,7 @@ const ItemDetail = lazy(() => import('./pages/ItemDetail'));
 const Login = lazy(() => import('./pages/login'));
 const Register = lazy(() => import('./pages/register'));
 const ForgotPassword = lazy(() => import('./pages/forgotPassword'));
+const ResetPassword = lazy(() => import('./pages/resetPassword'));
 const Activity = lazy(() => import('./pages/activity'));
 const FolderItems = lazy(() => import('./pages/folderNFTs'));
 const Profile = lazy(() => import('./pages/Profile'));
@@ -86,6 +87,7 @@ const app = () => {
                 <Route path="/item-detail/:id" element={<ItemDetail/>}/>
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/forgot-password" element={<ForgotPassword/>}/>
+                <Route path="/reset-password/:token" element={<ResetPassword/>}/>
                 <Route path="/register" element={<Register/>}/>
                 {/* <Route path="/create" element={<Create/>}/> */}
                 <Route path="/activity" element={<Activity/>}/>
