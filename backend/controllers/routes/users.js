@@ -111,7 +111,6 @@ router.post('/get-user-by-username', async(req, res) => {
             });
         }
 
-        if (user.role != "ROLE_CREATOR") throw new Error();
         res.status(200).json(user);
     } catch (err) {
         res.status(400).json({
