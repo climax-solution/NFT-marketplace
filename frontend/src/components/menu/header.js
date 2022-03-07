@@ -155,7 +155,15 @@ const Header= function() {
         NotificationManager.success("Connected");
       }
     } catch(err) {
-      NotificationManager.error(err.message);
+      if (!window.ethereum) NotificationManager.error("Please install metamask");
+      else {
+        if (err.code === -32002) {
+          NotificationManager.warning("Please check your metamask. You have already requested");
+        }
+        else if (err.code === 4001) {
+          NotificationManager.warning("Connecting cancelled");
+        }
+      }
     }
   }
 

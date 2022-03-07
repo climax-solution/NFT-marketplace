@@ -1,4 +1,5 @@
 import moment from "moment";
+import { useNavigate } from "react-router-dom";
 import { createGlobalStyle } from "styled-components";
 
 const action = [
@@ -25,10 +26,13 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 const ActivityItem = ({ data }) => {
+
+    const navigate = useNavigate();
+
     return (
         <>
             <GlobalStyles/>
-            <li className={action[data["type"]][0]}>
+            <li className={action[data["type"]][0]} onClick={() => data.username ? navigate(`/user/${data.username}`) : null}>
                 <div className="d-flex align-items-center">
                     <img className="lazy ratio-1-1 position-relative" src={`http://nftdevelopments.co.nz/avatar/${data.avatar}`} alt="" crossOrigin="true"/>
                     <h4 className="ms-2">{data.firstName + " " + data.lastName }</h4>

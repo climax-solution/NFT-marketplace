@@ -4,21 +4,28 @@ import getWeb3 from '../../utils/getWeb3';
 
 const Empty = lazy(() => import('./Empty'));
 const TopSellerLoading = lazy(() => import('./Loading/TopSellerLoading'));
+const Buyer = lazy(() => import('./TopBuyer/buyer'));
 
 const authorlist= () => {
     
+
     const [list, setList] = useState([]);
     const [web3,setWEB3] = useState({});
     const [isLoading, setLoading] = useState(true);
+
     useEffect(async() => {
         const { _web3 } = await getWeb3();
         setWEB3(_web3);
         await axios.post('http://nftdevelopments.co.nz/activity/get-top-sellers').then(res => {
             setList(res.data);
         }).catch(err => {
+
         })
         setLoading(false);
-    },[])
+    },[]);
+
+    console.log(list);
+
     return (
         <section className='container no-top no-bottom'>
           <div className='row'>
@@ -36,18 +43,7 @@ const authorlist= () => {
                                 {
                                     list.map((item, index) => {
                                         return (
-                                            <li key={index}>
-                                                <div className="author_list_pp">
-                                                    <span>
-                                                        <img className="lazy ratio-1-1" src={`http://nftdevelopments.co.nz/avatar/${item?.avatar}`} alt="" crossOrigin='true'/>
-                                                        <i className="fa fa-check"></i>
-                                                    </span>
-                                                </div>                                    
-                                                <div className="author_list_info">
-                                                    <span>{item.firstName + "  " + item.lastName}</span><br/>
-                                                    <span className="bot d-inline-block">{web3.utils.fromWei((item.price).toString(), "ether")} BNB</span>
-                                                </div>
-                                            </li>
+                                            <Buyer key={index} user={item} web3={web3}/>
                                         )
                                     })
                                 }
