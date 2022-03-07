@@ -5,7 +5,7 @@ import { createGlobalStyle } from 'styled-components';
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import Footer from '../components/footer';
-import { UPDATE_AUTH } from '../../store/action/auth.action';
+import { UPDATE_AUTH, UPDATE_LOADING_PROCESS } from '../../store/action/auth.action';
 
 const GlobalStyles = createGlobalStyle`
   .box-login p{
@@ -47,6 +47,7 @@ const login = () => {
       id: email,
       password
     };
+    dispatch(UPDATE_LOADING_PROCESS(true));
     await axios.post("http://nftdevelopments.co.nz/auth/login", data).then(res => {
       toast.success("you have logged in successfully", {theme: "colored"});
       const { token, user } = res.data;
@@ -54,11 +55,10 @@ const login = () => {
       dispatch(UPDATE_AUTH(user));
       navigate('/profile');
     }).catch(err => {
-      console.log(err);
-      // if 
-      // const { error } = err.response.data;
-      // toast.error(error, {theme: "colored"});
+      const { error } = err.response.data;
+      toast.error(error, {theme: "colored"});
     })
+    dispatch(UPDATE_LOADING_PROCESS(false));
   }
 
   return(

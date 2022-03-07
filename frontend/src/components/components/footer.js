@@ -9,7 +9,7 @@ const footer= () => (
     <footer className="footer-light">
       <InternalLinks/>
       <SocialLinks/>
-  </footer>
+    </footer>
   </Suspense>
 );
 export default footer;

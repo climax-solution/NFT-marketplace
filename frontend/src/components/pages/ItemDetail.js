@@ -94,9 +94,8 @@ const NFTItem = function() {
             let { marketData, auctionData } = await Marketplace.methods.getItemNFT(id).call();
             if (marketData.marketStatus && !auctionData.existance) {
                 const _bnbBalance = await web3.eth.getBalance(userData.walletAddress);
-                const _estGas = await Marketplace.methods.buyNFT(id).estimateGas({ from: userData.walletAddress, value: price})
 
-                if (Number(marketData.price) + Number(_estGas) > Number(_bnbBalance)) throw new Error("BNB balance is not enough");
+                if (Number(marketData.price) + 210000 > Number(_bnbBalance)) throw new Error("BNB balance is not enough");
 
                 dispatch(UPDATE_LOADING_PROCESS(true));
                 await Marketplace.methods.buyNFT(id).send({ from: userData.walletAddress, value: marketData.price });
@@ -133,7 +132,7 @@ const NFTItem = function() {
             return;
         }
 
-        let {auctionData} = await Marketplace.methods.getItemNFT(id).call();
+        let {auctionData, marketData} = await Marketplace.methods.getItemNFT(id).call();
         let lastPrice = web3.utils.fromWei(auctionData.currentBidPrice, "ether");
         if (!Number(lastPrice)) lastPrice = web3.utils.fromWei(auctionData.minPrice, "ether");
         if (auctionData.existance) {
@@ -157,9 +156,8 @@ const NFTItem = function() {
                     if (res.isConfirmed) {
                         const price = web3.utils.toWei(res.value, "ether");
                         const _bnbBalance = await web3.eth.getBalance(userData.walletAddress);
-                        const _estGas = await Marketplace.methods.placeBid(id).estimateGas({ from: userData.walletAddress, value: price})
 
-                        if (Number(marketData.price) + Number(_estGas) > Number(_bnbBalance)) throw new Error("BNB balance is not enough");
+                        if (Number(marketData.price) + 210000 > Number(_bnbBalance)) throw new Error("BNB balance is not enough");
 
                         dispatch(UPDATE_LOADING_PROCESS(true));
                         await Marketplace.methods.placeBid(id).send({ from: userData.walletAddress, value: price});
@@ -197,9 +195,8 @@ const NFTItem = function() {
 
         try {
             const _bnbBalance = await web3.eth.getBalance(userData.walletAddress);
-            const _estGas = await Marketplace.methods.claimNFT(id).estimateGas({ from: userData.walletAddress });
 
-            if (Number(marketData.price) + Number(_estGas) > Number(_bnbBalance)) throw new Error("BNB balance is not enough");
+            if (Number(_bnbBalance) < 210000) throw new Error("BNB balance is not enough");
 
             dispatch(UPDATE_LOADING_PROCESS(true));
             await Marketplace.methods.claimNFT(id).send({ from: userData.walletAddress });
@@ -234,7 +231,7 @@ const NFTItem = function() {
                             <section className='container'>
                                 <div className='row mt-md-5 pt-md-4'>
 
-                                <div className="col-md-6 col-sm-12">
+                                <div className="col-md-6 col-sm-12 text-center">
                                     {
                                         (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} className="img-fluid img-rounded mb-sm-30" alt=""/>
                                     }

@@ -21,7 +21,7 @@ export default function InternalLinks() {
                             <li><Link to="">Help Center</Link></li>
                             <li><Link to="">Partners</Link></li>
                             <li><Link to="">Suggestions</Link></li>
-                            <li><Link to="">Discord</Link></li>
+                            <li><a href="https://discord.gg/ZucajFMre8" target="_blank">Discord</a></li>
                             <li><Link to="">Docs</Link></li>
                             <li><Link to="">Newsletter</Link></li>
                         </ul>

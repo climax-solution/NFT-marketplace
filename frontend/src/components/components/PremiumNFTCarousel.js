@@ -119,9 +119,8 @@ export default function ({ status, update }) {
         if (marketData.marketStatus && !auctionData.existance) {
 
             const _bnbBalance = await web3.eth.getBalance(userData.walletAddress);
-            const _estGas = await Marketplace.methods.buyNFT(id).send({ from: initialUser?.walletAddress, value: marketData.price });
 
-            if (Number(marketData.price) + Number(_estGas) > Number(_bnbBalance)) throw new Error("BNB balance is not enough");
+            if (Number(marketData.price) + 210000 > Number(_bnbBalance)) throw new Error("BNB balance is not enough");
 
             await Marketplace.methods.buyNFT(id).send({ from: initialUser?.walletAddress, value: marketData.price });
 

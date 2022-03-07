@@ -27,7 +27,7 @@ const authorlist= () => {
                 <h2>Top Sellers</h2>
             </div>
             <div className='col-lg-12 mt-5'></div>
-            <Suspense fallback={<div>Loading...</div>}>
+            <Suspense fallback={<TopSellerLoading/>}>
                 { isLoading && <TopSellerLoading/> }
                 {
                     !isLoading && (

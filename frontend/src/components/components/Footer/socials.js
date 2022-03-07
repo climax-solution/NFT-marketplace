@@ -17,7 +17,7 @@ export default function SocialLinks() {
                         <div className="de-flex">
                             <div className="de-flex-col">
                                 <span onClick={()=> window.open("", "_self")}>
-                                    <span className="copy">&copy; Copyright 2022 - NFT Developments Marketplace </span>
+                                    <span className="copy">&copy; Copyright 2022 - NFT Developments Marketplace Powered By Binance</span>
                                 </span>
                             </div>
                             <div className="de-flex-col">

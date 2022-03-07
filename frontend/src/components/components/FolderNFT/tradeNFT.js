@@ -10,6 +10,9 @@ import Swal from "sweetalert2";
 import { UPDATE_LOADING_PROCESS } from "../../../store/action/auth.action";
 import getWeb3 from "../../../utils/getWeb3";
 
+import addresses from "../../../config/address.json";
+const { marketplace_addr, nft_addr } = addresses;
+
 const MusicArt = lazy(() => import("../Asset/music"));
 const VideoArt = lazy(() => import("../Asset/video"));
 const Clock = lazy(() => import("../Clock"));
@@ -100,10 +103,9 @@ export default function TradeNFT({ data }) {
             let { marketData, auctionData } = await Marketplace.methods.getItemNFT(id).call();
             if (marketData.marketStatus && !auctionData.existance) {
                 const _bnbBalance = await web3.eth.getBalance(userData.walletAddress);
-                const _estGas = await Marketplace.methods.buyNFT(id).estimateGas({ from: userData.walletAddress, value: price})
 
-                if (Number(marketData.price) + Number(_estGas) > Number(_bnbBalance)) throw new Error("BNB balance is not enough");
-                
+                if (Number(marketData.price) + 210000 > Number(_bnbBalance)) throw new Error("BNB balance is not enough");
+
                 dispatch(UPDATE_LOADING_PROCESS(true));
 
                 await Marketplace.methods.buyNFT(id).send({ from: userData.walletAddress, value: marketData.price });
@@ -139,8 +141,9 @@ export default function TradeNFT({ data }) {
             return;
         }
 
-        let {auctionData} = await Marketplace.methods.getItemNFT(id).call();
+        let {auctionData, marketData} = await Marketplace.methods.getItemNFT(id).call();
         let lastPrice = web3.utils.fromWei(auctionData.currentBidPrice, "ether");
+
         if (!Number(lastPrice)) lastPrice = web3.utils.fromWei(auctionData.minPrice, "ether");
         if (auctionData.existance) {
            try {
@@ -163,9 +166,8 @@ export default function TradeNFT({ data }) {
                     if (res.isConfirmed) {
                         const price = web3.utils.toWei(res.value, "ether");
                         const _bnbBalance = await web3.eth.getBalance(userData.walletAddress);
-                        const _estGas = await Marketplace.methods.placeBid(id).estimateGas({ from: userData.walletAddress, value: price})
 
-                        if (Number(marketData.price) + Number(_estGas) > Number(_bnbBalance)) throw new Error("BNB balance is not enough");
+                        if (Number(marketData.price) + 210000 > Number(_bnbBalance)) throw new Error("BNB balance is not enough");
 
                         dispatch(UPDATE_LOADING_PROCESS(true));
                         await Marketplace.methods.placeBid(id).send({ from: userData.walletAddress, value: price});
@@ -203,9 +205,8 @@ export default function TradeNFT({ data }) {
 
         try {
             const _bnbBalance = await web3.eth.getBalance(userData.walletAddress);
-            const _estGas = await Marketplace.methods.claimNFT(id).estimateGas({ from: userData.walletAddress });
 
-            if (Number(marketData.price) + Number(_estGas) > Number(_bnbBalance)) throw new Error("BNB balance is not enough");
+            if (Number(_bnbBalance) < 210000 ) throw new Error("BNB balance is not enough");
 
             dispatch(UPDATE_LOADING_PROCESS(true));
             await Marketplace.methods.claimNFT(id).send({ from: userData.walletAddress });

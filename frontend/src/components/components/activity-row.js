@@ -3,8 +3,8 @@ import { createGlobalStyle } from "styled-components";
 
 const action = [
     ["action-buy","Buy"],
-    ["action-sell","Put On Sale"],
-    ["action-down-sell","Removed On Sale"],
+    ["action-sell","Listed"],
+    ["action-down-sell","Listing Removed"],
     ["action-to-premium","Covert To Premium NFT"],
     ["action-to-normal","Covert To Normal NFT"],
     ["action-on-auction","Put On Auction"],
