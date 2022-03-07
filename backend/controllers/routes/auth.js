@@ -148,6 +148,7 @@ router.post('/forgot', async(req, res) => {
         existingUser.resetPasswordToken = resetToken;
         existingUser.resetPasswordExpires = Date.now() + 3600000;
 
+        existingUser.save();
         const courier = CourierClient({ authorizationToken: "pk_prod_YTMEXMYZA84MWVPTW3KHYS44B1S0"});
 
         const { requestId } = await courier.send({
@@ -184,7 +185,7 @@ router.post('/reset/:token', async(req, res) => {
     try {
         const { password } = req.body;
 
-        const resetUser = await User.findOne({
+        const resetUser = await UserSchema.findOne({
             resetPasswordToken: req.params.token,
             resetPasswordExpires: { $gt: Date.now() }
         });
@@ -210,6 +211,7 @@ router.post('/reset/:token', async(req, res) => {
             'Password changed successfully. Please login with your new password.'
         });
     } catch(err) {
+        console.error(err);
         res.status(400).json({
             error: "Your request is restricted"
         });
