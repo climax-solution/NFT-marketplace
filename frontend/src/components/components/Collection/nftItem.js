@@ -1,11 +1,14 @@
 import axios from "axios";
 import { lazy, Suspense, useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom";
 import ItemLoading from "../Loading/ItemLoading";
 
 const MusicArt = lazy(() => import("../Asset/music"));
 const VideoArt = lazy(() => import("../Asset/video"));
 
 export default function NFTItem({ data }) {
+
+    const navigate = useNavigate();
 
     const [nft, setNFT] = useState({});
     const [isLoading, setLoading] = useState(true);
@@ -34,7 +37,7 @@ export default function NFTItem({ data }) {
                         <div className="nft__item h-100">
                             <div className="nft__item_wrap">
                                 {
-                                    (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <a href={`/item-detail/${nft.nftData.tokenID}`}><img src={nft.image} onError={failedLoadImage} className="lazy nft__item_preview" alt=""/></a>
+                                    (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} className="lazy nft__item_preview" onClick={() => navigate(`/item-detail/${nft.nftData.tokenID}`)} alt=""/>
                                 }
 
                                 {

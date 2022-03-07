@@ -4,7 +4,7 @@ import { createGlobalStyle } from "styled-components";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { NotificationManager } from "react-notifications";
 import Loading from "./Loading/Loading";
 
@@ -33,6 +33,8 @@ const GlobalStyles = createGlobalStyle`
 export default function ({ status, update }) {
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const initialUser = useSelector(({ auth }) => auth.user);
   const wallet_info = useSelector(({ wallet }) => wallet.wallet_connected);
 
@@ -195,7 +197,7 @@ export default function ({ status, update }) {
                             <div className="nft__item">
                                 <div className="nft__item_wrap">
                                   {
-                                      (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <a href={`/item-detail/${nft.nftData.tokenID}`}><img src={nft.image} onError={failedLoadImage} className="lazy nft__item_preview" alt=""/></a>
+                                      (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} onClick={() => navigate(`/item-detail/${nft.nftData.tokenID}`)} className="lazy nft__item_preview" alt=""/>
                                   }
 
                                   {
