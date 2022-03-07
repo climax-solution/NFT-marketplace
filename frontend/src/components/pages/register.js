@@ -96,37 +96,36 @@ const Register= () => {
 
             if (!password || !confirmPassword || password && confirmPassword && password !== confirmPassword) flag = 1;
 
-        console.log(firstName, lastName, email, validator.isEmail(email),username, birthday, country, phoneNumber, walletAddress, password, confirmPassword, flag);
-        if (flag) {
-            setUpdate(true);
-            return;
-        }
-        // setUpdate(false);
-        const data = {
-            username,
-            email,
-            firstName,
-            lastName,
-            birthday,
-            phoneNumber,
-            country,
-            walletAddress,
-            password
-        };
+            if (flag) {
+                setUpdate(true);
+                return;
+            }
+            // setUpdate(false);
+            const data = {
+                username,
+                email,
+                firstName,
+                lastName,
+                birthday,
+                phoneNumber,
+                country,
+                walletAddress,
+                password
+            };
 
-        await axios.post("http://nftdevelopments.co.nz/auth/register", data).then(res => {
-            const { user } = res.data;
-            toast.success("you have registered successfully!", { theme: "colored" });
-            dispatch(UPDATE_AUTH(user));
-            navigate("/profile");
-        }).catch(err => {
-            const { error } = err.response.data;
-            toast.error(error, { theme: "colored" });
-        })
-    } catch(err) {
-        console.log(err);
+            await axios.post("http://nftdevelopments.co.nz/auth/register", data).then(res => {
+                const { user } = res.data;
+                toast.success("you have registered successfully!", { theme: "colored" });
+                dispatch(UPDATE_AUTH(user));
+                navigate("/profile");
+            }).catch(err => {
+                const { error } = err.response.data;
+                toast.error(error, { theme: "colored" });
+            })
+        } catch(err) {
+            console.log(err);
+        }
     }
-}
 
     return (
         <div>
@@ -144,71 +143,94 @@ const Register= () => {
                     <div name="contactForm" id='contact_form' className="form-border" action='#'>
 
                             <div className="row">
-    
-                                <TextInput
-                                    label={"First Name"}
-                                    update={setFirstName}
-                                    _key={"firstname"}
-                                    _request={update}
-                                />
-                                <TextInput
-                                    label={"Last Name"}
-                                    update={setLastName}
-                                    _key={"lastname"}
-                                    _request={update}
-                                />
-                                <TextInput
-                                    label={"Email"}
-                                    update={setEmail}
-                                    _key={"email"}
-                                    checkable={true}
-                                    _request={update}
-                                />
-                                <TextInput
-                                    label={"Choose a Username"}
-                                    update={setUserName}
-                                    _key={"username"}
-                                    checkable={true}
-                                    _request={update}
-                                />
-                                <DateInput
-                                    label={"Birth date"}
-                                    update={setBirthDate}
-                                    _request={update}
-                                />
+                                <div className="col-md-6">
+                                    <TextInput
+                                        label={"First Name"}
+                                        update={setFirstName}
+                                        _key={"firstname"}
+                                        _request={update}
+                                    />
+                                </div>
+                                
+                                <div className="col-md-6">
+                                    <TextInput
+                                        label={"Last Name"}
+                                        update={setLastName}
+                                        _key={"lastname"}
+                                        _request={update}
+                                    />
+                                </div>
 
-                                <CountryList
-                                    update={setCountry}
-                                    _request={update}
-                                />
+                                <div className="col-md-6">
+                                    <TextInput
+                                        label={"Email"}
+                                        update={setEmail}
+                                        _key={"email"}
+                                        checkable={true}
+                                        _request={update}
+                                    />
+                                </div>
 
-                                <PhoneInput
-                                    label={"Phone"}
-                                    update={setPhoneNumber}
-                                    _request={update}
-                                />
+                                <div className="col-md-6">
+                                    <TextInput
+                                        label={"Choose a Username"}
+                                        update={setUserName}
+                                        _key={"username"}
+                                        checkable={true}
+                                        _request={update}
+                                    />
+                                </div>
+                                
+                                <div className="col-md-6">
+                                    <DateInput
+                                        label={"Birth date"}
+                                        update={setBirthDate}
+                                        _request={update}
+                                    />
+                                </div>
 
-                                <TextInput
-                                    label={"Wallet Address"}
-                                    update={setWalletAddres}
-                                    _key={"walletAddress"}
-                                    checkable={true}
-                                    _request={update}
-                                />
+                                <div className="col-md-6">
+                                    <CountryList
+                                        update={setCountry}
+                                        _request={update}
+                                    />
+                                </div>
 
-                                <PasswordInput
-                                    label={"Password"}
-                                    update={setPassword}
-                                    _request={update}
-                                    _equal = {password && confirmPassword ? password === confirmPassword : true}
-                                />
+                                <div className="col-md-6">
+                                    <PhoneInput
+                                        label={"Phone"}
+                                        update={setPhoneNumber}
+                                        _request={update}
+                                    />
+                                </div>
 
-                                <PasswordInput
-                                    label={"Re-enter Password"}
-                                    update={setConfirmPassword}
-                                    _request={update}
-                                    _equal = {password && confirmPassword ? password === confirmPassword : true}
-                                />
+                                <div className="col-md-6">
+                                    <TextInput
+                                        label={"Wallet Address"}
+                                        update={setWalletAddres}
+                                        _key={"walletAddress"}
+                                        checkable={true}
+                                        _request={update}
+                                    />
+                                </div>
+
+                                <div className="col-md-6">
+                                    <PasswordInput
+                                        label={"Password"}
+                                        update={setPassword}
+                                        _request={update}
+                                        _equal = {password && confirmPassword ? password === confirmPassword : true}
+                                    />
+                                </div>
+
+                                <div className="col-md-6">
+                                    <PasswordInput
+                                        label={"Re-enter Password"}
+                                        update={setConfirmPassword}
+                                        _request={update}
+                                        _equal = {password && confirmPassword ? password === confirmPassword : true}
+                                    />
+                                </div>
 
                                 <div className="col-md-12">
                                     <div id='submit' className="pull-left mt-4">
