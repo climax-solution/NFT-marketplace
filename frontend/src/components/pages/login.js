@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { createGlobalStyle } from 'styled-components';
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import Footer from '../components/footer';
 import { UPDATE_AUTH } from '../../store/action/auth.action';
@@ -14,6 +14,9 @@ const GlobalStyles = createGlobalStyle`
   .box-login{
     border-radius: 3px;
     padding: 40px 50px;
+  }
+  .f-12px {
+    font-size: 12px;
   }
 `;
 
@@ -35,7 +38,7 @@ const login = () => {
     else setEmailStatus("");
 
     if (!password) {
-      setPasswordStatus("Pleaes enter correctly");
+      setPasswordStatus("Please enter correctly");
       flag = 1;
     }
     else setPasswordStatus("");
@@ -51,8 +54,10 @@ const login = () => {
       dispatch(UPDATE_AUTH(user));
       navigate('/profile');
     }).catch(err => {
-      const { error } = err.response.data;
-      toast.error(error, {theme: "colored"});
+      console.log(err);
+      // if 
+      // const { error } = err.response.data;
+      // toast.error(error, {theme: "colored"});
     })
   }
 
@@ -75,12 +80,12 @@ const login = () => {
                         type='text'
                         name='email'
                         id='email'
-                        className="form-control"
+                        className="form-control mb-0"
                         placeholder="Please enter your email or username"
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                       />
-                      <label className='text-danger'>{emailStatus}</label>
+                      <label className='text-danger f-12px'>{emailStatus}</label>
                     </div>
                     
                     <div className="field-set">
@@ -88,14 +93,16 @@ const login = () => {
                         type='password'
                         name='password'
                         id='password'
-                        className="form-control"
+                        className="form-control mb-0"
                         placeholder="Please enter your password"
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                       />
-                      <label className='text-danger'>{passwordStatus}</label>
+                      <label className='text-danger f-12px'>{passwordStatus}</label>
                     </div>
-                    
+                    <div className='mb-2'>
+                      <Link to="/forgot-password" className='text-decoration-none'>Forgot Password?</Link>
+                    </div>
                     <div className="field-set">
                       <input
                         type='submit'

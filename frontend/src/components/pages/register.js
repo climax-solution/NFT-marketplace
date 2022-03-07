@@ -68,28 +68,40 @@ const Register= () => {
     const [update, setUpdate] = useState(false);
 
     const register = async() => {
-        let flag = 0;
-        if (!firstName) flag = 1;
-        if (!lastName) flag = 1;
-        if (!email || !validator.isEmail(email)) flag = 1;
-        if (!username) flag = 1;
-        if (!birthday) flag = 1;
-        if (!country) flag = 1;
-        if (!phoneNumber) flag = 1;
 
-        else {
-            const res = phone(phoneNumber);
-            if (!res.isValid) flag = 1;
-        }
-        if (!walletAddress) flag = 1;
-        else if (!validator.isEthereumAddress(walletAddress)) flag = 1;
-        if (!password) flag = 1;
-        if (!confirmPassword || password && confirmPassword && password !== confirmPassword) flag = 1;
+        try {
+            let flag = 0;
+
+            if (!firstName) flag = 1;
+
+            if (!lastName) flag = 1;
+
+            if (!email || !validator.isEmail(email)) flag = 1;
+
+            if (!username) flag = 1;
+
+            if (!birthday) flag = 1;
+
+            if (!country) flag = 1;
+
+            if (!phoneNumber) flag = 1;
+
+            else {
+                const res = phone(phoneNumber);
+                if (!res.isValid) flag = 1;
+            }
+
+            if (!walletAddress) flag = 1;
+            else if (!validator.isEthereumAddress(walletAddress)) flag = 1;
+
+            if (!password || !confirmPassword || password && confirmPassword && password !== confirmPassword) flag = 1;
+
+        console.log(firstName, lastName, email, validator.isEmail(email),username, birthday, country, phoneNumber, walletAddress, password, confirmPassword, flag);
         if (flag) {
             setUpdate(true);
             return;
         }
-
+        // setUpdate(false);
         const data = {
             username,
             email,
@@ -111,7 +123,10 @@ const Register= () => {
             const { error } = err.response.data;
             toast.error(error, { theme: "colored" });
         })
+    } catch(err) {
+        console.log(err);
     }
+}
 
     return (
         <div>
@@ -134,7 +149,6 @@ const Register= () => {
                                     label={"First Name"}
                                     update={setFirstName}
                                     _key={"firstname"}
-                                    _request={update}
                                     _request={update}
                                 />
                                 <TextInput
