@@ -3,10 +3,11 @@ import axios from 'axios';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { createBrowserHistory } from "history";
 import { createGlobalStyle } from 'styled-components';
-import { NotificationContainer } from 'react-notifications';
 import { ToastContainer } from 'react-toastify';
 import { useSelector, useDispatch } from "react-redux";
 import ScrollToTopBtn from './menu/ScrollToTop';
+import { UPDATE_AUTH, UPDATE_LOADING_PROCESS } from '../store/action/auth.action';
+import Loading from './components/Loading/Loading';
 
 const Header = lazy(() => import('./menu/header'));
 const Home = lazy(() => import('./pages/home'));
@@ -23,11 +24,8 @@ const Profile = lazy(() => import('./pages/Profile'));
 const NotFound = lazy(() => import('./components/404'));
 
 import 'react-toastify/dist/ReactToastify.css';
-import 'react-notifications/lib/notifications.css';
-import 'react-cool-music-player/dist/index.css'
+import 'react-cool-music-player/dist/index.css';
 
-import { UPDATE_AUTH, UPDATE_LOADING_PROCESS } from '../store/action/auth.action';
-import Loading from './components/Loading/Loading';
 
 const GlobalStyles = createGlobalStyle`
   :root {
@@ -73,7 +71,6 @@ const app = () => {
   return (
     <div className="wraper">
       <GlobalStyles />
-      <NotificationContainer/>
       <ToastContainer/>
         <Router history={history}>
           <Suspense fallback={<Loading/>}>

@@ -1,5 +1,5 @@
 import { CopyToClipboard } from "react-copy-to-clipboard/lib/Component";
-import { NotificationManager } from "react-notifications";
+import { toast } from "react-toastify";
 import { createGlobalStyle } from "styled-components";
 
 const GlobalStyles = createGlobalStyle`
@@ -11,7 +11,15 @@ const GlobalStyles = createGlobalStyle`
 export default function Banner({ userData }) {
 
     const copyAlert = () => {
-        NotificationManager.info("Copied");
+        toast.error("Copied", {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
     }
 
     const failedLoadImage = (e) => {

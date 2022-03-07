@@ -12,13 +12,15 @@ export default function SellingNFT() {
     const initialUser = useSelector(({ auth }) => auth.user);
 
     const [nfts, setNFTs] = useState([]);
+    const [nftContract, setNFTContract] = useState({});
     const [marketContract, setMarketContract] = useState({});
     const [restList, setRestList] = useState([]);
     const [loaded, setLoaded] = useState(false);
     
     useEffect(async() => {
-        const { instanceMarketplace: Marketplace } = await getWeb3();
+        const { instanceMarketplace: Marketplace, instanceNFT } = await getWeb3();
         if (Marketplace) {
+            setNFTContract(instanceNFT);
             setMarketContract(Marketplace);
             let list = await Marketplace.methods.getPersonalNFTList().call({ from: initialUser.walletAddress });
             list = list.filter(item => item.marketData.existance && item.marketData.marketStatus);
@@ -56,7 +58,7 @@ export default function SellingNFT() {
                     className="row"
                 >
                     { nfts.map( (nft, index) => (
-                        <NFTItem data={nft} key={index} Marketplace={marketContract}/>
+                        <NFTItem data={nft} key={index} NFT={nftContract} Marketplace={marketContract}/>
                     ))}
                 </InfiniteScroll>
                 { loaded && !nfts.length && <Empty/>}

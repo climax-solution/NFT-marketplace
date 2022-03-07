@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useState } from "react";
-import { NotificationManager } from "react-notifications";
 import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
 import { UPDATE_AUTH } from "../../../store/action/auth.action";
 import Loading from "../Loading/Loading";
 
@@ -30,10 +30,25 @@ export default function Avatar() {
             }
           ).then(res => {
             dispatch(UPDATE_AUTH(res.data));
-            NotificationManager.success("Updated avatar successfully!");
+            toast.success("Updated avatar successfully!", {
+              position: "top-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            });
           }).catch(err => {
-            console.log(err);
-            NotificationManager.error("Update failed");
+            toast.error("Update failed", {
+              position: "top-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            });
           })
           setLoading(false);
         }

@@ -1,13 +1,21 @@
-import { NotificationManager } from "react-notifications";
 import { useSelector } from "react-redux";
 import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { toast } from "react-toastify";
 
 export default function UserInfo() {
     
     const userData = useSelector((state) => state.auth.user);
 
     const copyAlert = () => {
-        NotificationManager.info("Copied");
+        toast.info('Copied', {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
     }
     
     return (

@@ -4,11 +4,11 @@ import { createGlobalStyle } from 'styled-components';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { Link, useNavigate } from 'react-router-dom';
 import useOnclickOutside from "react-cool-onclickoutside";
-import { NotificationManager } from "react-notifications";
 import { useSelector, useDispatch } from "react-redux";
 import { UPDATE_AUTH } from "../../store/action/auth.action";
 import getWeb3 from "../../utils/getWeb3";
 import { WalletConnect } from "../../store/action/wallet.action";
+import { toast } from "react-toastify";
 
 const GlobalStyles = createGlobalStyle`
   .navbar {
@@ -142,7 +142,17 @@ const Header= function() {
     navigate('/');
   }
   
-  const copyAlert = () => NotificationManager.info("Copied");
+  const copyAlert = () => {
+    toast.info('Copied', {
+      position: "top-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  }
 
   const connectWallet = async() => {
     try {
@@ -152,16 +162,50 @@ const Header= function() {
       else {
         localStorage.setItem("nftdevelopments-connected", JSON.stringify({ connected: true }));
         dispatch(WalletConnect());
-        NotificationManager.success("Connected");
+        toast.success('Connected', {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
       }
     } catch(err) {
-      if (!window.ethereum) NotificationManager.error("Please install metamask");
+      if (!window.ethereum) {
+        toast.warning('Please install metamask', {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
       else {
         if (err.code === -32002) {
-          NotificationManager.warning("Please check your metamask. You have already requested");
+          toast.warning('Please check your metamask. You have already requested', {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
         }
         else if (err.code === 4001) {
-          NotificationManager.warning("Connecting cancelled");
+          toast.warning('Connecting cancelled', {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
         }
       }
     }
@@ -170,7 +214,15 @@ const Header= function() {
   const disConnectWallet = () => {
     localStorage.setItem("nftdevelopments-connected", JSON.stringify({ connected: false }));
     dispatch(WalletConnect());
-    NotificationManager.info("Disconnected");
+    toast.info('Disconnected', {
+      position: "top-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
   }
 
   return (

@@ -1,6 +1,5 @@
 import axios from "axios";
 import { lazy, Suspense, useEffect, useState } from "react";
-import { NotificationManager } from "react-notifications";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import Swal from "sweetalert2";
@@ -29,7 +28,15 @@ export default function NotSaleNFT({ data, NFT, Marketplace }) {
     const putOnSale = async (id) => {
         
         if (!wallet_info) {
-            NotificationManager.warning("Please connect metamask");
+            toast.warning('Please connect metamask', {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
             return;
         }
 
@@ -58,12 +65,20 @@ export default function NotSaleNFT({ data, NFT, Marketplace }) {
                     const _estApproveGas = await NFT.methods.approve(marketplace_addr, id).estimateGas({from : initialUser.walletAddress });
                     const _estClaimGas = await Marketplace.methods.openTradeToDirect(id).estimateGas({ from: initialUser.walletAddress, value: nftPrice / 40 });
 
-                    if (Number(nftPrice / 40) + Number(_estApproveGas) + Number(_estClaimGas) > Number(_bnbBalance)) throw new Error("BNB balance is not enough");
+                    if (Number(nftPrice / 40) + Number(_estApproveGas) + Number(_estClaimGas) > Number(_bnbBalance)) throw new Error("BNB balance is low");
 
                     await NFT.methods.approve(marketplace_addr, id).send({from : initialUser.walletAddress})
                     .on('receipt', async(rec) => {
                         await Marketplace.methods.openTradeToDirect(id).send({ from: initialUser.walletAddress, value: nftPrice / 40 });
-                        NotificationManager.success("Success");
+                        toast.success('Success', {
+                            position: "top-center",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        });
                         const data = {
                             tokenID: id,
                             type: 1,
@@ -79,7 +94,15 @@ export default function NotSaleNFT({ data, NFT, Marketplace }) {
                   
                 } catch(err) {
                     console.log(err);
-                    NotificationManager.error(err.message);
+                    toast.error(err.message, {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });;
                     dispatch(UPDATE_LOADING_PROCESS(false));
                 }
             }
@@ -89,7 +112,15 @@ export default function NotSaleNFT({ data, NFT, Marketplace }) {
     const putOnAuction = async (id) => {
         
         if (!wallet_info) {
-            NotificationManager.warning("Please connect metamask");
+            toast.warning('Please connect metamask', {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
             return;
         }
 
@@ -128,7 +159,7 @@ export default function NotSaleNFT({ data, NFT, Marketplace }) {
                     const _estApproveGas = await NFT.methods.approve(marketplace_addr, id).estimateGas({from : initialUser.walletAddress });
                     const _estClaimGas = await Marketplace.methods.openTradeToAuction(id, nftPrice, Math.floor(result.value[1] * 24)).estimateGas({ from: initialUser.walletAddress, value: nftPrice / 40 });
 
-                    if (Number(nftPrice / 40) + Number(_estApproveGas) + Number(_estClaimGas) > Number(_bnbBalance)) throw new Error("BNB balance is not enough");
+                    if (Number(nftPrice / 40) + Number(_estApproveGas) + Number(_estClaimGas) > Number(_bnbBalance)) throw new Error("BNB balance is low");
 
                     await NFT.methods.approve(marketplace_addr, id).send({from : initialUser.walletAddress})
                     .on('receipt', async(rec) => {
@@ -140,13 +171,29 @@ export default function NotSaleNFT({ data, NFT, Marketplace }) {
                             price: nftPrice / 40,
                             walletAddress: initialUser.walletAddress
                         }
-                        NotificationManager.success("Success");
+                        toast.success('Success', {
+                            position: "top-center",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        });
                         await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).catch(res => {}).catch(err => { });
                         dispatch(UPDATE_LOADING_PROCESS(false));
                     });
                   
                 } catch(err) {
-                    NotificationManager.error(err.message);
+                    toast.error(err.message, {
+                        position: "top-center",
+                        autoClose: 5000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                    });
                     dispatch(UPDATE_LOADING_PROCESS(false));
                 }
             }

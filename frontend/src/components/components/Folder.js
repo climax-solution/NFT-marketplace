@@ -39,39 +39,32 @@ const Folder = (props) => {
         <>
             <GlobalStyles/>
             <Suspense fallback={<ItemLoading/>}>
-                <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4">
-                    <div className="nft__item m-0 pb-4 h-100 justify-content-between">
-                        <div className="nft__item_wrap ratio-1x1">
-                            {
-                                loading ? (
-                                    <span>
-                                        <Skeleton className="lazy nft__item_preview ratio ratio-1x1"/>
-                                    </span>
-                                ) :
-                                <>
-                                    {
-                                        (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} className="lazy nft__item_preview" onClick={() => navigate(`/folder-explorer/${nft.folderIndex}`)} role="button" alt=""/>
-                                    }
+                {
+                    loading ? <ItemLoading/>
+                    : <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4">
+                        <div className="nft__item m-0 pb-4 h-100 justify-content-between">
+                            <div className="nft__item_wrap ratio-1x1">
+                                {
+                                    (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} className="lazy nft__item_preview" onClick={() => navigate(`/folder-explorer/${nft.folderIndex}`)} role="button" alt=""/>
+                                }
 
-                                    {
-                                        (nft.type && (nft.type).toLowerCase() == 'music') && <MusicArt data={nft} link={`/folder-explorer/${nft.folderIndex}`}/>
-                                    }
+                                {
+                                    (nft.type && (nft.type).toLowerCase() == 'music') && <MusicArt data={nft} link={`/folder-explorer/${nft.folderIndex}`}/>
+                                }
 
-                                    {
-                                        (nft.type && (nft.type).toLowerCase() == 'video') && <VideoArt data={nft.asset}/>
-                                    }
-                                </>
-                            }
-                        </div>
-                        <div className="nft__item_info mb-0 mt-1">
-                            <span>
-                                <h4>
-                                    {
-                                        loading ? <Skeleton/> : <span onClick={() => navigate(`/folder-explorer/${nft.folderIndex}`)} className="text-white">{nft.folder}</span>}</h4>
-                            </span>
+                                {
+                                    (nft.type && (nft.type).toLowerCase() == 'video') && <VideoArt data={nft.asset}/>
+                                }
+                            </div>
+                            <div className="nft__item_info mb-0 mt-1">
+                                <span>
+                                    <h4>
+                                        <span onClick={() => navigate(`/folder-explorer/${nft.folderIndex}`)} className="text-white">{nft.folder}</span></h4>
+                                </span>
+                            </div>
                         </div>
                     </div>
-                </div>
+                }
             </Suspense>
         </>
     )

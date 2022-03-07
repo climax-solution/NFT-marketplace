@@ -1,8 +1,8 @@
 import axios from "axios";
 import { lazy, Suspense, useEffect, useState } from "react";
-import { NotificationManager } from "react-notifications";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { UPDATE_LOADING_PROCESS } from "../../../store/action/auth.action";
 import getWeb3 from "../../../utils/getWeb3";
 
@@ -10,7 +10,7 @@ const MusicArt = lazy(() => import("../Asset/music"));
 const VideoArt = lazy(() => import("../Asset/video"));
 const ItemLoading = lazy(() => import("../Loading/ItemLoading"));
 
-export default function NFTItem({ data, Marketplace }) {
+export default function NFTItem({ data, NFT, Marketplace }) {
 
     const [web3, setWeb3] = useState(null);
     const [nft, setNFT] = useState([]);
@@ -25,12 +25,28 @@ export default function NFTItem({ data, Marketplace }) {
     const putDownSale = async (id) => {
 
         if (!initialUser.walletAddress) {
-            NotificationManager.warning("Please log in");
+            toast.warning('Please log in', {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
             return;
         }
 
         if (!wallet_info) {
-            NotificationManager.warning("Please connect metamask");
+            toast.warning('Please connect metamask', {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
             return;
         }
 
@@ -41,7 +57,7 @@ export default function NFTItem({ data, Marketplace }) {
 
             const _bnbBalance = await web3.eth.getBalance(initialUser.walletAddress);
 
-            if (Number(buyAmount / 40) + 210000 > Number(_bnbBalance)) throw new Error("BNB balance is not enough");
+            if (Number(buyAmount / 40) + 210000 > Number(_bnbBalance)) throw new Error("BNB balance is low");
 
             await Marketplace.methods.closeTradeToDirect(id).send({ from: initialUser.walletAddress, value: buyAmount / 40 });
 
@@ -51,13 +67,29 @@ export default function NFTItem({ data, Marketplace }) {
                 price: buyAmount / 40,
                 walletAddress: initialUser.walletAddress
             }
-            NotificationManager.success("Success");
+            toast.success('Success', {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
             await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).then(res =>{
 
             }).catch(err => { });
         } catch(err) {
             console.log(id, "==>" ,err);
-            NotificationManager.error("Failed");
+            toast.error('Failed', {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
         }
         dispatch(UPDATE_LOADING_PROCESS(false));
     }
@@ -65,12 +97,28 @@ export default function NFTItem({ data, Marketplace }) {
     const putDownAuction = async (id) => {
 
         if (!initialUser.walletAddress) {
-            NotificationManager.warning("Please log in");
+            toast.warning('Please log in', {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
             return;
         }
 
         if (!wallet_info) {
-            NotificationManager.warning("Please connect metamask");
+            toast.warning('Please connect metamask', {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
             return;
         }
 
@@ -78,7 +126,15 @@ export default function NFTItem({ data, Marketplace }) {
         try {
             const nft = await Marketplace.methods.getItemNFT(id).call();
             if (!web3.utils.toBN(nft.auctionData.currentBidOwner).isZero()) {
-                NotificationManager.warning("There is existing bid");
+                toast.warning('There is existing bid', {
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
                 dispatch(UPDATE_LOADING_PROCESS(false));
                 return;
             }
@@ -86,7 +142,7 @@ export default function NFTItem({ data, Marketplace }) {
 
             const _bnbBalance = await web3.eth.getBalance(initialUser.walletAddress);
 
-            if (Number(buyAmount / 40) + 210000 > Number(_bnbBalance)) throw new Error("BNB balance is not enough");
+            if (Number(buyAmount / 40) + 210000 > Number(_bnbBalance)) throw new Error("BNB balance is low");
 
             await Marketplace.methods.closeTradeToAuction(id).send({ from: initialUser.walletAddress, value: buyAmount / 40 });
             const data = {
@@ -95,13 +151,29 @@ export default function NFTItem({ data, Marketplace }) {
                 price: buyAmount / 40,
                 walletAddress: initialUser.walletAddress
             }
-            await NotificationManager.success("Success");
+            toast.success('Success', {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+              });
             await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).then(res =>{
 
             }).catch(err => { });
         } catch(err) {
             console.log(id, "==>" ,err);
-            NotificationManager.error("Failed");
+            toast.warning('Failed', {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
         }
         dispatch(UPDATE_LOADING_PROCESS(false));
     }
@@ -109,12 +181,28 @@ export default function NFTItem({ data, Marketplace }) {
     const updatePremiumNFT = async (id, status) => {
         
         if (!initialUser.walletAddress) {
-            NotificationManager.warning("Please log in");
+            toast.warning('Please log in', {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
             return;
         }
 
         if (!wallet_info) {
-            NotificationManager.warning("Please connect metamask");
+            toast.warning('Please connect metamask', {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
             return;
         }
 
@@ -127,7 +215,7 @@ export default function NFTItem({ data, Marketplace }) {
             
             const _bnbBalance = await web3.eth.getBalance(initialUser.walletAddress);
 
-            if (Number(tax / 20) + 210000 > Number(_bnbBalance)) throw new Error("BNB balance is not enough");
+            if (Number(tax / 20) + 210000 > Number(_bnbBalance)) throw new Error("BNB balance is low");
 
             await Marketplace.methods.updatePremiumStatus(id, status).send({ from: initialUser.walletAddress, value: tax / 20});
 
@@ -137,14 +225,41 @@ export default function NFTItem({ data, Marketplace }) {
                 price: tax / 20,
                 walletAddress: initialUser.walletAddress
             }
-            NotificationManager.success("Success");
+            toast.success('Success', {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
             await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).then(res =>{
 
             }).catch(err => { });
         } catch(err) {
-            console.log(err);
-            if (typeof err == "string") NotificationManager.error(err);
-            else NotificationManager.error("Failed");
+            if (typeof err == "string") {
+                toast.error(err, {
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            }
+            else {
+                toast.error('Failed', {
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            }
         }
         dispatch(UPDATE_LOADING_PROCESS(false));
     }

@@ -5,14 +5,13 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { NotificationManager } from "react-notifications";
-import Loading from "./Loading/Loading";
 
 import { UPDATE_LOADING_PROCESS } from "../../store/action/auth.action";
 import getWeb3 from "../../utils/getWeb3";
 
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
+import { toast } from "react-toastify";
 
 const PremiumNFTLoading = lazy(() => import('./Loading/PremiumNFTLoading'));
 const Empty = lazy(() => import("./Empty"));
@@ -110,7 +109,15 @@ export default function ({ status, update }) {
   const buyNow = async(id) => {
   
     if (!wallet_info) {
-      NotificationManager.warning("Please connect metamask");
+      toast.warning('Please connect metamask', {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      });
       return;
     }
 
@@ -122,7 +129,7 @@ export default function ({ status, update }) {
 
             const _bnbBalance = await web3.eth.getBalance(userData.walletAddress);
 
-            if (Number(marketData.price) + 210000 > Number(_bnbBalance)) throw new Error("BNB balance is not enough");
+            if (Number(marketData.price) + 210000 > Number(_bnbBalance)) throw new Error("BNB balance is low");
 
             await Marketplace.methods.buyNFT(id).send({ from: initialUser?.walletAddress, value: marketData.price });
 
@@ -138,11 +145,26 @@ export default function ({ status, update }) {
             }).catch(err => { });
 
             update(!status);
-            NotificationManager.success("Buy success");
+            toast.success("Buy success", {
+              position: "top-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            });
         }
     } catch(err) {
-        console.log(err);
-        NotificationManager.error("Buy failed");
+        toast.error("Buy failed", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
     }
     dispatch(UPDATE_LOADING_PROCESS(false));
   }

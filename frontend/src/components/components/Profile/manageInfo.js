@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import validator from "validator";
-import { NotificationManager } from "react-notifications";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { UPDATE_AUTH } from "../../../store/action/auth.action";
 import { WalletConnect } from "../../../store/action/wallet.action";
 import Loading from "../Loading/Loading";
+import { toast } from "react-toastify";
 
 export default function ManageInfo() {
     
@@ -24,12 +24,28 @@ export default function ManageInfo() {
     const updateUserInfo = async() => {
         const { firstName, lastName, email, password, confirmPassword } = userData;
         if (!firstName || !lastName || !validator.isEmail(email)) {
-          NotificationManager.warning("You must input first name, last name, email correctly!");
+          toast.error("You must input first name, last name, email correctly!", {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
           return;
         }
     
         if (!password || password && password !== confirmPassword) {
-          NotificationManager.warning("Please confirm your password!");
+          toast.error("Please confirm your password!", {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
           return;
         }
         
@@ -40,10 +56,26 @@ export default function ManageInfo() {
         await axios.post("http://nftdevelopments.co.nz/user/update-user", userData, _headers).then(res => {
           const { data } = res;
           dispatch(UPDATE_AUTH(data));
-          NotificationManager.success("Updated profile successfully!");
+          toast.error("Updated profile successfully!", {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
         }).catch(err => {
           const { error } = err.response.data;
-          NotificationManager.error(error);
+          toast.error(error, {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+          });
           logout();
         })
 

@@ -1,6 +1,5 @@
 import axios from "axios";
 import { lazy, useEffect, useState } from "react";
-import { NotificationManager } from "react-notifications";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import ReactTooltip from "react-tooltip";
@@ -8,6 +7,7 @@ import { createGlobalStyle } from "styled-components";
 import Swal from "sweetalert2";
 import { UPDATE_LOADING_PROCESS } from "../../../store/action/auth.action";
 import getWeb3 from "../../../utils/getWeb3";
+import { toast } from "react-toastify";
 
 const MusicArt = lazy(() => import("../Asset/music"));
 const VideoArt = lazy(() => import("../Asset/video"));
@@ -83,12 +83,28 @@ export default function TradeNFT({ data }) {
     const buyNow = async(id) => {
 
         if (!userData.walletAddress) {
-            NotificationManager.warning("Please log in");
+            toast.warning('Please log in', {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
             return;
         }
 
         if (!wallet_info) {
-            NotificationManager.warning("Please connect metamask");
+            toast.warning('Please connect metamask', {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
             return;
         }
 
@@ -97,7 +113,7 @@ export default function TradeNFT({ data }) {
             if (marketData.marketStatus && !auctionData.existance) {
                 const _bnbBalance = await web3.eth.getBalance(userData.walletAddress);
 
-                if (Number(marketData.price) + 210000 > Number(_bnbBalance)) throw new Error("BNB balance is not enough");
+                if (Number(marketData.price) + 210000 > Number(_bnbBalance)) throw new Error("BNB balance is low");
 
                 dispatch(UPDATE_LOADING_PROCESS(true));
 
@@ -114,10 +130,26 @@ export default function TradeNFT({ data }) {
 
                 }).catch(err => { });
 
-                NotificationManager.success("Buy success");
+                toast.success('Buy success', {
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
             }
         } catch(err) {
-            NotificationManager.error(err.message);
+            toast.error(err.message, {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
         }
         dispatch(UPDATE_LOADING_PROCESS(false));
     }
@@ -125,12 +157,28 @@ export default function TradeNFT({ data }) {
     const placeBid = async(id) => {
 
         if (!userData.walletAddress) {
-            NotificationManager.warning("Please log in");
+            toast.warning('Please log in', {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
             return;
         }
 
         if (!wallet_info) {
-            NotificationManager.warning("Please connect metamask");
+            toast.warning('Please connect metamask', {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
             return;
         }
 
@@ -160,7 +208,7 @@ export default function TradeNFT({ data }) {
                         const price = web3.utils.toWei(res.value, "ether");
                         const _bnbBalance = await web3.eth.getBalance(userData.walletAddress);
 
-                        if (Number(marketData.price) + 210000 > Number(_bnbBalance)) throw new Error("BNB balance is not enough");
+                        if (Number(marketData.price) + 210000 > Number(_bnbBalance)) throw new Error("BNB balance is low");
 
                         dispatch(UPDATE_LOADING_PROCESS(true));
                         await Marketplace.methods.placeBid(id).send({ from: userData.walletAddress, value: price});
@@ -174,12 +222,28 @@ export default function TradeNFT({ data }) {
                         await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).then(res =>{
         
                         }).catch(err => { });
-                        NotificationManager.success("Success Bid");
+                        toast.error("Success Bid", {
+                            position: "top-center",
+                            autoClose: 5000,
+                            hideProgressBar: false,
+                            closeOnClick: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            progress: undefined,
+                        });
                         dispatch(UPDATE_LOADING_PROCESS(false));
                     }
                 });
             } catch(err) {
-                NotificationManager.error(err.message);
+                toast.error(err.message, {
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
                 dispatch(UPDATE_LOADING_PROCESS(false));
            }
         }
@@ -187,25 +251,49 @@ export default function TradeNFT({ data }) {
 
     const claimNFT = async(id) => {
         if (!userData.walletAddress) {
-            NotificationManager.warning("Please log in");
+            toast.warning('Please log in', {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
             return;
         }
 
         if (!wallet_info) {
-            NotificationManager.warning("Please connect metamask");
+            toast.warning('Please connect metamask', {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
             return;
         }
 
         try {
             const _bnbBalance = await web3.eth.getBalance(userData.walletAddress);
 
-            if (Number(_bnbBalance) < 210000 ) throw new Error("BNB balance is not enough");
+            if (Number(_bnbBalance) < 210000 ) throw new Error("BNB balance is low");
 
             dispatch(UPDATE_LOADING_PROCESS(true));
             await Marketplace.methods.claimNFT(id).send({ from: userData.walletAddress });
 
         } catch(err) {
-            NotificationManager.error(err.message);
+            toast.error(err.message, {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });;
         }
         dispatch(UPDATE_LOADING_PROCESS(false));
     }
