@@ -4,6 +4,7 @@ let walletValidator = require('wallet-address-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
+const { CourierClient } = require("@trycourier/courier");
 
 const checkAuth = require("../../helpers/auth");
 let UserSchema = require('../../models/users');
@@ -129,6 +130,93 @@ router.post('/register', async(req, res) => {
     }
 });
 
+router.post('/forgot', async(req, res) => {
+    try {
+        const { email } = req.body;
+        if (!emailValidator.validate(email)) {
+            return res.status(400).json({ error: 'You must enter an correct email address.' });
+        }
+
+        const existingUser = await UserSchema.findOne({ email });
+        if (!existingUser) {
+            return res.status(400).json({ error: "We can't find user with your email." });
+        }
+
+        const buffer = crypto.randomBytes(48);
+        const resetToken = buffer.toString('hex');
+
+        existingUser.resetPasswordToken = resetToken;
+        existingUser.resetPasswordExpires = Date.now() + 3600000;
+
+        const courier = CourierClient({ authorizationToken: "pk_prod_YTMEXMYZA84MWVPTW3KHYS44B1S0"});
+
+        const { requestId } = await courier.send({
+            message: {
+                content: {
+                    title: "Reset Password",
+                    body: `${
+                        'You are receiving this because you have requested to reset your password for your account.\n\n' +
+                        'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+                        'https://marketplace.nftdevelopments.site/reset-password/'
+                    }${resetToken}\n\nIf you did not request this, please ignore this email and your password will remain unchanged.\n`
+                },
+                data: {
+                    joke: ""
+                },
+                to: {
+                    email: email
+                }
+            }
+        });
+        res.status(200).json({
+            status: true,
+            message: 'Please check your email and reset password.'
+        })
+    } catch(err) {
+        res.status(400).json({
+            error: "Your request is restricted"
+        });
+    }
+})
+
+router.post('/reset/:token', async(req, res) => {
+
+    try {
+        const { password } = req.body;
+
+        const resetUser = await User.findOne({
+            resetPasswordToken: req.params.token,
+            resetPasswordExpires: { $gt: Date.now() }
+        });
+    
+        if (!resetUser) {
+            return res.status(400).json({
+            error:
+                'Your token has expired. Please attempt to reset your password again.'
+            });
+        }
+    
+        const salt = await bcrypt.genSalt(10);
+        const hash = await bcrypt.hash(password, salt);
+    
+        resetUser.password = hash;
+        resetUser.resetPasswordToken = undefined;
+        resetUser.resetPasswordExpires = undefined;
+        resetUser.save();
+
+        res.status(200).json({
+            success: true,
+            message:
+            'Password changed successfully. Please login with your new password.'
+        });
+    } catch(err) {
+        res.status(400).json({
+            error: "Your request is restricted"
+        });
+    }
+
+});
+
 router.post('/check-authentication', async(req, res) => {
     const result = await checkAuth(req);
     if (!result) return res.status(400).json({ error: "No validation"});
@@ -136,7 +224,4 @@ router.post('/check-authentication', async(req, res) => {
     res.status(200).json(user);
 });
 
-router.post('/logout', async(req, res) => {
-    
-})
 module.exports = router;
