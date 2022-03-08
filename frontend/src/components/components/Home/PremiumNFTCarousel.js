@@ -6,16 +6,16 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Carousel from "react-multi-carousel";
-import { UPDATE_LOADING_PROCESS } from "../../store/action/auth.action";
-import getWeb3 from "../../utils/getWeb3";
+import { UPDATE_LOADING_PROCESS } from "../../../store/action/auth.action";
+import getWeb3 from "../../../utils/getWeb3";
 
 import "react-multi-carousel/lib/styles.css";
 
 
-const PremiumNFTLoading = lazy(() => import('./Loading/PremiumNFTLoading'));
-const Empty = lazy(() => import("./Empty"));
-const MusicArt = lazy(() => import("./Asset/music"));
-const VideoArt = lazy(() => import("./Asset/video"));
+const PremiumNFTLoading = lazy(() => import('../Loading/PremiumNFTLoading'));
+const Empty = lazy(() => import("../Empty"));
+const MusicArt = lazy(() => import("../Asset/music"));
+const VideoArt = lazy(() => import("../Asset/video"));
 
 const GlobalStyles = createGlobalStyle`
   .slick-track {

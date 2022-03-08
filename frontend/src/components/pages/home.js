@@ -4,9 +4,9 @@ import Loading from '../components/Loading/Loading';
 
 const Particle = lazy(() => import('../components/Particle'));
 const SliderMainParticle = lazy(() => import('../components/SliderMainParticle'));
-const FeatureBox = lazy(() => import('../components/FeatureBox'));
-const PremiumNFTCarousel = lazy(() => import('../components/PremiumNFTCarousel'));
-const AuthorList = lazy(() => import('../components/authorList'));
+const FeatureBox = lazy(() => import('../components/Home/FeatureBox'));
+const PremiumNFTCarousel = lazy(() => import('../components/Home/PremiumNFTCarousel'));
+const AuthorList = lazy(() => import('../components/Home/authorList'));
 const Footer = lazy(() => import('../components/footer'));
 
 const GlobalStyles = createGlobalStyle`

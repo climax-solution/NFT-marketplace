@@ -1,14 +1,13 @@
 import axios from 'axios';
 import React, { useEffect, useState, lazy, Suspense } from 'react';
-import getWeb3 from '../../utils/getWeb3';
+import getWeb3 from '../../../utils/getWeb3';
 
-const Empty = lazy(() => import('./Empty'));
-const TopSellerLoading = lazy(() => import('./Loading/TopSellerLoading'));
-const Buyer = lazy(() => import('./TopBuyer/buyer'));
+const Empty = lazy(() => import('../Empty'));
+const TopSellerLoading = lazy(() => import('../Loading/TopSellerLoading'));
+const Buyer = lazy(() => import('../TopBuyer/buyer'));
 
 const authorlist= () => {
     
-
     const [list, setList] = useState([]);
     const [web3,setWEB3] = useState({});
     const [isLoading, setLoading] = useState(true);
