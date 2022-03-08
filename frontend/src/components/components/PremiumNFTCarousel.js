@@ -184,6 +184,8 @@ export default function () {
                 responsive={responsive}
                 ssr // means to render carousel on server-side.
                 infinite={true}
+                autoPlay={true}
+                autoPlaySpeed={2000}
                 keyBoardControl={true}
                 containerClass="carousel-container"
                 removeArrowOnDeviceType={["tablet", "mobile"]}
