@@ -4,7 +4,7 @@ import getWeb3 from '../../../utils/getWeb3';
 
 const Empty = lazy(() => import('../Empty'));
 const TopSellerLoading = lazy(() => import('../Loading/TopSellerLoading'));
-const Buyer = lazy(() => import('../TopBuyer/buyer'));
+const Buyer = lazy(() => import('./buyer'));
 
 const authorlist= () => {
     

@@ -2,8 +2,8 @@ import React, { lazy, Suspense } from 'react';
 import { createGlobalStyle } from 'styled-components';
 import Loading from '../components/Loading/Loading';
 
-const Particle = lazy(() => import('../components/Particle'));
-const SliderMainParticle = lazy(() => import('../components/SliderMainParticle'));
+const Particle = lazy(() => import('../components/Home/Particle'));
+const SliderMainParticle = lazy(() => import('../components/Home/SliderMainParticle'));
 const FeatureBox = lazy(() => import('../components/Home/FeatureBox'));
 const PremiumNFTCarousel = lazy(() => import('../components/Home/PremiumNFTCarousel'));
 const AuthorList = lazy(() => import('../components/Home/authorList'));

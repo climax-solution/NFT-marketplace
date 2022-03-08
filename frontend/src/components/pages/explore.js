@@ -5,7 +5,7 @@ import getWeb3 from '../../utils/getWeb3';
 import categoryOptions from "../../config/category.json";
 import Loading from '../components/Loading/Loading';
 
-const FolderList = lazy(() => import('../components/FolderList'));
+const FolderList = lazy(() => import('../components/Explore/FolderList'));
 const Footer = lazy(() => import('../components/footer'));
 
 const customStyles = {

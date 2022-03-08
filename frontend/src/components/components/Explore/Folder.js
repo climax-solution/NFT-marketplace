@@ -3,10 +3,10 @@ import axios from "axios";
 import Skeleton from 'react-loading-skeleton'
 import { createGlobalStyle } from 'styled-components';
 import { useNavigate } from "react-router-dom";
-import ItemLoading from "./Loading/ItemLoading";
+import ItemLoading from "../Loading/ItemLoading";
 
-const MusicArt = lazy(() => import("./Asset/music"));
-const VideoArt = lazy(() => import("./Asset/video"));
+const MusicArt = lazy(() => import("../Asset/music"));
+const VideoArt = lazy(() => import("../Asset/video"));
 
 const GlobalStyles = createGlobalStyle`
    .react-loading-skeleton {

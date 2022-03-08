@@ -4,7 +4,7 @@ import { createGlobalStyle } from 'styled-components';
 import axios from 'axios';
 import Loading from '../components/Loading/Loading';
 
-const ActivityItem = lazy(() => import("../components/activity-row"));
+const ActivityItem = lazy(() => import("../components/Activity/row"));
 const Empty = lazy(() => import('../components/Empty'));
 const Footer = lazy(() => import('../components/footer'));
 
