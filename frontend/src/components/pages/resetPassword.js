@@ -81,9 +81,9 @@ const ResetPassword = () => {
                       <input
                         type='submit'
                         id='send_message'
-                        value={ !success ? 'Send' : 'Return to login'}
+                        value={ !success ? 'Submit' : 'Return to login'}
                         className="btn btn-main btn-fullwidth color-2"
-                        onClick={() => !success ? authenticate : navigate('/login') }
+                        onClick={() => !success ? authenticate() : navigate('/login') }
                       />
                     </div>
                     <div className="spacer-half"></div>

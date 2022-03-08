@@ -22,7 +22,6 @@ export default function InternalLinks() {
                             <li><Link to="">Partners</Link></li>
                             <li><Link to="">Suggestions</Link></li>
                             <li><a href="https://discord.gg/ZucajFMre8" target="_blank">Discord</a></li>
-                            <li><Link to="">Docs</Link></li>
                             <li><Link to="">Newsletter</Link></li>
                         </ul>
                     </div>
@@ -33,10 +32,7 @@ export default function InternalLinks() {
                         <ul>
                             <li><Link to="">Community</Link></li>
                             <li><Link to="">Documentation</Link></li>
-                            <li><Link to="">Brand Assets</Link></li>
                             <li><Link to="">Blog</Link></li>
-                            <li><Link to="">Forum</Link></li>
-                            <li><Link to="">Mailing List</Link></li>
                         </ul>
                     </div>
                 </div>
