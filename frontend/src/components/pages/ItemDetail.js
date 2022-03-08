@@ -330,7 +330,7 @@ const NFTItem = function() {
                             <section className='container'>
                                 <div className='row mt-md-5 pt-md-4'>
 
-                                <div className="col-md-6 col-sm-12 text-center">
+                                <div className="col-md-6 col-sm-12 text-center d-md-block d-flex justify-content-center align-items-center flex-column">
                                     {
                                         (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} className="img-fluid img-rounded mb-sm-30" alt=""/>
                                     }
