@@ -31,7 +31,7 @@ export default function TextInput({ label, _request,  _key, checkable, update })
 
             if (_key === 'walletAddress') {
                 if (!validator.isEthereumAddress(value)) {
-                    setStatus("This field is Binance Smart Chain wallet address required");
+                    setStatus("Invalid! Please enter a valid wallet address");
                     setChecking(false);
                     return;
                 }
@@ -43,7 +43,7 @@ export default function TextInput({ label, _request,  _key, checkable, update })
             }).catch(err => {
                 const { error } = err.response.data;
                 if (!error) {
-                    setStatus('Already existing ' + _key);
+                    setStatus(label + 'already exists');
                 }
                 update("");
             });

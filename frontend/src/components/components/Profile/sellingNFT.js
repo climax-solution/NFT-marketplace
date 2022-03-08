@@ -33,6 +33,7 @@ export default function NFTItem({ data, NFT, Marketplace }) {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
+                theme: "colored"
             });
             return;
         }
@@ -46,6 +47,7 @@ export default function NFTItem({ data, NFT, Marketplace }) {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
+                theme: "colored"
             });
             return;
         }
@@ -75,6 +77,7 @@ export default function NFTItem({ data, NFT, Marketplace }) {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
+                theme: "colored"
             });
             await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).then(res =>{
 
@@ -89,6 +92,7 @@ export default function NFTItem({ data, NFT, Marketplace }) {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
+                theme: "colored"
             });
         }
         dispatch(UPDATE_LOADING_PROCESS(false));
@@ -105,6 +109,7 @@ export default function NFTItem({ data, NFT, Marketplace }) {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
+                theme: "colored"
             });
             return;
         }
@@ -118,6 +123,7 @@ export default function NFTItem({ data, NFT, Marketplace }) {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
+                theme: "colored"
             });
             return;
         }
@@ -134,6 +140,7 @@ export default function NFTItem({ data, NFT, Marketplace }) {
                     pauseOnHover: true,
                     draggable: true,
                     progress: undefined,
+                    theme: "colored"
                 });
                 dispatch(UPDATE_LOADING_PROCESS(false));
                 return;
@@ -159,6 +166,7 @@ export default function NFTItem({ data, NFT, Marketplace }) {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
+                theme: "colored"
               });
             await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).then(res =>{
 
@@ -173,6 +181,7 @@ export default function NFTItem({ data, NFT, Marketplace }) {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
+                theme: "colored"
             });
         }
         dispatch(UPDATE_LOADING_PROCESS(false));
@@ -189,6 +198,7 @@ export default function NFTItem({ data, NFT, Marketplace }) {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
+                theme: "colored"
             });
             return;
         }
@@ -202,6 +212,7 @@ export default function NFTItem({ data, NFT, Marketplace }) {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
+                theme: "colored"
             });
             return;
         }
@@ -233,6 +244,7 @@ export default function NFTItem({ data, NFT, Marketplace }) {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
+                theme: "colored"
             });
             await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).then(res =>{
 
@@ -247,6 +259,7 @@ export default function NFTItem({ data, NFT, Marketplace }) {
                     pauseOnHover: true,
                     draggable: true,
                     progress: undefined,
+                    theme: "colored"
                 });
             }
             else {
@@ -258,6 +271,7 @@ export default function NFTItem({ data, NFT, Marketplace }) {
                     pauseOnHover: true,
                     draggable: true,
                     progress: undefined,
+                    theme: "colored"
                 });
             }
         }
@@ -313,11 +327,11 @@ export default function NFTItem({ data, NFT, Marketplace }) {
                                     <div className="pb-4 trade-btn-group mt-2">
                                         { nft.marketData.marketStatus && (
                                             !nft.auctionData.existance ?
-                                                <span className="btn-main w-100" onClick={() => putDownSale(nft.nftData.tokenID)}>Put down sale</span>
-                                                :<span className="btn-main w-100" onClick={() => putDownAuction(nft.nftData.tokenID)}>Put down auction</span>
+                                                <span className="btn-main w-100" onClick={() => putDownSale(nft.nftData.tokenID)}>Delist</span>
+                                                :<span className="btn-main w-100" onClick={() => putDownAuction(nft.nftData.tokenID)}>Delist from auction</span>
                                             )
                                         }
-                                        { !nft.auctionData.existance && (!nft.marketData.premiumStatus ? <span className="btn-main mt-2 w-100" onClick={async() => await updatePremiumNFT(nft.nftData.tokenID, true)}>To Preimum</span> : <span className="btn-main mt-2 w-100"  onClick={() => updatePremiumNFT(nft.nftData.tokenID, false)}>To Normal</span>) }
+                                        { !nft.auctionData.existance && (!nft.marketData.premiumStatus ? <span className="btn-main mt-2 w-100" onClick={async() => await updatePremiumNFT(nft.nftData.tokenID, true)}>Promote to preimum</span> : <span className="btn-main mt-2 w-100"  onClick={() => updatePremiumNFT(nft.nftData.tokenID, false)}>Reset to normal</span>) }
                                     </div>
                                 </div> 
                             </div>

@@ -38,6 +38,7 @@ export default function Avatar() {
               pauseOnHover: true,
               draggable: true,
               progress: undefined,
+        theme: "colored"
             });
           }).catch(err => {
             toast.error("Update failed", {
@@ -48,6 +49,7 @@ export default function Avatar() {
               pauseOnHover: true,
               draggable: true,
               progress: undefined,
+        theme: "colored"
             });
           })
           setLoading(false);

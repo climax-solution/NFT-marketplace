@@ -89,6 +89,7 @@ const NFTItem = function() {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
+        theme: "colored"
             });
             return;
         }
@@ -102,6 +103,7 @@ const NFTItem = function() {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
+        theme: "colored"
             });
             return;
         }
@@ -135,6 +137,7 @@ const NFTItem = function() {
                     pauseOnHover: true,
                     draggable: true,
                     progress: undefined,
+        theme: "colored"
                 });
             }
         } catch(err) {
@@ -147,6 +150,7 @@ const NFTItem = function() {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
+        theme: "colored"
             });;
         }
         dispatch(UPDATE_LOADING_PROCESS(false));
@@ -163,6 +167,7 @@ const NFTItem = function() {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
+        theme: "colored"
             });
             return;
         }
@@ -176,6 +181,7 @@ const NFTItem = function() {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
+        theme: "colored"
             });
             return;
         }
@@ -227,6 +233,7 @@ const NFTItem = function() {
                             pauseOnHover: true,
                             draggable: true,
                             progress: undefined,
+        theme: "colored"
                         });
                     }
                 });
@@ -239,6 +246,7 @@ const NFTItem = function() {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
+        theme: "colored"
             });;
            }
            dispatch(UPDATE_LOADING_PROCESS(true));
@@ -256,6 +264,7 @@ const NFTItem = function() {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
+        theme: "colored"
             });
             return;
         }
@@ -269,6 +278,7 @@ const NFTItem = function() {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
+        theme: "colored"
             });
             return;
         }
@@ -290,6 +300,7 @@ const NFTItem = function() {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
+        theme: "colored"
             });;
         }
         dispatch(UPDATE_LOADING_PROCESS(false));
@@ -336,9 +347,9 @@ const NFTItem = function() {
                                         !nft.auctionData.existance
                                             ? <span className="btn-main py-3 mx-auto w-100 mt-3 mw-500px" onClick={() => buyNow(nft.nftData.tokenID)} >Buy Now</span>
                                             : (
-                                                !isBidOwner ? <span className="btn-main py-3 w-50 mt-2" onClick={() => placeBid(nft.nftData.tokenID)}>Place Bid</span> : (
+                                                !isBidOwner ? <span className="btn-main mx-auto py-3 w-50 mt-2" onClick={() => placeBid(nft.nftData.tokenID)}>Place Bid</span> : (
                                                     claimable < 0 ?
-                                                    <span className="btn-main py-3 w-50 mt-2" onClick={() => claimNFT(nft.nftData.tokenID)}>Claim NFT</span>
+                                                    <span className="btn-main mx-auto py-3 w-50 mt-2" onClick={() => claimNFT(nft.nftData.tokenID)}>Claim NFT</span>
                                                     : ""
                                                 )
                                             )

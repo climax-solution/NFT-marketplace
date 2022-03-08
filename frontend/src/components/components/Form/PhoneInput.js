@@ -5,7 +5,7 @@ import { phone } from "phone";
 
 import 'react-phone-input-2/lib/style.css';
 
-export default function TextInput({ label, key, _request, checkable, update }) {
+export default function TextInput({ label, _key, _request, checkable, update }) {
 
     const [value, setValue] = useState('');
     const [status, setStatus] = useState("");
@@ -25,14 +25,14 @@ export default function TextInput({ label, key, _request, checkable, update }) {
                 return;
             }
 
-            await axios.post('http://nftdevelopments.co.nz/users/check-existing-user', {key: value}).then(res => {
+            await axios.post('http://nftdevelopments.co.nz/users/check-existing-user', {_key: value}).then(res => {
                 setValue(value);
                 update(value);
                 setStatus('');
             }).catch(err => {
                 const { error } = err.response.data;
                 if (!error) {
-                    setStatus('Already existing ' + key);
+                    setStatus(_key + 'already exists');
                 }
                 update("");
             })

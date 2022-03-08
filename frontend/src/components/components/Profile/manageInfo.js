@@ -32,6 +32,7 @@ export default function ManageInfo() {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
+        theme: "colored"
           });
           return;
         }
@@ -45,6 +46,7 @@ export default function ManageInfo() {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
+        theme: "colored"
           });
           return;
         }
@@ -64,6 +66,7 @@ export default function ManageInfo() {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
+        theme: "colored"
           });
         }).catch(err => {
           const { error } = err.response.data;
@@ -75,6 +78,7 @@ export default function ManageInfo() {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
+        theme: "colored"
           });
           logout();
         })

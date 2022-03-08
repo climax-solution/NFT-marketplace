@@ -23,9 +23,6 @@ const authorlist= () => {
         })
         setLoading(false);
     },[]);
-
-    console.log(list);
-
     return (
         <section className='container no-top no-bottom'>
           <div className='row'>

@@ -97,7 +97,6 @@ export default function ({ status, update }) {
 
   useEffect(async () => {
     const { _web3, instanceMarketplace } = await getWeb3();
-    console.log(_web3);
     setWEB3(_web3);
     setMarketplace(instanceMarketplace);
   },[])
@@ -117,6 +116,7 @@ export default function ({ status, update }) {
         pauseOnHover: true,
         draggable: true,
         progress: undefined,
+        theme: "colored"
       });
       return;
     }
@@ -153,10 +153,11 @@ export default function ({ status, update }) {
               pauseOnHover: true,
               draggable: true,
               progress: undefined,
+              theme: "colored"
             });
         }
     } catch(err) {
-        toast.error("Buy failed", {
+        toast.error(err.message, {
           position: "top-center",
           autoClose: 5000,
           hideProgressBar: false,
@@ -164,6 +165,7 @@ export default function ({ status, update }) {
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
+          theme: "colored"
         });
     }
     dispatch(UPDATE_LOADING_PROCESS(false));

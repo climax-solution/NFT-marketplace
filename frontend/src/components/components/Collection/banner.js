@@ -19,6 +19,7 @@ export default function Banner({ userData }) {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
+        theme: "colored"
         });
     }
 

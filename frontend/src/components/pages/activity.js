@@ -143,7 +143,7 @@ const Activity= function() {
                   }
                 </InfiniteScroll>
                 {
-                  !items.length && <Empty/>
+                  !items.length && !moreItems && <Empty/>
                 }
             </div>
           </div>

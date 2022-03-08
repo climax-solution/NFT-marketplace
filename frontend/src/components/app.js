@@ -1,7 +1,6 @@
 import React, { lazy, Suspense, useEffect } from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import { createBrowserHistory } from "history";
 import { createGlobalStyle } from 'styled-components';
 import { ToastContainer } from 'react-toastify';
 import { useSelector, useDispatch } from "react-redux";
@@ -24,15 +23,12 @@ const Profile = lazy(() => import('./pages/Profile'));
 const NotFound = lazy(() => import('./components/404'));
 
 import 'react-toastify/dist/ReactToastify.css';
-import 'react-cool-music-player/dist/index.css';
-
 
 const GlobalStyles = createGlobalStyle`
   :root {
     scroll-behavior: unset;
   }
 `;
-const history = createBrowserHistory();
 
 const app = () => {
   const dispatch = useDispatch();
@@ -72,7 +68,7 @@ const app = () => {
     <div className="wraper">
       <GlobalStyles />
       <ToastContainer/>
-        <Router history={history}>
+        <Router>
           <Suspense fallback={<Loading/>}>
             <Header/>
             <Routes>

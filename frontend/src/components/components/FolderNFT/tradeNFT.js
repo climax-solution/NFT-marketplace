@@ -91,6 +91,7 @@ export default function TradeNFT({ data }) {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
+        theme: "colored"
             });
             return;
         }
@@ -104,6 +105,7 @@ export default function TradeNFT({ data }) {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
+        theme: "colored"
             });
             return;
         }
@@ -138,6 +140,7 @@ export default function TradeNFT({ data }) {
                     pauseOnHover: true,
                     draggable: true,
                     progress: undefined,
+        theme: "colored"
                 });
             }
         } catch(err) {
@@ -149,6 +152,7 @@ export default function TradeNFT({ data }) {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
+        theme: "colored"
             });
         }
         dispatch(UPDATE_LOADING_PROCESS(false));
@@ -165,6 +169,7 @@ export default function TradeNFT({ data }) {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
+        theme: "colored"
             });
             return;
         }
@@ -178,6 +183,7 @@ export default function TradeNFT({ data }) {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
+        theme: "colored"
             });
             return;
         }
@@ -230,6 +236,7 @@ export default function TradeNFT({ data }) {
                             pauseOnHover: true,
                             draggable: true,
                             progress: undefined,
+        theme: "colored"
                         });
                         dispatch(UPDATE_LOADING_PROCESS(false));
                     }
@@ -243,6 +250,7 @@ export default function TradeNFT({ data }) {
                     pauseOnHover: true,
                     draggable: true,
                     progress: undefined,
+        theme: "colored"
                 });
                 dispatch(UPDATE_LOADING_PROCESS(false));
            }
@@ -259,6 +267,7 @@ export default function TradeNFT({ data }) {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
+        theme: "colored"
             });
             return;
         }
@@ -272,6 +281,7 @@ export default function TradeNFT({ data }) {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
+        theme: "colored"
             });
             return;
         }
@@ -293,6 +303,7 @@ export default function TradeNFT({ data }) {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
+        theme: "colored"
             });;
         }
         dispatch(UPDATE_LOADING_PROCESS(false));

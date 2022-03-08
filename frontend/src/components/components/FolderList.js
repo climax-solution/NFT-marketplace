@@ -13,6 +13,7 @@ export default function FolderList({data, _insMarketplace }) {
     const [loaded, setLoaded] = useState(false);
 
     useEffect(async() => {
+        setFolderList([]);
         setMarketplace(_insMarketplace);
         setRestList(data);
         setLoaded(true);
@@ -20,7 +21,7 @@ export default function FolderList({data, _insMarketplace }) {
 
     useEffect(async() => {
         if (loaded) await fetchFolders();
-    },[loaded])
+    },[restList])
 
     const fetchFolders = async() => {
         let list = restList;
@@ -32,8 +33,8 @@ export default function FolderList({data, _insMarketplace }) {
             setRestList(restList.slice(8, restList.length));
         }
         else setRestList([]);
+        setLoaded(false);
     }
-
     
     return (
         <Suspense fallback={<PremiumNFTLoading/>}>
@@ -48,7 +49,7 @@ export default function FolderList({data, _insMarketplace }) {
                     <Folder init_nft={nft} Marketplace={Marketplace} key={index}/>
                 ))}
             </InfiniteScroll>
-            {!folderList.length && !restList.length && loaded && <Empty/>}
+            {!folderList.length && !restList.length && <Empty/>}
         </Suspense>
     )
 }

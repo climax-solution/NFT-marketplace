@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 import { UPDATE_LOADING_PROCESS } from "../../../store/action/auth.action";
 import getWeb3 from "../../../utils/getWeb3";
 import addresses from "../../../config/address.json";
+import { toast } from "react-toastify";
 
 const { marketplace_addr } = addresses;
 
@@ -36,6 +37,7 @@ export default function NotSaleNFT({ data, NFT, Marketplace }) {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
+        theme: "colored"
             });
             return;
         }
@@ -78,6 +80,7 @@ export default function NotSaleNFT({ data, NFT, Marketplace }) {
                             pauseOnHover: true,
                             draggable: true,
                             progress: undefined,
+        theme: "colored"
                         });
                         const data = {
                             tokenID: id,
@@ -102,6 +105,7 @@ export default function NotSaleNFT({ data, NFT, Marketplace }) {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
+        theme: "colored"
             });;
                     dispatch(UPDATE_LOADING_PROCESS(false));
                 }
@@ -120,6 +124,7 @@ export default function NotSaleNFT({ data, NFT, Marketplace }) {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
+        theme: "colored"
             });
             return;
         }
@@ -179,6 +184,7 @@ export default function NotSaleNFT({ data, NFT, Marketplace }) {
                             pauseOnHover: true,
                             draggable: true,
                             progress: undefined,
+                            theme: "colored"
                         });
                         await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).catch(res => {}).catch(err => { });
                         dispatch(UPDATE_LOADING_PROCESS(false));
@@ -193,6 +199,7 @@ export default function NotSaleNFT({ data, NFT, Marketplace }) {
                         pauseOnHover: true,
                         draggable: true,
                         progress: undefined,
+                        theme: "colored"
                     });
                     dispatch(UPDATE_LOADING_PROCESS(false));
                 }
@@ -243,8 +250,8 @@ export default function NotSaleNFT({ data, NFT, Marketplace }) {
                                 </span>
                                 <div className="nft__item_price">{ web3.utils.fromWei(nft.marketData.price, "ether")} BNB </div>
                                 <div className="pb-4 trade-btn-group mt-2">
-                                    { !nft.marketData.marketStatus && <span className="btn-main w-100" onClick={() => putOnSale(nft.nftData.tokenID)}>Put on Sale</span> }
-                                    {!nft.auctionData.existance && <span className="btn-main w-100 mt-2" onClick={() => putOnAuction(nft.nftData.tokenID)}>Put on Auction</span> }
+                                    { !nft.marketData.marketStatus && <span className="btn-main w-100" onClick={() => putOnSale(nft.nftData.tokenID)}>List</span> }
+                                    {!nft.auctionData.existance && <span className="btn-main w-100 mt-2" onClick={() => putOnAuction(nft.nftData.tokenID)}>List on auction</span> }
                                 </div>
                             </div> 
                         </div>

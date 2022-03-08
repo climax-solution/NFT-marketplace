@@ -55,7 +55,7 @@ export default function SellingNFT() {
                     next={fetchNFT}
                     hasMore={restList.length ? true : false}
                     loader={<PremiumNFTLoading/>}
-                    className="row"
+                    className="row overflow"
                 >
                     { nfts.map( (nft, index) => (
                         <NFTItem data={nft} key={index} NFT={nftContract} Marketplace={marketContract}/>

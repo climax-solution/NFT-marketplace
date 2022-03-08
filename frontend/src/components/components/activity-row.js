@@ -6,17 +6,17 @@ const action = [
     ["action-buy","Buy"],
     ["action-sell","Listed"],
     ["action-down-sell","Listing Removed"],
-    ["action-to-premium","Covert To Premium NFT"],
-    ["action-to-normal","Covert To Normal NFT"],
-    ["action-on-auction","Put On Auction"],
-    ["action-down-auction","Removed On Auction"],
-    ["action-make-bid","Make Offer"],
-    ["action-withdraw-bid","Withdraw Offer"],
-    ["action-like","Make Liking NFT"],
-    ["action-dislike","Cancel Liking NFT"],
+    ["action-to-premium","Upgrade to a premium listing"],
+    ["action-to-normal","Downgrade to a normal listing."],
+    ["action-on-auction","List as an auction"],
+    ["action-down-auction","Remove  Auction listing"],
+    ["action-make-bid","Make an offer"],
+    ["action-withdraw-bid","Withdraw offer"],
+    ["action-like","Like NFT"],
+    ["action-dislike","Dislike NFT"],
     ["action-claim","Claim NFT"],
     ["action-follow","Follow"],
-    ["action-disfollow","Disfollow"]
+    ["action-disfollow","Unfollow"]
 ];
 
 const GlobalStyles = createGlobalStyle`
@@ -32,7 +32,7 @@ const ActivityItem = ({ data }) => {
     return (
         <>
             <GlobalStyles/>
-            <li className={action[data["type"]][0]} onClick={() => data.username ? navigate(`/user/${data.username}`) : null}>
+            <li className={action[data["type"]][0]} onClick={() => data.username ? navigate(`/user/${data.username}`) : null} role="button">
                 <div className="d-flex align-items-center">
                     <img className="lazy ratio-1-1 position-relative" src={`http://nftdevelopments.co.nz/avatar/${data.avatar}`} alt="" crossOrigin="true"/>
                     <h4 className="ms-2">{data.firstName + " " + data.lastName }</h4>

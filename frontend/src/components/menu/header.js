@@ -151,6 +151,7 @@ const Header= function() {
       pauseOnHover: true,
       draggable: true,
       progress: undefined,
+        theme: "colored"
     });
   }
 
@@ -170,11 +171,26 @@ const Header= function() {
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
+        theme: "colored"
         });
       }
     } catch(err) {
+      let message = "";
       if (!window.ethereum) {
-        toast.warning('Please install metamask', {
+        message = 'Please install metamask';
+      }
+      else {
+        if (err.code === -32002) {
+          message = 'Please check your metamask. You have already requested';
+        }
+        else if (err.code === 4001) {
+          message = 'Connecting cancelled';
+        }
+
+        else {
+          message = err.message;
+        }
+        toast.warning(message, {
           position: "top-center",
           autoClose: 5000,
           hideProgressBar: false,
@@ -182,31 +198,8 @@ const Header= function() {
           pauseOnHover: true,
           draggable: true,
           progress: undefined,
+          theme: "colored"
         });
-      }
-      else {
-        if (err.code === -32002) {
-          toast.warning('Please check your metamask. You have already requested', {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-        }
-        else if (err.code === 4001) {
-          toast.warning('Connecting cancelled', {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-          });
-        }
       }
     }
   }
@@ -222,6 +215,7 @@ const Header= function() {
       pauseOnHover: true,
       draggable: true,
       progress: undefined,
+        theme: "colored"
     });
   }
 

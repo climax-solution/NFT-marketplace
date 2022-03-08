@@ -169,8 +169,6 @@ const explore = () => {
           </div>
           <FolderList data={folderList} _insMarketplace={Marketplace}/>
         </section>
-
-
         <Footer />
       </Suspense>
     </div>
