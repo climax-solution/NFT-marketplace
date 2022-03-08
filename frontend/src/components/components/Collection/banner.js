@@ -11,15 +11,15 @@ const GlobalStyles = createGlobalStyle`
 export default function Banner({ userData }) {
 
     const copyAlert = () => {
-        toast.error("Copied", {
+        toast.info("Copied", {
             position: "top-center",
-            autoClose: 5000,
+            autoClose: 2000,
             hideProgressBar: false,
             closeOnClick: true,
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-        theme: "colored"
+            theme: "colored"
         });
     }
 

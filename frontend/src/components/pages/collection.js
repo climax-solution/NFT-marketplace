@@ -6,9 +6,10 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import Loading from "../components/Loading/Loading";
 
 const Footer = lazy(() => import('../components/footer'));
-const NFTItem = lazy(() => import("../components/Collection/nftItem"));
+const TradeNFT = lazy(() => import("../components/FolderNFT/tradeNFT"));
 const Banner = lazy(() => import("../components/Collection/banner"));
 const PremiumNFTLoading = lazy(() => import("../components/Loading/PremiumNFTLoading"));
+const Empty = lazy(() => import("../components/Empty"));
 
 const Collection= function() {
   const params = useParams();
@@ -63,13 +64,16 @@ const Collection= function() {
             >
               {
                 nfts.map( (nft, index) => (
-                    <NFTItem data={nft} key={index}/>
+                    <TradeNFT data={nft} key={index}/>
                   )
                 )
               }
             </InfiniteScroll>
             {
               !loaded && <Loading/>
+            }
+            {
+              loaded && !nfts.length && !restList.length && <Empty/>
             }
         </section>
         <Footer />
