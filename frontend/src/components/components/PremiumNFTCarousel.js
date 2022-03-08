@@ -1,17 +1,16 @@
 import React, { useEffect, useState, lazy, Suspense } from "react";
-import Slider from "react-slick";
 import { createGlobalStyle } from "styled-components";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-
+import { toast } from "react-toastify";
+import Carousel from "react-multi-carousel";
 import { UPDATE_LOADING_PROCESS } from "../../store/action/auth.action";
 import getWeb3 from "../../utils/getWeb3";
 
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
-import { toast } from "react-toastify";
+import "react-multi-carousel/lib/styles.css";
+
 
 const PremiumNFTLoading = lazy(() => import('./Loading/PremiumNFTLoading'));
 const Empty = lazy(() => import("./Empty"));
@@ -27,9 +26,13 @@ const GlobalStyles = createGlobalStyle`
   .text-grey {
     color: #a2a2a2;
   }
+
+  .nft__item {
+    height: calc(100% - 20px);
+  }
 `;
 
-export default function ({ status, update }) {
+export default function () {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -42,57 +45,24 @@ export default function ({ status, update }) {
   const [Marketplace, setMarketplace] = useState([]);
   const [carouselLoading, setCarouselLoading] = useState(true);
 
-  const settings = {
-    dots: false,
-    speed: 500,
-    initialSlide: 0,
-    autoplay: true,
-    adaptiveHeight: 300,
-    responsive: [
-      {
-        breakpoint: 1900,
-        settings: {
-          slidesToShow: 4,
-          slidesToScroll: 1,
-          infinite: true,
-        }
-      },
-      {
-        breakpoint: 1600,
-        settings: {
-          slidesToShow:  4,
-          slidesToScroll: 1,
-          infinite: true
-        }
-      },
-      {
-        breakpoint: 1200,
-        settings: {
-          slidesToShow:  3,
-          slidesToScroll: 1,
-          infinite: true
-        }
-      },
-      {
-        breakpoint: 800,
-        settings: {
-          slidesToShow:  2,
-          slidesToScroll: 1,
-          initialSlide: 2
-        }
-      },
-      {
-        breakpoint: 480,
-        settings: {
-          slidesToShow:  1,
-          slidesToScroll: 1,
-          dots: true
-        }
-      }
-    ],
-    infinite: true,
-    autoplaySpeed: 2000,
-    cssEase: "linear"
+  const responsive = {
+    superLargeDesktop: {
+      // the naming can be any, depends on you.
+      breakpoint: { max: 4000, min: 3000 },
+      items: 5
+    },
+    desktop: {
+      breakpoint: { max: 3000, min: 1200 },
+      items: 4
+    },
+    tablet: {
+      breakpoint: { max: 1200, min: 600 },
+      items: 2
+    },
+    mobile: {
+      breakpoint: { max: 600, min: 0 },
+      items: 1
+    }
   };
 
   useEffect(async () => {
@@ -127,7 +97,7 @@ export default function ({ status, update }) {
         let { marketData, auctionData } = await Marketplace.methods.getItemNFT(id).call();
         if (marketData.marketStatus && !auctionData.existance) {
 
-            const _bnbBalance = await web3.eth.getBalance(userData.walletAddress);
+            const _bnbBalance = await web3.eth.getBalance(initialUser.walletAddress);
 
             if (Number(marketData.price) + 210000 > Number(_bnbBalance)) throw new Error("BNB balance is low");
 
@@ -144,7 +114,6 @@ export default function ({ status, update }) {
 
             }).catch(err => { });
 
-            update(!status);
             toast.success("Buy success", {
               position: "top-center",
               autoClose: 5000,
@@ -183,10 +152,9 @@ export default function ({ status, update }) {
       for await (let item of list) {
         await axios.get(item.nftData.tokenURI).then(res => {
           const { data } = res;
-          mainList.push({ ...item, ...data});
+          mainList.push({ ...item, ...data });
         })
       }
-            
       setList(mainList);
     } catch(err) { }
     setCarouselLoading(false);
@@ -210,46 +178,54 @@ export default function ({ status, update }) {
           { carouselLoading && <PremiumNFTLoading/> }
           {
             !carouselLoading && (
-              <Slider {...settings}>
+              <Carousel
+                swipeable={false}
+                draggable={false}
+                responsive={responsive}
+                ssr // means to render carousel on server-side.
+                infinite={true}
+                keyBoardControl={true}
+                containerClass="carousel-container"
+                removeArrowOnDeviceType={["tablet", "mobile"]}
+                dotListClass="custom-dot-list-style"
+                itemClass="carousel-item-padding-40-px"
+              >
                 {
                   list.map((nft, index) => {
-                    const { auctionData: auction, marketData: market } = nft;
-                    const price = !auction.existance ? market.price : (auction.currentBidPrice ? auction.currentBidPrice : auction.minPrice);
-                    return (
-                      <div className='itm' key={index}>
-                        <div className="d-item">
-                            <div className="nft__item">
-                                <div className="nft__item_wrap">
-                                  {
-                                      (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} onClick={() => navigate(`/item-detail/${nft.nftData.tokenID}`)} className="lazy nft__item_preview" alt=""/>
-                                  }
+                    console.log(list);
+                      const { auctionData: auction, marketData: market } = nft;
+                      const price = !auction.existance ? market.price : (auction.currentBidPrice ? auction.currentBidPrice : auction.minPrice);
+                      return (
+                        <div className="nft__item justify-content-between" key={index}>
+                            <div className="nft__item_wrap">
+                              {
+                                  (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} onClick={() => navigate(`/item-detail/${nft.nftData.tokenID}`)} className="lazy nft__item_preview ratio-1-1" alt="" role="button"/>
+                              }
 
-                                  {
-                                      (nft.type && (nft.type).toLowerCase() == 'music') && <MusicArt data={nft} link={`/item-detail/${nft.nftData.tokenID}`}/>
-                                  }
+                              {
+                                  (nft.type && (nft.type).toLowerCase() == 'music') && <MusicArt data={nft} link={`/item-detail/${nft.nftData.tokenID}`}/>
+                              }
 
-                                  {
-                                      (nft.type && (nft.type).toLowerCase() == 'video') && <VideoArt data={nft.asset}/>
-                                  }
-                                </div>
-                                <div className="nft__item_info mb-0">
-                                    <span>
-                                        <h4><Link to={`/item-detail/${nft.nftData.tokenID}`} className="text-decoration-none text-grey">{nft.nftName}</Link></h4>
-                                    </span>
-                                    <div className="nft__item_price">
-                                        {web3.utils.fromWei(price)} BNB
-                                    </div>
-                                    <div className="nft__item_action">
-                                      { (nft.nftData.owner).toLowerCase() != (initialUser.walletAddress).toLowerCase() && <span onClick={() => buyNow(nft.nftData.tokenID)}>Buy now</span>}
-                                    </div>
-                                </div> 
+                              {
+                                  (nft.type && (nft.type).toLowerCase() == 'video') && <VideoArt data={nft.asset}/>
+                              }
                             </div>
+                            <div className="nft__item_info mb-0">
+                                <span>
+                                    <h4><Link to={`/item-detail/${nft.nftData.tokenID}`} className="text-decoration-none text-grey">{nft.nftName}</Link></h4>
+                                </span>
+                                <div className="nft__item_price">
+                                    {web3.utils.fromWei(price)} BNB
+                                </div>
+                                <div className="nft__item_action">
+                                  { (nft.nftData.owner).toLowerCase() != (initialUser.walletAddress).toLowerCase() && <span onClick={() => buyNow(nft.nftData.tokenID)}>Buy now</span>}
+                                </div>
+                            </div> 
                         </div>
-                      </div>
-                    )
+                      )
                   })
                 }
-              </Slider>
+              </Carousel>
             )
           }
           { !list.length && !carouselLoading && <Empty/> }
