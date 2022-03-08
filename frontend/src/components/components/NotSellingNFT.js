@@ -54,7 +54,7 @@ export default function NotSellingNFT() {
                     next={fetchNFT}
                     hasMore={restList.length ? true : false}
                     loader={<PremiumNFTLoading/>}
-                    className="row"
+                    className="row overflow-unset"
                 >
                     {nfts.map( (nft, index) => (
                         <NotSaleNFT data={nft} key={index} NFT={nftContract} Marketplace={marketContract}/>

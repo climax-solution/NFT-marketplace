@@ -60,6 +60,9 @@ const GlobalStyles = createGlobalStyle`
     min-height: 300px;
   }
 
+  .overflow-unset {
+    overflow: unset !important;
+  }
 `;
 
 const Profile = function() {
