@@ -251,7 +251,7 @@ export default function NotSaleNFT({ data, NFT, Marketplace }) {
                                 <div className="nft__item_price">{ web3.utils.fromWei(nft.marketData.price, "ether")} BNB </div>
                                 <div className="pb-4 trade-btn-group mt-2">
                                     { !nft.marketData.marketStatus && <span className="btn-main w-100" onClick={() => putOnSale(nft.nftData.tokenID)}>List</span> }
-                                    {!nft.auctionData.existance && <span className="btn-main w-100 mt-2" onClick={() => putOnAuction(nft.nftData.tokenID)}>List on auction</span> }
+                                    {!nft.auctionData.existance && <span className="btn-main w-100 mt-2" onClick={() => putOnAuction(nft.nftData.tokenID)}>List as an auction</span> }
                                 </div>
                             </div> 
                         </div>
