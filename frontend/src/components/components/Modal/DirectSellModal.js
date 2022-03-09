@@ -1,100 +1,11 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import { createGlobalStyle } from 'styled-components';
 import Modal from 'react-awesome-modal';
 import axios from 'axios';
 
 import addresses from "../../../config/address.json";
 const { marketplace_addr } = addresses;
-
-const GlobalStyles = createGlobalStyle`
-    .groups {
-        display: grid;
-        grid-template-columns: auto auto;
-        column-gap: 15px;
-    }
-
-    .btn-apply {
-        background: #3fb737;
-    }
-
-    .btn-apply:hover {
-        box-shadow: 2px 2px 20px 0px #3fb737;
-    }
-
-    .reverse-spinner {
-        position: relative;
-        height: 100px;
-        width: 100px;
-        border: 4px solid transparent;
-        border-top-color: #1976d2;
-        border-left-color: #1976d2;
-        border-radius: 50%;
-        -webkit-animation: spin 1.5s linear infinite;
-        animation: spin 1.5s linear infinite;
-    }
-    
-    .reverse-spinner::before {
-        position: absolute;
-        top: 15px;
-        left: 15px;
-        right: 15px;
-        bottom: 15px;
-        content: "";
-        border: 4px solid transparent;
-        border-top-color: #03a9f4;
-        border-left-color: #03a9f4;
-        border-radius: 50%;
-        -webkit-animation: spinBack 1s linear infinite;
-        animation: spinBack 1s linear infinite;
-    }
-    
-    @-webkit-keyframes spin {
-        from {
-            -webkit-transform: rotate(0deg);
-            transform: rotate(0deg);
-        }
-        to {
-            -webkit-transform: rotate(360deg);
-            transform: rotate(360deg);
-        }
-    }
-    
-    @keyframes spin {
-        from {
-            -webkit-transform: rotate(0deg);
-            transform: rotate(0deg);
-        }
-        to {
-            -webkit-transform: rotate(360deg);
-            transform: rotate(360deg);
-        }
-    }
-    
-    
-    @-webkit-keyframes spinBack {
-        from {
-            -webkit-transform: rotate(0deg);
-            transform: rotate(0deg);
-        }
-        to {
-            -webkit-transform: rotate(-720deg);
-            transform: rotate(-720deg);
-        }
-    }
-    
-    @keyframes spinBack {
-        from {
-            -webkit-transform: rotate(0deg);
-            transform: rotate(0deg);
-        }
-        to {
-            -webkit-transform: rotate(-720deg);
-            transform: rotate(-720deg);
-        }
-    }
-`;
 
 export default function DirectSellModal({ visible, tokenID, close, Marketplace, NFT, web3 }) {
 
@@ -182,43 +93,40 @@ export default function DirectSellModal({ visible, tokenID, close, Marketplace, 
     }
 
     return (
-        <>
-            <GlobalStyles/>
-            <Modal
-                visible={visible}
-                width="300"
-                height="200"
-                effect="fadeInUp"
-                onClickAway={close}
-            >
-                {
-                    isLoading ?
-                    <div className='d-flex w-100 h-100 justify-content-center align-items-center'>
-                        <div className='reverse-spinner'></div>
-                    </div>
-                    : <div className='p-5'>
-                            <div className='form-group'>
-                                <label>Please input price.</label>
-                                <input
-                                    type="number"
-                                    className='form-control text-dark border-dark'
-                                    value={price}
-                                    onChange={(e) => setPrice(e.target.value)}
-                                />
-                            </div>
-                            <div className='groups'>
-                                <button
-                                    className='btn-main btn-apply w-100'
-                                    onClick={listOnSale}
-                                >Apply</button>
-                                <button
-                                    className='btn-main w-100'
-                                    onClick={close}
-                                >Cancel</button>
-                            </div>
+        <Modal
+            visible={visible}
+            width="300"
+            height="200"
+            effect="fadeInUp"
+            onClickAway={close}
+        >
+            {
+                isLoading ?
+                <div className='d-flex w-100 h-100 justify-content-center align-items-center'>
+                    <div className='reverse-spinner'></div>
+                </div>
+                : <div className='p-5'>
+                        <div className='form-group'>
+                            <label>Please input price.</label>
+                            <input
+                                type="number"
+                                className='form-control text-dark border-dark'
+                                value={price}
+                                onChange={(e) => setPrice(e.target.value)}
+                            />
                         </div>
-                }
-            </Modal>
-        </>
+                        <div className='groups'>
+                            <button
+                                className='btn-main btn-apply w-100'
+                                onClick={listOnSale}
+                            >Apply</button>
+                            <button
+                                className='btn-main w-100'
+                                onClick={close}
+                            >Cancel</button>
+                        </div>
+                    </div>
+            }
+        </Modal>
     )
 }

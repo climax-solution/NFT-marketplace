@@ -80,7 +80,6 @@ const explore = () => {
   const [Marketplace, setMarketplace] = useState(null);
   const [folderList, setFolderList] = useState([]);
   const [activeCategory, setCategory] = useState({ value:'', label: 'All categories' });
-  const [itemLoading, setItemLoading] = useState(true);
   const [searchKwd, setRealKwd] = useState('');
   const [tmpKwd, setTmpKwd] = useState('');
 
@@ -96,7 +95,6 @@ const explore = () => {
   },[Marketplace, activeCategory, searchKwd])
 
   const filterFolder = async() => {
-    setItemLoading(true);
     let gradList = await Marketplace.methods.getFolderList().call();
     let gradList1 = [];
     for(let idx in gradList) {
@@ -105,7 +103,6 @@ const explore = () => {
     gradList1 = gradList1.filter(item => ((item[0]).toLowerCase()).search(searchKwd.toLowerCase()) > -1);
     if (activeCategory.value) gradList1 = gradList1.filter(item => item[1] == activeCategory.value);
     setFolderList(gradList1);
-    setItemLoading(false);
   }
 
   return(
