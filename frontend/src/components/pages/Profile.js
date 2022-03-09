@@ -10,8 +10,8 @@ import { useDispatch } from "react-redux";
 import { UPDATE_AUTH } from "../../store/action/auth.action";
 import { WalletConnect } from "../../store/action/wallet.action";
 
-const SellingNFT = lazy(() => import('../components/Profile/SellingNFT'));
-const NotSellingNFT = lazy(() => import('../components/Profile/NotSellingNFT'));
+const SellingNFT = lazy(() => import('../components/Profile/sellingNFT'));
+const NotSellingNFT = lazy(() => import('../components/Profile/notSellingNFT'));
 const Footer = lazy(() => import('../components/footer'));
 
 const GlobalStyles = createGlobalStyle`
