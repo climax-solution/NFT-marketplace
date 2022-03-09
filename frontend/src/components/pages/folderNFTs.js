@@ -24,6 +24,29 @@ const GlobalStyles = createGlobalStyle`
         grid-template-columns: auto auto;
         column-gap: 15px;
     }
+
+    .owner-check {
+        position: absolute;
+        right: 15px;
+        top: 15px;
+        font-size: 25px !important;
+        color: turquoise;
+    }
+
+    .bid-check {
+        position: absolute;
+        right: 15px;
+        bottom: 15px;
+        font-size: 25px !important;
+        color: turquoise;
+        width: 25px;
+        height: 25px;
+    }
+
+    .wap-height {
+        height: calc(100% - 120px);
+    }
+
 `;
 
 const folderNFTs = () => {
@@ -59,9 +82,9 @@ const folderNFTs = () => {
         list.sort(function(a, b) {
             let premiumA = a.marketData.premiumStatus;
             let premiumB = b.marketData.premiumStatus;
-            if (premiumA && !premiumB) return 1;
-            else if (!premiumA && premiumB) return -1;
-            else return 0;
+            if (premiumA && !premiumB) return -1;
+            else if (!premiumA && premiumB) return 0;
+            else return 1;
         });
 
         setFolderName(gradList[1]);
