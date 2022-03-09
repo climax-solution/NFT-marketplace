@@ -3,10 +3,28 @@ import { useParams } from "react-router-dom";
 import getWeb3 from "../../utils/getWeb3";
 import Empty from "../components/Empty";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { createGlobalStyle } from 'styled-components';
 import Loading from "../components/Loading/Loading";
+
 
 const TradeNFT = lazy(() => import("../components/FolderNFT/tradeNFT"));
 const PremiumNFTLoading = lazy(() => import("../components/Loading/PremiumNFTLoading"));
+
+const GlobalStyles = createGlobalStyle`
+    .btn-apply {
+        background: #3fb737;
+    }
+
+    .btn-apply:hover {
+        box-shadow: 2px 2px 20px 0px #3fb737;
+    }
+    
+    .groups {
+        display: grid;
+        grid-template-columns: auto auto;
+        column-gap: 15px;
+    }
+`;
 
 const folderNFTs = () => {
 
@@ -63,6 +81,7 @@ const folderNFTs = () => {
 
     return (
         <div>
+            <GlobalStyles/>
             <Suspense fallback={<Loading/>}>
                 <section className='jumbotron breadcumb no-bg'>
                     <div className='mainbreadcumb'>

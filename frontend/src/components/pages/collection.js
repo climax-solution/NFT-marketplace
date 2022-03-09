@@ -4,12 +4,28 @@ import axios from "axios";
 import getWeb3 from "../../utils/getWeb3";
 import InfiniteScroll from "react-infinite-scroll-component";
 import Loading from "../components/Loading/Loading";
+import { createGlobalStyle } from 'styled-components';
 
 const Footer = lazy(() => import('../components/footer'));
 const TradeNFT = lazy(() => import("../components/FolderNFT/tradeNFT"));
 const Banner = lazy(() => import("../components/Collection/banner"));
 const PremiumNFTLoading = lazy(() => import("../components/Loading/PremiumNFTLoading"));
 const Empty = lazy(() => import("../components/Empty"));
+
+const GlobalStyles = createGlobalStyle`
+    .btn-apply {
+      background: #3fb737;
+    }
+
+    .btn-apply:hover {
+      box-shadow: 2px 2px 20px 0px #3fb737;
+    }
+    .groups {
+      display: grid;
+      grid-template-columns: auto auto;
+      column-gap: 15px;
+    }
+`;
 
 const Collection= function() {
   const params = useParams();
@@ -52,6 +68,7 @@ const Collection= function() {
 
   return (
     <div>
+      <GlobalStyles/>
       <Suspense fallback={<Loading/>}>
         <Banner userData={userData} />
         <section className='container no-top'>
