@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import ReactTooltip from "react-tooltip";
 import { createGlobalStyle } from "styled-components";
-import Swal from "sweetalert2";
 import { UPDATE_LOADING_PROCESS } from "../../../store/action/auth.action";
 import getWeb3 from "../../../utils/getWeb3";
 import { toast } from "react-toastify";
@@ -140,7 +139,7 @@ export default function TradeNFT({ data }) {
                     pauseOnHover: true,
                     draggable: true,
                     progress: undefined,
-        theme: "colored"
+                    theme: "colored"
                 });
             }
         } catch(err) {
@@ -152,7 +151,7 @@ export default function TradeNFT({ data }) {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
-        theme: "colored"
+                    theme: "colored"
             });
         }
         dispatch(UPDATE_LOADING_PROCESS(false));
@@ -169,7 +168,7 @@ export default function TradeNFT({ data }) {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
-        theme: "colored"
+                theme: "colored"
             });
             return;
         }
@@ -183,7 +182,7 @@ export default function TradeNFT({ data }) {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
-        theme: "colored"
+                theme: "colored"
             });
             return;
         }
@@ -194,24 +193,24 @@ export default function TradeNFT({ data }) {
         if (!Number(lastPrice)) lastPrice = web3.utils.fromWei(auctionData.minPrice, "ether");
         if (auctionData.existance) {
            try {
-                await Swal.fire({
-                    title: '<span style="font-size: 22px">PLEASE ENTER PRICE</span>',
-                    input: 'number',
-                    width: 350,
-                    inputAttributes: {
-                    autocapitalize: 'off',
-                    },
-                    inputValidator: (value) => {
-                        if (value <= lastPrice) return `Price must be greater than ${lastPrice} BNB.`;
-                    },
-                    color: '#000',
-                    showCancelButton: true,
-                    confirmButtonText: 'OK',
-                    showLoaderOnConfirm: true,
-                    allowOutsideClick: () => !Swal.isLoading()
-                }).then(async(res) => {
-                    if (res.isConfirmed) {
-                        const price = web3.utils.toWei(res.value, "ether");
+                // await Swal.fire({
+                //     title: '<span style="font-size: 22px">PLEASE ENTER PRICE</span>',
+                //     input: 'number',
+                //     width: 350,
+                //     inputAttributes: {
+                //     autocapitalize: 'off',
+                //     },
+                //     inputValidator: (value) => {
+                //         if (value <= lastPrice) return `Price must be greater than ${lastPrice} BNB.`;
+                //     },
+                //     color: '#000',
+                //     showCancelButton: true,
+                //     confirmButtonText: 'OK',
+                //     showLoaderOnConfirm: true,
+                //     allowOutsideClick: () => !Swal.isLoading()
+                // }).then(async(res) => {
+                //     if (res.isConfirmed) {
+                        const price = web3.utils.toWei(0, "ether");
                         const _bnbBalance = await web3.eth.getBalance(userData.walletAddress);
 
                         if (Number(marketData.price) + 210000 > Number(_bnbBalance)) throw new Error("BNB balance is low");
@@ -236,11 +235,11 @@ export default function TradeNFT({ data }) {
                             pauseOnHover: true,
                             draggable: true,
                             progress: undefined,
-        theme: "colored"
+                            theme: "colored"
                         });
                         dispatch(UPDATE_LOADING_PROCESS(false));
-                    }
-                });
+                //     }
+                // });
             } catch(err) {
                 toast.error(err.message, {
                     position: "top-center",
@@ -250,7 +249,7 @@ export default function TradeNFT({ data }) {
                     pauseOnHover: true,
                     draggable: true,
                     progress: undefined,
-        theme: "colored"
+                theme: "colored"
                 });
                 dispatch(UPDATE_LOADING_PROCESS(false));
            }
@@ -267,7 +266,7 @@ export default function TradeNFT({ data }) {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
-        theme: "colored"
+                theme: "colored"
             });
             return;
         }
@@ -281,7 +280,7 @@ export default function TradeNFT({ data }) {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
-        theme: "colored"
+                theme: "colored"
             });
             return;
         }
@@ -303,7 +302,7 @@ export default function TradeNFT({ data }) {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
-        theme: "colored"
+                theme: "colored"
             });;
         }
         dispatch(UPDATE_LOADING_PROCESS(false));

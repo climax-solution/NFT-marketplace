@@ -137,7 +137,7 @@ const Register= () => {
                     <div className='spacer-double'></div>
                     <div className="col-md-8 offset-md-2">
                     <h3>Don't have an account? Register now.</h3>
-                    <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                    <p>Registering provides another layer of protection for your NFTs. So register now! And let’s start collecting.</p>
 
                     <div className="spacer-10"></div>
 
