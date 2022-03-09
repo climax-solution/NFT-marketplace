@@ -1,17 +1,16 @@
 import React, { useState, lazy, Suspense } from "react";
 import { createGlobalStyle } from 'styled-components';
-import Avatar from "../components/Profile/avatar";
-import UserInfo from "../components/Profile/userInfo";
-import ManageInfo from "../components/Profile/manageInfo";
-import Loading from "../components/Loading/Loading";
-
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from "react-redux";
 import { UPDATE_AUTH } from "../../store/action/auth.action";
 import { WalletConnect } from "../../store/action/wallet.action";
+import Loading from "../components/Loading/Loading";
 
 const SellingNFT = lazy(() => import('../components/Profile/SellingNFT'));
 const NotSellingNFT = lazy(() => import('../components/Profile/NotSellingNFT'));
+const Avatar = lazy(() => import("../components/Profile/avatar"));
+const UserInfo = lazy(() => import("../components/Profile/userInfo"));
+const ManageInfo = lazy(() => import("../components/Profile/manageInfo"));
 const Footer = lazy(() => import('../components/footer'));
 
 const GlobalStyles = createGlobalStyle`
@@ -63,6 +62,19 @@ const GlobalStyles = createGlobalStyle`
   .overflow-unset {
     overflow: unset !important;
   }
+
+  .btn-apply {
+    background: #3fb737;
+  }
+
+  .btn-apply:hover {
+    box-shadow: 2px 2px 20px 0px #3fb737;
+  }
+  .groups {
+    display: grid;
+    grid-template-columns: auto auto;
+    column-gap: 15px;
+  }
 `;
 
 const Profile = function() {
@@ -111,9 +123,9 @@ const Profile = function() {
             <div className='col-lg-12'>
                 <div className="items_filter">
                   <ul className="de_nav text-left">
-                      <li id='Mainbtn' className={activeTab == 0 ? 'active' : ''}><span onClick={() => setActiveTab(0)}>On Sale</span></li>
-                      <li id='Mainbtn1' className={activeTab == 1 ? 'active' : ''}><span onClick={() => setActiveTab(1)}>Collected</span></li>
-                      <li id='Mainbtn3' className={activeTab == 2 ? 'active' : ''}><span onClick={() => setActiveTab(2)}>User Info</span></li>
+                    <li id='Mainbtn' className={activeTab == 0 ? 'active' : ''}><span onClick={() => setActiveTab(0)}>On Sale</span></li>
+                    <li id='Mainbtn1' className={activeTab == 1 ? 'active' : ''}><span onClick={() => setActiveTab(1)}>Collected</span></li>
+                    <li id='Mainbtn2' className={activeTab == 2 ? 'active' : ''}><span onClick={() => setActiveTab(2)}>User Info</span></li>
                   </ul>
               </div>
             </div>

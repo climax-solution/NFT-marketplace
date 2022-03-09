@@ -306,7 +306,7 @@ export default function NFTItem({ data, NFT, Marketplace }) {
                             <div className="nft__item h-100 justify-content-between">
                                 <div className="nft__item_wrap">
                                     {
-                                        (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} className="lazy nft__item_preview" onClick={() => navigate(`/item-detail/${nft.nftData.tokenID}`) } alt=""/>
+                                        (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} className="lazy nft__item_preview" onClick={() => navigate(`/item-detail/${nft.nftData.tokenID}`) } role="button" alt=""/>
                                     }
 
                                     {
