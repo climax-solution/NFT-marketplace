@@ -372,6 +372,11 @@ const NFTItem = function() {
                                         <h5>TOKEN ID : {nft.nftData.tokenID} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PRICE : {web3.utils.fromWei(price.toString(), "ether")} BNB</h5>
                                         <div className="item_info_counts">
                                             <div className="item_info_type"><i className="fa fa-image"></i>{nft.category}</div>
+                                            {
+                                                nft.marketData.premiumStatus && (
+                                                    <div className="item_info_type"><i className="fa fa-sparkles"></i>Premium NFT</div>
+                                                )
+                                            }
                                         </div>
                                         <p>{nft.nftDesc}</p>
 

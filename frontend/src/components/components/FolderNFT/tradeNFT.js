@@ -3,7 +3,6 @@ import { lazy, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import ReactTooltip from "react-tooltip";
-import { createGlobalStyle } from "styled-components";
 import Modal from 'react-awesome-modal';
 import getWeb3 from "../../../utils/getWeb3";
 import { toast } from "react-toastify";
@@ -12,28 +11,6 @@ const MusicArt = lazy(() => import("../Asset/music"));
 const VideoArt = lazy(() => import("../Asset/video"));
 const ItemLoading = lazy(() => import("../Loading/ItemLoading"));
 const Clock = lazy(() => import("../Clock"));
-
-const GlobalStyles = createGlobalStyle`
-    .owner-check {
-        position: absolute;
-        right: 15px;
-        top: 15px;
-        font-size: 25px !important;
-        color: turquoise;
-    }
-
-    .bid-check {
-        position: absolute;
-        right: 15px;
-        bottom: 15px;
-        font-size: 25px !important;
-        color: turquoise;
-    }
-
-    .wap-height {
-        height: calc(100% - 120px);
-    }
-`;
 
 export default function TradeNFT({ data }) {
     
@@ -295,7 +272,6 @@ export default function TradeNFT({ data }) {
 
     return (
         <>
-            <GlobalStyles/>
             {
                 isLoading ? <ItemLoading/>
                 : (
@@ -342,6 +318,16 @@ export default function TradeNFT({ data }) {
                                     </span>
                                 }
 
+                                {
+                                    nft.marketData.premiumStatus && 
+                                    <span>
+
+                                        <a data-tip data-for={`premium-${nft.nftData.tokenID}`} className="bid-check"><i className="fal fa-sparkles"/></a>
+                                        <ReactTooltip id={`premium-${nft.nftData.tokenID}`} type='info' effect="solid">
+                                            <span>Premium NFT</span>
+                                        </ReactTooltip>
+                                    </span>
+                                }
                             </div>
                             <div className="nft__item_info mb-0">
                                 <span>
