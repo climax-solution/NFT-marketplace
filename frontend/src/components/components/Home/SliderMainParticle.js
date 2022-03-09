@@ -2,7 +2,7 @@ import React from 'react';
 import Reveal from 'react-awesome-reveal';
 import { keyframes } from "@emotion/react";
 import { createGlobalStyle } from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from "react-router-dom";
 
 const fadeInUp = keyframes`
   0% {
@@ -59,7 +59,8 @@ const slidermainparticle= () => {
                 </Reveal>
                 <div className="spacer-10"></div>
                 <Reveal className='onStep d-inline' keyframes={inline} delay={800} duration={900} triggerOnce>
-                <span onClick={()=> navigate('/explore')} className="btn-main inline lead">Explore</span>
+                <Link to={`/explore`} className="btn-main inline lead">Explore</Link>
+                {/* <span onClick={()=> navigate('/explore')} className="btn-main inline lead">Explore</span> */}
                 <div className="mb-sm-30"></div>
                 </Reveal>
             </div>

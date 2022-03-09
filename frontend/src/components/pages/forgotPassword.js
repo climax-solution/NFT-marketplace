@@ -56,7 +56,7 @@ const ForgotPassword = () => {
               <div className="col-lg-4 offset-lg-4 m-auto px-0">
                 <div className="box-login">
                   <h3 className="mb10">Reset your password</h3>
-                  <p>Please enter marketplace email address so we can sreset your password.</p>
+                  <p>Please enter marketplace email address so we can reset your password.</p>
                   <div name="contactForm" id='contact_form' className="form-border" action='#'>
 
                     <div className="field-set">
