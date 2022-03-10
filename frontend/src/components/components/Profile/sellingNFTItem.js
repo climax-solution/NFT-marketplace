@@ -328,10 +328,10 @@ export default function NFTItem({ data, NFT, Marketplace }) {
                                         { nft.marketData.marketStatus && (
                                             !nft.auctionData.existance ?
                                                 <span className="btn-main w-100" onClick={() => putDownSale(nft.nftData.tokenID)}>Delist</span>
-                                                :<span className="btn-main w-100" onClick={() => putDownAuction(nft.nftData.tokenID)}>Delist from auction</span>
+                                                :<span className="btn-main w-100" onClick={() => putDownAuction(nft.nftData.tokenID)}>Delist auction</span>
                                             )
                                         }
-                                        { !nft.auctionData.existance && (!nft.marketData.premiumStatus ? <span className="btn-main mt-2 w-100" onClick={async() => await updatePremiumNFT(nft.nftData.tokenID, true)}>Promote to preimum</span> : <span className="btn-main mt-2 w-100"  onClick={() => updatePremiumNFT(nft.nftData.tokenID, false)}>Reset to normal</span>) }
+                                        { !nft.marketData.premiumStatus ? <span className="btn-main mt-2 w-100" onClick={async() => await updatePremiumNFT(nft.nftData.tokenID, true)}>Promote to preimum</span> : <span className="btn-main mt-2 w-100"  onClick={() => updatePremiumNFT(nft.nftData.tokenID, false)}>Reset to normal</span> }
                                     </div>
                                 </div> 
                             </div>

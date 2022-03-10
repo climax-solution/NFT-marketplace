@@ -114,22 +114,26 @@ export default function NotSaleNFT({ data, NFT, Marketplace }) {
                                 </div>
                             </div> 
                         </div>
-                        <AuctionSellModal
-                            visible={auctionVisible}
-                            close={() => setAuctionVisible(false)}
-                            Marketplace={Marketplace}
-                            NFT={NFT}
-                            web3={web3}
-                            tokenID={activeID}
-                        />
-                        <DirectSellModal
-                            visible={directVisible}
-                            close={() => setDirectVisible(false)}
-                            Marketplace={Marketplace}
-                            NFT={NFT}
-                            web3={web3}
-                            tokenID={activeID}
-                        />
+                        {
+                            auctionVisible && <AuctionSellModal
+                                visible={auctionVisible}
+                                close={() => setAuctionVisible(false)}
+                                Marketplace={Marketplace}
+                                NFT={NFT}
+                                web3={web3}
+                                tokenID={activeID}
+                            />
+                        }
+                        {
+                            directVisible && <DirectSellModal
+                                visible={directVisible}
+                                close={() => setDirectVisible(false)}
+                                Marketplace={Marketplace}
+                                NFT={NFT}
+                                web3={web3}
+                                tokenID={activeID}
+                            />
+                        }
                     </div>
                 )
             }

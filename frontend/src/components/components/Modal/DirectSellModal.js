@@ -23,7 +23,7 @@ export default function DirectSellModal({ visible, tokenID, close, Marketplace, 
         }
 
         else if (price <= 0) {
-            message = "Please input correct price.";
+            message = "Please reserve correct price.";
         }
 
         if (message) {
@@ -92,13 +92,18 @@ export default function DirectSellModal({ visible, tokenID, close, Marketplace, 
         }
     }
 
+    const _closeModal = () => {
+        setPrice('');
+        close();
+    }
+
     return (
         <Modal
             visible={visible}
             width="300"
             height="200"
             effect="fadeInUp"
-            onClickAway={close}
+            onClickAway={null}
         >
             {
                 isLoading ?
@@ -107,7 +112,7 @@ export default function DirectSellModal({ visible, tokenID, close, Marketplace, 
                 </div>
                 : <div className='p-5'>
                         <div className='form-group'>
-                            <label>Please input price.</label>
+                            <label>Please reserve price.</label>
                             <input
                                 type="number"
                                 className='form-control text-dark border-dark'
@@ -122,7 +127,7 @@ export default function DirectSellModal({ visible, tokenID, close, Marketplace, 
                             >Apply</button>
                             <button
                                 className='btn-main w-100'
-                                onClick={close}
+                                onClick={_closeModal}
                             >Cancel</button>
                         </div>
                     </div>

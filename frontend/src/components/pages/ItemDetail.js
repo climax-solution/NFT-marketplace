@@ -3,6 +3,7 @@ import { createGlobalStyle } from 'styled-components';
 import { useParams } from "react-router-dom";
 import getWeb3 from "../../utils/getWeb3";
 import axios from "axios";
+import Modal from 'react-awesome-modal';
 
 import Loading from "../components/Loading/Loading";
 import { UPDATE_LOADING_PROCESS } from "../../store/action/auth.action";
@@ -22,12 +23,26 @@ const GlobalStyles = createGlobalStyle`
     .border-grey {
         border-color: #4e4e4e !important;
     }
+    
     .mw-500px {
         max-width: 500px;
     }
+
+    .btn-apply {
+        background: #3fb737;
+    }
+
+    .btn-apply:hover {
+        box-shadow: 2px 2px 20px 0px #3fb737;
+    }
+    .groups {
+        display: grid;
+        grid-template-columns: auto auto;
+        column-gap: 15px;
+    }
 `;
 
-const NFTItem = function() {
+const NFTItem = () => {
 
     const params = useParams();
     const dispatch = useDispatch();
@@ -39,13 +54,18 @@ const NFTItem = function() {
     const [web3, setWeb3] = useState();
     const [Marketplace, setMarketplace] = useState();
     const [loading, setLoading] = useState(true);
- 
+    const [isTrading, setTrading] = useState(false);
+    const [visible, setVisible] = useState(false);
+    const [bidPrice, setBidPrice] = useState('');
+    const [updated, setUpdate] = useState(true);
+
     const [price, setPrice] = useState();
     const [isNFTOwner, setNFTOwner] = useState(false);
     const [isBidOwner, setBidOwner] = useState(false);
     const [claimable, setClaimable] = useState(false);
 
     useEffect(async() => {
+        if (!updated) return;
         const { _web3, instanceMarketplace } = await getWeb3();
         setWeb3(_web3);
         setMarketplace(instanceMarketplace);
@@ -71,17 +91,22 @@ const NFTItem = function() {
             console.log(err);
             setNFTData({});
         }
+        setUpdate(false);
         setLoading(false);
-    },[])
+    },[updated, ])
 
     const failedLoadImage = (e) => {
         e.target.src="/img/empty.jfif";
     }
 
-    const buyNow = async(id) => {
+    const buyNow = async() => {
 
-        if (!userData.walletAddress) {
-            toast.warning('Please log in', {
+        let message = "";
+        if (!userData.walletAddress) message = 'Please log in';
+        if (!wallet_info) message = 'Please connect metamask';
+
+        if (message) {
+            toast.warning(message, {
                 position: "top-center",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -89,37 +114,23 @@ const NFTItem = function() {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
-        theme: "colored"
-            });
-            return;
-        }
-
-        if (!wallet_info) {
-            toast.warning('Please connect metamask', {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-        theme: "colored"
+                theme: "colored"
             });
             return;
         }
 
         try {
-            let { marketData, auctionData } = await Marketplace.methods.getItemNFT(id).call();
+            let { marketData, auctionData } = await Marketplace.methods.getItemNFT(nft.nftData.tokenID).call();
             if (marketData.marketStatus && !auctionData.existance) {
                 const _bnbBalance = await web3.eth.getBalance(userData.walletAddress);
 
                 if (Number(marketData.price) + 210000 > Number(_bnbBalance)) throw new Error("BNB balance is low");
 
-                dispatch(UPDATE_LOADING_PROCESS(true));
-                await Marketplace.methods.buyNFT(id).send({ from: userData.walletAddress, value: marketData.price });
+                setLoading(true);
+                await Marketplace.methods.buyNFT(nft.nftData.tokenID).send({ from: userData.walletAddress, value: marketData.price });
 
                 const data = {
-                    tokenID: id,
+                    tokenID: nft.nftData.tokenID,
                     type: 0,
                     price: Number(marketData.price),
                     walletAddress: userData.walletAddress
@@ -137,7 +148,7 @@ const NFTItem = function() {
                     pauseOnHover: true,
                     draggable: true,
                     progress: undefined,
-        theme: "colored"
+                    theme: "colored"
                 });
             }
         } catch(err) {
@@ -150,16 +161,28 @@ const NFTItem = function() {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
-        theme: "colored"
-            });;
+                theme: "colored"
+            });
         }
-        dispatch(UPDATE_LOADING_PROCESS(false));
+        setUpdate(true);
+        setLoading(false);
     }
 
-    const placeBid = async(id) => {
+    const placeBid = async() => {
 
-        if (!userData.walletAddress) {
-            toast.warning('Please log in', {
+        let message = '';
+        if (!userData.walletAddress) message = 'Please log in';
+        else if (!wallet_info) message = 'Please connect metamask';
+        else if (bidPrice <=0 || bidPrice == '') message = 'Please reserve correct price';
+        
+        let { auctionData } = await Marketplace.methods.getItemNFT(nft.nftData.tokenID).call();
+        if (bidPrice > 0) {
+            let minPrice = web3.utils.fromWei(auctionData.minPrice, "ether");
+            if (bidPrice < (minPrice)) message = 'Offer is over min price';
+        }
+
+        if (message) {
+            toast.warning(message, {
                 position: "top-center",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -167,110 +190,66 @@ const NFTItem = function() {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
-        theme: "colored"
+                theme: "colored"
             });
             return;
         }
 
-        if (!wallet_info) {
-            toast.warning('Please connect metamask', {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-        theme: "colored"
-            });
-            return;
-        }
-
-        let {auctionData, marketData} = await Marketplace.methods.getItemNFT(id).call();
-        let lastPrice = web3.utils.fromWei(auctionData.currentBidPrice, "ether");
-        if (!Number(lastPrice)) lastPrice = web3.utils.fromWei(auctionData.minPrice, "ether");
         if (auctionData.existance) {
-           try {
-                await Swal.fire({
-                    title: '<span style="font-size: 22px">PLEASE ENTER PRICE</span>',
-                    input: 'number',
-                    width: 350,
-                    inputAttributes: {
-                    autocapitalize: 'off',
-                    },
-                    inputValidator: (value) => {
-                        if (value <= lastPrice) return `Price must be greater than ${lastPrice} BNB.`;
-                    },
-                    color: '#000',
-                    showCancelButton: true,
-                    confirmButtonText: 'OK',
-                    showLoaderOnConfirm: true,
-                    allowOutsideClick: () => !Swal.isLoading()
-                }).then(async(res) => {
-                    if (res.isConfirmed) {
-                        const price = web3.utils.toWei(res.value, "ether");
-                        const _bnbBalance = await web3.eth.getBalance(userData.walletAddress);
-
-                        if (Number(marketData.price) + 210000 > Number(_bnbBalance)) throw new Error("BNB balance is low");
-
-                        dispatch(UPDATE_LOADING_PROCESS(true));
-                        await Marketplace.methods.placeBid(id).send({ from: userData.walletAddress, value: price});
-                        const data = {
-                            tokenID: id,
-                            type: 7,
-                            price: Number(price),
-                            walletAddress: userData.walletAddress
-                        }
-        
-                        await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).then(res =>{
-        
-                        }).catch(err => { });
-                        toast.success("Success Bid", {
-                            position: "top-center",
-                            autoClose: 5000,
-                            hideProgressBar: false,
-                            closeOnClick: true,
-                            pauseOnHover: true,
-                            draggable: true,
-                            progress: undefined,
-        theme: "colored"
-                        });
-                    }
+            try {
+                 const price = web3.utils.toWei(bidPrice.toString(), "ether");
+                 const _bnbBalance = await web3.eth.getBalance(userData.walletAddress);
+     
+                 if (Number(price) + 210000 > Number(_bnbBalance)) throw new Error("BNB balance is low");
+     
+                 setTrading(true);
+                 setBidPrice('');
+                 await Marketplace.methods.placeBid(nft.nftData.tokenID).send({ from: userData.walletAddress, value: price});
+                 const data = {
+                    tokenID: nft.nftData.tokenID,
+                    type: 7,
+                    price: Number(price),
+                    walletAddress: userData.walletAddress
+                 }
+     
+                 await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).then(res =>{
+     
+                 }).catch(err => { });
+                 toast.success("Success Bid", {
+                    position: "top-center",
+                    autoClose: 2000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored"
                 });
-            } catch(err) {
-                toast.error(err.message, {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-        theme: "colored"
-            });;
-           }
-           dispatch(UPDATE_LOADING_PROCESS(true));
-
+             } catch(err) {
+                 toast.error(err.message, {
+                    position: "top-center",
+                    autoClose: 2000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "colored"
+                });
+            }
+            setUpdate(true);
+            setTrading(false);
+            setVisible(false);
         }
     }
 
-    const claimNFT = async(id) => {
-        if (!userData.walletAddress) {
-            toast.warning('Please log in', {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-        theme: "colored"
-            });
-            return;
-        }
+    const claimNFT = async() => {
+        let message = '';
+        if (!userData.walletAddress) message = 'Please log in';
+        else if (!wallet_info) message = 'Please connect metamask';
 
-        if (!wallet_info) {
-            toast.warning('Please connect metamask', {
+        if (!message) {
+            toast.warning(message, {
                 position: "top-center",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -278,7 +257,7 @@ const NFTItem = function() {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
-        theme: "colored"
+                theme: "colored"
             });
             return;
         }
@@ -288,8 +267,8 @@ const NFTItem = function() {
 
             if (Number(_bnbBalance) < 210000) throw new Error("BNB balance is low");
 
-            dispatch(UPDATE_LOADING_PROCESS(true));
-            await Marketplace.methods.claimNFT(id).send({ from: userData.walletAddress });
+            setLoading(true);
+            await Marketplace.methods.claimNFT(nft.nftData.tokenID).send({ from: userData.walletAddress });
 
         } catch(err) {
             toast.error(err.message, {
@@ -300,10 +279,36 @@ const NFTItem = function() {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
-        theme: "colored"
+                theme: "colored"
             });;
         }
-        dispatch(UPDATE_LOADING_PROCESS(false));
+        setUpdate(true);
+        setLoading(false);
+    }
+
+    const openModal = () => {
+        let message = '';
+        if (!userData.walletAddress) message = 'Please log in';
+        else if (!wallet_info) message = 'Please connect metamask';
+        if (message) {
+          toast.warning(message, {
+              position: "top-center",
+              autoClose: 2000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored"
+          });
+          return;
+        }
+        setVisible(true);
+    }
+
+    const _closeModal = () => {
+        setBidPrice('');
+        setVisible(false);
     }
 
     return (
@@ -345,12 +350,12 @@ const NFTItem = function() {
 
                                     { !isNFTOwner && nft.marketData.marketStatus && (
                                         !nft.auctionData.existance
-                                            ? <span className="btn-main py-3 mx-auto w-100 mt-3 mw-500px" onClick={() => buyNow(nft.nftData.tokenID)} >Buy Now</span>
+                                            ? <span className="btn-main py-3 mx-auto w-100 mt-3 mw-500px" onClick={buyNow} >Buy Now</span>
                                             : (
-                                                !isBidOwner ? <span className="btn-main mx-auto py-3 w-50 mt-2" onClick={() => placeBid(nft.nftData.tokenID)}>Place Bid</span> : (
-                                                    claimable < 0 ?
-                                                    <span className="btn-main mx-auto py-3 w-50 mt-2" onClick={() => claimNFT(nft.nftData.tokenID)}>Claim NFT</span>
-                                                    : ""
+                                                !isBidOwner ? <span className="btn-main mx-auto py-3 w-50 mt-2" onClick={openModal}>Place Bid</span> : (
+                                                    claimable <= 0 ?
+                                                    <span className="btn-main mx-auto py-3 w-50 mt-2" onClick={claimNFT}>Claim NFT</span>
+                                                    : <span className="btn-main mx-auto py-3 w-50 mt-2" onClick={claimNFT}>Withdraw Bid</span>
                                                 )
                                             )
                                         )
@@ -386,6 +391,41 @@ const NFTItem = function() {
                                 </div>
 
                                 </div>
+                                <Modal
+                                    visible={visible}
+                                    width="300"
+                                    height="200"
+                                    effect="fadeInUp"
+                                    onClickAway={null}
+                                >
+                                    {
+                                        isTrading ?
+                                        <div className='d-flex w-100 h-100 justify-content-center align-items-center'>
+                                            <div className='reverse-spinner'></div>
+                                        </div>
+                                        : <div className='p-5'>
+                                                <div className='form-group'>
+                                                    <label>Please reserve price.</label>
+                                                    <input
+                                                        type="number"
+                                                        className='form-control text-dark border-dark'
+                                                        value={bidPrice}
+                                                        onChange={(e) => setBidPrice(e.target.value)}
+                                                    />
+                                                </div>
+                                                <div className='groups'>
+                                                    <button
+                                                        className='btn-main btn-apply w-100'
+                                                        onClick={placeBid}
+                                                    >Place</button>
+                                                    <button
+                                                        className='btn-main w-100'
+                                                        onClick={_closeModal}
+                                                    >Cancel</button>
+                                                </div>
+                                            </div>
+                                    }
+                                </Modal>
                             </section>
                         : !Object.keys(nft).length && <Empty/>
                     )
