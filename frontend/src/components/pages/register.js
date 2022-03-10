@@ -50,7 +50,7 @@ const GlobalStyles = createGlobalStyle`
     }
 `;
 
-const Register= () => {
+const Register = () => {
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -116,12 +116,18 @@ const Register= () => {
 
             await axios.post("http://nftdevelopments.co.nz/auth/register", data).then(res => {
                 const { user } = res.data;
-                toast.success("you have registered successfully!", { theme: "colored" });
+                toast.success("you have registered successfully!", {
+                    theme: "colored",
+                    position: "top-center",
+                });
                 dispatch(UPDATE_AUTH(user));
                 navigate("/profile");
             }).catch(err => {
                 const { error } = err.response.data;
-                toast.error(error, { theme: "colored" });
+                toast.error(error, {
+                    theme: "colored",
+                    position: "top-center",
+                });
             })
         } catch(err) {
             console.log(err);
@@ -130,7 +136,7 @@ const Register= () => {
 
     return (
         <div>
-            <Suspense fallback={<Loading/>}>
+            <>
                 <GlobalStyles />
                 <section className='container'>
                     <div className="row">
@@ -249,7 +255,7 @@ const Register= () => {
                 </section>
 
                 <Footer />
-            </Suspense>
+            </>
         </div>
 
     );

@@ -82,7 +82,7 @@ export default function NotSaleNFT({ data, NFT, Marketplace, remove }) {
     }
 
     return (
-        <Suspense fallback={<ItemLoading/>}>
+        <>
             {
                 isLoading ? <ItemLoading/>
                 : (
@@ -145,6 +145,6 @@ export default function NotSaleNFT({ data, NFT, Marketplace, remove }) {
                     </div>
                 )
             }
-        </Suspense>
+        </>
     )
 }

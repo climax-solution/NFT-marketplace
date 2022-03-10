@@ -94,7 +94,7 @@ const Profile = function() {
 
   return (
     <div>
-      <Suspense fallback={<Loading/>}>
+      <>
         <GlobalStyles/>
 
         <section className='container no-bottom'>
@@ -152,7 +152,7 @@ const Profile = function() {
         </section>
 
         <Footer />
-      </Suspense>
+      </>
     </div>
   );
 }

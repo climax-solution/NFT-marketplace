@@ -25,7 +25,7 @@ export default function NFTItem({ data }) {
     }
       
     return (
-        <Suspense fallback={<ItemLoading/>}>
+        <>
             {
                 isLoading && <ItemLoading/>
             }
@@ -58,6 +58,6 @@ export default function NFTItem({ data }) {
                     : ""
                 )
             }
-        </Suspense>
+        </>
     )
 }

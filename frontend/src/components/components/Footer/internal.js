@@ -1,6 +1,35 @@
+import axios from 'axios';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import validator from "validator";
 
 export default function InternalLinks() {
+
+    const [email, setEmail] = useState('');
+
+    const sendEmail = async() => {
+        if (!validator.isEmail(email)) {
+            toast.warning("Email is invalid");
+            return;
+        }
+
+        await axios.post('https://nftdevelopments.co.nz/news/request', { email }).then(res => {
+            const { message } = res.data;
+            toast.success(message,{
+                theme: "colored",
+                position: "top-center"
+            });
+        }).catch(err => {
+            const { error } = err.response.data;
+            toast.error(error, {
+                theme: "colored",
+                position: "top-center"
+            });
+        })
+        setEmail('');
+    }
+
     return (
         <div className="container">
             <div className="row">
@@ -42,10 +71,18 @@ export default function InternalLinks() {
                         <p>Signup for our newsletter to get the latest news in your inbox.</p>
                         <form action="#" className="row form-dark" id="form_subscribe" method="post" name="form_subscribe">
                             <div className="col text-center">
-                                <input className="form-control" id="txt_subscribe" name="txt_subscribe" placeholder="enter your email" type="text" /> 
-                                <Link to="" id="btn-subscribe">
+                                <input
+                                    className="form-control"
+                                    id="txt_subscribe"
+                                    name="txt_subscribe"
+                                    placeholder="enter your email"
+                                    type="text"
+                                    value={email}
+                                    onChange={({ target }) => setEmail(target.value)}
+                                />
+                                <span onClick={sendEmail} id="btn-subscribe" role="button">
                                     <i className="arrow_right bg-color-secondary"></i>
-                                </Link>
+                                </span>
                                 <div className="clearfix"></div>
                             </div>
                         </form>

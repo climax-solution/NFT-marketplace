@@ -37,7 +37,7 @@ export default function FolderList({data, _insMarketplace }) {
     }
     
     return (
-        <Suspense fallback={<PremiumNFTLoading/>}>
+        <>
             <InfiniteScroll
                 dataLength={folderList.length}
                 next={fetchFolders}
@@ -50,6 +50,6 @@ export default function FolderList({data, _insMarketplace }) {
                 ))}
             </InfiniteScroll>
             {!folderList.length && !restList.length && <Empty/>}
-        </Suspense>
+        </>
     )
 }

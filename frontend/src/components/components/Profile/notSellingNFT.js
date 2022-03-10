@@ -54,7 +54,7 @@ export default function NotSellingNFT() {
 
     return (
         <>
-            <Suspense fallback={<PremiumNFTLoading/>}>
+            <>
                 <InfiniteScroll
                     dataLength={nfts.length}
                     next={fetchNFT}
@@ -68,7 +68,7 @@ export default function NotSellingNFT() {
                 </InfiniteScroll>
 
                 { loaded && !nfts.length && <Empty/>}
-            </Suspense>
+            </>
         </>
     )
 }

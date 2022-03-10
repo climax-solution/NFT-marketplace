@@ -313,7 +313,7 @@ const NFTItem = () => {
 
     return (
         <div>
-            <Suspense fallback={<Loading/>}>
+            <>
                 <GlobalStyles/>
                 <section className='jumbotron breadcumb no-bg'>
                     <div className='mainbreadcumb'>
@@ -431,7 +431,7 @@ const NFTItem = () => {
                     )
                 }
                 <Footer />
-            </Suspense>
+            </>
         </div>
     );
 }

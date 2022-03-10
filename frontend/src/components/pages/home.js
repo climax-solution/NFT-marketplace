@@ -76,7 +76,7 @@ const GlobalStyles = createGlobalStyle`
 const homeone= () => {
   return (
     <div>
-      <Suspense fallback={<Loading/>}>
+      <>
         <GlobalStyles />
         <section className="jumbotron no-bg" style={{backgroundImage: `url(${'./img/background/bg.webp'})`}}>
           <Particle/>
@@ -98,7 +98,7 @@ const homeone= () => {
         </section>
   
         <Footer />
-      </Suspense>
+      </>
     </div>
   )
 }
