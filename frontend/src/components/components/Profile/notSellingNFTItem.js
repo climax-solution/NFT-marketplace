@@ -1,8 +1,7 @@
 import axios from "axios";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import { UPDATE_LOADING_PROCESS } from "../../../store/action/auth.action";
+import { useSelector } from "react-redux";
 import getWeb3 from "../../../utils/getWeb3";
 import { toast } from "react-toastify";
 
@@ -12,7 +11,7 @@ const ItemLoading = lazy(() => import("../Loading/ItemLoading"));
 const AuctionSellModal = lazy(() => import("../Modal/AuctionSellModal"));
 const DirectSellModal = lazy(() => import("../Modal/DirectSellModal"));
 
-export default function NotSaleNFT({ data, NFT, Marketplace }) {
+export default function NotSaleNFT({ data, NFT, Marketplace, remove }) {
 
     const [web3, setWeb3] = useState(null);
     const [nft, setNFT] = useState([]);
@@ -21,7 +20,6 @@ export default function NotSaleNFT({ data, NFT, Marketplace }) {
     const [directVisible, setDirectVisible] = useState(false);
     const [activeID, setActiveID] = useState(-1);
 
-    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const initialUser = useSelector(({ auth }) => auth.user);
@@ -117,7 +115,12 @@ export default function NotSaleNFT({ data, NFT, Marketplace }) {
                         {
                             auctionVisible && <AuctionSellModal
                                 visible={auctionVisible}
-                                close={() => setAuctionVisible(false)}
+                                close={
+                                    (status = false) => {
+                                        if (status) remove();
+                                        setAuctionVisible(false)
+                                    }
+                                }
                                 Marketplace={Marketplace}
                                 NFT={NFT}
                                 web3={web3}
@@ -127,7 +130,12 @@ export default function NotSaleNFT({ data, NFT, Marketplace }) {
                         {
                             directVisible && <DirectSellModal
                                 visible={directVisible}
-                                close={() => setDirectVisible(false)}
+                                close={
+                                    (status = false) => {
+                                        if (status) remove();
+                                        setDirectVisible(false)
+                                    }
+                                }
                                 Marketplace={Marketplace}
                                 NFT={NFT}
                                 web3={web3}

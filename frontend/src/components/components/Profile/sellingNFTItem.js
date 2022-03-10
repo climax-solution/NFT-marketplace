@@ -10,13 +10,13 @@ const MusicArt = lazy(() => import("../Asset/music"));
 const VideoArt = lazy(() => import("../Asset/video"));
 const ItemLoading = lazy(() => import("../Loading/ItemLoading"));
 
-export default function NFTItem({ data, NFT, Marketplace }) {
+export default function NFTItem({ data, NFT, Marketplace, remove }) {
 
     const [web3, setWeb3] = useState(null);
     const [nft, setNFT] = useState([]);
     const [isLoading, setLoading] = useState(true);
+    const [isTrading, setTrading] = useState(false);
 
-    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const initialUser = useSelector(({ auth }) => auth.user);
@@ -24,8 +24,13 @@ export default function NFTItem({ data, NFT, Marketplace }) {
 
     const putDownSale = async (id) => {
 
-        if (!initialUser.walletAddress) {
-            toast.warning('Please log in', {
+        let message = "";
+
+        if (!initialUser.walletAddress) message = 'Please log in';
+        else if (!wallet_info) message = 'Please connect metamask';
+        
+        if (message) {
+            toast.warning(message, {
                 position: "top-center",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -38,21 +43,7 @@ export default function NFTItem({ data, NFT, Marketplace }) {
             return;
         }
 
-        if (!wallet_info) {
-            toast.warning('Please connect metamask', {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored"
-            });
-            return;
-        }
-
-        dispatch(UPDATE_LOADING_PROCESS(true));
+        setTrading(true);
         try {
             const nft = await Marketplace.methods.getItemNFT(id).call();
             const buyAmount = nft.marketData.price;
@@ -82,9 +73,13 @@ export default function NFTItem({ data, NFT, Marketplace }) {
             await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).then(res =>{
 
             }).catch(err => { });
+            await remove();
         } catch(err) {
-            console.log(id, "==>" ,err);
-            toast.error('Failed', {
+            let message = "";
+            if (err?.code == 4001) message = "Cancelled";
+            else message = "Failed";
+
+            toast.error(message, {
                 position: "top-center",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -94,14 +89,22 @@ export default function NFTItem({ data, NFT, Marketplace }) {
                 progress: undefined,
                 theme: "colored"
             });
+
+            if (err.code != 4001) {
+                await refresh();
+            }
         }
-        dispatch(UPDATE_LOADING_PROCESS(false));
+        setTrading(false);
     }
 
     const putDownAuction = async (id) => {
 
-        if (!initialUser.walletAddress) {
-            toast.warning('Please log in', {
+        let message = "";
+        if (!initialUser.walletAddress) message = 'Please log in';
+        else if (!wallet_info) message = 'Please connect metamask';
+        
+        if (message) {
+            toast.warning(message, {
                 position: "top-center",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -114,21 +117,7 @@ export default function NFTItem({ data, NFT, Marketplace }) {
             return;
         }
 
-        if (!wallet_info) {
-            toast.warning('Please connect metamask', {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored"
-            });
-            return;
-        }
-
-        dispatch(UPDATE_LOADING_PROCESS(true));
+        setTrading(true);
         try {
             const nft = await Marketplace.methods.getItemNFT(id).call();
             if (!web3.utils.toBN(nft.auctionData.currentBidOwner).isZero()) {
@@ -142,7 +131,7 @@ export default function NFTItem({ data, NFT, Marketplace }) {
                     progress: undefined,
                     theme: "colored"
                 });
-                dispatch(UPDATE_LOADING_PROCESS(false));
+                setTrading(false);
                 return;
             }
             const buyAmount = nft.marketData.price;
@@ -171,9 +160,13 @@ export default function NFTItem({ data, NFT, Marketplace }) {
             await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).then(res =>{
 
             }).catch(err => { });
+            remove();
         } catch(err) {
-            console.log(id, "==>" ,err);
-            toast.warning('Failed', {
+            let message = "";
+            if (err?.code == 4001) message = "Cancelled";
+            else message = "Failed";
+
+            toast.error(message, {
                 position: "top-center",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -183,14 +176,22 @@ export default function NFTItem({ data, NFT, Marketplace }) {
                 progress: undefined,
                 theme: "colored"
             });
+
+            if (err.code != 4001) {
+                await refresh();
+            }
         }
-        dispatch(UPDATE_LOADING_PROCESS(false));
+        setTrading(false);
     }
   
     const updatePremiumNFT = async (id, status) => {
+       
+        let message = "";
+        if (!initialUser.walletAddress) message = 'Please log in';
+        else if (!wallet_info) message = 'Please connect metamask';
         
-        if (!initialUser.walletAddress) {
-            toast.warning('Please log in', {
+        if (message) {
+            toast.warning(message, {
                 position: "top-center",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -203,21 +204,7 @@ export default function NFTItem({ data, NFT, Marketplace }) {
             return;
         }
 
-        if (!wallet_info) {
-            toast.warning('Please connect metamask', {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored"
-            });
-            return;
-        }
-
-        dispatch(UPDATE_LOADING_PROCESS(true));
+        setTrading(true);
         try {
             const owner = await NFT.methods.ownerOf(id).call();
             if (owner.toLowerCase() != (initialUser.walletAddress).toLowerCase() && initialUser.walletAddress) throw "Not owner";
@@ -249,33 +236,28 @@ export default function NFTItem({ data, NFT, Marketplace }) {
             await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).then(res =>{
 
             }).catch(err => { });
+            remove();
         } catch(err) {
-            if (typeof err == "string") {
-                toast.error(err, {
-                    position: "top-center",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "colored"
-                });
-            }
-            else {
-                toast.error('Failed', {
-                    position: "top-center",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "colored"
-                });
+            let message = "";
+            if (err?.code == 4001) message = "Cancelled";
+            else message = "Failed";
+
+            toast.error(message, {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored"
+            });
+
+            if (err.code != 4001) {
+                await refresh();
             }
         }
-        dispatch(UPDATE_LOADING_PROCESS(false));
+        setTrading(false);
     }
 
     useEffect(async() => {
@@ -291,6 +273,20 @@ export default function NFTItem({ data, NFT, Marketplace }) {
         }
     },[data])
 
+    const refresh = async() => {
+        const _NFT = await Marketplace.methods.getItemNFT(nft.nftData.tokenID).call();
+        console.log(_NFT);
+        if ((_NFT.nftData.owner).toLowerCase() != (initialUser.walletAddress).toLowerCase()) await remove();
+        else if (!_NFT.marketData.marketStatus) await remove();
+        else {
+            await axios.get(`${_NFT.nftData.tokenURI}`).then(res => {
+                const { data: metadata } = res;
+                setNFT({ ..._NFT, ...metadata });
+            });
+        }
+        
+    }
+
     const failedLoadImage = (e) => {
         e.target.src="/img/empty.jfif";
     }
@@ -302,40 +298,48 @@ export default function NFTItem({ data, NFT, Marketplace }) {
                 : (
                     !Object.keys(nft).length ? ""
                     : (
-                        <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mt-3">
-                            <div className="nft__item h-100 justify-content-between">
-                                <div className="nft__item_wrap">
+                        <>
+                            <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mt-3">
+                                <div className="nft__item position-relative h-100 justify-content-between">
                                     {
-                                        (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} className="lazy nft__item_preview" onClick={() => navigate(`/item-detail/${nft.nftData.tokenID}`) } role="button" alt=""/>
+                                        isTrading && 
+                                        <div className="trade-loader start-0 w-100">
+                                            <div className="nb-spinner"></div>
+                                        </div>
                                     }
-
-                                    {
-                                        (nft.type && (nft.type).toLowerCase() == 'music') && <MusicArt data={nft} link={`/item-detail/${nft.nftData.tokenID}`}/>
-                                    }
-
-                                    {
-                                        (nft.type && (nft.type).toLowerCase() == 'video') && <VideoArt data={nft.asset}/>
-                                    }
-                                </div>
-                                <div className="nft__item_info">
-                                    <span>
-                                        <h4 onClick={() => !isLoading ? navigate(`/item-detail/${nft.nftData.tokenID}`) : null }>{ nft.nftName }</h4>
-                                    </span>
-                                    <div className="nft__item_price">
-                                        {web3.utils.fromWei(nft.marketData.price, "ether")} BNB
-                                    </div>
-                                    <div className="pb-4 trade-btn-group mt-2">
-                                        { nft.marketData.marketStatus && (
-                                            !nft.auctionData.existance ?
-                                                <span className="btn-main w-100" onClick={() => putDownSale(nft.nftData.tokenID)}>Delist</span>
-                                                :<span className="btn-main w-100" onClick={() => putDownAuction(nft.nftData.tokenID)}>Delist auction</span>
-                                            )
+                                    <div className="nft__item_wrap">
+                                        {
+                                            (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} className="lazy nft__item_preview" onClick={() => navigate(`/item-detail/${nft.nftData.tokenID}`) } role="button" alt=""/>
                                         }
-                                        { !nft.marketData.premiumStatus ? <span className="btn-main mt-2 w-100" onClick={async() => await updatePremiumNFT(nft.nftData.tokenID, true)}>Promote to preimum</span> : <span className="btn-main mt-2 w-100"  onClick={() => updatePremiumNFT(nft.nftData.tokenID, false)}>Reset to normal</span> }
+
+                                        {
+                                            (nft.type && (nft.type).toLowerCase() == 'music') && <MusicArt data={nft} link={`/item-detail/${nft.nftData.tokenID}`}/>
+                                        }
+
+                                        {
+                                            (nft.type && (nft.type).toLowerCase() == 'video') && <VideoArt data={nft.asset}/>
+                                        }
                                     </div>
-                                </div> 
+                                    <div className="nft__item_info">
+                                        <span>
+                                            <h4 onClick={() => !isLoading ? navigate(`/item-detail/${nft.nftData.tokenID}`) : null }>{ nft.nftName }</h4>
+                                        </span>
+                                        <div className="nft__item_price">
+                                            {web3.utils.fromWei(nft.marketData.price, "ether")} BNB
+                                        </div>
+                                        <div className="pb-4 trade-btn-group mt-2">
+                                            { nft.marketData.marketStatus && (
+                                                !nft.auctionData.existance ?
+                                                    <span className="btn-main w-100" onClick={() => putDownSale(nft.nftData.tokenID)}>Delist</span>
+                                                    :<span className="btn-main w-100" onClick={() => putDownAuction(nft.nftData.tokenID)}>Delist auction</span>
+                                                )
+                                            }
+                                            { !nft.marketData.premiumStatus ? <span className="btn-main mt-2 w-100" onClick={async() => await updatePremiumNFT(nft.nftData.tokenID, true)}>Promote to preimum</span> : <span className="btn-main mt-2 w-100"  onClick={() => updatePremiumNFT(nft.nftData.tokenID, false)}>Reset to normal</span> }
+                                        </div>
+                                    </div> 
+                                </div>
                             </div>
-                        </div>
+                        </>
                     )
                 )
             }

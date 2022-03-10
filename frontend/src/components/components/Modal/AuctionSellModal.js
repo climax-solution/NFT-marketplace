@@ -70,7 +70,7 @@ export default function AuctionSellModal({ visible, close, tokenID, web3, NFT, M
                 });
                 await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).catch(res => {}).catch(err => { });
                 setLoading(false);
-                close();
+                close(true);
             });
             
         } catch(err) {
