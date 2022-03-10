@@ -46,6 +46,12 @@ export default function NotSellingNFT() {
         setNFTs([...nfts, ...tmpList]);
     }
 
+    const removeItem = (index) => {
+        const _list = [ ...nfts ];
+        _list.splice(index, 1);
+        setNFTs(_list);
+    }
+
     return (
         <>
             <Suspense fallback={<PremiumNFTLoading/>}>
@@ -57,7 +63,7 @@ export default function NotSellingNFT() {
                     className="row overflow-unset"
                 >
                     {nfts.map( (nft, index) => (
-                        <NotSaleNFT data={nft} key={index} NFT={nftContract} Marketplace={marketContract}/>
+                        <NotSaleNFT data={nft} key={index} remove={() => removeItem(index)} NFT={nftContract} Marketplace={marketContract}/>
                     ))}
                 </InfiniteScroll>
 

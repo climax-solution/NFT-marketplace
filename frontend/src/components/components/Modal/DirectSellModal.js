@@ -73,7 +73,7 @@ export default function DirectSellModal({ visible, tokenID, close, Marketplace, 
 
                 }).catch(err => { });
                 setLoading(false);
-                close();
+                close(true);
             });
             
         } catch(err) {
