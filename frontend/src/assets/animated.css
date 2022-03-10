@@ -2852,15 +2852,14 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   border-top: 4px solid #03A9F4;
   border-right: 4px solid transparent;
   border-radius: 50%;
-  -webkit-animation: 1s spin linear infinite;
-  animation: 1s spin linear infinite;
+  -webkit-animation: 1s nb-spinner linear infinite;
+  animation: 1s nb-spinner linear infinite;
   position: absolute;
   left: 50%;
   top: 50%;
-  transform: translate(-50%, -50%);
 }
   
-@-webkit-keyframes spin {
+@-webkit-keyframes nb-spinner {
   from {
       -webkit-transform: translate(-50%, -50%) rotate(0deg);
       transform: translate(-50%, -50%) rotate(0deg);
@@ -2871,7 +2870,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   }
 }
         
-@keyframes spin {
+@keyframes nb-spinner {
   from {
       -webkit-transform: translate(-50%, -50%) rotate(0deg);
       transform: translate(-50%, -50%) rotate(0deg);
