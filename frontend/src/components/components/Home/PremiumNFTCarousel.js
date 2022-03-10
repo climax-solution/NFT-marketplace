@@ -3,6 +3,7 @@ import { createGlobalStyle } from "styled-components";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import axios from "axios";
+import Modal from 'react-awesome-modal';
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Carousel from "react-multi-carousel";
@@ -18,17 +19,26 @@ const MusicArt = lazy(() => import("../Asset/music"));
 const VideoArt = lazy(() => import("../Asset/video"));
 
 const GlobalStyles = createGlobalStyle`
-  .slick-track {
-    margin-left: 0 !important;
-    margin-right: 0 !important;
-  }
-
   .text-grey {
     color: #a2a2a2;
   }
 
   .nft__item {
     height: calc(100% - 20px);
+  }
+
+  .btn-apply {
+    background: #3fb737;
+  }
+
+  .btn-apply:hover {
+      box-shadow: 2px 2px 20px 0px #3fb737;
+  }
+
+  .groups {
+      display: grid;
+      grid-template-columns: auto auto;
+      column-gap: 15px;
   }
 `;
 
@@ -44,6 +54,10 @@ export default function () {
   const [web3, setWEB3] = useState([]);
   const [Marketplace, setMarketplace] = useState([]);
   const [carouselLoading, setCarouselLoading] = useState(true);
+  const [visible, setVisible] = useState(false);
+  const [isTrading, setTrading] = useState(false);
+  const [bidPrice, setBidPrice] = useState('');
+  const [activeID, setActiveID] = useState(-1);
 
   const responsive = {
     superLargeDesktop: {
@@ -140,6 +154,81 @@ export default function () {
     dispatch(UPDATE_LOADING_PROCESS(false));
   }
 
+  const placeBid = async() => {
+
+    let message = "";
+    if (!initialUser.walletAddress) message = 'Please log in';
+    else if (!wallet_info) message = 'Please connect metamask';
+    else if (bidPrice <= 0) message = 'Please reserve correct price';
+
+    let {auctionData} = await Marketplace.methods.getItemNFT(activeID).call();
+
+    if (bidPrice > 0) {
+      let minPrice = web3.utils.fromWei(auctionData.minPrice, "ether");
+      if (bidPrice < minPrice) message = 'Offer is over min price';
+    }
+
+    if (message) {
+        toast.warning(message, {
+            position: "top-center",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored"
+        });
+        return;
+    }
+
+    if (auctionData.existance) {
+       try {
+            const price = web3.utils.toWei(bidPrice.toString(), "ether");
+            const _bnbBalance = await web3.eth.getBalance(initialUser.walletAddress);
+
+            if (Number(price) + 210000 > Number(_bnbBalance)) throw new Error("BNB balance is low");
+
+            setTrading(true);
+            setBidPrice('');
+            await Marketplace.methods.placeBid(activeID).send({ from: initialUser.walletAddress, value: price});
+            const data = {
+                tokenID: activeID,
+                type: 7,
+                price: Number(price),
+                walletAddress: initialUser.walletAddress
+            }
+
+            await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).then(res =>{
+
+            }).catch(err => { });
+            toast.success("Success Bid", {
+                position: "top-center",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored"
+            });
+        } catch(err) {
+            toast.error(err.message, {
+                position: "top-center",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored"
+            });
+       }
+       setTrading(false);
+       setVisible(false);
+    }
+  }
+
   const fetchNFT = async() => {
     if (initialUser.walletAddress == undefined) return;
     setCarouselLoading(true);
@@ -160,6 +249,29 @@ export default function () {
     setCarouselLoading(false);
   }
 
+  const openModal = (id) => {
+    let message = '';
+    if (!initialUser.walletAddress) message = 'Please log in';
+    else if (!wallet_info) message = 'Please connect metamask';
+    if (message) {
+      toast.warning(message, {
+          position: "top-center",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored"
+      });
+      return;
+  }
+
+    setActiveID(id);
+    setVisible(true);
+
+  }
+
   const failedLoadImage = (e) => {
     e.target.src="/img/empty.jfif";
   }
@@ -178,6 +290,7 @@ export default function () {
           { carouselLoading && <PremiumNFTLoading/> }
           {
             !carouselLoading && (
+              <>
               <Carousel
                 swipeable={false}
                 draggable={false}
@@ -194,40 +307,85 @@ export default function () {
               >
                 {
                   list.map((nft, index) => {
-                    console.log(list);
-                      const { auctionData: auction, marketData: market } = nft;
-                      const price = !auction.existance ? market.price : (auction.currentBidPrice ? auction.currentBidPrice : auction.minPrice);
-                      return (
-                        <div className="nft__item justify-content-between" key={index}>
-                            <div className="nft__item_wrap">
-                              {
-                                  (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} onClick={() => navigate(`/item-detail/${nft.nftData.tokenID}`)} className="lazy nft__item_preview ratio-1-1" alt="" role="button"/>
-                              }
+                    const bidOwner = (nft.auctionData.currentBidOwner).toLowerCase() == (initialUser.walletAddress).toLowerCase();
+                    const { auctionData: auction, marketData: market } = nft;
+                    const price = !auction.existance ? market.price : auction.minPrice;
+                    return (
+                      <div className="nft__item justify-content-between" key={index}>
+                          <div className="nft__item_wrap">
+                            {
+                                (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} onClick={() => navigate(`/item-detail/${nft.nftData.tokenID}`)} className="lazy nft__item_preview ratio-1-1" alt="" role="button"/>
+                            }
 
-                              {
-                                  (nft.type && (nft.type).toLowerCase() == 'music') && <MusicArt data={nft} link={`/item-detail/${nft.nftData.tokenID}`}/>
-                              }
+                            {
+                                (nft.type && (nft.type).toLowerCase() == 'music') && <MusicArt data={nft} link={`/item-detail/${nft.nftData.tokenID}`}/>
+                            }
 
-                              {
-                                  (nft.type && (nft.type).toLowerCase() == 'video') && <VideoArt data={nft.asset}/>
-                              }
-                            </div>
-                            <div className="nft__item_info mb-0">
-                                <span>
-                                    <h4><Link to={`/item-detail/${nft.nftData.tokenID}`} className="text-decoration-none text-grey">{nft.nftName}</Link></h4>
-                                </span>
-                                <div className="nft__item_price">
-                                    {web3.utils.fromWei(price)} BNB
-                                </div>
-                                <div className="nft__item_action">
-                                  { (nft.nftData.owner).toLowerCase() != (initialUser.walletAddress).toLowerCase() && <span onClick={() => buyNow(nft.nftData.tokenID)}>Buy now</span>}
-                                </div>
-                            </div> 
-                        </div>
-                      )
+                            {
+                                (nft.type && (nft.type).toLowerCase() == 'video') && <VideoArt data={nft.asset}/>
+                            }
+                          </div>
+                          <div className="nft__item_info mb-0">
+                              <span>
+                                  <h4><Link to={`/item-detail/${nft.nftData.tokenID}`} className="text-decoration-none text-grey">{nft.nftName}</Link></h4>
+                              </span>
+                              <div className="nft__item_price">
+                                  {web3.utils.fromWei(price)} BNB
+                              </div>
+                              <div className="nft__item_action">
+                                {
+                                  (
+                                    nft.nftData.owner).toLowerCase() != (initialUser.walletAddress).toLowerCase() ? 
+                                    (
+                                      nft.auctionData.existance ? ( !bidOwner ? <span onClick={() => openModal(nft.nftData.tokenID) }>Place bid</span> : "")
+                                      : <span onClick={() => buyNow(nft.nftData.tokenID)}>Buy now</span>
+                                    ) : ""
+                                }
+                              </div>
+                          </div> 
+                      </div>
+                    )
                   })
                 }
               </Carousel>
+              <Modal
+                visible={visible}
+                width="300"
+                height="200"
+                effect="fadeInUp"
+                onClickAway={null}
+              >
+                {
+                  isTrading ?
+                  <div className='d-flex w-100 h-100 justify-content-center align-items-center'>
+                    <div className='reverse-spinner'></div>
+                  </div>
+                  : 
+                  <div className='p-5'>
+                    <div className='form-group'>
+                        <label>Please reserve price.</label>
+                        <input
+                            type="number"
+                            className='form-control text-dark border-dark'
+                            value={bidPrice}
+                            onChange={(e) => setBidPrice(e.target.value)}
+                        />
+                    </div>
+                    <div className='groups'>
+                        <button
+                            className='btn-main btn-apply w-100 px-1'
+                            onClick={placeBid}
+                        >Place</button>
+                        <button
+                            className='btn-main w-100'
+                            onClick={() => setVisible(false)}
+                        >Cancel</button>
+                    </div>
+                  </div>
+                }
+
+            </Modal>
+            </>
             )
           }
           { !list.length && !carouselLoading && <Empty/> }
