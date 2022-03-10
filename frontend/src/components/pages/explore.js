@@ -107,7 +107,7 @@ const explore = () => {
 
   return(
     <div>
-      <Suspense fallback={<Loading/>}>
+      <>
         <GlobalStyles/>
         <section className='jumbotron breadcumb no-bg'>
           <div className='mainbreadcumb'>
@@ -167,7 +167,7 @@ const explore = () => {
           <FolderList data={folderList} _insMarketplace={Marketplace}/>
         </section>
         <Footer />
-      </Suspense>
+      </>
     </div>
   )
 };

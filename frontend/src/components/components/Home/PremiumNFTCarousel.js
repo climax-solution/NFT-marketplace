@@ -58,6 +58,7 @@ export default function () {
   const [isTrading, setTrading] = useState(false);
   const [bidPrice, setBidPrice] = useState('');
   const [activeID, setActiveID] = useState(-1);
+  const [activeIndex, setActiveIndex] = useState(-1);
 
   const responsive = {
     superLargeDesktop: {
@@ -89,7 +90,7 @@ export default function () {
     if (Marketplace) await fetchNFT();
   },[initialUser, Marketplace])
 
-  const buyNow = async(id) => {
+  const buyNow = async(id, index) => {
   
     if (!wallet_info) {
       toast.warning('Please connect metamask', {
@@ -111,45 +112,48 @@ export default function () {
         let { marketData, auctionData } = await Marketplace.methods.getItemNFT(id).call();
         if (marketData.marketStatus && !auctionData.existance) {
 
-            const _bnbBalance = await web3.eth.getBalance(initialUser.walletAddress);
+          const _bnbBalance = await web3.eth.getBalance(initialUser.walletAddress);
 
-            if (Number(marketData.price) + 210000 > Number(_bnbBalance)) throw new Error("BNB balance is low");
+          if (Number(marketData.price) + 210000 > Number(_bnbBalance)) throw new Error("BNB balance is low");
 
-            await Marketplace.methods.buyNFT(id).send({ from: initialUser?.walletAddress, value: marketData.price });
+          await Marketplace.methods.buyNFT(id).send({ from: initialUser?.walletAddress, value: marketData.price });
 
-            const data = {
-                tokenID: id,
-                type: 0,
-                price: marketData.price,
-                walletAddress: initialUser?.walletAddress
-            }
+          const data = {
+              tokenID: id,
+              type: 0,
+              price: marketData.price,
+              walletAddress: initialUser?.walletAddress
+          }
 
-            await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).then(res =>{
+          await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).then(res =>{
 
-            }).catch(err => { });
+          }).catch(err => { });
 
-            toast.success("Buy success", {
-              position: "top-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "colored"
-            });
+          toast.success("Buy success", {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored"
+          });
+          let lists = [ ...list];
+          lists.splice(index, 1);
+          setList(lists);
         }
     } catch(err) {
-        toast.error(err.message, {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored"
-        });
+      toast.error(err.message, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored"
+      });
     }
     dispatch(UPDATE_LOADING_PROCESS(false));
   }
@@ -212,6 +216,9 @@ export default function () {
                 progress: undefined,
                 theme: "colored"
             });
+            let lists = [ ...list];
+            lists.splice(activeIndex, 1);
+            setList(lists);
         } catch(err) {
             toast.error(err.message, {
                 position: "top-center",
@@ -224,6 +231,8 @@ export default function () {
                 theme: "colored"
             });
        }
+       setActiveID(-1);
+       setActiveIndex(-1);
        setTrading(false);
        setVisible(false);
     }
@@ -249,7 +258,7 @@ export default function () {
     setCarouselLoading(false);
   }
 
-  const openModal = (id) => {
+  const openModal = (id, index) => {
     let message = '';
     if (!initialUser.walletAddress) message = 'Please log in';
     else if (!wallet_info) message = 'Please connect metamask';
@@ -265,9 +274,10 @@ export default function () {
           theme: "colored"
       });
       return;
-  }
+    }
 
     setActiveID(id);
+    setActiveIndex(index);
     setVisible(true);
 
   }
@@ -285,7 +295,7 @@ export default function () {
         </div>
       </div> 
       <div className='nft'>
-        <Suspense fallback={<PremiumNFTLoading/>}>
+        <>
           <GlobalStyles/>
           { carouselLoading && <PremiumNFTLoading/> }
           {
@@ -337,8 +347,8 @@ export default function () {
                                   (
                                     nft.nftData.owner).toLowerCase() != (initialUser.walletAddress).toLowerCase() ? 
                                     (
-                                      nft.auctionData.existance ? ( !bidOwner ? <span onClick={() => openModal(nft.nftData.tokenID) }>Place bid</span> : "")
-                                      : <span onClick={() => buyNow(nft.nftData.tokenID)}>Buy now</span>
+                                      nft.auctionData.existance ? ( !bidOwner ? <span onClick={() => openModal(nft.nftData.tokenID, index) }>Place bid</span> : "")
+                                      : <span onClick={() => buyNow(nft.nftData.tokenID, index)}>Buy now</span>
                                     ) : ""
                                 }
                               </div>
@@ -389,7 +399,7 @@ export default function () {
             )
           }
           { !list.length && !carouselLoading && <Empty/> }
-          </Suspense>
+          </>
       </div>
     </section>
   )

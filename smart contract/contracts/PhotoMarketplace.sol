@@ -13,6 +13,7 @@ contract Marketplace  {
 
     NFTD public flexNFT;
     mapping(uint => MarketData) private _nftData;
+    mapping(uint => bool) private _trading;
 
     event NFTPremiumStatusChanged(uint256 tokenId, bool newState, uint timeStamp);
     event NFTBuy(address owner, address buyer, uint tokenId);
@@ -67,7 +68,14 @@ contract Marketplace  {
         _;
     }
 
-    function openTradeToDirect(uint tokenID) external payable {
+    modifier isTrading(uint tokenID) {
+        _trading[tokenID] = true;
+        _;
+        _trading[tokenID] = false;
+    }
+
+    function openTradeToDirect(uint tokenID) external isTrading(tokenID) payable {
+        require(!_trading[tokenID], "This NFT is processing by someone");
         require(msg.sender == flexNFT.ownerOf(tokenID), "Not owner");
         require(!_nftData[tokenID].marketStatus, "Already on sale");
         require(!auctions[tokenID].existance, "Already on auction");
@@ -83,7 +91,8 @@ contract Marketplace  {
         emit OpenTradeToDirect(msg.sender, tokenID, msg.value * 40);
     }
 
-    function closeTradeToDirect(uint tokenID) external payable {
+    function closeTradeToDirect(uint tokenID) external isTrading(tokenID) payable {
+        require(!_trading[tokenID], "This NFT is processing by someone");
         require(msg.sender == flexNFT.ownerOf(tokenID), "Not owner");
         require(_nftData[tokenID].marketStatus, "Already down sale");
         require(!auctions[tokenID].existance, "Already on auction");
@@ -100,7 +109,8 @@ contract Marketplace  {
         emit CloseTradeToDirect(msg.sender, tokenID);
     }
 
-    function openTradeToAuction(uint tokenID, uint auctionPrice, uint period) external payable {
+    function openTradeToAuction(uint tokenID, uint auctionPrice, uint period) external isTrading(tokenID) payable {
+        require(!_trading[tokenID], "This NFT is processing by someone");
         require(msg.sender == flexNFT.ownerOf(tokenID), "Not owner");
         require(!_nftData[tokenID].marketStatus, "Already on sale");
         require(!auctions[tokenID].existance, "Already on auction");
@@ -120,7 +130,8 @@ contract Marketplace  {
         emit OpenTradeToAuction(msg.sender, tokenID, period);
     }
 
-    function closeTradeToAuction(uint tokenID) external payable {
+    function closeTradeToAuction(uint tokenID) external isTrading(tokenID) payable {
+        require(!_trading[tokenID], "This NFT is processing by someone");
         require(msg.sender == flexNFT.ownerOf(tokenID), "Not owner");
         require(_nftData[tokenID].marketStatus, "Already on sale");
         require(auctions[tokenID].existance, "Already on auction");
@@ -160,7 +171,8 @@ contract Marketplace  {
         return marketData;
     }
 
-    function buyNFT(uint tokenID) external payable {
+    function buyNFT(uint tokenID) external isTrading(tokenID) payable {
+        require(!_trading[tokenID], "This NFT is processing by someone");
         MarketData memory marketData = _nftData[tokenID];
         require(marketData.marketStatus, "Not able to buy");
         require(!auctions[tokenID].existance, "Already on auction");
@@ -191,10 +203,10 @@ contract Marketplace  {
         emit NFTBuy(_seller, buyer, tokenID);
     }
 
-    function placeBid(uint tokenID) external payable {
+    function placeBid(uint tokenID) external isTrading(tokenID) payable {
         Auction memory auction = auctions[tokenID];
         require(auction.existance, "Not on auction");
-        require(msg.value > auction.currentBidPrice, "Bid price must be higher that last price");
+        require(msg.value >= auction.minPrice, "Bid price must be higher that last price");
         require(block.timestamp < auction.endAuction, "Auction is ended");
 
         if (auction.currentBidOwner != address(0)) {
@@ -228,14 +240,17 @@ contract Marketplace  {
         address _seller = flexNFT.ownerOf(tokenID);
         payable(_seller).transfer(auction.currentBidPrice);
         flexNFT.transferFrom(_seller, msg.sender, tokenID);
+
         _nftData[tokenID].premiumStatus = false;
         _nftData[tokenID].marketStatus = false;
         _nftData[tokenID].premiumTimestamp = 0;
-        emit ClaimNFT(msg.sender, tokenID, auction.currentBidPrice);
         delete auctions[tokenID];
+
+        emit ClaimNFT(msg.sender, tokenID, auction.currentBidPrice);
     }
     
-    function updatePremiumStatus(uint tokenID, bool _newState) external payable {
+    function updatePremiumStatus(uint tokenID, bool _newState) external isTrading(tokenID) payable {
+        require(!_trading[tokenID], "This NFT is processing by someone");
         require(msg.sender == flexNFT.ownerOf(tokenID), "Message Sender should be the owner of token");
         require(_nftData[tokenID].marketStatus, "Not on sale");
         require(_nftData[tokenID].premiumStatus != _newState, "Already set");

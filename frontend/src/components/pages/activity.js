@@ -99,7 +99,7 @@ const Activity= function() {
 
   return (
     <div>
-      <Suspense fallback={<Loading/>}>
+      <>
         <GlobalStyles/>
 
         <section className='jumbotron breadcumb no-bg'>
@@ -150,7 +150,7 @@ const Activity= function() {
         </section>
 
         <Footer />
-      </Suspense>
+      </>
     </div>
 
   );

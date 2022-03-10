@@ -92,7 +92,7 @@ export default function SellingNFT() {
     
     return (
         <>
-            <Suspense fallback={<PremiumNFTLoading/>}>
+            <>
                 <Select
                     className='select1 mx-auto me-0 mx-200px'
                     styles={customStyles}
@@ -115,7 +115,7 @@ export default function SellingNFT() {
                     ))}
                 </InfiniteScroll>
                 { loaded && !nfts.length && <Empty/>}
-            </Suspense>
+            </>
         </>
     )
 }

@@ -69,7 +69,7 @@ const Collection= function() {
   return (
     <div>
       <GlobalStyles/>
-      <Suspense fallback={<Loading/>}>
+      <>
         <Banner userData={userData} />
         <section className='container no-top'>
             <InfiniteScroll
@@ -94,7 +94,7 @@ const Collection= function() {
             }
         </section>
         <Footer />
-      </Suspense>
+      </>
     </div>
   );
 }

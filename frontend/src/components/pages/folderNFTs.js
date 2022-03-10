@@ -115,7 +115,7 @@ const folderNFTs = () => {
     return (
         <div>
             <GlobalStyles/>
-            <Suspense fallback={<Loading/>}>
+            <>
                 <section className='jumbotron breadcumb no-bg'>
                     <div className='mainbreadcumb'>
                         <div className='container'>
@@ -154,7 +154,7 @@ const folderNFTs = () => {
                     }
                     
                 </section>
-            </Suspense>
+            </>
         </div>
 
     );

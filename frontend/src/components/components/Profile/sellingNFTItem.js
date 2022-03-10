@@ -292,7 +292,7 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
     }
 
     return (
-        <Suspense fallback={<ItemLoading/>}>
+        <>
             {
                 isLoading ? <ItemLoading/>
                 : (
@@ -343,6 +343,6 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
                     )
                 )
             }
-        </Suspense>
+        </>
     )
 }
