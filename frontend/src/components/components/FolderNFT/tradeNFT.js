@@ -136,7 +136,7 @@ export default function TradeNFT({ data }) {
         let {auctionData} = await Marketplace.methods.getItemNFT(nft.nftData.tokenID).call();
         if (bidPrice > 0) {
             let minPrice = web3.utils.fromWei(auctionData.minPrice, "ether");
-            if (bidPrice < minPrice) message = 'Offer is over min price';
+            if (bidPrice < minPrice) message = 'Minimum price is ' + minPrice + 'BNB';
         }
 
         if (message) {
