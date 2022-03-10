@@ -19,7 +19,7 @@ export default function TradeNFT({ data }) {
     const wallet_info = useSelector(({ wallet }) => wallet.wallet_connected);
     const userData = useSelector((state) => state.auth.user);
 
-    const [nft, setNFT] = useState(data);
+    const [nft, setNFT] = useState();
     const [web3, setWeb3] = useState();
     const [Marketplace, setMarketplace] = useState();
     const [isLoading, setLoading] = useState(true);
@@ -39,11 +39,11 @@ export default function TradeNFT({ data }) {
 
         await axios.get(`${data.nftData.tokenURI}`).then(res => {
             const { data: metadata } = res;
-            setNFT({ ...nft, ...metadata });
-            const _price = !nft.auctionData.existance ? nft.marketData.price : (Number(nft.auctionData.currentBidPrice) ? nft.auctionData.currentBidPrice : nft.auctionData.minPrice);
-            const nftOwner =( (nft.nftData.owner).toLowerCase() == (userData.walletAddress).toLowerCase());
-            const bidOwner = (nft.auctionData.currentBidOwner).toLowerCase() == (userData.walletAddress).toLowerCase();
-            const _claimable = Date.parse(new Date(nft.auctionData.endAuction * 1000)) - Date.parse(new Date());
+            setNFT({ ...data, ...metadata });
+            const _price = !data.auctionData.existance ? data.marketData.price : (Number(data.auctionData.currentBidPrice) ? data.auctionData.currentBidPrice : data.auctionData.minPrice);
+            const nftOwner =( (data.nftData.owner).toLowerCase() == (userData.walletAddress).toLowerCase());
+            const bidOwner = (data.auctionData.currentBidOwner).toLowerCase() == (userData.walletAddress).toLowerCase();
+            const _claimable = Date.parse(new Date(data.auctionData.endAuction * 1000)) - Date.parse(new Date());
             
             setNFTPrice(_price);
             setNFTOwner(nftOwner);
@@ -60,22 +60,12 @@ export default function TradeNFT({ data }) {
 
     const buyNow = async() => {
 
-        if (!userData.walletAddress) {
-            toast.warning('Please log in', {
-                position: "top-center",
-                autoClose: 2000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored"
-            });
-            return;
-        }
+        let message = "";
+        if (!userData.walletAddress) message = "Please log in";
+        else if (!wallet_info) message = 'Please connect metamask';
 
-        if (!wallet_info) {
-            toast.warning('Please connect metamask', {
+        if (message) {
+            toast.warning(message, {
                 position: "top-center",
                 autoClose: 2000,
                 hideProgressBar: false,
@@ -120,6 +110,7 @@ export default function TradeNFT({ data }) {
                     progress: undefined,
                     theme: "colored"
                 });
+                await refresh();
             }
         } catch(err) {
             toast.error(err.message, {
@@ -138,38 +129,30 @@ export default function TradeNFT({ data }) {
 
     const placeBid = async() => {
 
-        if (!userData.walletAddress) {
-            toast.warning('Please log in', {
-                position: "top-center",
-                autoClose: 2000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored"
-            });
-            return;
-        }
-
-        if (!wallet_info) {
-            toast.warning('Please connect metamask', {
-                position: "top-center",
-                autoClose: 2000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored"
-            });
-            return;
-        }
-
+        let message = "";
+        if (!userData.walletAddress) message = 'Please log in';
+        else if (!wallet_info) message = 'Please connect metamask';
+        else if (bidPrice <= 0) message = 'Please reserve correct price';
         let {auctionData} = await Marketplace.methods.getItemNFT(nft.nftData.tokenID).call();
-        let lastPrice = web3.utils.fromWei(auctionData.currentBidPrice, "ether");
+        if (bidPrice > 0) {
+            let minPrice = web3.utils.fromWei(auctionData.minPrice, "ether");
+            if (bidPrice < minPrice) message = 'Offer is over min price';
+        }
 
-        if (!Number(lastPrice)) lastPrice = web3.utils.fromWei(auctionData.minPrice, "ether");
+        if (message) {
+            toast.error(message, {
+                position: "top-center",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored"
+            });
+            return;
+        }
+
         if (auctionData.existance) {
            try {
                 const price = web3.utils.toWei(bidPrice.toString(), "ether");
@@ -201,7 +184,7 @@ export default function TradeNFT({ data }) {
                     progress: undefined,
                     theme: "colored"
                 });
-                setTrading(false);
+                await refresh();
             } catch(err) {
                 toast.error(err.message, {
                     position: "top-center",
@@ -213,28 +196,18 @@ export default function TradeNFT({ data }) {
                     progress: undefined,
                     theme: "colored"
                 });
-                setTrading(false);
-           }
+            }
+            setTrading(false);
         }
     }
 
     const claimNFT = async() => {
-        if (!userData.walletAddress) {
-            toast.warning('Please log in', {
-                position: "top-center",
-                autoClose: 2000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored"
-            });
-            return;
-        }
+        let message = "";
+        if (!userData.walletAddress) message = 'Please log in';
 
-        if (!wallet_info) {
-            toast.warning('Please connect metamask', {
+        if (!wallet_info) message = 'Please connect metamask';
+        if (message) {
+            toast.warning(message, {
                 position: "top-center",
                 autoClose: 2000,
                 hideProgressBar: false,
@@ -254,7 +227,17 @@ export default function TradeNFT({ data }) {
 
             setTrading(true);
             await Marketplace.methods.claimNFT(nft.nftData.tokenID).send({ from: userData.walletAddress });
-
+            toast.info("Success claim", {
+                position: "top-center",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored"
+            });
+            await refresh();
         } catch(err) {
             toast.error(err.message, {
                 position: "top-center",
@@ -268,6 +251,99 @@ export default function TradeNFT({ data }) {
             });
         }
         setTrading(false);
+    }
+
+    const withdrawBid = async() => {
+        let message = "";
+        if (!userData.walletAddress) message = 'Please log in';
+
+        if (!wallet_info) message = 'Please connect metamask';
+        if (message) {
+            toast.warning(message, {
+                position: "top-center",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored"
+            });
+            return;
+        }
+
+        try {
+            const _bnbBalance = await web3.eth.getBalance(userData.walletAddress);
+
+            if (Number(_bnbBalance) < 210000 ) throw new Error("BNB balance is low");
+
+            setTrading(true);
+            await Marketplace.methods.withdrawBid(nft.nftData.tokenID).send({ from: userData.walletAddress });
+
+            toast.info("Success withdraw", {
+                position: "top-center",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored"
+            });
+            await refresh();
+        } catch(err) {
+            toast.error(err.message, {
+                position: "top-center",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored"
+            });
+        }
+        setTrading(false);
+    }
+
+    const openModal = () => {
+        let message = '';
+        if (!userData.walletAddress) message = 'Please log in';
+        else if (!wallet_info) message = 'Please connect metamask';
+        if (message) {
+          toast.warning(message, {
+              position: "top-center",
+              autoClose: 2000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored"
+          });
+          return;
+        }
+        setVisible(true);
+    }
+
+    const refresh = async() => {
+        const _NFT = await Marketplace.methods.getItemNFT(nft.nftData.tokenID).call();
+        setLoading(true);
+        await axios.get(`${_NFT.nftData.tokenURI}`).then(res => {
+            const { data: metadata } = res;
+            setNFT({ ..._NFT, ...metadata });
+            const _price = !_NFT.auctionData.existance ? _NFT.marketData.price : (Number(_NFT.auctionData.currentBidPrice) ? _NFT.auctionData.currentBidPrice : _NFT.auctionData.minPrice);
+            const nftOwner =( (_NFT.nftData.owner).toLowerCase() == (userData.walletAddress).toLowerCase());
+            const bidOwner = (_NFT.auctionData.currentBidOwner).toLowerCase() == (userData.walletAddress).toLowerCase();
+            const _claimable = Date.parse(new Date(_NFT.auctionData.endAuction * 1000)) - Date.parse(new Date());
+            
+            setNFTPrice(_price);
+            setNFTOwner(nftOwner);
+            setBidOwner(bidOwner);
+            setClaimable(_claimable);
+        });
+
+        setLoading(false);
     }
 
     return (
@@ -322,7 +398,7 @@ export default function TradeNFT({ data }) {
                                     nft.marketData.premiumStatus && 
                                     <span>
 
-                                        <a data-tip data-for={`premium-${nft.nftData.tokenID}`} className="bid-check"><i className="fal fa-sparkles"/></a>
+                                        <a data-tip data-for={`premium-${nft.nftData.tokenID}`} className="premium-nft"><i className="fal fa-sparkles"/></a>
                                         <ReactTooltip id={`premium-${nft.nftData.tokenID}`} type='info' effect="solid">
                                             <span>Premium NFT</span>
                                         </ReactTooltip>
@@ -339,12 +415,12 @@ export default function TradeNFT({ data }) {
                                 <div className="trade-btn-group mt-2">
                                     { !isNFTOwner && nft.marketData.marketStatus && (
                                         !nft.auctionData.existance
-                                            ? <span className="btn-main w-100" onClick={() => buyNow(nft.nftData.tokenID)} >Buy Now</span>
+                                            ? <span className="btn-main w-100" onClick={buyNow} >Buy Now</span>
                                             : (
-                                                !isBidOwner ? <span className="btn-main w-100" onClick={() => setVisible(true)}>Place Bid</span> : (
-                                                    claimable < 0 ?
-                                                    <span className="btn-main w-100" onClick={() => claimNFT(nft.nftData.tokenID)}>Claim NFT</span>
-                                                    : ""
+                                                !isBidOwner ? (claimable > 0 && <span className="btn-main w-100" onClick={openModal}>Place Bid</span>) : (
+                                                    claimable <= 0 ?
+                                                    <span className="btn-main w-100" onClick={claimNFT}>Claim NFT</span>
+                                                    : <span className="btn-main w-100" onClick={withdrawBid}>Withdraw Bid</span>
                                                 )
                                             )
                                         )
@@ -355,7 +431,7 @@ export default function TradeNFT({ data }) {
                         {
                             isTrading && 
                             <div className="trade-loader">
-                                <div class="nb-spinner"></div>
+                                <div className="nb-spinner"></div>
                             </div>
                         }
 
@@ -364,11 +440,11 @@ export default function TradeNFT({ data }) {
                             width="300"
                             height="200"
                             effect="fadeInUp"
-                            onClickAway={() => setVisible(false)}
+                            onClickAway={null}
                         >
                             <div className='p-5'>
                                 <div className='form-group'>
-                                    <label>Please input price.</label>
+                                    <label>Please reserve price.</label>
                                     <input
                                         type="number"
                                         className='form-control text-dark border-dark'
@@ -380,10 +456,10 @@ export default function TradeNFT({ data }) {
                                     <button
                                         className='btn-main btn-apply w-100 px-1'
                                         onClick={placeBid}
-                                    >Pleace Bid</button>
+                                    >Place</button>
                                     <button
                                         className='btn-main w-100'
-                                        onClick={close}
+                                        onClick={() => setVisible(false)}
                                     >Cancel</button>
                                 </div>
                             </div>

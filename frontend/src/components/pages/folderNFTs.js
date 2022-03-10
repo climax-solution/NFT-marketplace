@@ -43,6 +43,16 @@ const GlobalStyles = createGlobalStyle`
         height: 25px;
     }
 
+    .premium-nft {
+        position: absolute;
+        left: 15px;
+        bottom: 15px;
+        font-size: 25px !important;
+        color: turquoise;
+        width: 25px;
+        height: 25px;
+    }
+
     .wap-height {
         height: calc(100% - 120px);
     }

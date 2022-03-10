@@ -23,7 +23,7 @@ export default function AuctionSellModal({ visible, close, tokenID, web3, NFT, M
         
         let message = '';
         if (!wallet_info) message = 'Please connect metamask';
-        else if (price <= 0) message = 'Please input correct price';
+        else if (price <= 0) message = 'Please reserve correct price';
         else if (!day && !hour) message = 'Please choose duration';
 
         if (message) {
@@ -89,15 +89,23 @@ export default function AuctionSellModal({ visible, close, tokenID, web3, NFT, M
         }
     }
 
+    const _closeModal = () => {
+        setPrice('');
+        setDay(0);
+        setHour(0);
+        close();
+    }
+    
     return (
         <Modal
             visible={visible}
             width="400"
             height="300"
             effect="fadeInUp"
-            onClickAway={close}
+            onClickAway={null}
         >
             {
+                
                 isLoading ?
                     <div className='d-flex w-100 h-100 justify-content-center align-items-center'>
                         <div className='reverse-spinner'></div>
@@ -105,7 +113,7 @@ export default function AuctionSellModal({ visible, close, tokenID, web3, NFT, M
                 :
                 <div className='p-5'>
                     <div className='form-group'>
-                        <label>Please input price.</label>
+                        <label>Please reserve price.</label>
                         <input
                             type="number"
                             className='form-control text-dark border-dark'
@@ -159,7 +167,7 @@ export default function AuctionSellModal({ visible, close, tokenID, web3, NFT, M
                         >Apply</button>
                         <button
                             className='btn-main w-100'
-                            onClick={close}
+                            onClick={_closeModal}
                         >Cancel</button>
                     </div>
                 </div>
