@@ -1,10 +1,9 @@
-import React, {  lazy, Suspense, useEffect, useState } from "react";
+import React, {  lazy, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import getWeb3 from "../../utils/getWeb3";
 import Empty from "../components/Empty";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { createGlobalStyle } from 'styled-components';
-import Loading from "../components/Loading/Loading";
 
 
 const TradeNFT = lazy(() => import("../components/FolderNFT/tradeNFT"));

@@ -1,4 +1,4 @@
-import React, { useState,lazy, Suspense } from 'react';
+import React, { useState,lazy } from 'react';
 import axios from 'axios';
 import { phone } from "phone";
 import { createGlobalStyle } from 'styled-components';
@@ -8,7 +8,6 @@ import { UPDATE_AUTH } from '../../store/action/auth.action';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import CountryList from '../components/Form/CountryDropdown';
-import Loading from '../components/Loading/Loading';
 
 const TextInput = lazy(() => import('../components/Form/TextInput'));
 const PhoneInput = lazy(() => import('../components/Form/PhoneInput'));

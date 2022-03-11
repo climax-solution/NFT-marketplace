@@ -1,9 +1,8 @@
 import axios from "axios";
-import { lazy, Suspense, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { lazy, useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { UPDATE_LOADING_PROCESS } from "../../../store/action/auth.action";
 import getWeb3 from "../../../utils/getWeb3";
 
 const MusicArt = lazy(() => import("../Asset/music"));

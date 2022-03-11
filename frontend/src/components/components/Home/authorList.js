@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useEffect, useState, lazy, Suspense } from 'react';
+import React, { useEffect, useState, lazy } from 'react';
 import getWeb3 from '../../../utils/getWeb3';
 
 const Empty = lazy(() => import('../Empty'));

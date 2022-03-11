@@ -1,4 +1,4 @@
-import React, { useEffect, useState, lazy, Suspense } from "react";
+import React, { useEffect, useState, lazy } from "react";
 import { createGlobalStyle } from "styled-components";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
@@ -7,7 +7,6 @@ import Modal from 'react-awesome-modal';
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Carousel from "react-multi-carousel";
-import { UPDATE_LOADING_PROCESS } from "../../../store/action/auth.action";
 import getWeb3 from "../../../utils/getWeb3";
 
 import "react-multi-carousel/lib/styles.css";

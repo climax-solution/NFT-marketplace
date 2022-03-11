@@ -1,4 +1,4 @@
-import React, { useState, useEffect, lazy, Suspense } from "react";
+import React, { useState, useEffect, lazy } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 
 const Empty = lazy(() => import("../Empty"));

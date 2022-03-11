@@ -1,5 +1,5 @@
 import axios from "axios";
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import getWeb3 from "../../../utils/getWeb3";

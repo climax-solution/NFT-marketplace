@@ -1,6 +1,5 @@
-import React, { lazy, Suspense } from 'react';
+import React, { lazy } from 'react';
 import { createGlobalStyle } from 'styled-components';
-import Loading from '../components/Loading/Loading';
 
 const Particle = lazy(() => import('../components/Home/Particle'));
 const SliderMainParticle = lazy(() => import('../components/Home/SliderMainParticle'));
