@@ -50,7 +50,7 @@ export default function AuctionSellModal({ visible, close, tokenID, web3, NFT, M
 
             await NFT.methods.approve(marketplace_addr, tokenID).send({from : initialUser.walletAddress})
             .on('receipt', async(rec) => {
-                await Marketplace.methods.openTradeToAuction(tokenID, nftPrice, Math.floor(day * 24 + hour)).send({ from: initialUser.walletAddress, value: nftPrice / 40 });
+                await Marketplace.methods.openTradeToAuction(tokenID, nftPrice, Math.floor(day * 24 + hour * 1)).send({ from: initialUser.walletAddress, value: nftPrice / 40 });
 
                 const data = {
                     tokenID: tokenID,
