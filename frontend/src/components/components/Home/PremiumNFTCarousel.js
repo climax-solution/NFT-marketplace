@@ -90,7 +90,7 @@ export default function () {
     if (Marketplace) await fetchNFT();
   },[initialUser, Marketplace])
 
-  const buyNow = async(id, index) => {
+  const buyNow = async(id) => {
   
     if (!wallet_info) {
       toast.warning('Please connect metamask', {
@@ -106,9 +106,9 @@ export default function () {
       return;
     }
 
+    setActiveID(id);
     try {
-
-        dispatch(UPDATE_LOADING_PROCESS(true));
+        // dispatch(UPDATE_LOADING_PROCESS(true));
         let { marketData, auctionData } = await Marketplace.methods.getItemNFT(id).call();
         if (marketData.marketStatus && !auctionData.existance) {
 
@@ -139,11 +139,9 @@ export default function () {
             progress: undefined,
             theme: "colored"
           });
-          let lists = [ ...list];
-          lists.splice(index, 1);
-          setList(lists);
         }
     } catch(err) {
+      console.log(err);
       toast.error(err.message, {
         position: "top-center",
         autoClose: 5000,
@@ -155,7 +153,9 @@ export default function () {
         theme: "colored"
       });
     }
-    dispatch(UPDATE_LOADING_PROCESS(false));
+    await fetchNFT();
+    setActiveID(-1);
+    // dispatch(UPDATE_LOADING_PROCESS(false));
   }
 
   const placeBid = async() => {
@@ -231,11 +231,67 @@ export default function () {
                 theme: "colored"
             });
        }
-       setActiveID(-1);
-       setActiveIndex(-1);
-       setTrading(false);
-       setVisible(false);
+      await fetchNFT();
+      setActiveID(-1);
+      setActiveIndex(-1);
+      setTrading(false);
+      setVisible(false);
     }
+  }
+
+  const withdrawBid = async(id) => {
+    let message = "";
+    if (!initialUser.walletAddress) message = 'Please log in';
+    if (!wallet_info) message = 'Please connect metamask';
+    if (message) {
+        toast.warning(message, {
+            position: "top-center",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored"
+        });
+        return;
+    }
+
+    setActiveID(id);
+    try {
+        const _bnbBalance = await web3.eth.getBalance(initialUser.walletAddress);
+
+        if (Number(_bnbBalance) < 210000 ) throw new Error("BNB balance is low");
+
+        setTrading(true);
+        await Marketplace.methods.withdrawBid(id).send({ from: initialUser.walletAddress });
+
+        toast.info("Success withdraw", {
+            position: "top-center",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored"
+        });
+        await refresh();
+    } catch(err) {
+        toast.error(err.message, {
+            position: "top-center",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored"
+        });
+    }
+    await fetchNFT();
+    setActiveID(-1);
+    setTrading(false);
   }
 
   const fetchNFT = async() => {
@@ -243,7 +299,7 @@ export default function () {
     setCarouselLoading(true);
     try {
       let list = await Marketplace.methods.getPremiumNFTList().call();
-      list = list.filter(item => item.marketData.premiumStatus);
+      list = list.filter(item => item.marketData.premiumStatus && item.marketData.marketStatus);
       list.sort((before, after) => before.marketData.price - after.marketData.price);
       if (list.length > 10) list = list.slice(0, 10);
       let mainList = [];
@@ -321,7 +377,7 @@ export default function () {
                     const { auctionData: auction, marketData: market } = nft;
                     const price = !auction.existance ? market.price : auction.minPrice;
                     return (
-                      <div className="nft__item justify-content-between" key={index}>
+                      <div className="nft__item position-relative justify-content-between" key={index}>
                           <div className="nft__item_wrap">
                             {
                                 (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} onClick={() => navigate(`/item-detail/${nft.nftData.tokenID}`)} className="lazy nft__item_preview ratio-1-1" alt="" role="button"/>
@@ -347,12 +403,18 @@ export default function () {
                                   (
                                     nft.nftData.owner).toLowerCase() != (initialUser.walletAddress).toLowerCase() ? 
                                     (
-                                      nft.auctionData.existance ? ( !bidOwner ? <span onClick={() => openModal(nft.nftData.tokenID, index) }>Place bid</span> : "")
+                                      nft.auctionData.existance ? ( !bidOwner ? <span onClick={() => openModal(nft.nftData.tokenID, index) }>Place bid</span> : <span onClick={() => withdrawBid(nft.nftData.tokenID, index) }>Withdraw bid</span>)
                                       : <span onClick={() => buyNow(nft.nftData.tokenID, index)}>Buy now</span>
                                     ) : ""
                                 }
                               </div>
-                          </div> 
+                          </div>
+                          {
+                            activeID == nft.nftData.tokenID && 
+                            <div className="trade-loader w-100 start-0">
+                                <div className="nb-spinner"></div>
+                            </div>
+                          }
                       </div>
                     )
                   })
