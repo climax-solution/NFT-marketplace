@@ -87,9 +87,6 @@ const Collection= function() {
               }
             </InfiniteScroll>
             {
-              !loaded && <Loading/>
-            }
-            {
               loaded && !nfts.length && !restList.length && <Empty/>
             }
         </section>
