@@ -1,10 +1,9 @@
-import React, { useState, lazy, Suspense } from "react";
+import React, { useState, lazy } from "react";
 import { createGlobalStyle } from 'styled-components';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from "react-redux";
 import { UPDATE_AUTH } from "../../store/action/auth.action";
 import { WalletConnect } from "../../store/action/wallet.action";
-import Loading from "../components/Loading/Loading";
 
 const SellingNFT = lazy(() => import('../components/Profile/SellingNFT'));
 const NotSellingNFT = lazy(() => import('../components/Profile/NotSellingNFT'));

@@ -15,7 +15,7 @@ export default function UserInfo() {
             pauseOnHover: true,
             draggable: true,
             progress: undefined,
-        theme: "colored"
+            theme: "colored"
         });
     }
     
@@ -28,8 +28,8 @@ export default function UserInfo() {
                     <span className="profile_username">@{userData.username}</span>
                     <span id="wallet" className="profile_wallet mt-1">{userData.walletAddress && ((userData.walletAddress).substr(0, 4) + '...' + (userData.walletAddress).substr(-4))}</span>
                     <CopyToClipboard
-                    text={userData.walletAddress}
-                    onCopy={copyAlert}
+                        text={userData.walletAddress}
+                        onCopy={copyAlert}
                     >
                     <button id="btn_copy" className="position-relative ms-2">Copy</button>
                     </CopyToClipboard>

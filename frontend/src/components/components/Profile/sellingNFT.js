@@ -1,12 +1,12 @@
-import React, { useState, useEffect, lazy, Suspense } from "react";
+import React, { useState, useEffect, lazy } from "react";
 import { useSelector } from "react-redux";
 import Select from 'react-select';
 import InfiniteScroll from "react-infinite-scroll-component";
 import getWeb3 from "../../../utils/getWeb3";
-import PremiumNFTLoading from "../Loading/PremiumNFTLoading";
 
 const Empty = lazy(() => import("../Empty"));
 const NFTItem = lazy(() => import("./sellingNFTItem"));
+const PremiumNFTLoading = lazy(() => import("../Loading/PremiumNFTLoading"));
 
 const customStyles = {
     option: (base, state) => ({
@@ -92,30 +92,28 @@ export default function SellingNFT() {
     
     return (
         <>
-            <>
-                <Select
-                    className='select1 mx-auto me-0 mx-200px'
-                    styles={customStyles}
-                    menuContainerStyle={{'zIndex': 999}}
-                    value={activeCategory}
-                    options={categories}
-                    onChange={(value) => {
-                        setCategory(value);
-                    }}
-                />
-                <InfiniteScroll
-                    dataLength={nfts.length}
-                    next={fetchNFT}
-                    hasMore={restList.length ? true : false}
-                    loader={<PremiumNFTLoading/>}
-                    className="row overflow-unset"
-                >
-                    { nfts.map( (nft, index) => (
-                        <NFTItem data={nft} key={index} remove={() => removeItem(index)} NFT={nftContract} Marketplace={marketContract}/>
-                    ))}
-                </InfiniteScroll>
-                { loaded && !nfts.length && <Empty/>}
-            </>
+            <Select
+                className='select1 mx-auto me-0 mx-200px'
+                styles={customStyles}
+                menuContainerStyle={{'zIndex': 999}}
+                value={activeCategory}
+                options={categories}
+                onChange={(value) => {
+                    setCategory(value);
+                }}
+            />
+            <InfiniteScroll
+                dataLength={nfts.length}
+                next={fetchNFT}
+                hasMore={restList.length ? true : false}
+                loader={<PremiumNFTLoading/>}
+                className="row overflow-unset"
+            >
+                { nfts.map( (nft, index) => (
+                    <NFTItem data={nft} key={index} remove={() => removeItem(index)} NFT={nftContract} Marketplace={marketContract}/>
+                ))}
+            </InfiniteScroll>
+            { !loaded ? <PremiumNFTLoading/> : (!nfts.length && <Empty/>) }
         </>
     )
 }
