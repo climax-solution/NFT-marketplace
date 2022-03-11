@@ -1,9 +1,16 @@
 import axios from "axios";
 import { useState } from "react";
+import Skeleton from "react-loading-skeleton";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import { createGlobalStyle } from "styled-components";
 import { UPDATE_AUTH } from "../../../store/action/auth.action";
-import Loading from "../Loading/Loading";
+
+const GlobalStyles = createGlobalStyle`
+  .avatar-image {
+    max-width: 150px;
+  }
+`;
 
 export default function Avatar() {
     
@@ -38,7 +45,7 @@ export default function Avatar() {
               pauseOnHover: true,
               draggable: true,
               progress: undefined,
-        theme: "colored"
+              theme: "colored"
             });
           }).catch(err => {
             toast.error("Update failed", {
@@ -49,7 +56,7 @@ export default function Avatar() {
               pauseOnHover: true,
               draggable: true,
               progress: undefined,
-        theme: "colored"
+              theme: "colored"
             });
           })
           setLoading(false);
@@ -62,29 +69,36 @@ export default function Avatar() {
 
     return (
       <>
-        { isLoading && <Loading/> }
+        <GlobalStyles/>
         <div
-            className="avatar-image position-relative w-50 overflow-hidden"
-            onMouseEnter={() => setOpenChange(true)}
-            onMouseLeave={() => setOpenChange(false)}
+          className="avatar-image position-relative w-50"
+          onMouseEnter={() => isLoading ? null : setOpenChange(true)}
+          onMouseLeave={() => isLoading ? null : setOpenChange(false)}
         >
-            <img
-              src={`http://nftdevelopments.co.nz/avatar/${userData.avatar ? userData.avatar : "empty-avatar.png"}`}
-              className="position-absolute index-avatar"
-              onError={failedLoadImage}
-              alt=""
-              crossOrigin="true"
-            />
-            { openChange &&
-            <label className="avatar-change">
-                <i className="fa fa-edit edit-btn m-0 d-inline-block"/>
-                <input
-                type="file"
-                accept="image/*"
-                onChange={updateAvatar}
-                hidden
+            {
+              isLoading ? (
+                <Skeleton className="position-absolute rounded-circle index-avatar"/>
+              )
+              : <>
+                <img
+                  src={`http://nftdevelopments.co.nz/avatar/${userData.avatar ? userData.avatar : "empty-avatar.png"}`}
+                  className="position-absolute index-avatar"
+                  onError={failedLoadImage}
+                  alt=""
+                  crossOrigin="true"
                 />
-            </label>
+                { openChange &&
+                  <label className="avatar-change">
+                      <i className="fa fa-edit edit-btn m-0 d-inline-block"/>
+                      <input
+                      type="file"
+                      accept="image/*"
+                      onChange={updateAvatar}
+                      hidden
+                      />
+                  </label>
+                }
+              </>
             }
         </div>
       </>
