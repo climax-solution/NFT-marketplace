@@ -1,8 +1,8 @@
-import React, {useEffect, useState, Suspense, lazy} from 'react';
+import React, {useEffect, useState, lazy} from 'react';
 import InfiniteScroll from "react-infinite-scroll-component";
 import { createGlobalStyle } from 'styled-components';
 import axios from 'axios';
-import Loading from '../components/Loading/Loading';
+import ActivityLoading from '../components/Loading/ActivityLoading';
 
 const ActivityItem = lazy(() => import("../components/Activity/row"));
 const Empty = lazy(() => import('../components/Empty'));
@@ -71,6 +71,34 @@ const GlobalStyles = createGlobalStyle`
   .active i {
     color: white !important;
   }
+
+  .react-loading-skeleton {
+    background-color: #2a2b2c !important;
+    background-image: linear-gradient(90deg ,#2a2b2c,#444,#2a2b2c ) !important;
+  }
+
+  .mx-150px {
+    max-width: 150px;
+  }
+
+  .w-100px {
+    width: 100px !important;
+  }
+
+  .loading-item {
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    position: relative;
+    padding-right: 100px;
+    background: rgba(255, 255, 255, 0.025);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0px 0px 8px 0px rgb(0 0 0 / 30%);
+  }
+
+  .ratio-1-1 {
+    aspect-ratio: 1;
+  }
 `;
 
 const Activity= function() {
@@ -135,7 +163,7 @@ const Activity= function() {
                   dataLength={items.length}
                   next={_loadNextPage}
                   hasMore={moreItems}
-                  loader={"...."}
+                  loader={<ActivityLoading/>}
                   className='activity-list'
                 >
                   {
