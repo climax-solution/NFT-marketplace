@@ -69,7 +69,6 @@ export default function AuctionSellModal({ visible, close, tokenID, web3, NFT, M
                     theme: "colored"
                 });
                 await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).catch(res => {}).catch(err => { });
-                setLoading(false);
                 close(true);
             });
             
@@ -84,9 +83,9 @@ export default function AuctionSellModal({ visible, close, tokenID, web3, NFT, M
                 progress: undefined,
                 theme: "colored"
             });
-            setLoading(false);
             close();
         }
+        setLoading(false);
     }
 
     const _closeModal = () => {

@@ -66,9 +66,6 @@ const GlobalStyles = createGlobalStyle`
       background: #fff;
     }
   }
-  .ratio-1-1 {
-    aspect-ratio: 1;
-  }
 `;
 
 

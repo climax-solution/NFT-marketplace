@@ -1,13 +1,5 @@
 import { CopyToClipboard } from "react-copy-to-clipboard/lib/Component";
 import { toast } from "react-toastify";
-import { createGlobalStyle } from "styled-components";
-
-const GlobalStyles = createGlobalStyle`
-  .ratio-1-1 {
-    aspect-ratio: 1;
-  }
-`;
-
 export default function Banner({ userData }) {
 
     const copyAlert = () => {
@@ -29,7 +21,6 @@ export default function Banner({ userData }) {
 
     return (
         <>
-            <GlobalStyles/>
             <section id='profile_banner' className='jumbotron breadcumb no-bg' style={{backgroundImage: `url(${'/img/background/4.jpg'})`}}>
                 <div className='mainbreadcumb'>
                 </div>

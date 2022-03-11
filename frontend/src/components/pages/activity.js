@@ -96,9 +96,6 @@ const GlobalStyles = createGlobalStyle`
     box-shadow: 0px 0px 8px 0px rgb(0 0 0 / 30%);
   }
 
-  .ratio-1-1 {
-    aspect-ratio: 1;
-  }
 `;
 
 const Activity= function() {
