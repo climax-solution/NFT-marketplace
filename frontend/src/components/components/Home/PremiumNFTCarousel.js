@@ -1,7 +1,6 @@
 import React, { useEffect, useState, lazy } from "react";
 import { createGlobalStyle } from "styled-components";
 import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
 import axios from "axios";
 import Modal from 'react-awesome-modal';
 import { Link, useNavigate } from "react-router-dom";
@@ -10,7 +9,6 @@ import Carousel from "react-multi-carousel";
 import getWeb3 from "../../../utils/getWeb3";
 
 import "react-multi-carousel/lib/styles.css";
-
 
 const PremiumNFTLoading = lazy(() => import('../Loading/PremiumNFTLoading'));
 const Empty = lazy(() => import("../Empty"));
@@ -43,7 +41,6 @@ const GlobalStyles = createGlobalStyle`
 
 export default function () {
 
-  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const initialUser = useSelector(({ auth }) => auth.user);
@@ -107,7 +104,6 @@ export default function () {
 
     setActiveID(id);
     try {
-        // dispatch(UPDATE_LOADING_PROCESS(true));
         let { marketData, auctionData } = await Marketplace.methods.getItemNFT(id).call();
         if (marketData.marketStatus && !auctionData.existance) {
 
@@ -154,7 +150,6 @@ export default function () {
     }
     await fetchNFT();
     setActiveID(-1);
-    // dispatch(UPDATE_LOADING_PROCESS(false));
   }
 
   const placeBid = async() => {

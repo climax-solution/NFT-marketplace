@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
 export default function Buyer ({ user, web3 }) {
-
     const navigate = useNavigate();
 
     return (

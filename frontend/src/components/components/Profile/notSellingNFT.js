@@ -3,9 +3,10 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { useSelector } from "react-redux";
 import NotSaleNFT from "./notSellingNFTItem";
 import getWeb3 from "../../../utils/getWeb3";
-import PremiumNFTLoading from "../Loading/PremiumNFTLoading";
 
 const Empty = lazy(() => import("../Empty"));
+const PremiumNFTLoading = lazy(() => import("../Loading/PremiumNFTLoading"));
+
 export default function NotSellingNFT() {
 
     const initUserData = useSelector((state) => state.auth.user);
