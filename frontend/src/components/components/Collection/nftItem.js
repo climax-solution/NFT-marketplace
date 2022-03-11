@@ -1,5 +1,5 @@
 import axios from "axios";
-import { lazy, Suspense, useEffect, useState } from "react"
+import { lazy, useEffect, useState } from "react"
 import { useNavigate } from "react-router-dom";
 import ItemLoading from "../Loading/ItemLoading";
 

@@ -1,9 +1,8 @@
-import React, { useEffect, useState, lazy, Suspense } from "react";
+import React, { useEffect, useState, lazy } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import getWeb3 from "../../utils/getWeb3";
 import InfiniteScroll from "react-infinite-scroll-component";
-import Loading from "../components/Loading/Loading";
 import { createGlobalStyle } from 'styled-components';
 
 const Footer = lazy(() => import('../components/footer'));

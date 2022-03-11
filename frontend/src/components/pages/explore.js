@@ -1,4 +1,4 @@
-import React, { useEffect, useState, lazy, Suspense } from 'react';
+import React, { useEffect, useState, lazy } from 'react';
 import Select from 'react-select';
 import { createGlobalStyle } from 'styled-components';
 import getWeb3 from '../../utils/getWeb3';
