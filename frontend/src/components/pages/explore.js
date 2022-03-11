@@ -3,7 +3,7 @@ import Select from 'react-select';
 import { createGlobalStyle } from 'styled-components';
 import getWeb3 from '../../utils/getWeb3';
 import categoryOptions from "../../config/category.json";
-import Loading from '../components/Loading/Loading';
+import PremiumNFTLoading from '../components/Loading/PremiumNFTLoading';
 
 const FolderList = lazy(() => import('../components/Explore/FolderList'));
 const Footer = lazy(() => import('../components/footer'));
@@ -82,6 +82,7 @@ const explore = () => {
   const [activeCategory, setCategory] = useState({ value:'', label: 'All categories' });
   const [searchKwd, setRealKwd] = useState('');
   const [tmpKwd, setTmpKwd] = useState('');
+  const [isLoading, setLoading] = useState(false);
 
   useEffect(async() => {
     const { instanceMarketplace } = await getWeb3();
@@ -95,6 +96,7 @@ const explore = () => {
   },[Marketplace, activeCategory, searchKwd])
 
   const filterFolder = async() => {
+    setLoading(true);
     let gradList = await Marketplace.methods.getFolderList().call();
     let gradList1 = [];
     for(let idx in gradList) {
@@ -103,6 +105,7 @@ const explore = () => {
     gradList1 = gradList1.filter(item => ((item[0]).toLowerCase()).search(searchKwd.toLowerCase()) > -1);
     if (activeCategory.value) gradList1 = gradList1.filter(item => item[1] == activeCategory.value);
     setFolderList(gradList1);
+    setLoading(false);
   }
 
   return(
@@ -164,7 +167,7 @@ const explore = () => {
               </div>
             </div>
           </div>
-          <FolderList data={folderList} _insMarketplace={Marketplace}/>
+          { isLoading ? <PremiumNFTLoading/> : <FolderList data={folderList} _insMarketplace={Marketplace}/> }
         </section>
         <Footer />
       </>
