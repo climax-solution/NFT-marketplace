@@ -1,13 +1,10 @@
-import React, { useEffect, useState, lazy, Suspense } from "react";
+import React, { useEffect, useState, lazy } from "react";
 import { createGlobalStyle } from 'styled-components';
 import { useParams } from "react-router-dom";
 import getWeb3 from "../../utils/getWeb3";
 import axios from "axios";
 import Modal from 'react-awesome-modal';
-
-import Loading from "../components/Loading/Loading";
-import { UPDATE_LOADING_PROCESS } from "../../store/action/auth.action";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
 
 const Clock = lazy(() => import("../components/Clock"));
@@ -45,7 +42,6 @@ const GlobalStyles = createGlobalStyle`
 const NFTItem = () => {
 
     const params = useParams();
-    const dispatch = useDispatch();
 
     const wallet_info = useSelector(({ wallet }) => wallet.wallet_connected);
     const userData = useSelector((state) => state.auth.user);
@@ -243,6 +239,59 @@ const NFTItem = () => {
         }
     }
 
+    const withdrawBid = async() => {
+        let message = "";
+        if (!userData.walletAddress) message = 'Please log in';
+
+        if (!wallet_info) message = 'Please connect metamask';
+        if (message) {
+            toast.warning(message, {
+                position: "top-center",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored"
+            });
+            return;
+        }
+
+        try {
+            const _bnbBalance = await web3.eth.getBalance(userData.walletAddress);
+
+            if (Number(_bnbBalance) < 210000 ) throw new Error("BNB balance is low");
+
+            setTrading(true);
+            await Marketplace.methods.withdrawBid(nft.nftData.tokenID).send({ from: userData.walletAddress });
+
+            toast.info("Success withdraw", {
+                position: "top-center",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored"
+            });
+        } catch(err) {
+            toast.error(err.message, {
+                position: "top-center",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored"
+            });
+        }
+        setUpdate(true);
+        setLoading(false);
+    }
+
     const claimNFT = async() => {
         let message = '';
         if (!userData.walletAddress) message = 'Please log in';
@@ -355,7 +404,7 @@ const NFTItem = () => {
                                                 !isBidOwner ? <span className="btn-main mx-auto py-3 w-50 mt-2" onClick={openModal}>Place Bid</span> : (
                                                     claimable <= 0 ?
                                                     <span className="btn-main mx-auto py-3 w-50 mt-2" onClick={claimNFT}>Claim NFT</span>
-                                                    : <span className="btn-main mx-auto py-3 w-50 mt-2" onClick={claimNFT}>Withdraw Bid</span>
+                                                    : <span className="btn-main mx-auto py-3 w-50 mt-2" onClick={withdrawBid}>Withdraw Bid</span>
                                                 )
                                             )
                                         )
