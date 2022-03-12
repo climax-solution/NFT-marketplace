@@ -54,6 +54,10 @@ const UserSchema = Schema({
         default: 'ROLE_VISITOR',
         enum: ['ROLE_VISITOR', 'ROLE_CREATOR', 'ROLE_ADMIN']
     },
+    verified: {
+        type: Boolean,
+        default: false
+    },
     resetPasswordToken: {
         type: String
     },
