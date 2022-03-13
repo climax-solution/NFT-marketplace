@@ -50,7 +50,7 @@ const GlobalStyles = createGlobalStyle`
 
   .trade-btn-group {
     span {
-        padding: 2px 10px;
+      padding: 2px 10px;
     }
   }
 

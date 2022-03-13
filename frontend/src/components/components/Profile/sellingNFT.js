@@ -93,7 +93,7 @@ export default function SellingNFT() {
     return (
         <>
             <Select
-                className='select1 mx-auto me-0 mx-200px'
+                className='select1 mx-auto mb-3 me-0 mx-200px'
                 styles={customStyles}
                 menuContainerStyle={{'zIndex': 999}}
                 value={activeCategory}
