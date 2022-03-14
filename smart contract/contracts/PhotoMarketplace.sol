@@ -2,322 +2,88 @@
 pragma solidity ^0.8.0;
 pragma experimental ABIEncoderV2;
 
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import { NFTD } from "./NFTD.sol";
 
-contract Marketplace  {
+contract Marketplace {
 
-    address private _market_owner;
-    address private white_user;
-    uint256 public premiumLimit = 2592000;
-    uint256 public minAuctionPrice = 100000000000000000;
+    using SafeMath for uint256;
+
+    string public constant salt = "NFTD MARKETPLACE";
+    mapping(address => bool) public whitelist;
+    mapping(address => uint) public nonces;
 
     NFTD public flexNFT;
-    mapping(uint => MarketData) private _nftData;
-    mapping(uint => bool) private _trading;
+    // IERC20 public WETH = IERC20(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2); //mainnet weth
+    IERC20 public WETH = IERC20(0xc778417E063141139Fce010982780140Aa0cD5Ab); //ropsten weth
 
-    event NFTPremiumStatusChanged(uint256 tokenId, bool newState, uint timeStamp);
-    event NFTBuy(address owner, address buyer, uint tokenId);
-    event OpenTradeToDirect(address owner, uint tokenID, uint256 price);
-    event CloseTradeToDirect(address owner, uint tokenID);
-    event OpenTradeToAuction(address owner, uint tokenID, uint period);
-    event CloseTradeToAuction(address owner, uint tokenID);
-    event PlaceBid(address owner, uint256 bidPrice);
-    event WithdrawBid(address owner, uint tokenID);
-    event ClaimNFT(address winner, uint tokenID, uint256 price);
+    uint public fee = 250;  // 2.5%
+    address public _market_owner;  //fee collector
 
-    struct MarketData {
-        uint price;
-        bool marketStatus;
-        bool existance;
-        bool premiumStatus;
-        uint256 premiumTimestamp;
-    }
-
-    struct ItemNFT {
-        NFTD.ItemNFT nftData;
-        MarketData marketData;
-        Auction auctionData;
-    }
-
-    struct FolderList {
-        string folder;
-        string category;
-        uint[2] wide;
-    }
-
-    struct Auction {
-        address currentBidOwner;
-        uint256 currentBidPrice;
-        uint256 endAuction;
-        uint256 bidCount;
-        uint256 minPrice;
-        bool existance;
-    }
-
-    FolderList[] public sub_folders;
-    mapping(uint => Auction) public auctions;
-
-    constructor(address _nftNFT, address owner, address _whiteUser) {
-        flexNFT = NFTD(_nftNFT);
-        _market_owner = owner;
-        white_user = _whiteUser;
+    constructor(address _nft, address market_owner_) {
+        flexNFT = NFTD(_nft);
+        _market_owner = market_owner_;
     }
 
     modifier onlyOwner() {
-        require(_market_owner == msg.sender, "Not owner");
+        require(msg.sender == _market_owner, "account is not market owner");
         _;
     }
 
-    modifier isTrading(uint tokenID) {
-        _trading[tokenID] = true;
-        _;
-        _trading[tokenID] = false;
-    }
+    function buy(uint tokenId, address from, uint price, bool is_premium, bytes memory signature) external payable {
+        address to = msg.sender;
+        require(msg.value >= price, "insufficient price");
+        require(flexNFT.ownerOf(tokenId) == from, "wrong owner");
+        bytes32 digest = keccak256(abi.encodePacked(salt, keccak256(abi.encodePacked(nonces[from] ++, from, tokenId, price, is_premium))));
+        address recoveredAddress = ECDSA.recover(digest, signature);
+        require(recoveredAddress == from, "invalid signature");
+        flexNFT.transferFrom(from, to, tokenId);
+        uint feeValue;
+        uint royaltyFee;
+        NFTD.Royalty memory royalty = flexNFT.getRoyalty(tokenId);
 
-    function openTradeToDirect(uint tokenID) external isTrading(tokenID) payable {
-        require(!_trading[tokenID], "This NFT is processing by someone");
-        require(msg.sender == flexNFT.ownerOf(tokenID), "Not owner");
-        require(!_nftData[tokenID].marketStatus, "Already on sale");
-        require(!auctions[tokenID].existance, "Already on auction");
-
-        _addDataIfNotExist(tokenID);
-
-        if (white_user == msg.sender) payable(white_user).transfer(msg.value);
-        else payable(_market_owner).transfer(msg.value);
-
-        _nftData[tokenID].marketStatus = true;
-        _nftData[tokenID].price = msg.value * 40;
-
-        emit OpenTradeToDirect(msg.sender, tokenID, msg.value * 40);
-    }
-
-    function closeTradeToDirect(uint tokenID) external isTrading(tokenID) payable {
-        require(!_trading[tokenID], "This NFT is processing by someone");
-        require(msg.sender == flexNFT.ownerOf(tokenID), "Not owner");
-        require(_nftData[tokenID].marketStatus, "Already down sale");
-        require(!auctions[tokenID].existance, "Already on auction");
-        require(msg.value >= _nftData[tokenID].price / 40, "Tax is not enough");
-
-        _addDataIfNotExist(tokenID);
-
-        if (white_user == msg.sender) payable(white_user).transfer(msg.value);
-        else payable(_market_owner).transfer(msg.value);
-
-        _nftData[tokenID].marketStatus = false;
-        flexNFT.cancelTrade(tokenID);
-
-        emit CloseTradeToDirect(msg.sender, tokenID);
-    }
-
-    function openTradeToAuction(uint tokenID, uint auctionPrice, uint period) external isTrading(tokenID) payable {
-        require(!_trading[tokenID], "This NFT is processing by someone");
-        require(msg.sender == flexNFT.ownerOf(tokenID), "Not owner");
-        require(!_nftData[tokenID].marketStatus, "Already on sale");
-        require(!auctions[tokenID].existance, "Already on auction");
-        require(auctionPrice >= minAuctionPrice, "Auction price must be higher than min price");
-
-        auctions[tokenID] = Auction({
-            currentBidOwner: address(0),
-            currentBidPrice: 0,
-            endAuction: block.timestamp + period * 1 hours,
-            bidCount: 0,
-            minPrice: auctionPrice,
-            existance: true
-        });
-
-        _nftData[tokenID].marketStatus = true;
-        
-        emit OpenTradeToAuction(msg.sender, tokenID, period);
-    }
-
-    function closeTradeToAuction(uint tokenID) external isTrading(tokenID) payable {
-        require(!_trading[tokenID], "This NFT is processing by someone");
-        require(msg.sender == flexNFT.ownerOf(tokenID), "Not owner");
-        require(_nftData[tokenID].marketStatus, "Already on sale");
-        require(auctions[tokenID].existance, "Already on auction");
-        require(auctions[tokenID].currentBidPrice == 0, "Bid is existing");
-
-        delete auctions[tokenID];
-        _nftData[tokenID].marketStatus = false;
-
-        emit CloseTradeToAuction(msg.sender, tokenID);
-    }
-
-    function _addDataIfNotExist(uint tokenID) private {
-        if (_nftData[tokenID].existance == true) return;
-        _nftData[tokenID] = MarketData({
-            price : 0, 
-            marketStatus : false, 
-            existance : true, 
-            premiumStatus : false, 
-            premiumTimestamp : 0
-        });
-    }
-
-    function getItemNFT(uint tokenID) public view returns (ItemNFT memory _item) {
-        _item = ItemNFT ({
-            nftData : flexNFT.getItemNFT(tokenID), 
-            marketData : getMarketData(tokenID),
-            auctionData: auctions[tokenID]
-        });
-    }
-    
-    function getMarketData(uint tokenID) internal view returns (MarketData memory marketData) {
-        marketData = _nftData[tokenID];
-        if ((marketData.premiumStatus) && (block.timestamp - marketData.premiumTimestamp > premiumLimit)) {
-            marketData.premiumStatus = false;
-            marketData.premiumTimestamp = 0;
+        if(!whitelist[from]) {
+          feeValue = msg.value.mul(fee).div(10000);
+          if (royalty.fee > 0) royaltyFee = msg.value.mul(royalty.fee).div(10000);
         }
-        return marketData;
+        if(feeValue > 0) payable(_market_owner).transfer(feeValue);
+        if (royaltyFee > 0) payable(royalty.receiver).transfer(royaltyFee);
+        payable(from).transfer(msg.value - feeValue - royaltyFee);
     }
 
-    function buyNFT(uint tokenID) external isTrading(tokenID) payable {
-        require(!_trading[tokenID], "This NFT is processing by someone");
-        MarketData memory marketData = _nftData[tokenID];
-        require(marketData.marketStatus, "Not able to buy");
-        require(!auctions[tokenID].existance, "Already on auction");
-        
-        address _seller = flexNFT.ownerOf(tokenID);    // Owner
-        address payable seller = payable(_seller);  // Convert owner address with payable
+    function sell(uint tokenId, address to, uint price, bytes memory signature) external {
+        address from = msg.sender;
+        require(WETH.balanceOf(to) >= price, "payer doen't have enough price");
+        require(flexNFT.ownerOf(tokenId) == from, "wrong owner");
+        bytes32 digest = keccak256(abi.encodePacked(salt, keccak256(abi.encodePacked(nonces[to] ++, to, tokenId, price))));
+        address recoveredAddress = ECDSA.recover(digest, signature);
+        require(recoveredAddress == to, "invalid signature");
+        flexNFT.transferFrom(from, to, tokenId);
+        uint feeValue;
+        uint royaltyFee;
+        NFTD.Royalty memory royalty = flexNFT.getRoyalty(tokenId);
 
-        uint buyAmount = marketData.price;
-        require (msg.value == buyAmount, "Balance should be equal to the buyAmount");
-
-        if (marketData.premiumStatus) {
-            seller.transfer(buyAmount * 95 / 100);
-            if (white_user == msg.sender) payable(white_user).transfer(buyAmount / 20); //white user
-            else payable(_market_owner).transfer(buyAmount / 20);
-        }
-        else {
-            seller.transfer(buyAmount * 97 / 100);
-            if (white_user == msg.sender) payable(white_user).transfer(buyAmount * 3 / 100); //white user
-            else payable(_market_owner).transfer(buyAmount * 3 / 100); //send fee
+        if(!whitelist[from]) {
+          feeValue = price.mul(fee).div(10000);
+          if (royalty.fee > 0) royaltyFee = price.mul(royalty.fee).div(10000);
         }
         
-        address buyer = msg.sender;
-        flexNFT.transferFrom(_seller, buyer, tokenID);
-        flexNFT.cancelTrade(tokenID);
-        _nftData[tokenID].premiumStatus = false;
-        _nftData[tokenID].marketStatus = false;
-        _nftData[tokenID].premiumTimestamp = 0;
-        emit NFTBuy(_seller, buyer, tokenID);
+        if(feeValue > 0) WETH.transferFrom(to, _market_owner, feeValue);
+        if (royaltyFee > 0) WETH.transferFrom(to, royalty.receiver, royaltyFee);
+        WETH.transferFrom(to, from, price - feeValue - royaltyFee);
     }
 
-    function placeBid(uint tokenID) external isTrading(tokenID) payable {
-        Auction memory auction = auctions[tokenID];
-        require(auction.existance, "Not on auction");
-        require(msg.value >= auction.minPrice, "Bid price must be higher that last price");
-        require(block.timestamp < auction.endAuction, "Auction is ended");
-
-        if (auction.currentBidOwner != address(0)) {
-            payable(auction.currentBidOwner).transfer(auction.currentBidPrice);
-        }
-
-        auctions[tokenID].currentBidOwner = msg.sender;
-        auctions[tokenID].currentBidPrice = msg.value;
-
-        emit PlaceBid(msg.sender, msg.value);
+    function setWhitelist(address to, bool value) external onlyOwner{
+        whitelist[to] = value;
     }
 
-    function withdrawBid(uint tokenID) external payable {
-        Auction memory auction = auctions[tokenID];
-        require(auction.existance, "Not on auction");
-        require(block.timestamp < auction.endAuction, "Auction is ended");
-        require(auction.currentBidOwner == msg.sender, "Not last bidder");
-
-        payable(auction.currentBidOwner).transfer(auction.currentBidPrice);
-        auctions[tokenID].currentBidOwner = address(0);
-
-        emit WithdrawBid(msg.sender, tokenID);
+    function setFee(uint _fee) external onlyOwner{
+        fee = _fee;
     }
 
-    function claimNFT(uint tokenID) external payable {
-        Auction memory auction = auctions[tokenID];
-        require(auction.existance, "Not on auction");
-        require(block.timestamp >= auction.endAuction, "Auction is not ended");
-        require(auction.currentBidOwner == msg.sender, "Not winner");
-
-        address _seller = flexNFT.ownerOf(tokenID);
-        payable(_seller).transfer(auction.currentBidPrice);
-        flexNFT.transferFrom(_seller, msg.sender, tokenID);
-
-        _nftData[tokenID].premiumStatus = false;
-        _nftData[tokenID].marketStatus = false;
-        _nftData[tokenID].premiumTimestamp = 0;
-        delete auctions[tokenID];
-
-        emit ClaimNFT(msg.sender, tokenID, auction.currentBidPrice);
-    }
-    
-    function updatePremiumStatus(uint tokenID, bool _newState) external isTrading(tokenID) payable {
-        require(!_trading[tokenID], "This NFT is processing by someone");
-        require(msg.sender == flexNFT.ownerOf(tokenID), "Message Sender should be the owner of token");
-        require(_nftData[tokenID].marketStatus, "Not on sale");
-        require(_nftData[tokenID].premiumStatus != _newState, "Already set");
-
-        if (white_user == msg.sender) payable(white_user).transfer(msg.value);
-        else payable(_market_owner).transfer(msg.value);
-
-        _nftData[tokenID].premiumStatus = _newState;
-
-        if (_newState) _nftData[tokenID].premiumTimestamp = block.timestamp;
-        else _nftData[tokenID].premiumTimestamp = 0;
-
-        emit NFTPremiumStatusChanged(tokenID, _newState, block.timestamp);
-    }
-
-    function mutipleOpenTrade(uint start, uint count, uint price, string memory group, string memory category) external onlyOwner {
-        bool existance = false;
-        for (uint i = 0; i < sub_folders.length; i ++) {
-            if (keccak256(abi.encodePacked(sub_folders[i].folder)) == keccak256(abi.encodePacked(group))) existance = true;
-        }
-        if (!existance) {
-            for (uint i = 0; i < count; i ++) {
-                uint tokenID = start + i;
-                require(msg.sender == flexNFT.ownerOf(tokenID), "Message Sender should be the owner of token");
-                _addDataIfNotExist(tokenID);
-                _nftData[tokenID].marketStatus = true;
-                _nftData[tokenID].price = price;
-            }
-            sub_folders.push(FolderList({
-                folder: group,
-                category: category,
-                wide: [start, count]
-            }));
-        }
-
-    }
-
-    function getPersonalNFTList() external view returns(ItemNFT[] memory) {
-        uint idx = 0;
-        ItemNFT[] memory list = new ItemNFT[](flexNFT.lastID());
-        for (uint i = 0; i < flexNFT.lastID(); i ++ ) {
-            if (flexNFT.ownerOf(i) ==  msg.sender) list[idx++] = getItemNFT(i);
-        }
-        return list;
-    }
-
-    function getPremiumNFTList() external view returns(ItemNFT[] memory) {
-        uint idx = 0;
-        ItemNFT[] memory list = new ItemNFT[](flexNFT.lastID());
-        for (uint i = 0; i < flexNFT.lastID(); i ++ ) {
-            if (_nftData[i].premiumStatus) list[idx++] = getItemNFT(i);
-        }
-        return list;
-    }
-    
-    function getFolderList() external view returns(FolderList[] memory list) {
-        list  = sub_folders;
-    }
-
-    function getSubFolderItem(uint idx) external view returns(ItemNFT[] memory, string memory) {
-        FolderList memory item = sub_folders[idx];
-        ItemNFT[] memory list = new ItemNFT[](item.wide[1]);
-        string memory folderName = item.folder;
-        for (uint i = 0; i < item.wide[1]; i ++ ) {
-            list[i] = getItemNFT(item.wide[0] + i);
-        }
-
-        return (list, folderName);
+    function setMarketOwner(address market_owner_) external onlyOwner{
+        _market_owner = market_owner_;
     }
 }

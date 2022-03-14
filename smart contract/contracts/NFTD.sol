@@ -93,6 +93,7 @@ contract NFTD is ERC721URIStorage, Ownable {
     using Strings for uint256;
 
     struct ItemNFT {
+        uint tokenID;
         string tokenURI;
         address owner;
         Royalty royalty;
@@ -119,13 +120,13 @@ contract NFTD is ERC721URIStorage, Ownable {
         _;
     }
 
-    function bulkMint(string memory baseURI, uint256 count, address creator, uint amount) public onlyWhitelist {
+    function bulkMint(string memory baseURI, uint256 count, uint amount) public onlyWhitelist {
         require(amount > 0 && amount <= 1000, "Royalty fee is 0 ~ 10%");
         for (uint i = 0; i < count; i ++) {
             _mint(msg.sender, lastID);
             string memory _BaseURI = string(abi.encodePacked("https://ipfs.io/ipfs/", baseURI, "/", i.toString()));
             _setTokenURI(lastID, _BaseURI);
-            royalties[lastID] = Royalty(creator, amount);
+            royalties[lastID] = Royalty(msg.sender, amount);
             lastID ++;
         }
         emit NFTMinted(lastID);
@@ -133,6 +134,7 @@ contract NFTD is ERC721URIStorage, Ownable {
 
     function getItemNFT(uint tokenID) public view returns (ItemNFT memory _nft) {
         _nft = ItemNFT ({
+            tokenID: tokenID,
             tokenURI : tokenURI (tokenID), 
             owner : ownerOf(tokenID),
             royalty: getRoyalty(tokenID)
@@ -146,9 +148,13 @@ contract NFTD is ERC721URIStorage, Ownable {
     }
 
     function getPersonalNFT(address owner_) external view returns (ItemNFT[] memory) {
-        ItemNFT[] memory list;
+
+        uint idx;
+
+        ItemNFT[] memory list = new ItemNFT[](lastID);
+
         for (uint i; i < lastID; i ++) {
-            if (ownerOf(i) == owner_)  list[i] = getItemNFT(i);
+            if (ownerOf(i) == owner_)  list[idx++] = getItemNFT(i);
         }
         return list;
     }
