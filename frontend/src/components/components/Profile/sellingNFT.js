@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import Select from 'react-select';
 import InfiniteScroll from "react-infinite-scroll-component";
 import getWeb3 from "../../../utils/getWeb3";
+import axios from "axios";
 
 const Empty = lazy(() => import("../Empty"));
 const NFTItem = lazy(() => import("./sellingNFTItem"));
@@ -56,12 +57,18 @@ export default function SellingNFT() {
             setLoaded(false);
             let premium = false;
             if (activeCategory.value) premium = true;
-            setNFTContract(instanceNFT);
-            setMarketContract(Marketplace);
-            let list = await Marketplace.methods.getPersonalNFTList().call({ from: initialUser.walletAddress });
-            list = list.filter(item => item.marketData.existance && item.marketData.marketStatus && item.marketData.premiumStatus == premium);
+            // setNFTContract(instanceNFT);
+            // setMarketContract(Marketplace);
+            let _list = await instanceNFT.methods.getPersonalNFT(initialUser.walletAddress).call();
+            // list = list.filter(item => item.owner == initialUser.walletAddress);
+            await axios.post('http://localhost:7060/sale/get-sale-list', { walletAddress: initialUser.walletAddress }).then(res => {
+                const { list } = res.data;
+                setRestList(list);
+            }).catch(err => {
+
+            });
+
             setNFTs([]);
-            setRestList(list);
             setLoaded(true);
         }
     },[activeCategory, ])
@@ -110,7 +117,7 @@ export default function SellingNFT() {
                 className="row overflow-unset"
             >
                 { nfts.map( (nft, index) => (
-                    <NFTItem data={nft} key={index} remove={() => removeItem(index)} NFT={nftContract} Marketplace={marketContract}/>
+                    <NFTItem data={nft} key={index} remove={() => removeItem(index)}/>
                 ))}
             </InfiniteScroll>
             { !loaded ? <PremiumNFTLoading/> : (!nfts.length && <Empty/>) }

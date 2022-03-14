@@ -37,7 +37,7 @@ const Collection= function() {
   useEffect(async () => {
     const { username } = params;
     const { instanceMarketplace } = await getWeb3();
-    await axios.post('http://nftdevelopments.co.nz/user/get-user-by-username', { username }).then(async(res) => {
+    await axios.post('http://localhost:7060/user/get-user-by-username', { username }).then(async(res) => {
       const { data } = res;
       let list = await instanceMarketplace.methods.getPersonalNFTList().call({ from: data.walletAddress });
       list = list.filter(item => item.marketData.existance);

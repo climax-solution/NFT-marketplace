@@ -25,7 +25,7 @@ const ActivityItem = ({ data }) => {
     return (
         <li className={action[data["type"]][0]} onClick={() => data.username ? navigate(`/user/${data.username}`) : null} role="button">
             <div className="d-flex align-items-center">
-                <img className="lazy ratio-1-1 position-relative" src={`http://nftdevelopments.co.nz/avatar/${data.avatar}`} alt="" crossOrigin="true"/>
+                <img className="lazy ratio-1-1 position-relative" src={`http://localhost:7060/avatar/${data.avatar}`} alt="" crossOrigin="true"/>
                 <h4 className="ms-2">{data.firstName + " " + data.lastName }</h4>
             </div>
             <div className="act_list_text ps-0 mt-2 text-break">

@@ -38,7 +38,7 @@ const ResetPassword = () => {
 
         setUpdate(false);
 
-        await axios.post('http://nftdevelopments.co.nz/auth/reset/' + token, { password }).then(res => {
+        await axios.post('http://localhost:7060/auth/reset/' + token, { password }).then(res => {
             const { message } = res.data;
             toast.success(message, { theme: "colored" });
             setPassword('');

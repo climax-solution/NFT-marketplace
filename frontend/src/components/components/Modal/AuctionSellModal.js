@@ -68,7 +68,7 @@ export default function AuctionSellModal({ visible, close, tokenID, web3, NFT, M
                     progress: undefined,
                     theme: "colored"
                 });
-                await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).catch(res => {}).catch(err => { });
+                await axios.post('http://localhost:7060/activity/create-log', data).catch(res => {}).catch(err => { });
                 close(true);
             });
             
