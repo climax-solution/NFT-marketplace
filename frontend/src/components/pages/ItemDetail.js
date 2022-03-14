@@ -132,7 +132,7 @@ const NFTItem = () => {
                     walletAddress: userData.walletAddress
                 }
 
-                await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).then(res =>{
+                await axios.post('http://localhost:7060/activity/create-log', data).then(res =>{
 
                 }).catch(err => { });
 
@@ -208,7 +208,7 @@ const NFTItem = () => {
                     walletAddress: userData.walletAddress
                  }
      
-                 await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).then(res =>{
+                 await axios.post('http://localhost:7060/activity/create-log', data).then(res =>{
      
                  }).catch(err => { });
                  toast.success("Success Bid", {

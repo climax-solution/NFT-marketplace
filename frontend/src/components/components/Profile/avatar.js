@@ -27,7 +27,7 @@ export default function Avatar() {
           fileData.append("myfile", files[0]);
           setLoading(true);
           await axios.post(
-            "http://nftdevelopments.co.nz/user/update-avatar",
+            "http://localhost:7060/user/update-avatar",
             fileData,
             {
               headers: {
@@ -81,7 +81,7 @@ export default function Avatar() {
               )
               : <>
                 <img
-                  src={`http://nftdevelopments.co.nz/avatar/${userData.avatar ? userData.avatar : "empty-avatar.png"}`}
+                  src={`http://localhost:7060/avatar/${userData.avatar ? userData.avatar : "empty-avatar.png"}`}
                   className="position-absolute index-avatar"
                   onError={failedLoadImage}
                   alt=""

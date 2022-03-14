@@ -32,7 +32,7 @@ export default function Banner({ userData }) {
                 <div className="d_profile">
                     <div className="profile_avatar">
                         <div className="d_profile_img">
-                        <img src={`http://nftdevelopments.co.nz/avatar/${userData.avatar}`} className="ratio-1-1" alt="" onError={failedLoadImage} crossOrigin="true"/>
+                        <img src={`http://localhost:7060/avatar/${userData.avatar}`} className="ratio-1-1" alt="" onError={failedLoadImage} crossOrigin="true"/>
                         <i className="fa fa-check"></i>
                         </div>
                         

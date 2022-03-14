@@ -3,6 +3,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { useSelector } from "react-redux";
 import NotSaleNFT from "./notSellingNFTItem";
 import getWeb3 from "../../../utils/getWeb3";
+import axios from "axios";
 
 const Empty = lazy(() => import("../Empty"));
 const PremiumNFTLoading = lazy(() => import("../Loading/PremiumNFTLoading"));
@@ -21,10 +22,22 @@ export default function NotSellingNFT() {
         const { instanceMarketplace: Marketplace, instanceNFT: NFT } = await getWeb3();
         if (Marketplace) {
             setNFTContract(NFT);
-            setMarketContract(Marketplace);
-            let list = await Marketplace.methods.getPersonalNFTList().call({ from: initUserData.walletAddress });
-            list = list.filter(item => item.marketData.existance && !item.marketData.marketStatus);
-            setRestList(list);
+            // setMarketContract(Marketplace);
+            let _list = await NFT.methods.getPersonalNFT(initUserData.walletAddress).call();
+            _list = [..._list];
+            // // _list = _list.filter(item => item.owner == initialUser.walletAddress);
+            await axios.post('http://localhost:7060/sale/get-sale-list', { walletAddress: initUserData.walletAddress }).then(res => {
+                const { list } = res.data;
+                let keys = [];
+                list.map(item => {
+                    keys.push(item.tokenID);
+                });
+                _list = _list.filter(item => keys.indexOf(item.tokenID) < 0);
+            }).catch(err => {
+
+            });
+            
+            setRestList(_list);
             setLoaded(true);
         }
     },[])

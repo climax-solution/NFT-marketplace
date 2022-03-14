@@ -69,7 +69,7 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
                 progress: undefined,
                 theme: "colored"
             });
-            await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).then(res =>{
+            await axios.post('http://localhost:7060/activity/create-log', data).then(res =>{
 
             }).catch(err => { });
             await remove();
@@ -156,7 +156,7 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
                 progress: undefined,
                 theme: "colored"
               });
-            await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).then(res =>{
+            await axios.post('http://localhost:7060/activity/create-log', data).then(res =>{
 
             }).catch(err => { });
             remove();
@@ -232,7 +232,7 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
                 progress: undefined,
                 theme: "colored"
             });
-            await axios.post('http://nftdevelopments.co.nz/activity/create-log', data).then(res =>{
+            await axios.post('http://localhost:7060/activity/create-log', data).then(res =>{
 
             }).catch(err => { });
             remove();
@@ -263,22 +263,28 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
         if (data) {
             const { _web3 } = await getWeb3();
             setWeb3(_web3);
-            await axios.get(data.nftData.tokenURI).then(res => {
-                if (typeof (res.data) === 'object') setNFT({ ...data, ...res.data });
+            let _nft = {};
+            await axios.get(data.tokenURI).then(async(res) => {
+                if (typeof (res.data) === 'object') _nft = { ...data, ...res.data };
+                await axios.post('http://localhost:7060/sale/get-nft-item', {
+                    tokenID: data.tokenID,
+                    walletAddress: initialUser.walletAddress
+                }).then(result => { _nft = { ..._nft, ...result.data}});
             }).catch(err => {
 
-            })
+            });
+            setNFT(_nft);
             setLoading(false);
         }
     },[data])
 
     const refresh = async() => {
-        const _NFT = await Marketplace.methods.getItemNFT(nft.nftData.tokenID).call();
+        const _NFT = await NFT.methods.getItemNFT(nft.tokenID).call();
         console.log(_NFT);
         if ((_NFT.nftData.owner).toLowerCase() != (initialUser.walletAddress).toLowerCase()) await remove();
         else if (!_NFT.marketData.marketStatus) await remove();
         else {
-            await axios.get(`${_NFT.nftData.tokenURI}`).then(res => {
+            await axios.get(`${_NFT.tokenURI}`).then(res => {
                 const { data: metadata } = res;
                 setNFT({ ..._NFT, ...metadata });
             });
@@ -308,11 +314,11 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
                                     }
                                     <div className="nft__item_wrap">
                                         {
-                                            (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} className="lazy nft__item_preview" onClick={() => navigate(`/item-detail/${nft.nftData.tokenID}`) } role="button" alt=""/>
+                                            (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} className="lazy nft__item_preview" onClick={() => navigate(`/item-detail/${nft.tokenID}`) } role="button" alt=""/>
                                         }
 
                                         {
-                                            (nft.type && (nft.type).toLowerCase() == 'music') && <MusicArt data={nft} link={`/item-detail/${nft.nftData.tokenID}`}/>
+                                            (nft.type && (nft.type).toLowerCase() == 'music') && <MusicArt data={nft} link={`/item-detail/${nft.tokenID}`}/>
                                         }
 
                                         {
@@ -321,20 +327,20 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
                                     </div>
                                     <div className="nft__item_info">
                                         <span>
-                                            <h4 onClick={() => !isLoading ? navigate(`/item-detail/${nft.nftData.tokenID}`) : null }>{ nft.nftName }</h4>
+                                            <h4 onClick={() => !isLoading ? navigate(`/item-detail/${nft.tokenID}`) : null }>{ nft.nftName }</h4>
                                         </span>
                                         <div className="nft__item_price">
-                                            {web3.utils.fromWei(nft.marketData.price, "ether")} BNB
+                                            {web3.utils.fromWei(nft.price, "ether")} BNB
                                         </div>
-                                        <div className="pb-4 trade-btn-group mt-2">
+                                        {/* <div className="pb-4 trade-btn-group mt-2">
                                             { nft.marketData.marketStatus && (
                                                 !nft.auctionData.existance ?
-                                                    <span className="btn-main w-100" onClick={() => putDownSale(nft.nftData.tokenID)}>Delist</span>
-                                                    :<span className="btn-main w-100" onClick={() => putDownAuction(nft.nftData.tokenID)}>Delist auction</span>
+                                                    <span className="btn-main w-100" onClick={() => putDownSale(nft.tokenID)}>Delist</span>
+                                                    :<span className="btn-main w-100" onClick={() => putDownAuction(nft.tokenID)}>Delist auction</span>
                                                 )
                                             }
-                                            { !nft.marketData.premiumStatus ? <span className="btn-main mt-2 w-100" onClick={async() => await updatePremiumNFT(nft.nftData.tokenID, true)}>Promote to preimum</span> : <span className="btn-main mt-2 w-100"  onClick={() => updatePremiumNFT(nft.nftData.tokenID, false)}>Reset to normal</span> }
-                                        </div>
+                                            { !nft.marketData.premiumStatus ? <span className="btn-main mt-2 w-100" onClick={async() => await updatePremiumNFT(nft.tokenID, true)}>Promote to preimum</span> : <span className="btn-main mt-2 w-100"  onClick={() => updatePremiumNFT(nft.tokenID, false)}>Reset to normal</span> }
+                                        </div> */}
                                     </div> 
                                 </div>
                             </div>

@@ -113,7 +113,7 @@ const Register = () => {
                 password
             };
 
-            await axios.post("http://nftdevelopments.co.nz/auth/register", data).then(res => {
+            await axios.post("http://localhost:7060/auth/register", data).then(res => {
                 const { user } = res.data;
                 toast.success("you have registered successfully!", {
                     theme: "colored",

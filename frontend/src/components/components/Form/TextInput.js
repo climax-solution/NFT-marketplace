@@ -37,7 +37,7 @@ export default function TextInput({ label, _request,  _key, checkable, update })
                 }
             }
             
-            await axios.post('http://nftdevelopments.co.nz/user/check-existing-user', data).then(res => {
+            await axios.post('http://localhost:7060/user/check-existing-user', data).then(res => {
                 update(value);
                 setStatus("");
             }).catch(err => {

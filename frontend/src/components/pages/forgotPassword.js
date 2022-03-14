@@ -35,7 +35,7 @@ const ForgotPassword = () => {
     if (flag) return;
     const data = { email };
 
-    await axios.post("http://nftdevelopments.co.nz/auth/forgot", data).then(res => {
+    await axios.post("http://localhost:7060/auth/forgot", data).then(res => {
       const { message } = res.data;
       toast.success(message, {theme: "colored"});
     //   navigate('/profile');
