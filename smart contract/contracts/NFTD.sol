@@ -29,54 +29,135 @@ library Strings {
     
 }
 
-contract NFTD is ERC721URIStorage {
-
-    uint256 public lastID;
+abstract contract Ownable {
     address private _owner;
-    using Strings for uint256;
 
-    struct ItemNFT {
-        uint tokenID;
-        string tokenURI;
-        address owner;
+    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+
+    /**
+     * @dev Initializes the contract setting the deployer as the initial owner.
+     */
+    constructor(address owner_) {
+        _transferOwnership(owner_);
     }
 
-    event NFTMinted(uint tokenId);
-
-    constructor(address owner) ERC721("NFT DEVELOPMENTS", "NFT DEVELOPMENTS") {
-        _owner = owner;
+    /**
+     * @dev Returns the address of the current owner.
+     */
+    function owner() public view virtual returns (address) {
+        return _owner;
     }
 
+    /**
+     * @dev Throws if called by any account other than the owner.
+     */
     modifier onlyOwner() {
-        require(_owner == msg.sender, "Not owner");
+        require(owner() == msg.sender, "Ownable: caller is not the owner");
         _;
     }
 
-    function bulkMint(string memory baseURI, uint256 count) public onlyOwner {
+    /**
+     * @dev Leaves the contract without owner. It will not be possible to call
+     * `onlyOwner` functions anymore. Can only be called by the current owner.
+     *
+     * NOTE: Renouncing ownership will leave the contract without an owner,
+     * thereby removing any functionality that is only available to the owner.
+     */
+    function renounceOwnership() public virtual onlyOwner {
+        _transferOwnership(address(0));
+    }
+
+    /**
+     * @dev Transfers ownership of the contract to a new account (`newOwner`).
+     * Can only be called by the current owner.
+     */
+    function transferOwnership(address newOwner) public virtual onlyOwner {
+        require(newOwner != address(0), "Ownable: new owner is the zero address");
+        _transferOwnership(newOwner);
+    }
+
+    /**
+     * @dev Transfers ownership of the contract to a new account (`newOwner`).
+     * Internal function without access restriction.
+     */
+    function _transferOwnership(address newOwner) internal virtual {
+        address oldOwner = _owner;
+        _owner = newOwner;
+        emit OwnershipTransferred(oldOwner, newOwner);
+    }
+}
+
+contract NFTD is ERC721URIStorage, Ownable {
+
+    uint256 public lastID;
+    using Strings for uint256;
+
+    struct ItemNFT {
+        string tokenURI;
+        address owner;
+        Royalty royalty;
+    }
+    
+    struct Royalty {
+        address receiver;
+        uint fee;
+    }
+
+    mapping(uint256 => Royalty) private royalties;
+    mapping(address => bool) private whitelist;
+
+    event NFTMinted(uint tokenId);
+
+    constructor(address owner)
+    ERC721("NFT DEVELOPMENTS", "NFT DEVELOPMENTS")
+    Ownable(owner) {
+    
+    }
+
+    modifier onlyWhitelist() {
+        require(whitelist[msg.sender] || msg.sender == owner(), "account is not whitelist");
+        _;
+    }
+
+    function bulkMint(string memory baseURI, uint256 count, address creator, uint amount) public onlyWhitelist {
+        require(amount > 0 && amount <= 1000, "Royalty fee is 0 ~ 10%");
         for (uint i = 0; i < count; i ++) {
             _mint(msg.sender, lastID);
             string memory _BaseURI = string(abi.encodePacked("https://ipfs.io/ipfs/", baseURI, "/", i.toString()));
             _setTokenURI(lastID, _BaseURI);
+            royalties[lastID] = Royalty(creator, amount);
             lastID ++;
         }
         emit NFTMinted(lastID);
     }
 
-    function getItemNFT(uint index) public view returns (ItemNFT memory _nft) {
+    function getItemNFT(uint tokenID) public view returns (ItemNFT memory _nft) {
         _nft = ItemNFT ({
-            tokenID: index,
-            tokenURI : tokenURI (index), 
-            owner : ownerOf(index)
+            tokenURI : tokenURI (tokenID), 
+            owner : ownerOf(tokenID),
+            royalty: getRoyalty(tokenID)
         });
     }
 
-    function cancelTrade(uint tokenID) public {
-        _approve(address(0), tokenID);
-    }
-
-    function bulkApprove(address to, uint start, uint count) public onlyOwner {
+    function bulkApprove(address to, uint start, uint count) public onlyWhitelist {
         for (uint i; i < count; i ++) {
             approve(to, start + i);
         }
+    }
+
+    function getPersonalNFT(address owner_) external view returns (ItemNFT[] memory) {
+        ItemNFT[] memory list;
+        for (uint i; i < lastID; i ++) {
+            if (ownerOf(i) == owner_)  list[i] = getItemNFT(i);
+        }
+        return list;
+    }
+
+    function setWhitelist(address account, bool status) external onlyOwner {
+        whitelist[account] = status;
+    }
+
+    function getRoyalty(uint tokenID) public view returns (Royalty memory) {
+        return royalties[tokenID];
     }
 }
