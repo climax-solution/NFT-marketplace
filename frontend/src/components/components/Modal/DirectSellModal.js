@@ -5,9 +5,10 @@ import Modal from 'react-awesome-modal';
 import axios from 'axios';
 
 import addresses from "../../../config/address.json";
+import sign from '../../../utils/sign';
 const { marketplace_addr } = addresses;
 
-export default function DirectSellModal({ visible, tokenID, close, Marketplace, NFT, web3 }) {
+export default function DirectSellModal({ visible, tokenID, close, Marketplace, web3 }) {
 
     const initialUser = useSelector(({ auth }) => auth.user);
     const wallet_info = useSelector(({ wallet }) => wallet.wallet_connected);
@@ -43,39 +44,15 @@ export default function DirectSellModal({ visible, tokenID, close, Marketplace, 
         setLoading(true);
         try {
             const nftPrice = web3.utils.toWei(price.toString(), 'ether');
-            
-            const _bnbBalance = await web3.eth.getBalance(initialUser.walletAddress);
-            const _estApproveGas = await NFT.methods.approve(marketplace_addr, tokenID).estimateGas({from : initialUser.walletAddress });
-            
-            if (Number(nftPrice / 40) + Number(_estApproveGas) + 210000 > Number(_bnbBalance)) throw new Error("BNB balance is low");
-
-            await NFT.methods.approve(marketplace_addr, tokenID).send({from : initialUser.walletAddress})
-            .on('receipt', async(rec) => {
-                await Marketplace.methods.openTradeToDirect(tokenID).send({ from: initialUser.walletAddress, value: nftPrice / 40 });
-                toast.success('Success', {
-                    position: "top-center",
-                    autoClose: 2000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "colored"
+            const nonce = await Marketplace.methods.nonces(initialUser.walletAddress).call();
+            const result = await sign(nonce, tokenID, initialUser.walletAddress, nftPrice, false);
+            if (result) {
+                await axios.post('http://localhost:7060/sale/list', {
+                    tokenID, price: nftPrice, walletAddress: initialUser.walletAddress, action: "list",
+                    signature: result
                 });
-                const data = {
-                    tokenID: tokenID,
-                    type: 1,
-                    price: nftPrice / 40,
-                    walletAddress: initialUser.walletAddress
-                }
-
-                await axios.post('http://localhost:7060/activity/create-log', data).then(res =>{
-
-                }).catch(err => { });
-                setLoading(false);
                 close(true);
-            });
-            
+            }
         } catch(err) {
             toast.error(err.message, {
                 position: "top-center",
@@ -88,8 +65,8 @@ export default function DirectSellModal({ visible, tokenID, close, Marketplace, 
                 theme: "colored"
             });
             close();
-            setLoading(false);
         }
+        setLoading(false);
     }
 
     const _closeModal = () => {

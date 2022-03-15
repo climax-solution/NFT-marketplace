@@ -1,6 +1,5 @@
 import React, { useState, useEffect, lazy } from "react";
 import { useSelector } from "react-redux";
-import Select from 'react-select';
 import InfiniteScroll from "react-infinite-scroll-component";
 import getWeb3 from "../../../utils/getWeb3";
 import axios from "axios";
@@ -9,36 +8,6 @@ const Empty = lazy(() => import("../Empty"));
 const NFTItem = lazy(() => import("./sellingNFTItem"));
 const PremiumNFTLoading = lazy(() => import("../Loading/PremiumNFTLoading"));
 
-const customStyles = {
-    option: (base, state) => ({
-      ...base,
-      background: "#212428",
-      color: "#fff",
-      borderRadius: state.isFocused ? "0" : 0,
-      "&:hover": {
-        background: "#16181b",
-      }
-    }),
-    menu: base => ({
-      ...base,
-      background: "#212428 !important",
-      borderRadius: 0,
-      marginTop: 0
-    }),
-    menuList: base => ({
-      ...base,
-      padding: 0
-    }),
-    control: (base, state) => ({
-      ...base,
-      padding: 2
-    })
-};
-
-const categories = [
-    { "value": 0, "label": "Normal NFTs" },
-    { "value": 1, "label": "Premium NFTs"},
-];
 
 export default function SellingNFT() {
 
@@ -47,7 +16,6 @@ export default function SellingNFT() {
     const [nfts, setNFTs] = useState([]);
     const [nftContract, setNFTContract] = useState({});
     const [marketContract, setMarketContract] = useState({});
-    const [activeCategory, setCategory] = useState({ value: 0, label: "Normal NFTs" });
     const [restList, setRestList] = useState([]);
     const [loaded, setLoaded] = useState(false);
     
@@ -55,23 +23,31 @@ export default function SellingNFT() {
         const { instanceMarketplace: Marketplace, instanceNFT } = await getWeb3();
         if (Marketplace) {
             setLoaded(false);
-            let premium = false;
-            if (activeCategory.value) premium = true;
-            // setNFTContract(instanceNFT);
-            // setMarketContract(Marketplace);
+            setNFTContract(instanceNFT);
+            setMarketContract(Marketplace);
             let _list = await instanceNFT.methods.getPersonalNFT(initialUser.walletAddress).call();
-            // list = list.filter(item => item.owner == initialUser.walletAddress);
+            let sellingList = [];
             await axios.post('http://localhost:7060/sale/get-sale-list', { walletAddress: initialUser.walletAddress }).then(res => {
                 const { list } = res.data;
-                setRestList(list);
+                let keys = [];
+                list.map(item => {
+                    keys.push((item.tokenID).toString());
+                });
+                _list = _list.map(item => {
+                    const index = keys.indexOf(item.tokenID);
+                    if (index > -1) {
+                        sellingList.push({ ...item, ...list[index]});
+                    }
+                });
             }).catch(err => {
 
             });
 
+            setRestList(sellingList);
             setNFTs([]);
             setLoaded(true);
         }
-    },[activeCategory, ])
+    },[])
   
     useEffect(async() => {
         if (loaded) {
@@ -99,16 +75,6 @@ export default function SellingNFT() {
     
     return (
         <>
-            <Select
-                className='select1 mx-auto mb-3 me-0 mx-200px'
-                styles={customStyles}
-                menuContainerStyle={{'zIndex': 999}}
-                value={activeCategory}
-                options={categories}
-                onChange={(value) => {
-                    setCategory(value);
-                }}
-            />
             <InfiniteScroll
                 dataLength={nfts.length}
                 next={fetchNFT}
@@ -117,7 +83,7 @@ export default function SellingNFT() {
                 className="row overflow-unset"
             >
                 { nfts.map( (nft, index) => (
-                    <NFTItem data={nft} key={index} remove={() => removeItem(index)}/>
+                    <NFTItem data={nft} key={index} Marketplace={marketContract} remove={() => removeItem(index)}/>
                 ))}
             </InfiniteScroll>
             { !loaded ? <PremiumNFTLoading/> : (!nfts.length && <Empty/>) }
