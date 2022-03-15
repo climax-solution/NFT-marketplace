@@ -22,7 +22,7 @@ export default function NotSellingNFT() {
         const { instanceMarketplace: Marketplace, instanceNFT: NFT } = await getWeb3();
         if (Marketplace) {
             setNFTContract(NFT);
-            // setMarketContract(Marketplace);
+            setMarketContract(Marketplace);
             let _list = await NFT.methods.getPersonalNFT(initUserData.walletAddress).call();
             _list = [..._list];
             // // _list = _list.filter(item => item.owner == initialUser.walletAddress);
@@ -30,7 +30,7 @@ export default function NotSellingNFT() {
                 const { list } = res.data;
                 let keys = [];
                 list.map(item => {
-                    keys.push(item.tokenID);
+                    keys.push((item.tokenID).toString());
                 });
                 _list = _list.filter(item => keys.indexOf(item.tokenID) < 0);
             }).catch(err => {
