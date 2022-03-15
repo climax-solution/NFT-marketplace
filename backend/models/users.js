@@ -10,19 +10,22 @@ const UserSchema = Schema({
         type: String
     },
     username: {
-        type: String
+        type: String,
+        lowercase: true
     },
     email: {
         type: String,
         required: () => {
             return this.provider !== 'email' ? false : true
-        }
+        },
+        lowercase: true
     },
     phoneNumber: {
         type: String
     },
     walletAddress: {
-        type: String
+        type: String,
+        lowercase: true
     },
     country: {
         type: String
