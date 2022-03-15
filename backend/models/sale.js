@@ -7,14 +7,14 @@ const SaleSchema = Schema({
         type: Number
     },
     price: {
-        type: Double
+        type: String
     },
     status: {
         type: String,
         default: 'normal',
         enum: ['premium', 'normal']
     },
-    type: {
+    action: {
         type: String,
         enum: ['list', 'auction', 'offer']
     },
@@ -25,7 +25,8 @@ const SaleSchema = Schema({
         type: String
     },
     walletAddress: {
-        type: String
+        type: String,
+        lowercase: true
     },
     updated_at: {
         type: Date

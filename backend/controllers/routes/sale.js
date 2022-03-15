@@ -4,23 +4,23 @@ let SaleSchema = require('../../models/sale');
 
 router.post('/list', async(req, res) => {
     try {
-        const { tokenID, price, address, type, sign, deadline } = req.body;
-        const _existed = await SaleSchema.findOne({ tokenID: tokenID, type: {$in: ['list', 'auction']} });
+        const { tokenID, price, walletAddress, action, signature, deadline } = req.body;
+        const _existed = await SaleSchema.findOne({ tokenID: tokenID, action: {$in: ['list', 'auction']} });
         if (_existed) {
             return res.status(400).json({
                 error: "You have already listed"
             });
         }
 
-        if (type === 'offer') throw new Error();
+        if (action === 'offer') throw new Error();
 
         let _sale = new SaleSchema({
             tokenID,
             price,
-            type,
+            action,
             deadline,
-            sign,
-            address
+            signature,
+            walletAddress
         });
 
         await _sale.save();
@@ -51,26 +51,20 @@ router.post('/delist', async(req, res) => {
 
 router.post('/update-premium', async(req, res) => {
     try {
-        const { tokenID, status, type, sign } = req.body;
-        if (type === 'offer') throw new Error();
-        let _existed = await SaleSchema.findOne({ tokenID, type });
+        const { tokenID, status, action, signature } = req.body;
+        if (action === 'offer') throw new Error();
+        let _existed = await SaleSchema.findOne({ tokenID, action });
         if (!_existed) {
             return res.status(400).json({
                 error: "Not listed"
             });
         }
-        _existed = await SaleSchema.findOne({ tokenID, type, status });
         
-        if (!_existed) {
-            return res.status(400).json({
-                error: "You have already done"
-            });
-        }
-
         _existed.status = status;
-        _existed.sign = sign;
+        _existed.signature = signature;
 
-        await _sale.save();
+        await _existed.save();
+
         res.status(200).json({
             message: "Listed successfully"
         });
@@ -84,14 +78,14 @@ router.post('/update-premium', async(req, res) => {
 router.post('/create-new-offer', async(req, res) => {
     try {
         const { tokenID, price, walletAddress } = req.body;
-        const _auctioned = await SaleSchema.findOne({ tokenID, type: "auction" });
+        const _auctioned = await SaleSchema.findOne({ tokenID, action: "auction" });
         if (!_auctioned) {
             return res.status(400).json({
                 error: "Not listed as auction"
             });
         }
         
-        const _existed = await SaleSchema.findOne({ tokenID, type: "offer" });
+        const _existed = await SaleSchema.findOne({ tokenID, action: "offer" });
         if (_existed) {
             return res.status(400).json({
                 error: "You have already created offer"
@@ -119,7 +113,7 @@ router.post('/create-new-offer', async(req, res) => {
 router.post('/cancel-offer', async(req, res) => {
     try {
         const { walletAddress, tokenID } = req.body;
-        await SaleSchema.deleteOne({ tokenID, walletAddress, type : 'offer' });
+        await SaleSchema.deleteOne({ tokenID, walletAddress, action : 'offer' });
         res.status(200).json({
             message: "Cancelled successfully"
         });
@@ -133,7 +127,7 @@ router.post('/cancel-offer', async(req, res) => {
 router.post('/accept-offer', async(req, res) => {
     try {
         const { bidder, tokenID } = req.body;
-        const _existed = await SaleSchema.findOne({ tokenID, walletAddress: bidder, type: 'offer' });
+        const _existed = await SaleSchema.findOne({ tokenID, walletAddress: bidder, action: 'offer' });
         if (!_existed) {
             return res.status(400).json({
                 error: "No offer exist"
@@ -157,4 +151,48 @@ router.post('/accept-offer', async(req, res) => {
         });
     }
 });
+
+router.post('/get-premium-list', async(req, res) => {
+    try {
+        const list = await SaleSchema.find({ status: "premium" }).sort({ price: 1 }).limit(10);
+        res.status(200).json({
+            list
+        });
+    } catch(err) {
+        res.status(400).json({
+            error: "Your request is restricted"
+        })
+    }
+});
+
+router.post('/get-nft-item', async(req, res) => {
+    try {
+        const { tokenID, walletAddress } = req.body;
+        let nft = await SaleSchema.findOne({ tokenID, walletAddress, action: {$in : ['list', 'auction']}});
+        if (!nft) {
+            return res.status(400).json({
+                error: "Not on sale"
+            });
+        }
+
+        res.status(200).json({ nft });
+    } catch(err) {
+        res.status(400).json({
+            error: "Your request is restricted"
+        });
+    }
+});
+
+router.post('/get-sale-list', async(req, res) => {
+    try {
+        const { walletAddress } = req.body;
+        let nfts = await SaleSchema.find({ walletAddress, action: {$in : ['list', 'auction']}});
+        res.status(200).json({ list: !nfts ? [] : nfts });
+    } catch(err) {
+        res.status(400).json({
+            error: "Your request is restricted"
+        });
+    }
+});
+
 module.exports = router;

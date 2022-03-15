@@ -7,7 +7,7 @@ const HistorySchema = Schema({
         type: String
     },
     price: {
-        type: Double
+        type: "Decimal128"
     },
     tokenID: {
         type: String
