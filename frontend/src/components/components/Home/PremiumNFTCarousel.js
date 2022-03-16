@@ -7,8 +7,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Carousel from "react-multi-carousel";
 import getWeb3 from "../../../utils/getWeb3";
+import sign from "../../../utils/sign";
 
 import "react-multi-carousel/lib/styles.css";
+import TradeNFT from "../FolderNFT/tradeNFT";
 
 const PremiumNFTLoading = lazy(() => import('../Loading/PremiumNFTLoading'));
 const Empty = lazy(() => import("../Empty"));
@@ -48,7 +50,8 @@ export default function () {
 
   const [list, setList] = useState([]);
   const [web3, setWEB3] = useState([]);
-  const [Marketplace, setMarketplace] = useState([]);
+  const [NFT, setNFT] = useState({});
+  const [Marketplace, setMarketplace] = useState({});
   const [carouselLoading, setCarouselLoading] = useState(true);
   const [visible, setVisible] = useState(false);
   const [isTrading, setTrading] = useState(false);
@@ -77,8 +80,9 @@ export default function () {
   };
 
   useEffect(async () => {
-    const { _web3, instanceMarketplace } = await getWeb3();
+    const { _web3, instanceMarketplace, instanceNFT } = await getWeb3();
     setWEB3(_web3);
+    setNFT(instanceNFT);
     setMarketplace(instanceMarketplace);
   },[])
 
@@ -104,27 +108,8 @@ export default function () {
 
     setActiveID(id);
     try {
-        let { marketData, auctionData } = await Marketplace.methods.getItemNFT(id).call();
-        if (marketData.marketStatus && !auctionData.existance) {
 
-          const _bnbBalance = await web3.eth.getBalance(initialUser.walletAddress);
-
-          if (Number(marketData.price) + 210000 > Number(_bnbBalance)) throw new Error("BNB balance is low");
-
-          await Marketplace.methods.buyNFT(id).send({ from: initialUser?.walletAddress, value: marketData.price });
-
-          const data = {
-              tokenID: id,
-              type: 0,
-              price: marketData.price,
-              walletAddress: initialUser?.walletAddress
-          }
-
-          await axios.post('http://localhost:7060/activity/create-log', data).then(res =>{
-
-          }).catch(err => { });
-
-          toast.success("Buy success", {
+        toast.success("Buy success", {
             position: "top-center",
             autoClose: 5000,
             hideProgressBar: false,
@@ -133,8 +118,7 @@ export default function () {
             draggable: true,
             progress: undefined,
             theme: "colored"
-          });
-        }
+        });
     } catch(err) {
       console.log(err);
       toast.error(err.message, {
@@ -183,13 +167,9 @@ export default function () {
     if (auctionData.existance) {
        try {
             const price = web3.utils.toWei(bidPrice.toString(), "ether");
-            const _bnbBalance = await web3.eth.getBalance(initialUser.walletAddress);
-
-            if (Number(price) + 210000 > Number(_bnbBalance)) throw new Error("BNB balance is low");
-
             setTrading(true);
             setBidPrice('');
-            await Marketplace.methods.placeBid(activeID).send({ from: initialUser.walletAddress, value: price});
+            
             const data = {
                 tokenID: activeID,
                 type: 7,
@@ -197,10 +177,19 @@ export default function () {
                 walletAddress: initialUser.walletAddress
             }
 
-            await axios.post('http://localhost:7060/activity/create-log', data).then(res =>{
+            const nonce = await Marketplace.methods.nonces(initialUser.walletAddress).call();
+            const result = await sign(nonce, activeID, initialUser.walletAddress, price, false);
 
-            }).catch(err => { });
-            toast.success("Success Bid", {
+            const offer = {
+              tokenID: activeID,
+              price,
+              walletAddress: initialUser.walletAddress,
+              signature: result
+            };
+
+            await axios.post('http://localhost:7060/sale/create-new-offer', offer).then(res => {
+              const { message } = res.data;
+              toast.success(message, {
                 position: "top-center",
                 autoClose: 2000,
                 hideProgressBar: false,
@@ -209,7 +198,21 @@ export default function () {
                 draggable: true,
                 progress: undefined,
                 theme: "colored"
-            });
+              });
+            }).catch(err => {
+              const { error } = err.response.data;
+              toast.success(error, {
+                position: "top-center",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored"
+              });
+            })
+
             let lists = [ ...list];
             lists.splice(activeIndex, 1);
             setList(lists);
@@ -253,14 +256,16 @@ export default function () {
 
     setActiveID(id);
     try {
-        const _bnbBalance = await web3.eth.getBalance(initialUser.walletAddress);
+        
+        const withdraw = {
+          walletAddress: initialUser.walletAddress,
+          tokenID: id
+        };
 
-        if (Number(_bnbBalance) < 210000 ) throw new Error("BNB balance is low");
-
-        setTrading(true);
-        await Marketplace.methods.withdrawBid(id).send({ from: initialUser.walletAddress });
-
-        toast.info("Success withdraw", {
+        await axios.post('http://localhost:7060/sale/cancel-offer', withdraw).then(res => {
+          
+          const { message } = res.data;
+          toast.info(message, {
             position: "top-center",
             autoClose: 2000,
             hideProgressBar: false,
@@ -269,8 +274,9 @@ export default function () {
             draggable: true,
             progress: undefined,
             theme: "colored"
+          });
         });
-        await refresh();
+        // await refresh();
     } catch(err) {
         toast.error(err.message, {
             position: "top-center",
@@ -283,28 +289,31 @@ export default function () {
             theme: "colored"
         });
     }
-    await fetchNFT();
-    setActiveID(-1);
-    setTrading(false);
+    // await fetchNFT();
+    // setActiveID(-1);
+    // setTrading(false);
   }
 
   const fetchNFT = async() => {
     if (initialUser.walletAddress == undefined) return;
     setCarouselLoading(true);
     try {
-      let list = await Marketplace.methods.getPremiumNFTList().call();
-      list = list.filter(item => item.marketData.premiumStatus && item.marketData.marketStatus);
-      list.sort((before, after) => before.marketData.price - after.marketData.price);
-      if (list.length > 10) list = list.slice(0, 10);
-      let mainList = [];
-      for await (let item of list) {
-        await axios.get(item.nftData.tokenURI).then(res => {
-          const { data } = res;
-          mainList.push({ ...item, ...data });
-        })
-      }
-      setList(mainList);
-    } catch(err) { }
+      let list = await axios.post('http://localhost:7060/sale/get-premium-list').then(res => {
+        return res.data.list;
+      });
+      list.sort((before, after) => before.price - after.price);
+      // let mainList = [];
+      // for await (let item of list) {
+      //   const nft = await NFT.methods.getItemNFT(item.tokenID).call();
+      //   await axios.get(nft.tokenURI).then(res => {
+      //     const { data } = res;
+      //     mainList.push({ ...item, ...data });
+      //   })
+      // }
+      setList(list);
+    } catch(err) {
+      console.log(err);
+    }
     setCarouselLoading(false);
   }
 
@@ -367,49 +376,12 @@ export default function () {
               >
                 {
                   list.map((nft, index) => {
-                    const bidOwner = (nft.auctionData.currentBidOwner).toLowerCase() == (initialUser.walletAddress).toLowerCase();
-                    const { auctionData: auction, marketData: market } = nft;
-                    const price = !auction.existance ? market.price : auction.minPrice;
+                    const bidOwner = false;
+                    // const { auctionData: auction, marketData: market } = nft;
+                    // const price = !auction.existance ? market.price : auction.minPrice;
+                    console.log(nft);
                     return (
-                      <div className="nft__item position-relative justify-content-between" key={index}>
-                          <div className="nft__item_wrap">
-                            {
-                                (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} onClick={() => navigate(`/item-detail/${nft.nftData.tokenID}`)} className="lazy nft__item_preview ratio-1-1" alt="" role="button"/>
-                            }
-
-                            {
-                                (nft.type && (nft.type).toLowerCase() == 'music') && <MusicArt data={nft} link={`/item-detail/${nft.nftData.tokenID}`}/>
-                            }
-
-                            {
-                                (nft.type && (nft.type).toLowerCase() == 'video') && <VideoArt data={nft.asset}/>
-                            }
-                          </div>
-                          <div className="nft__item_info mb-0">
-                              <span>
-                                  <h4><Link to={`/item-detail/${nft.nftData.tokenID}`} className="text-decoration-none text-grey">{nft.nftName}</Link></h4>
-                              </span>
-                              <div className="nft__item_price">
-                                  {web3.utils.fromWei(price)} BNB
-                              </div>
-                              <div className="nft__item_action">
-                                {
-                                  (
-                                    nft.nftData.owner).toLowerCase() != (initialUser.walletAddress).toLowerCase() ? 
-                                    (
-                                      nft.auctionData.existance ? ( !bidOwner ? <span onClick={() => openModal(nft.nftData.tokenID, index) }>Place bid</span> : <span onClick={() => withdrawBid(nft.nftData.tokenID, index) }>Withdraw bid</span>)
-                                      : <span onClick={() => buyNow(nft.nftData.tokenID, index)}>Buy now</span>
-                                    ) : ""
-                                }
-                              </div>
-                          </div>
-                          {
-                            activeID == nft.nftData.tokenID && 
-                            <div className="trade-loader w-100 start-0">
-                                <div className="nb-spinner"></div>
-                            </div>
-                          }
-                      </div>
+                      <TradeNFT data={nft} key={index}/>
                     )
                   })
                 }
