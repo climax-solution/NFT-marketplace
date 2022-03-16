@@ -24,27 +24,7 @@ const GlobalStyles = createGlobalStyle`
         column-gap: 15px;
     }
 
-    .owner-check {
-        position: absolute;
-        right: 15px;
-        top: 15px;
-        font-size: 25px !important;
-        color: turquoise;
-    }
-
-    .bid-check {
-        position: absolute;
-        right: 15px;
-        bottom: 15px;
-        font-size: 25px !important;
-        color: turquoise;
-        width: 25px;
-        height: 25px;
-    }
-
-    .wap-height {
-        height: calc(100% - 120px);
-    }
+    
 
 `;
 
@@ -132,7 +112,9 @@ const folderNFTs = () => {
                                 {
                                     nfts.map( (nft, index) => {
                                         return (
-                                            <TradeNFT data={nft} key={index}/>
+                                            <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4 position-relative" key={index}>
+                                                <TradeNFT data={nft}/>
+                                            </div>
                                         )
                                     })
                                 }
