@@ -168,7 +168,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   position: absolute;
   top: 0;
   bottom: 0;
-  /* z-index: 9999; */
+  z-index: 1;
   background: rgba(0,0,0,0.2);
   width: calc(100% - var(--bs-gutter-x));
   border-radius: 14px;
@@ -227,4 +227,26 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   color: turquoise;
   width: 25px;
   height: 25px;
+}
+
+.owner-check {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  font-size: 25px !important;
+  color: turquoise;
+}
+
+.bid-check {
+  position: absolute;
+  right: 15px;
+  bottom: 15px;
+  font-size: 25px !important;
+  color: turquoise;
+  width: 25px;
+  height: 25px;
+}
+
+.wap-height {
+  height: calc(100% - 120px);
 }
