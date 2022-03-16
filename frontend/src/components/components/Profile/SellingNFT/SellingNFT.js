@@ -1,12 +1,12 @@
 import React, { useState, useEffect, lazy } from "react";
 import { useSelector } from "react-redux";
 import InfiniteScroll from "react-infinite-scroll-component";
-import getWeb3 from "../../../utils/getWeb3";
+import getWeb3 from "../../../../utils/getWeb3";
 import axios from "axios";
 
-const Empty = lazy(() => import("../Empty"));
+const Empty = lazy(() => import("../../Empty"));
 const NFTItem = lazy(() => import("./sellingNFTItem"));
-const PremiumNFTLoading = lazy(() => import("../Loading/PremiumNFTLoading"));
+const PremiumNFTLoading = lazy(() => import("../../Loading/PremiumNFTLoading"));
 
 
 export default function SellingNFT() {
@@ -27,6 +27,7 @@ export default function SellingNFT() {
             setMarketContract(Marketplace);
             let _list = await instanceNFT.methods.getPersonalNFT(initialUser.walletAddress).call();
             let sellingList = [];
+            _list = _list.filter(item => (item.owner).toLowerCase() == (initialUser.walletAddress).toLowerCase());
             await axios.post('http://localhost:7060/sale/get-sale-list', { walletAddress: initialUser.walletAddress }).then(res => {
                 const { list } = res.data;
                 let keys = [];

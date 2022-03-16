@@ -4,9 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from "react-redux";
 import { UPDATE_AUTH } from "../../store/action/auth.action";
 import { WalletConnect } from "../../store/action/wallet.action";
+import Mint from "../components/Profile/Mint/Mint";
 
-const SellingNFT = lazy(() => import('../components/Profile/SellingNFT'));
-const NotSellingNFT = lazy(() => import('../components/Profile/NotSellingNFT'));
+const SellingNFT = lazy(() => import('../components/Profile/SellingNFT/SellingNFT'));
+const NotSellingNFT = lazy(() => import('../components/Profile/NotSellingNFT/NotSellingNFT'));
 const Avatar = lazy(() => import("../components/Profile/avatar"));
 const UserInfo = lazy(() => import("../components/Profile/userInfo"));
 const ManageInfo = lazy(() => import("../components/Profile/manageInfo"));
@@ -125,6 +126,8 @@ const Profile = function() {
                     <li id='Mainbtn' className={activeTab == 0 ? 'active' : ''}><span onClick={() => setActiveTab(0)}>On Sale</span></li>
                     <li id='Mainbtn1' className={activeTab == 1 ? 'active' : ''}><span onClick={() => setActiveTab(1)}>Collected</span></li>
                     <li id='Mainbtn2' className={activeTab == 2 ? 'active' : ''}><span onClick={() => setActiveTab(2)}>User Info</span></li>
+                    <li id='Mainbtn3' className={activeTab == 3 ? 'active' : ''}><span onClick={() => setActiveTab(3)}>Bids</span></li>
+                    <li id='Mainbtn4' className={activeTab == 4 ? 'active' : ''}><span onClick={() => setActiveTab(4)}>Mint</span></li>
                   </ul>
               </div>
             </div>
@@ -133,7 +136,7 @@ const Profile = function() {
           {
               activeTab == 0 && (
                 <div id='zero1' className='onStep fadeIn mn-h-300px'>
-                <SellingNFT/>
+                  <SellingNFT/>
                 </div>
               )
           }
@@ -147,6 +150,10 @@ const Profile = function() {
 
           {
             activeTab == 2 && <ManageInfo/>
+          }
+
+          {
+            activeTab == 4 && <Mint/>
           }
         </section>
 

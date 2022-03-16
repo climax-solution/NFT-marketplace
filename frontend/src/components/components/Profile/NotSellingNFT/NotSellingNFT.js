@@ -2,15 +2,15 @@ import React, { useState, useEffect, lazy } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useSelector } from "react-redux";
 import NotSaleNFT from "./notSellingNFTItem";
-import getWeb3 from "../../../utils/getWeb3";
+import getWeb3 from "../../../../utils/getWeb3";
 import axios from "axios";
 
-const Empty = lazy(() => import("../Empty"));
-const PremiumNFTLoading = lazy(() => import("../Loading/PremiumNFTLoading"));
+const Empty = lazy(() => import("../../Empty"));
+const PremiumNFTLoading = lazy(() => import("../../Loading/PremiumNFTLoading"));
 
 export default function NotSellingNFT() {
 
-    const initUserData = useSelector((state) => state.auth.user);
+    const initUser = useSelector((state) => state.auth.user);
 
     const [nftContract, setNFTContract] = useState({});
     const [marketContract, setMarketContract] = useState({});
@@ -23,16 +23,16 @@ export default function NotSellingNFT() {
         if (Marketplace) {
             setNFTContract(NFT);
             setMarketContract(Marketplace);
-            let _list = await NFT.methods.getPersonalNFT(initUserData.walletAddress).call();
+            let _list = await NFT.methods.getPersonalNFT(initUser.walletAddress).call();
             _list = [..._list];
             // // _list = _list.filter(item => item.owner == initialUser.walletAddress);
-            await axios.post('http://localhost:7060/sale/get-sale-list', { walletAddress: initUserData.walletAddress }).then(res => {
+            await axios.post('http://localhost:7060/sale/get-sale-list', { walletAddress: initUser.walletAddress }).then(res => {
                 const { list } = res.data;
                 let keys = [];
                 list.map(item => {
                     keys.push((item.tokenID).toString());
                 });
-                _list = _list.filter(item => keys.indexOf(item.tokenID) < 0);
+                _list = _list.filter(item => (item.owner).toLowerCase() == (initUser.walletAddress).toLowerCase() && keys.indexOf(item.tokenID) < 0);
             }).catch(err => {
 
             });
@@ -51,13 +51,13 @@ export default function NotSellingNFT() {
     const fetchNFT = async() => {
         if (!restList.length) return;
         let tmpList = restList;
+        setNFTs([...nfts, ...tmpList]);
         if (tmpList.length > 8) {
           tmpList = tmpList.slice(0, 8);
           setRestList(restList.slice(8, restList.length));
         }
         
         else setRestList([]);
-        setNFTs([...nfts, ...tmpList]);
     }
 
     const removeItem = (index) => {
