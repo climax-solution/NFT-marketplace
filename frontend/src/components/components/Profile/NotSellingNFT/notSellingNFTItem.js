@@ -2,14 +2,14 @@ import axios from "axios";
 import { lazy, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import getWeb3 from "../../../utils/getWeb3";
+import getWeb3 from "../../../../utils/getWeb3";
 import { toast } from "react-toastify";
 
-const MusicArt = lazy(() => import("../Asset/music"));
-const VideoArt = lazy(() => import("../Asset/video"));
-const ItemLoading = lazy(() => import("../Loading/ItemLoading"));
-const AuctionSellModal = lazy(() => import("../Modal/AuctionSellModal"));
-const DirectSellModal = lazy(() => import("../Modal/DirectSellModal"));
+const MusicArt = lazy(() => import("../../Asset/music"));
+const VideoArt = lazy(() => import("../../Asset/video"));
+const ItemLoading = lazy(() => import("../../Loading/ItemLoading"));
+const AuctionSellModal = lazy(() => import("../../Modal/AuctionSellModal"));
+const DirectSellModal = lazy(() => import("../../Modal/DirectSellModal"));
 
 export default function NotSaleNFT({ data, NFT, Marketplace, remove }) {
 
@@ -26,6 +26,7 @@ export default function NotSaleNFT({ data, NFT, Marketplace, remove }) {
     const wallet_info = useSelector(({ wallet }) => wallet.wallet_connected);
 
     useEffect(async() => {
+        console.log(data);
         if (data) {
             const { _web3 } = await getWeb3();
             setWeb3(_web3);

@@ -83,13 +83,13 @@ export default function TradeNFT({ data }) {
         }
 
         try {
-            const { nft } = await axios.post('http://localhost:7060/sale/get-nft-item', { tokenID: nft.tokenID }).then(res => {
+            const { nft: _nft } = await axios.post('http://localhost:7060/sale/get-nft-item', { tokenID: nft.tokenID }).then(res => {
                 return res.data;
             });
 
-            if (nft.action != 'list') throw Error();
+            if (_nft.action != 'list') throw Error();
 
-            await Marketplace.methods.buy(nft.tokenID, nft.walletAddress, nft.price, nft.status == "premium" ? true : false, nft.signature).send({ from: initialUser.walletAddress, value: nft.price });
+            await Marketplace.methods.buy(_nft.tokenID, _nft.walletAddress, _nft.price, _nft.status == "premium" ? true : false, nft.signature).send({ from: initialUser.walletAddress, value: nft.price });
             toast.success("Buy success", {
                 position: "top-center",
                 autoClose: 2000,

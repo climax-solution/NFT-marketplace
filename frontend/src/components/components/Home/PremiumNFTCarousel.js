@@ -90,52 +90,6 @@ export default function () {
     if (Marketplace) await fetchNFT();
   },[initialUser, Marketplace])
 
-  const buyNow = async(id) => {
-  
-    if (!wallet_info) {
-      toast.warning('Please connect metamask', {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored"
-      });
-      return;
-    }
-
-    setActiveID(id);
-    try {
-
-        toast.success("Buy success", {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored"
-        });
-    } catch(err) {
-      console.log(err);
-      toast.error(err.message, {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "colored"
-      });
-    }
-    await fetchNFT();
-    setActiveID(-1);
-  }
-
   const placeBid = async() => {
 
     let message = "";
@@ -236,64 +190,6 @@ export default function () {
     }
   }
 
-  const withdrawBid = async(id) => {
-    let message = "";
-    if (!initialUser.walletAddress) message = 'Please log in';
-    if (!wallet_info) message = 'Please connect metamask';
-    if (message) {
-        toast.warning(message, {
-            position: "top-center",
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored"
-        });
-        return;
-    }
-
-    setActiveID(id);
-    try {
-        
-        const withdraw = {
-          walletAddress: initialUser.walletAddress,
-          tokenID: id
-        };
-
-        await axios.post('http://localhost:7060/sale/cancel-offer', withdraw).then(res => {
-          
-          const { message } = res.data;
-          toast.info(message, {
-            position: "top-center",
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored"
-          });
-        });
-        // await refresh();
-    } catch(err) {
-        toast.error(err.message, {
-            position: "top-center",
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored"
-        });
-    }
-    // await fetchNFT();
-    // setActiveID(-1);
-    // setTrading(false);
-  }
-
   const fetchNFT = async() => {
     if (initialUser.walletAddress == undefined) return;
     setCarouselLoading(true);
@@ -315,34 +211,6 @@ export default function () {
       console.log(err);
     }
     setCarouselLoading(false);
-  }
-
-  const openModal = (id, index) => {
-    let message = '';
-    if (!initialUser.walletAddress) message = 'Please log in';
-    else if (!wallet_info) message = 'Please connect metamask';
-    if (message) {
-      toast.warning(message, {
-          position: "top-center",
-          autoClose: 2000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored"
-      });
-      return;
-    }
-
-    setActiveID(id);
-    setActiveIndex(index);
-    setVisible(true);
-
-  }
-
-  const failedLoadImage = (e) => {
-    e.target.src="/img/empty.jfif";
   }
 
   return (
@@ -376,10 +244,6 @@ export default function () {
               >
                 {
                   list.map((nft, index) => {
-                    const bidOwner = false;
-                    // const { auctionData: auction, marketData: market } = nft;
-                    // const price = !auction.existance ? market.price : auction.minPrice;
-                    console.log(nft);
                     return (
                       <TradeNFT data={nft} key={index}/>
                     )

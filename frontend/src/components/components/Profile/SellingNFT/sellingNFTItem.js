@@ -4,12 +4,12 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import ReactTooltip from "react-tooltip";
-import getWeb3 from "../../../utils/getWeb3";
-import sign from "../../../utils/sign";
+import getWeb3 from "../../../../utils/getWeb3";
+import sign from "../../../../utils/sign";
 
-const MusicArt = lazy(() => import("../Asset/music"));
-const VideoArt = lazy(() => import("../Asset/video"));
-const ItemLoading = lazy(() => import("../Loading/ItemLoading"));
+const MusicArt = lazy(() => import("../../Asset/music"));
+const VideoArt = lazy(() => import("../../Asset/video"));
+const ItemLoading = lazy(() => import("../../Loading/ItemLoading"));
 
 export default function NFTItem({ data, NFT, Marketplace, remove }) {
 
