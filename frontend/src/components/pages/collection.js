@@ -80,7 +80,9 @@ const Collection= function() {
             >
               {
                 nfts.map( (nft, index) => (
-                    <TradeNFT data={nft} key={index}/>
+                  <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4 position-relative" key={index}>
+                    <TradeNFT data={nft}/>
+                  </div>
                   )
                 )
               }
