@@ -46,7 +46,7 @@ export default function FolderList({data, _insMarketplace }) {
                 className="row"
             >
                 { folderList.map( (nft, index) => (
-                    <Folder init_nft={nft} Marketplace={Marketplace} key={index}/>
+                    <Folder folderID={nft._id} key={index}/>
                 ))}
             </InfiniteScroll>
             {!folderList.length && !restList.length && <Empty/>}

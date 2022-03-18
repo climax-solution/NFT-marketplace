@@ -2,6 +2,7 @@ import { lazy, useEffect, useState } from "react";
 import axios from "axios";
 import { createGlobalStyle } from 'styled-components';
 import { useNavigate } from "react-router-dom";
+import Empty from "../Empty";
 
 const MusicArt = lazy(() => import("../Asset/music"));
 const VideoArt = lazy(() => import("../Asset/video"));
@@ -14,7 +15,7 @@ const GlobalStyles = createGlobalStyle`
     }
 `;
 
-const Folder = (props) => {
+const Folder = ({ folderID }) => {
 
     const navigate = useNavigate();
 
@@ -22,46 +23,54 @@ const Folder = (props) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(async() => {
-        if (props?.Marketplace) {
-            const { init_nft, Marketplace } = props;
-            const URI = await Marketplace.methods.getItemNFT(init_nft.wide[0]).call();
-            await axios.get(URI.nftData.tokenURI).then(res => {
-                setNFT({ ...init_nft, ...URI, ...res.data});
-            }).catch(err => {
-                console.log(err);
-            })
-            setLoading(false);
-        }
-    },[props])
+        console.log('folderID', folderID)
+        const _list = await axios.post('http://localhost:7060/folder/get-folder-interface', { folderID }).then(res => {
+            const  { list } = res.data;
+            console.log(list);
+            return list;
+        }).catch(err => {
+            return {};
+        });
+        setNFT(_list);
+        // await axios.get(URI.nftData.tokenURI).then(res => {
+        //     setNFT({ ...init_nft, ...URI, ...res.data});
+        // }).catch(err => {
+        //     console.log(err);
+        // })
+        setLoading(false);
+    },[folderID])
 
+    console.group(nft);
     return (
         <>
             <GlobalStyles/>
             {
                 loading ? <ItemLoading/>
-                : <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4">
-                    <div className="nft__item m-0 pb-4 h-100 justify-content-between">
-                        <div className="nft__item_wrap ratio-1x1">
-                            {
-                                (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} className="lazy nft__item_preview" onClick={() => navigate(`/folder-explorer/${nft.folderIndex}`)} role="button" alt=""/>
-                            }
-
-                            {
-                                (nft.type && (nft.type).toLowerCase() == 'music') && <MusicArt data={nft} link={`/folder-explorer/${nft.folderIndex}`}/>
-                            }
-
-                            {
-                                (nft.type && (nft.type).toLowerCase() == 'video') && <VideoArt data={nft.asset}/>
-                            }
+                : (
+                    Object.keys(nft).length ? (
+                        <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4">
+                            <div className="nft__item m-0 pb-4 h-100 justify-content-between">
+                                <div className="author_list_pp">
+                                    <span onClick={()=> navigate(`/collection/${nft.folder.artist}`)}>                                    
+                                        <img className="lazy" src={`http://localhost:7060/avatar/${nft.artistData.avatar}`} alt="" crossOrigin="true"/>
+                                        <i className="fa fa-check"></i>
+                                    </span>
+                                </div>
+                                <div className="nft__item_wrap ratio-1x1">
+                                    {
+                                        (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={`/img/folder/${nft.folder.category}.png`} className="lazy nft__item_preview" onClick={() => navigate(`/folder-explorer/${nft.folderIndex}`)} role="button" alt=""/>
+                                    }
+                                </div>
+                                <div className="nft__item_info mb-0 mt-1">
+                                    <span>
+                                        <h4>
+                                            <span onClick={() => navigate(`/folder-explorer/${nft.folder._id}`)} className="text-white">{nft.folder.name}</span></h4>
+                                    </span>
+                                </div>
+                            </div>
                         </div>
-                        <div className="nft__item_info mb-0 mt-1">
-                            <span>
-                                <h4>
-                                    <span onClick={() => navigate(`/folder-explorer/${nft.folderIndex}`)} className="text-white">{nft.folder}</span></h4>
-                            </span>
-                        </div>
-                    </div>
-                </div>
+                    ) : <Empty/>
+                )
             }
         </>
     )
