@@ -19,9 +19,6 @@ const GlobalStyles = createGlobalStyle`
     .country-select {
         display: block !important;
     }
-    .f-12px {
-        font-size: 12px;
-    }
     .react-tel-input {
         .form-control {
             width: 100% !important;

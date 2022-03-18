@@ -13,9 +13,6 @@ const GlobalStyles = createGlobalStyle`
     border-radius: 3px;
     padding: 40px 50px;
   }
-  .f-12px {
-    font-size: 12px;
-  }
 `;
 
 const ForgotPassword = () => {
