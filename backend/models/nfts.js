@@ -3,16 +3,12 @@ var Mongoose = require("mongoose");
 const { Schema } = Mongoose;
 
 const FolderSchema = Schema({
-    name: {
-        type: String
-    },
-    artist: {
+    folderID: {
         type: String,
         lowercase: true
     },
-    category: {
-        type: String,
-        lowercase: true
+    tokenID: {
+        type: Number
     },
     updated_at: {
         type: Date
@@ -23,4 +19,4 @@ const FolderSchema = Schema({
     }
 });
 
-module.exports = Mongoose.model('Folder', FolderSchema);
+module.exports = Mongoose.model('NFTs', FolderSchema);

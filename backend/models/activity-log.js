@@ -3,7 +3,8 @@ let { Schema } = Mongoose;
 
 const ActivityLogs = Schema({
     walletAddress :{
-        type: String
+        type: String,
+        lowercase: true
     },
     tokenID: {
         type: String
