@@ -36,8 +36,8 @@ const GlobalStyles = createGlobalStyle`
       grid-template-columns: auto auto;
       column-gap: 15px;
   }
-  .react-multi-carousel-item {
-    transform-style: none;
+  .carousel-item-padding-40-px {
+    transform-style: unset !important;
   }
 `;
 

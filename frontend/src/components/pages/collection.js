@@ -36,12 +36,28 @@ const Collection= function() {
 
   useEffect(async () => {
     const { username } = params;
-    const { instanceMarketplace } = await getWeb3();
+    const { instanceNFT } = await getWeb3();
     await axios.post('http://localhost:7060/user/get-user-by-username', { username }).then(async(res) => {
       const { data } = res;
-      let list = await instanceMarketplace.methods.getPersonalNFTList().call({ from: data.walletAddress });
-      list = list.filter(item => item.marketData.existance);
-      setRestList(list);
+      let _list = await instanceNFT.methods.getPersonalNFT(data.walletAddress).call();
+      let sellingList = [];
+      _list = _list.filter(item => (item.owner).toLowerCase() == (data.walletAddress).toLowerCase());
+      await axios.post('http://localhost:7060/sale/get-sale-list', { walletAddress: data.walletAddress }).then(res => {
+          const { list } = res.data;
+          let keys = [];
+          list.map(item => {
+              keys.push((item.tokenID).toString());
+          });
+          _list = _list.map(item => {
+              const index = keys.indexOf(item.tokenID);
+              if (index > -1) {
+                sellingList.push({ ...item, ...list[index]});
+              } else sellingList.push(item);
+          });
+      }).catch(err => {
+
+      });
+      setRestList(sellingList);
       setUserData(data);
       setLoaded(true);
     }).catch(err => {
