@@ -353,7 +353,7 @@ export default function TradeNFT({ data }) {
                                     <h4 onClick={() => navigate(`/item-detail/${nft.tokenID}`)}>{nft.nftName}</h4>
                                 </span>
                                 <div className="nft__item_price">
-                                    {web3.utils.fromWei(nftPrice, 'ether')}<span>BNB</span>
+                                    { nftPrice ? <>{web3.utils.fromWei(nftPrice, 'ether')}<span>BNB</span></> : ""}
                                 </div>
                                 <div className="trade-btn-group mt-2">
                                     { !isNFTOwner && (

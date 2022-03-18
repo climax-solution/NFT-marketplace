@@ -97,7 +97,7 @@ export default function NotSaleNFT({ data, NFT, Marketplace, remove }) {
                         <div className="nft__item h-100 justify-content-between">
                             <div className="nft__item_wrap">
                                 {
-                                    (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} role="button" className="lazy nft__item_preview" onClick={() => navigate(`/item-detail/${nft.tokenID}`)} alt=""/>
+                                    (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} role="button" className="lazy nft__item_preview ratio-1-1" onClick={() => navigate(`/item-detail/${nft.tokenID}`)} alt=""/>
                                 }
 
                                 {
