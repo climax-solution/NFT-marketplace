@@ -250,3 +250,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 .wap-height {
   height: calc(100% - 120px);
 }
+
+
+.f-12px {
+  font-size: 12px;
+}

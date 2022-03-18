@@ -4,6 +4,7 @@ import { createGlobalStyle } from 'styled-components';
 import getWeb3 from '../../utils/getWeb3';
 import categoryOptions from "../../config/category.json";
 import PremiumNFTLoading from '../components/Loading/PremiumNFTLoading';
+import axios from 'axios';
 
 const FolderList = lazy(() => import('../components/Explore/FolderList'));
 const Footer = lazy(() => import('../components/footer'));
@@ -97,14 +98,20 @@ const explore = () => {
 
   const filterFolder = async() => {
     setLoading(true);
-    let gradList = await Marketplace.methods.getFolderList().call();
-    let gradList1 = [];
-    for(let idx in gradList) {
-      gradList1.push({...gradList[idx], folderIndex: idx});
-    };
-    gradList1 = gradList1.filter(item => ((item[0]).toLowerCase()).search(searchKwd.toLowerCase()) > -1);
-    if (activeCategory.value) gradList1 = gradList1.filter(item => item[1] == activeCategory.value);
-    setFolderList(gradList1);
+    let gradList = await axios.post('http://localhost:7060/folder/get-sale-folder-list').then(res => {
+      return res.data.list;
+    }).catch(err => {
+      return [];
+    });
+
+    // let gradList1 = [];
+    // for(let idx in gradList) {
+    //   gradList1.push({...gradList[idx] });
+    // };
+    console.log("gradList",gradList);
+    gradList = gradList.filter(item => ((item.name).toLowerCase()).search(searchKwd.toLowerCase()) > -1);
+    if (activeCategory.value) gradList = gradList.filter(item => item.category == activeCategory.value);
+    setFolderList(gradList);
     setLoading(false);
   }
 
