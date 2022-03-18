@@ -4,6 +4,8 @@ import getWeb3 from "../../utils/getWeb3";
 import Empty from "../components/Empty";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { createGlobalStyle } from 'styled-components';
+import Skeleton from "react-loading-skeleton";
+import axios from "axios";
 
 
 const TradeNFT = lazy(() => import("../components/FolderNFT/tradeNFT"));
@@ -35,6 +37,7 @@ const folderNFTs = () => {
     const [nfts, setNFTLists] = useState([]);
     const [restList, setRestList] = useState([]);
     const [folderName, setFolderName] = useState("Collection");
+    const [artist, setArtist] = useState();
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(async () => {
@@ -55,19 +58,23 @@ const folderNFTs = () => {
 
     const getInitNFTs = async() => {
         const { id } = params;
-        let gradList = await Marketplace.methods.getSubFolderItem(id).call();
-        let oldList = gradList[0];
-        let list = [...oldList];
-        list.sort(function(a, b) {
-            let premiumA = a.marketData.premiumStatus;
-            let premiumB = b.marketData.premiumStatus;
-            if (premiumA && !premiumB) return -1;
-            else if (!premiumA && premiumB) return 0;
-            else return 1;
-        });
+        let gradList = await axios.post('http://localhost:7060/folder/get-folder-detail', { folderID: id}).then(res => {
+            let { list, artist: _artist } = res.data;
+            setArtist(_artist);
+            return list;
+        }).catch(err => {
 
-        setFolderName(gradList[1]);
-        setRestList(list);
+        })
+        // gradList.sort(function(a, b) {
+        //     let premiumA = a.status;
+        //     let premiumB = b.status;
+        //     if (premiumA && !premiumB) return -1;
+        //     else if (!premiumA && premiumB) return 0;
+        //     else return 1;
+        // });
+
+        // setFolderName(gradList[1]);
+        setRestList(gradList);
         setIsLoading(false);
     }
 
@@ -90,7 +97,15 @@ const folderNFTs = () => {
                         <div className='container'>
                             <div className='row m-10-hor'>
                             <div className='col-12'>
-                                <h1 className='text-center'>{folderName}</h1>
+                                {
+                                    isLoading ? <Skeleton/>
+                                    : (
+                                        <div className="text-center">
+                                            <img src={`http://localhost:7060/avatar/${artist.avatar}`} alt="artist" className="rounded-circle" crossOrigin="true"/>
+                                            <h1 className="text-center">{artist.firstName + " " + artist.lastName}</h1>
+                                        </div>
+                                    )
+                                }
                             </div>
                             </div>
                         </div>

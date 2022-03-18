@@ -58,7 +58,7 @@ const Folder = ({ folderID }) => {
                                 </div>
                                 <div className="nft__item_wrap ratio-1x1">
                                     {
-                                        (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={`/img/folder/${nft.folder.category}.png`} className="lazy nft__item_preview" onClick={() => navigate(`/folder-explorer/${nft.folderIndex}`)} role="button" alt=""/>
+                                        (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={`/img/folder/${nft.folder.category}.png`} className="lazy nft__item_preview" onClick={() => navigate(`/folder-explorer/${nft.folder._id}`)} role="button" alt=""/>
                                     }
                                 </div>
                                 <div className="nft__item_info mb-0 mt-1">

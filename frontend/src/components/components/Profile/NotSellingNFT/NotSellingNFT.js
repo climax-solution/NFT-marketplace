@@ -51,13 +51,13 @@ export default function NotSellingNFT() {
     const fetchNFT = async() => {
         if (!restList.length) return;
         let tmpList = restList;
-        setNFTs([...nfts, ...tmpList]);
         if (tmpList.length > 8) {
           tmpList = tmpList.slice(0, 8);
           setRestList(restList.slice(8, restList.length));
         }
         
         else setRestList([]);
+        setNFTs([...nfts, ...tmpList]);
     }
 
     const removeItem = (index) => {
@@ -68,21 +68,19 @@ export default function NotSellingNFT() {
 
     return (
         <>
-            <>
-                <InfiniteScroll
-                    dataLength={nfts.length}
-                    next={fetchNFT}
-                    hasMore={restList.length ? true : false}
-                    loader={<PremiumNFTLoading/>}
-                    className="row overflow-unset"
-                >
-                    {nfts.map( (nft, index) => (
-                        <NotSaleNFT data={nft} key={index} remove={() => removeItem(index)} NFT={nftContract} Marketplace={marketContract}/>
-                    ))}
-                </InfiniteScroll>
+            <InfiniteScroll
+                dataLength={nfts.length}
+                next={fetchNFT}
+                hasMore={restList.length ? true : false}
+                loader={<PremiumNFTLoading/>}
+                className="row overflow-unset"
+            >
+                {nfts.map( (nft, index) => (
+                    <NotSaleNFT data={nft} key={index} remove={() => removeItem(index)} NFT={nftContract} Marketplace={marketContract}/>
+                ))}
+            </InfiniteScroll>
 
-                { loaded && !nfts.length && <Empty/>}
-            </>
+            { loaded && !nfts.length && <Empty/>}
         </>
     )
 }

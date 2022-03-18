@@ -8,8 +8,8 @@ export default function MusicArt({ data, link }) {
 
     const playMusic = () => {
         setPlay(!isPlay);
-        if (!isPlay) document.getElementsByClassName(`track-${data.nftData.tokenID}`)[0].play();
-        else document.getElementsByClassName(`track-${data.nftData.tokenID}`)[0].pause();
+        if (!isPlay) document.getElementsByClassName(`track-${data.tokenID}`)[0].play();
+        else document.getElementsByClassName(`track-${data.tokenID}`)[0].pause();
     }
     
     const failedLoadImage = (e) => {
@@ -19,7 +19,7 @@ export default function MusicArt({ data, link }) {
     return (
         <div className="d-flex align-items-center position-relative">
             <div className="nft_type_wrap">
-                <audio className={`track-${data.nftData.tokenID}`} src={data.asset} type="audio/mpeg"/>
+                <audio className={`track-${data.tokenID}`} src={data.asset} type="audio/mpeg"/>
 
                 <div className="player-container">
                     <div className={`play-pause ${isPlay ? 'pause' : 'play'}`} onClick={playMusic}/>
