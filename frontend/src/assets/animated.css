@@ -251,7 +251,22 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   height: calc(100% - 120px);
 }
 
-
 .f-12px {
   font-size: 12px;
+}
+
+.w-50px {
+  width: 50px !important;
+}
+
+.bid-loading {
+  display: flex;
+  align-items: center;
+  border: 1px solid #2a2b2c;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.bid-loading .nft-name{
+  width: 200px;
 }

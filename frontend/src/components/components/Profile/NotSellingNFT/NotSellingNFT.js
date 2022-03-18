@@ -68,6 +68,9 @@ export default function NotSellingNFT() {
 
     return (
         <>
+            {
+                !loaded && <PremiumNFTLoading/>
+            }
             <InfiniteScroll
                 dataLength={nfts.length}
                 next={fetchNFT}
