@@ -3,19 +3,16 @@ import { createGlobalStyle } from "styled-components";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import Modal from 'react-awesome-modal';
-import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Carousel from "react-multi-carousel";
 import getWeb3 from "../../../utils/getWeb3";
 import sign from "../../../utils/sign";
 
 import "react-multi-carousel/lib/styles.css";
-import TradeNFT from "../FolderNFT/tradeNFT";
 
 const PremiumNFTLoading = lazy(() => import('../Loading/PremiumNFTLoading'));
 const Empty = lazy(() => import("../Empty"));
-const MusicArt = lazy(() => import("../Asset/music"));
-const VideoArt = lazy(() => import("../Asset/video"));
+const TradeNFT  = lazy(() => import( "../FolderNFT/tradeNFT"));
 
 const GlobalStyles = createGlobalStyle`
   .text-grey {
@@ -39,18 +36,17 @@ const GlobalStyles = createGlobalStyle`
       grid-template-columns: auto auto;
       column-gap: 15px;
   }
+  .react-multi-carousel-item {
+    transform-style: none;
+  }
 `;
 
 export default function () {
-
-  const navigate = useNavigate();
-
   const initialUser = useSelector(({ auth }) => auth.user);
   const wallet_info = useSelector(({ wallet }) => wallet.wallet_connected);
 
   const [list, setList] = useState([]);
   const [web3, setWEB3] = useState([]);
-  const [NFT, setNFT] = useState({});
   const [Marketplace, setMarketplace] = useState({});
   const [carouselLoading, setCarouselLoading] = useState(true);
   const [visible, setVisible] = useState(false);
@@ -80,9 +76,8 @@ export default function () {
   };
 
   useEffect(async () => {
-    const { _web3, instanceMarketplace, instanceNFT } = await getWeb3();
+    const { _web3, instanceMarketplace } = await getWeb3();
     setWEB3(_web3);
-    setNFT(instanceNFT);
     setMarketplace(instanceMarketplace);
   },[])
 
@@ -198,14 +193,6 @@ export default function () {
         return res.data.list;
       });
       list.sort((before, after) => before.price - after.price);
-      // let mainList = [];
-      // for await (let item of list) {
-      //   const nft = await NFT.methods.getItemNFT(item.tokenID).call();
-      //   await axios.get(nft.tokenURI).then(res => {
-      //     const { data } = res;
-      //     mainList.push({ ...item, ...data });
-      //   })
-      // }
       setList(list);
     } catch(err) {
       console.log(err);
@@ -228,69 +215,69 @@ export default function () {
           {
             !carouselLoading && (
               <>
-              <Carousel
-                swipeable={false}
-                draggable={false}
-                responsive={responsive}
-                ssr // means to render carousel on server-side.
-                infinite={true}
-                autoPlay={true}
-                autoPlaySpeed={2000}
-                keyBoardControl={true}
-                containerClass="carousel-container"
-                removeArrowOnDeviceType={["tablet", "mobile"]}
-                dotListClass="custom-dot-list-style"
-                itemClass="carousel-item-padding-40-px"
-              >
-                {
-                  list.map((nft, index) => {
-                    return (
-                      <TradeNFT data={nft} key={index}/>
-                    )
-                  })
-                }
-              </Carousel>
-              <Modal
-                visible={visible}
-                width="300"
-                height="200"
-                effect="fadeInUp"
-                onClickAway={null}
-              >
-                {
-                  isTrading ?
-                  <div className='d-flex w-100 h-100 justify-content-center align-items-center'>
-                    <div className='reverse-spinner'></div>
-                  </div>
-                  : 
-                  <div className='p-5'>
-                    <div className='form-group'>
-                        <label>Please reserve price.</label>
-                        <input
-                            type="number"
-                            className='form-control text-dark border-dark'
-                            value={bidPrice}
-                            onChange={(e) => setBidPrice(e.target.value)}
-                        />
+                <Carousel
+                  swipeable={false}
+                  draggable={false}
+                  responsive={responsive}
+                  ssr // means to render carousel on server-side.
+                  infinite={true}
+                  autoPlay={true}
+                  autoPlaySpeed={2000}
+                  keyBoardControl={true}
+                  containerClass="carousel-container"
+                  removeArrowOnDeviceType={["tablet", "mobile"]}
+                  dotListClass="custom-dot-list-style"
+                  itemClass="carousel-item-padding-40-px"
+                >
+                  {
+                    list.map((nft, index) => {
+                      return (
+                        <TradeNFT data={nft} key={index}/>
+                      )
+                    })
+                  }
+                </Carousel>
+                <Modal
+                  visible={visible}
+                  width="300"
+                  height="200"
+                  effect="fadeInUp"
+                  onClickAway={null}
+                >
+                  {
+                    isTrading ?
+                    <div className='d-flex w-100 h-100 justify-content-center align-items-center'>
+                      <div className='reverse-spinner'></div>
                     </div>
-                    <div className='groups'>
-                        <button
-                            className='btn-main btn-apply w-100 px-1'
-                            onClick={placeBid}
-                        >Place</button>
-                        <button
-                            className='btn-main w-100'
-                            onClick={() => setVisible(false)}
-                        >Cancel</button>
+                    : 
+                    <div className='p-5'>
+                      <div className='form-group'>
+                          <label>Please reserve price.</label>
+                          <input
+                              type="number"
+                              className='form-control text-dark border-dark'
+                              value={bidPrice}
+                              onChange={(e) => setBidPrice(e.target.value)}
+                          />
+                      </div>
+                      <div className='groups'>
+                          <button
+                              className='btn-main btn-apply w-100 px-1'
+                              onClick={placeBid}
+                          >Place</button>
+                          <button
+                              className='btn-main w-100'
+                              onClick={() => setVisible(false)}
+                          >Cancel</button>
+                      </div>
                     </div>
-                  </div>
-                }
+                  }
 
-            </Modal>
+              </Modal>
+              { !list.length && <Empty/> }
             </>
             )
           }
-          { !list.length && !carouselLoading && <Empty/> }
           </>
       </div>
     </section>

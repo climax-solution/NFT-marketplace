@@ -295,7 +295,7 @@ export default function TradeNFT({ data }) {
                 isLoading ? <ItemLoading/>
                 : (
                     <>
-                        <div className="nft__item m-0 pb-4 justify-content-between h-100">
+                        <div className="nft__item my-0 pb-4 justify-content-between h-100">
                             {
                                 nft.existance &&
                                 <div className="de_countdown">
@@ -305,7 +305,7 @@ export default function TradeNFT({ data }) {
                             <div className="nft__item_wrap flex-column position-relative wap-height">
                                 
                                 {
-                                    (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} className="lazy nft__item_preview" role="button" onClick={() => navigate(`/item-detail/${nft.tokenID}`)} alt=""/>
+                                    (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} className="lazy nft__item_preview ratio-1-1" role="button" onClick={() => navigate(`/item-detail/${nft.tokenID}`)} alt=""/>
                                 }
 
                                 {
@@ -319,7 +319,6 @@ export default function TradeNFT({ data }) {
                                 {
                                     isNFTOwner && 
                                     <span>
-
                                         <small data-tip data-for={`owner-${nft.tokenID}`} className="owner-check"><i className="fal fa-badge-check"/></small>
                                         <ReactTooltip id={`owner-${nft.tokenID}`} type='info' effect="solid">
                                             <span>Your NFT</span>
