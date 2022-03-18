@@ -44,7 +44,7 @@ const NFTItem = () => {
     const params = useParams();
 
     const wallet_info = useSelector(({ wallet }) => wallet.wallet_connected);
-    const userData = useSelector((state) => state.auth.user);
+    const initialUser = useSelector((state) => state.auth.user);
 
     const [nft, setNFTData] = useState();
     const [web3, setWeb3] = useState();
@@ -62,19 +62,25 @@ const NFTItem = () => {
 
     useEffect(async() => {
         if (!updated) return;
-        const { _web3, instanceMarketplace } = await getWeb3();
+        const { _web3, instanceMarketplace, instanceNFT } = await getWeb3();
         setWeb3(_web3);
         setMarketplace(instanceMarketplace);
         try {
             const { id } = params;
-            const item = await instanceMarketplace.methods.getItemNFT(id).call();
-            await axios.get(item.nftData.tokenURI).then(async(res) => {
+            const item = await instanceNFT.methods.getItemNFT(id).call();
+            const saleData = await axios.post('http://localhost:7060/sale/get-nft-item', { tokenID: id}).then(res => {
+                return res.data;
+            }).catch(err => {
+                return {}
+            });
+            
+            await axios.get(item.tokenURI).then(async(res) => {
                 const { data } = res;
-                setNFTData({ ...item, ...data });
-                const _price = !item.auctionData.existance ? item.marketData.price : (Number(item.auctionData.currentBidPrice) ? item.auctionData.currentBidPrice : item.auctionData.minPrice);
-                const nftOwner =( (item.nftData.owner).toLowerCase() == (userData.walletAddress).toLowerCase());
-                const bidOwner = (item.auctionData.currentBidOwner).toLowerCase() == (userData.walletAddress).toLowerCase();
-                const _claimable = Date.parse(new Date(item.auctionData.endAuction * 1000)) - Date.parse(new Date());
+                setNFTData({ ...item, ...data, ...saleData.nft });
+                const _price = saleData?.nft?.price ? saleData.nft.price : null;
+                const nftOwner =( (item.owner).toLowerCase() == (initialUser.walletAddress).toLowerCase());
+                const bidOwner = saleData?.childList ? (childList[(initialUser.walletAddress).toLowerCase()] ? true : false) : false;
+                const _claimable = saleData.nft.deadline ? Date.parse(new Date(saleData.nft.deadline * 1000)) - Date.parse(new Date()) : 0;
                 
                 setPrice(_price);
                 setNFTOwner(nftOwner);
@@ -98,13 +104,13 @@ const NFTItem = () => {
     const buyNow = async() => {
 
         let message = "";
-        if (!userData.walletAddress) message = 'Please log in';
-        if (!wallet_info) message = 'Please connect metamask';
+        if (!initialUser.walletAddress) message = "Please log in";
+        else if (!wallet_info) message = 'Please connect metamask';
 
         if (message) {
             toast.warning(message, {
                 position: "top-center",
-                autoClose: 5000,
+                autoClose: 2000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -116,42 +122,28 @@ const NFTItem = () => {
         }
 
         try {
-            let { marketData, auctionData } = await Marketplace.methods.getItemNFT(nft.nftData.tokenID).call();
-            if (marketData.marketStatus && !auctionData.existance) {
-                const _bnbBalance = await web3.eth.getBalance(userData.walletAddress);
+            setLoading(true);
+            const { nft: _nft } = await axios.post('http://localhost:7060/sale/get-nft-item', { tokenID: nft.tokenID }).then(res => {
+                return res.data;
+            });
 
-                if (Number(marketData.price) + 210000 > Number(_bnbBalance)) throw new Error("BNB balance is low");
+            if (_nft.action != 'list') throw Error();
 
-                setLoading(true);
-                await Marketplace.methods.buyNFT(nft.nftData.tokenID).send({ from: userData.walletAddress, value: marketData.price });
-
-                const data = {
-                    tokenID: nft.nftData.tokenID,
-                    type: 0,
-                    price: Number(marketData.price),
-                    walletAddress: userData.walletAddress
-                }
-
-                await axios.post('http://localhost:7060/activity/create-log', data).then(res =>{
-
-                }).catch(err => { });
-
-                toast.success("Buy success", {
-                    position: "top-center",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "colored"
-                });
-            }
+            await Marketplace.methods.buy(_nft.tokenID, _nft.walletAddress, _nft.price, _nft.status == "premium" ? true : false, nft.signature).send({ from: initialUser.walletAddress, value: nft.price });
+            toast.success("Buy success", {
+                position: "top-center",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored"
+            });
         } catch(err) {
-            console.log(err);
             toast.error(err.message, {
                 position: "top-center",
-                autoClose: 5000,
+                autoClose: 2000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -160,27 +152,21 @@ const NFTItem = () => {
                 theme: "colored"
             });
         }
-        setUpdate(true);
         setLoading(false);
     }
 
     const placeBid = async() => {
 
-        let message = '';
-        if (!userData.walletAddress) message = 'Please log in';
+        let message = "";
+        let minPrice = web3.utils.fromWei(nftPrice, "ether");
+        if (!initialUser.walletAddress) message = 'Please log in';
         else if (!wallet_info) message = 'Please connect metamask';
-        else if (bidPrice <=0 || bidPrice == '') message = 'Please reserve correct price';
-        
-        let { auctionData } = await Marketplace.methods.getItemNFT(nft.nftData.tokenID).call();
-        if (bidPrice > 0) {
-            let minPrice = web3.utils.fromWei(auctionData.minPrice, "ether");
-            if (bidPrice < (minPrice)) message = 'Offer is over min price';
-        }
+        else if (bidPrice < minPrice) message = 'Minimum price is ' + minPrice + 'BNB';
 
         if (message) {
-            toast.warning(message, {
+            toast.error(message, {
                 position: "top-center",
-                autoClose: 5000,
+                autoClose: 2000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -191,57 +177,67 @@ const NFTItem = () => {
             return;
         }
 
-        if (auctionData.existance) {
-            try {
-                 const price = web3.utils.toWei(bidPrice.toString(), "ether");
-                 const _bnbBalance = await web3.eth.getBalance(userData.walletAddress);
-     
-                 if (Number(price) + 210000 > Number(_bnbBalance)) throw new Error("BNB balance is low");
-     
-                 setTrading(true);
-                 setBidPrice('');
-                 await Marketplace.methods.placeBid(nft.nftData.tokenID).send({ from: userData.walletAddress, value: price});
-                 const data = {
-                    tokenID: nft.nftData.tokenID,
-                    type: 7,
-                    price: Number(price),
-                    walletAddress: userData.walletAddress
-                 }
-     
-                 await axios.post('http://localhost:7060/activity/create-log', data).then(res =>{
-     
-                 }).catch(err => { });
-                 toast.success("Success Bid", {
-                    position: "top-center",
-                    autoClose: 2000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "colored"
-                });
-             } catch(err) {
-                 toast.error(err.message, {
-                    position: "top-center",
-                    autoClose: 2000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "colored"
-                });
-            }
-            setUpdate(true);
-            setTrading(false);
+        try {
+            setLoading(true);
+            const price = web3.utils.toWei(bidPrice.toString(), "ether");
+            setTrading(true);
             setVisible(false);
+            setBidPrice('');
+            
+            const nonce = await Marketplace.methods.nonces(initialUser.walletAddress).call();
+            const result = await sign(nonce, activeID, initialUser.walletAddress, price, false);
+  
+            const offer = {
+                tokenID: nft.tokenID,
+                price,
+                walletAddress: initialUser.walletAddress,
+                signature: result
+            };
+
+            await axios.post('http://localhost:7060/sale/create-new-offer', offer).then(res => {
+                const { message } = res.data;
+                toast.success(message, {
+                  position: "top-center",
+                  autoClose: 2000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "colored"
+                });
+              }).catch(err => {
+                const { error } = err.response.data;
+                toast.success(error, {
+                  position: "top-center",
+                  autoClose: 2000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "colored"
+                });
+            })
+            // await refresh();
+        } catch(err) {
+            toast.error(err.message, {
+                position: "top-center",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored"
+            });
         }
+        setLoading(false);
     }
 
     const withdrawBid = async() => {
         let message = "";
-        if (!userData.walletAddress) message = 'Please log in';
+        if (!initialUser.walletAddress) message = 'Please log in';
 
         if (!wallet_info) message = 'Please connect metamask';
         if (message) {
@@ -259,85 +255,45 @@ const NFTItem = () => {
         }
 
         try {
-            const _bnbBalance = await web3.eth.getBalance(userData.walletAddress);
-
-            if (Number(_bnbBalance) < 210000 ) throw new Error("BNB balance is low");
-
-            setTrading(true);
-            await Marketplace.methods.withdrawBid(nft.nftData.tokenID).send({ from: userData.walletAddress });
-
-            toast.info("Success withdraw", {
-                position: "top-center",
-                autoClose: 2000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored"
-            });
-        } catch(err) {
-            toast.error(err.message, {
-                position: "top-center",
-                autoClose: 2000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored"
-            });
-        }
-        setUpdate(true);
-        setLoading(false);
-    }
-
-    const claimNFT = async() => {
-        let message = '';
-        if (!userData.walletAddress) message = 'Please log in';
-        else if (!wallet_info) message = 'Please connect metamask';
-
-        if (!message) {
-            toast.warning(message, {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored"
-            });
-            return;
-        }
-
-        try {
-            const _bnbBalance = await web3.eth.getBalance(userData.walletAddress);
-
-            if (Number(_bnbBalance) < 210000) throw new Error("BNB balance is low");
-
             setLoading(true);
-            await Marketplace.methods.claimNFT(nft.nftData.tokenID).send({ from: userData.walletAddress });
-
+            const withdraw = {
+                walletAddress: initialUser.walletAddress,
+                tokenID: nft.tokenID
+              };
+      
+            await axios.post('http://localhost:7060/sale/cancel-offer', withdraw).then(res => {
+                
+                const { message } = res.data;
+                toast.info(message, {
+                  position: "top-center",
+                  autoClose: 2000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                  theme: "colored"
+                });
+            });
+            // await refresh();
         } catch(err) {
             toast.error(err.message, {
                 position: "top-center",
-                autoClose: 5000,
+                autoClose: 2000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
                 theme: "colored"
-            });;
+            });
         }
-        setUpdate(true);
         setLoading(false);
     }
 
     const openModal = () => {
         let message = '';
-        if (!userData.walletAddress) message = 'Please log in';
+        if (!initialUser.walletAddress) message = 'Please log in';
         else if (!wallet_info) message = 'Please connect metamask';
         if (message) {
           toast.warning(message, {
@@ -397,14 +353,14 @@ const NFTItem = () => {
                                         (nft.type && (nft.type).toLowerCase() == 'video') && <VideoArt data={nft.asset}/>
                                     }
 
-                                    { !isNFTOwner && nft.marketData.marketStatus && (
-                                        !nft.auctionData.existance
-                                            ? <span className="btn-main py-3 mx-auto w-100 mt-3 mw-500px" onClick={buyNow} >Buy Now</span>
-                                            : (
-                                                !isBidOwner ? <span className="btn-main mx-auto py-3 w-50 mt-2" onClick={openModal}>Place Bid</span> : (
-                                                    claimable <= 0 ?
-                                                    <span className="btn-main mx-auto py-3 w-50 mt-2" onClick={claimNFT}>Claim NFT</span>
-                                                    : <span className="btn-main mx-auto py-3 w-50 mt-2" onClick={withdrawBid}>Withdraw Bid</span>
+                                    { !isNFTOwner && (
+                                        nft.action && (
+                                            nft.action == 'list'
+                                                ? <span className="btn-main py-3 mx-auto w-100 mt-3 mw-500px" onClick={buyNow} >Buy Now</span>
+                                                : (
+                                                    !isBidOwner ? <span className="btn-main mx-auto py-3 w-50 mt-2" onClick={openModal}>Place Bid</span> : (
+                                                        claimable <= 0 && <span className="btn-main mx-auto py-3 w-50 mt-2" onClick={withdrawBid}>Withdraw Bid</span>
+                                                    )
                                                 )
                                             )
                                         )
@@ -413,7 +369,7 @@ const NFTItem = () => {
                                 <div className="col-md-6 col-sm-12">
                                     <div className="item_info">
                                         {
-                                            nft.auctionData.existance && (
+                                            nft.action == "auction" && (
                                                 <>
                                                     Auctions ends in 
                                                     <div className="de_countdown">
@@ -423,11 +379,11 @@ const NFTItem = () => {
                                             )
                                         }
                                         <h2>{nft.nftName}</h2>
-                                        <h5>TOKEN ID : {nft.nftData.tokenID} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PRICE : {web3.utils.fromWei(price.toString(), "ether")} BNB</h5>
+                                        <h5>TOKEN ID : {nft.tokenID} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { price ?`PRICE : ${web3.utils.fromWei(price.toString(), "ether")} BNB` : ""}</h5>
                                         <div className="item_info_counts">
                                             <div className="item_info_type"><i className="fa fa-image"></i>{nft.category}</div>
                                             {
-                                                nft.marketData.premiumStatus && (
+                                                nft.status == 'premium' && (
                                                     <div className="item_info_type"><i className="fa fa-sparkles"></i>Premium NFT</div>
                                                 )
                                             }
