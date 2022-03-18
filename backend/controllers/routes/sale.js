@@ -18,7 +18,7 @@ router.post('/list', async(req, res) => {
             tokenID,
             price,
             action,
-            deadline,
+            deadline : Date.parse(new Date()) + deadline * 3600 * 1000 ,
             signature,
             walletAddress
         });
@@ -154,7 +154,12 @@ router.post('/accept-offer', async(req, res) => {
 
 router.post('/get-premium-list', async(req, res) => {
     try {
-        const list = await SaleSchema.find({ status: "premium" }).sort({ price: 1 }).limit(10);
+        const { walletAddress } = req.body;
+        const list = await SaleSchema.find({
+            status: "premium",
+            walletAddress: { $ne: walletAddress },
+            action: { $in: ['list', 'auction'] }
+        }).sort({ price: 1 }).limit(10);
         res.status(200).json({
             list
         });
@@ -167,16 +172,22 @@ router.post('/get-premium-list', async(req, res) => {
 
 router.post('/get-nft-item', async(req, res) => {
     try {
-        const { tokenID, walletAddress } = req.body;
-        let nft = await SaleSchema.findOne({ tokenID, walletAddress, action: {$in : ['list', 'auction']}});
+        const { tokenID } = req.body;
+        let nft = await SaleSchema.findOne({ tokenID, action: {$in : ['list', 'auction']}});
         if (!nft) {
             return res.status(400).json({
                 error: "Not on sale"
             });
         }
 
-        res.status(200).json({ nft });
+        let childList = {};
+        if (nft.action == 'auction') {
+            childList[nft.walletAddress] = SaleSchema.find({ tokenID: nft.tokenID, action: 'offer' });
+        }
+
+        res.status(200).json({ nft, childList });
     } catch(err) {
+        console.log(err);
         res.status(400).json({
             error: "Your request is restricted"
         });
@@ -194,5 +205,29 @@ router.post('/get-sale-list', async(req, res) => {
         });
     }
 });
+
+router.post('/get-bid-list', async(req, res) => {
+    try {
+        const { walletAddress } = req.body;
+        let saleList = await SaleSchema.find({ walletAddress, action: "auction" });
+        let bidList = {};
+        saleList.map(async(item, index) => {
+            const bid = await SaleSchema.find({ tokenID: item.tokenID, action: 'offer' });
+            if (bid.length) {
+                bidList[item.walletAddress] = bid;
+            } else saleList.splice(index, 1);
+        })
+
+        res.status(200).json({
+            nfts: saleList,
+            bids: bidList
+        })
+
+    } catch(err) {
+        res.status(400).json({
+            error: "Your request is restricted"
+        });
+    }
+})
 
 module.exports = router;
