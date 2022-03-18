@@ -45,11 +45,11 @@ export default function DirectSellModal({ visible, tokenID, close, Marketplace, 
         try {
             const nftPrice = web3.utils.toWei(price.toString(), 'ether');
             const nonce = await Marketplace.methods.nonces(initialUser.walletAddress).call();
-            const result = await sign(nonce, tokenID, initialUser.walletAddress, nftPrice, false);
-            if (result) {
+            const signature = await sign(nonce, tokenID, initialUser.walletAddress, nftPrice, false);
+            if (signature) {
                 await axios.post('http://localhost:7060/sale/list', {
                     tokenID, price: nftPrice, walletAddress: initialUser.walletAddress, action: "list",
-                    signature: result
+                    signature
                 });
                 close(true);
             }
