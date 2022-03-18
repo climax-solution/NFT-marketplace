@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux";
 import { UPDATE_AUTH } from "../../store/action/auth.action";
 import { WalletConnect } from "../../store/action/wallet.action";
 import Mint from "../components/Profile/Mint/Mint";
+import Bid from "../components/Profile/Bid/Bid";
 
 const SellingNFT = lazy(() => import('../components/Profile/SellingNFT/SellingNFT'));
 const NotSellingNFT = lazy(() => import('../components/Profile/NotSellingNFT/NotSellingNFT'));
@@ -150,6 +151,10 @@ const Profile = function() {
 
           {
             activeTab == 2 && <ManageInfo/>
+          }
+
+          {
+            activeTab == 3 && <Bid/>
           }
 
           {
