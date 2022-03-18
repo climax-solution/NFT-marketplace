@@ -4,6 +4,7 @@ import Modal from 'react-awesome-modal';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import addresses from "../../../config/address.json";
+import sign from '../../../utils/sign';
 const { marketplace_addr } = addresses;
 
 const days = [...Array(8).keys()];
@@ -43,34 +44,16 @@ export default function AuctionSellModal({ visible, close, tokenID, web3, NFT, M
         try {
             const nftPrice = web3.utils.toWei(price.toString(), 'ether');
             
-            const _bnbBalance = await web3.eth.getBalance(initialUser.walletAddress);
-            const _estApproveGas = await NFT.methods.approve(marketplace_addr, tokenID).estimateGas({from : initialUser.walletAddress });
-
-            if (Number(nftPrice / 40) + Number(_estApproveGas) + 210000 > Number(_bnbBalance)) throw new Error("BNB balance is low");
-
-            await NFT.methods.approve(marketplace_addr, tokenID).send({from : initialUser.walletAddress})
-            .on('receipt', async(rec) => {
-                await Marketplace.methods.openTradeToAuction(tokenID, nftPrice, Math.floor(day * 24 + hour * 1)).send({ from: initialUser.walletAddress, value: nftPrice / 40 });
-
-                const data = {
-                    tokenID: tokenID,
-                    type: 5,
-                    price: nftPrice / 40,
-                    walletAddress: initialUser.walletAddress
-                }
-                toast.success('Success', {
-                    position: "top-center",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "colored"
+            const nonce = await Marketplace.methods.nonces(initialUser.walletAddress).call();
+            const signature = await sign(nonce, tokenID, initialUser.walletAddress, nftPrice, false);
+            
+            if (signature) {
+                await axios.post('http://localhost:7060/sale/list', {
+                    tokenID, price: nftPrice, walletAddress: initialUser.walletAddress, action: "auction",
+                    signature, deadline: (day * 24 + hour * 1)
                 });
-                await axios.post('http://localhost:7060/activity/create-log', data).catch(res => {}).catch(err => { });
                 close(true);
-            });
+            }
             
         } catch(err) {
             toast.error(err.message, {

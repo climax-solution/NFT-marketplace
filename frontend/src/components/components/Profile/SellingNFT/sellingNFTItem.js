@@ -175,7 +175,7 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
         await axios.post('http://localhost:7060/sale/get-nft-item', { tokenID, walletAddress: initialUser.walletAddress }).then(res => {
             setNFT({ ...nft, ...res.data.nft });
         }).catch(err => {
-            remove();
+            // remove();
         });
         
     }
@@ -193,7 +193,7 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
                     : (
                         <>
                             <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mt-3">
-                                <div className="nft__item position-relative h-100 justify-content-between">
+                                <div className="nft__item position-relative my-0 h-100 justify-content-between">
                                     {
                                         isTrading && 
                                         <div className="trade-loader start-0 w-100">
@@ -202,7 +202,7 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
                                     }
                                     <div className="nft__item_wrap flex-column position-relative wap-height">
                                         {
-                                            (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} className="lazy nft__item_preview" onClick={() => navigate(`/item-detail/${nft.tokenID}`) } role="button" alt=""/>
+                                            (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} className="lazy nft__item_preview ratio-1-1" onClick={() => navigate(`/item-detail/${nft.tokenID}`) } role="button" alt=""/>
                                         }
 
                                         {
