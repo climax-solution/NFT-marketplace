@@ -96,8 +96,8 @@ const folderNFTs = () => {
                                 {
                                     isLoading ? <Skeleton/>
                                     : (
-                                        <div className="text-center">
-                                            <img src={`${process.env.REACT_APP_BACKEND}avatar/${artist.avatar}`} alt="artist" className="rounded-circle" crossOrigin="true"/>
+                                        <div className="d-flex align-items-center justify-content-center flex-column profile_avatar">
+                                            <img src={`${process.env.REACT_APP_BACKEND}avatar/${artist.avatar}`} alt="artist" className="rounded-circle mx-150px ratio-1-1" crossOrigin="true"/>
                                             <h1 className="text-center">{artist.firstName + " " + artist.lastName}</h1>
                                         </div>
                                     )
