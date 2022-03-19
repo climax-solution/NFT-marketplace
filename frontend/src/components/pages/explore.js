@@ -108,7 +108,7 @@ const explore = () => {
     // for(let idx in gradList) {
     //   gradList1.push({...gradList[idx] });
     // };
-    console.log("gradList",gradList);
+    // console.log("gradList",gradList);
     gradList = gradList.filter(item => ((item.name).toLowerCase()).search(searchKwd.toLowerCase()) > -1);
     if (activeCategory.value) gradList = gradList.filter(item => item.category == activeCategory.value);
     setFolderList(gradList);

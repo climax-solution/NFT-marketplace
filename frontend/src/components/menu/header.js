@@ -249,13 +249,19 @@ const Header= function() {
                         </div>
                         <div className='navbar-item'>
                           <Link to="/explore" onClick={() => btn_icon(!showmenu)}>
-                          Explore
+                            Explore
                             <span className='lines'></span>
                           </Link>
                         </div>
                         <div className='navbar-item'>
                           <Link to="/activity" onClick={() => btn_icon(!showmenu)}>
-                          Activity
+                            Activity
+                            <span className='lines'></span>
+                          </Link>
+                        </div>
+                        <div className='navbar-item'>
+                          <Link to="/users" onClick={() => btn_icon(!showmenu)}>
+                            Users
                             <span className='lines'></span>
                           </Link>
                         </div>
@@ -291,13 +297,19 @@ const Header= function() {
                       </div>
                       <div className='navbar-item'>
                         <Link to="/explore" onClick={() => btn_icon(!showmenu)}>
-                        Explore
+                          Explore
                           <span className='lines'></span>
                         </Link>
                       </div>
                       <div className='navbar-item'>
                         <Link to="/activity" onClick={() => btn_icon(!showmenu)}>
-                        Activity
+                          Activity
+                          <span className='lines'></span>
+                        </Link>
+                      </div>
+                      <div className='navbar-item'>
+                        <Link to="/users" onClick={() => btn_icon(!showmenu)}>
+                          Users
                           <span className='lines'></span>
                         </Link>
                       </div>

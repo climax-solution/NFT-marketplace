@@ -13,7 +13,7 @@ const VideoArt = lazy(() => import("../Asset/video"));
 const ItemLoading = lazy(() => import("../Loading/ItemLoading"));
 const Clock = lazy(() => import("../Clock"));
 
-export default function TradeNFT({ data }) {
+export default function TradeNFT({ data, className = "mx-0" }) {
     
     const navigate = useNavigate();
 
@@ -41,12 +41,20 @@ export default function TradeNFT({ data }) {
 
         let _orgNFT = await instanceNFT.methods.getItemNFT(data.tokenID).call();
         _orgNFT = { ...data, ..._orgNFT};
+        const saled = await axios.post('http://localhost:7060/sale/get-nft-item', { tokenID: data.tokenID }).then(res => {
+            return res.data;
+        }).catch(err => {
+            return {
+                nft: {}, childList: {}
+            }
+        })
+
         await axios.get(`${_orgNFT.tokenURI}`).then(res => {
             const { data: metadata } = res;
-            setNFT({ ...data, ...metadata });
-            const _price = _orgNFT.price;
+            setNFT({ ...data, ...metadata, ...saled.nft });
+            const _price = saled.nft.price;
             const nftOwner = ( (_orgNFT.owner).toLowerCase() == (initialUser.walletAddress).toLowerCase());
-            const bidOwner = false;
+            const bidOwner = saled.childList[(initialUser.walletAddress).toLowerCase()] ? true : false;
             const _claimable = Date.parse(new Date(_orgNFT.deadline)) - Date.parse(new Date());
             
             setNFTPrice(_price);
@@ -83,6 +91,7 @@ export default function TradeNFT({ data }) {
         }
 
         try {
+            setTrading(true);
             const { nft: _nft } = await axios.post('http://localhost:7060/sale/get-nft-item', { tokenID: nft.tokenID }).then(res => {
                 return res.data;
             });
@@ -295,7 +304,7 @@ export default function TradeNFT({ data }) {
                 isLoading ? <ItemLoading/>
                 : (
                     <>
-                        <div className="nft__item my-0 pb-4 justify-content-between h-100">
+                        <div className={`nft__item my-0 pb-4 justify-content-between h-100 ${className}`}>
                             {
                                 nft.existance &&
                                 <div className="de_countdown">

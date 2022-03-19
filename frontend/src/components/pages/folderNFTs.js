@@ -25,9 +25,6 @@ const GlobalStyles = createGlobalStyle`
         grid-template-columns: auto auto;
         column-gap: 15px;
     }
-
-    
-
 `;
 
 const folderNFTs = () => {
@@ -36,7 +33,6 @@ const folderNFTs = () => {
     const [Marketplace, setMarketplace] = useState(null);
     const [nfts, setNFTLists] = useState([]);
     const [restList, setRestList] = useState([]);
-    const [folderName, setFolderName] = useState("Collection");
     const [artist, setArtist] = useState();
     const [isLoading, setIsLoading] = useState(true);
 
