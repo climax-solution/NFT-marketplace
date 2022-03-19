@@ -45,7 +45,7 @@ library ECRecovery {
 
 }
 
-contract Marketplace {
+contract Marketplaces {
 
     using SafeMath for uint256;
 

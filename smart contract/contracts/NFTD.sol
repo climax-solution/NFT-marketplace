@@ -4,6 +4,7 @@ pragma experimental ABIEncoderV2;
 
 import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import { ERC721URIStorage } from "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import { ERC721Enumerable } from "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 
 library Strings {
     
@@ -87,7 +88,7 @@ abstract contract Ownable {
     }
 }
 
-contract NFTD is ERC721URIStorage, Ownable {
+contract NFTD is ERC721Enumerable, ERC721URIStorage, Ownable {
 
     uint256 public lastID;
     using Strings for uint256;
@@ -149,12 +150,13 @@ contract NFTD is ERC721URIStorage, Ownable {
 
     function getPersonalNFT(address owner_) external view returns (ItemNFT[] memory) {
 
-        uint idx;
+        uint count = balanceOf(owner_);
 
-        ItemNFT[] memory list = new ItemNFT[](lastID);
+        ItemNFT[] memory list = new ItemNFT[](count);
 
-        for (uint i; i < lastID; i ++) {
-            if (ownerOf(i) == owner_)  list[idx++] = getItemNFT(i);
+        for (uint i; i < count; i ++) {
+            uint index = tokenOfOwnerByIndex(owner_, i);
+            list[i] = getItemNFT(index);
         }
         return list;
     }
@@ -165,5 +167,35 @@ contract NFTD is ERC721URIStorage, Ownable {
 
     function getRoyalty(uint tokenID) public view returns (Royalty memory) {
         return royalties[tokenID];
+    }
+
+    
+    function _beforeTokenTransfer(address from, address to, uint256 tokenId)
+        internal
+        override(ERC721, ERC721Enumerable)
+    {
+        super._beforeTokenTransfer(from, to, tokenId);
+    }
+
+    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
+        super._burn(tokenId);
+    }
+
+    function tokenURI(uint256 tokenId)
+        public
+        view
+        override(ERC721, ERC721URIStorage)
+        returns (string memory)
+    {
+        return super.tokenURI(tokenId);
+    }
+
+    function supportsInterface(bytes4 interfaceId)
+        public
+        view
+        override(ERC721, ERC721Enumerable)
+        returns (bool)
+    {
+        return super.supportsInterface(interfaceId);
     }
 }
