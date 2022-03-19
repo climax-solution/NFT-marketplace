@@ -232,7 +232,7 @@ export default function () {
                   {
                     list.map((nft, index) => {
                       return (
-                        <TradeNFT data={nft} key={index}/>
+                        <TradeNFT className={""} data={nft} key={index}/>
                       )
                     })
                   }
