@@ -33,6 +33,7 @@ const Collection= function() {
   const [nfts, setNFTs] = useState([]);
   const [restList, setRestList] = useState([]);
   const [loaded, setLoaded] = useState(false);
+  const [isLoading, setLoading] = useState(true);
 
   useEffect(async () => {
     const { username } = params;
@@ -60,6 +61,7 @@ const Collection= function() {
       setRestList(sellingList);
       setUserData(data);
       setLoaded(true);
+      setLoading(false);
     }).catch(err => {
       navigate('/404');
     })
@@ -84,31 +86,36 @@ const Collection= function() {
   return (
     <div>
       <GlobalStyles/>
-      <>
-        <Banner userData={userData} />
-        <section className='container no-top'>
-            <InfiniteScroll
-              dataLength={nfts.length}
-              next={fetchNFT}
-              hasMore={restList.length ? true : false}
-              loader={<PremiumNFTLoading/>}
-              className="row"
-            >
-              {
-                nfts.map( (nft, index) => (
-                  <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4 position-relative" key={index}>
-                    <TradeNFT data={nft}/>
-                  </div>
+        {
+          isLoading ? <Loading/>
+          : (
+          <>
+            <Banner userData={userData} />
+            <section className='container no-top'>
+              <InfiniteScroll
+                dataLength={nfts.length}
+                next={fetchNFT}
+                hasMore={restList.length ? true : false}
+                loader={<PremiumNFTLoading/>}
+                className="row"
+              >
+                {
+                  nfts.map( (nft, index) => (
+                    <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4 position-relative" key={index}>
+                      <TradeNFT data={nft}/>
+                    </div>
+                    )
                   )
-                )
+                }
+              </InfiniteScroll>
+              {
+                loaded && !nfts.length && !restList.length && <Empty/>
               }
-            </InfiniteScroll>
-            {
-              loaded && !nfts.length && !restList.length && <Empty/>
-            }
-        </section>
+            </section>
+          </>
+          )
+        }
         <Footer />
-      </>
     </div>
   );
 }
