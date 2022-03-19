@@ -33,7 +33,7 @@ contract Marketplace {
         _;
     }
 
-    function buy(uint tokenId, address from, uint price, bool is_premium, bytes memory signature) external payable {
+    function buy(uint tokenId, address from, bool is_premium, bytes memory signature) external payable {
         address to = msg.sender;
         require(msg.value >= price, "insufficient price");
         require(flexNFT.ownerOf(tokenId) == from, "wrong owner");
