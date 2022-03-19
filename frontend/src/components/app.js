@@ -23,6 +23,7 @@ const Profile = lazy(() => import('./pages/Profile'));
 const NotFound = lazy(() => import('./components/404'));
 
 import 'react-toastify/dist/ReactToastify.css';
+import Users from './pages/Users';
 
 const GlobalStyles = createGlobalStyle`
   :root {
@@ -84,7 +85,7 @@ const app = () => {
                 <Route path="/register" element={<Register/>}/>
                 {/* <Route path="/create" element={<Create/>}/> */}
                 <Route path="/activity" element={<Activity/>}/>
-                {/* <Route path="/contact" element={<Contact/>}/> */}
+                <Route path="/users" element={<Users/>}/>
                 <Route path="/folder-explorer/:id" element={<FolderItems/>}/>
                 <Route path={Object.keys(userData).length > 2 ? "/profile" : "/404"} element={Object.keys(userData).length > 2 ? <Profile/>: <NotFound/>}/>
                 <Route path="/user/:username" element={<Collection/>}/>
