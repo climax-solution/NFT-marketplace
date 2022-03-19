@@ -49,7 +49,18 @@ export default function DirectSellModal({ visible, tokenID, close, Marketplace, 
             if (signature) {
                 await axios.post(`${process.env.REACT_APP_BACKEND}sale/list`, {
                     tokenID, price: nftPrice, walletAddress: initialUser.walletAddress, action: "list",
-                    signature
+                    signature, deadline: 0
+                }).then(res => {
+                    toast.success(res.data.message, {
+                        position: "top-center",
+                        autoClose: 2000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "colored"
+                    });
                 });
                 close(true);
             }

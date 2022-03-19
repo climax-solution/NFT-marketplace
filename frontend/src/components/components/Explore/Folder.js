@@ -40,12 +40,11 @@ const Folder = ({ folderID }) => {
         setLoading(false);
     },[folderID])
 
-    console.group(nft);
     return (
         <>
             <GlobalStyles/>
             {
-                loading ? <ItemLoading/>
+                loading ? <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4"><ItemLoading/></div>
                 : (
                     Object.keys(nft).length ? (
                         <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4">
