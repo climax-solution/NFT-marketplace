@@ -164,4 +164,17 @@ router.post('/check-existing-user', async(req, res) => {
     }
 })
 
+router.post('/get-users-list', async(req, res) => {
+    try {
+        const list = await UserSchema.find({ role: { $ne: "ROLE_ADMIN" }});
+        res.status(200).json({
+            list
+        });
+    } catch(err) {
+        res.status(400).json({
+            error: "Your request is restricted"
+        });
+    }
+});
+
 module.exports = router;
