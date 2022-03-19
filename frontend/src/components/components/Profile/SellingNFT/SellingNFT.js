@@ -28,7 +28,7 @@ export default function SellingNFT() {
             let _list = await instanceNFT.methods.getPersonalNFT(initialUser.walletAddress).call();
             let sellingList = [];
             _list = _list.filter(item => (item.owner).toLowerCase() == (initialUser.walletAddress).toLowerCase());
-            await axios.post('http://localhost:7060/sale/get-sale-list', { walletAddress: initialUser.walletAddress }).then(res => {
+            await axios.post(`${process.env.REACT_APP_BACKEND}sale/get-sale-list`, { walletAddress: initialUser.walletAddress }).then(res => {
                 const { list } = res.data;
                 let keys = [];
                 list.map(item => {

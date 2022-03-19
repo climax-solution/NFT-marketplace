@@ -105,7 +105,7 @@ const Activity= function() {
   const [moreItems, setMoreItems] = useState(true);
 
   const _loadNextPage = async() => {
-    await axios.get(`http://localhost:7060/activity/get-logs?b=${items.length}&type=${activeTab}`).then(res => {
+    await axios.get(`${process.env.REACT_APP_BACKEND}activity/get-logs?b=${items.length}&type=${activeTab}`).then(res => {
       const { data } = res;
       if (data.length) {
         setLogs([...items, ...data]);

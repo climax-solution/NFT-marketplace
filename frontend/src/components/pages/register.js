@@ -110,7 +110,7 @@ const Register = () => {
                 password
             };
 
-            await axios.post("http://localhost:7060/auth/register", data).then(res => {
+            await axios.post(`${process.env.REACT_APP_BACKEND}auth/register`, data).then(res => {
                 const { user, token } = res.data;
                 toast.success("you have registered successfully!", {
                     theme: "colored",

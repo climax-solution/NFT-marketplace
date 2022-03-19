@@ -68,7 +68,7 @@ const NFTItem = () => {
         try {
             const { id } = params;
             const item = await instanceNFT.methods.getItemNFT(id).call();
-            const saleData = await axios.post('http://localhost:7060/sale/get-nft-item', { tokenID: id}).then(res => {
+            const saleData = await axios.post(`${process.env.REACT_APP_BACKEND}sale/get-nft-item`, { tokenID: id}).then(res => {
                 return res.data;
             }).catch(err => {
                 return {}
@@ -123,7 +123,7 @@ const NFTItem = () => {
 
         try {
             setLoading(true);
-            const { nft: _nft } = await axios.post('http://localhost:7060/sale/get-nft-item', { tokenID: nft.tokenID }).then(res => {
+            const { nft: _nft } = await axios.post(`${process.env.REACT_APP_BACKEND}sale/get-nft-item`, { tokenID: nft.tokenID }).then(res => {
                 return res.data;
             });
 
@@ -194,7 +194,7 @@ const NFTItem = () => {
                 signature: result
             };
 
-            await axios.post('http://localhost:7060/sale/create-new-offer', offer).then(res => {
+            await axios.post(`${process.env.REACT_APP_BACKEND}sale/create-new-offer`, offer).then(res => {
                 const { message } = res.data;
                 toast.success(message, {
                   position: "top-center",
@@ -261,7 +261,7 @@ const NFTItem = () => {
                 tokenID: nft.tokenID
               };
       
-            await axios.post('http://localhost:7060/sale/cancel-offer', withdraw).then(res => {
+            await axios.post(`${process.env.REACT_APP_BACKEND}sale/cancel-offer`, withdraw).then(res => {
                 
                 const { message } = res.data;
                 toast.info(message, {

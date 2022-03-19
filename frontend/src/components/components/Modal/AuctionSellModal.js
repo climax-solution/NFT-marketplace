@@ -48,7 +48,7 @@ export default function AuctionSellModal({ visible, close, tokenID, web3, NFT, M
             const signature = await sign(nonce, tokenID, initialUser.walletAddress, nftPrice, false);
             
             if (signature) {
-                await axios.post('http://localhost:7060/sale/list', {
+                await axios.post(`${process.env.REACT_APP_BACKEND}sale/list`, {
                     tokenID, price: nftPrice, walletAddress: initialUser.walletAddress, action: "auction",
                     signature, deadline: (day * 24 + hour * 1)
                 });

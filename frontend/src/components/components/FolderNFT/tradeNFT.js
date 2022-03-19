@@ -41,7 +41,7 @@ export default function TradeNFT({ data, className = "mx-0" }) {
 
         let _orgNFT = await instanceNFT.methods.getItemNFT(data.tokenID).call();
         _orgNFT = { ...data, ..._orgNFT};
-        const saled = await axios.post('http://localhost:7060/sale/get-nft-item', { tokenID: data.tokenID }).then(res => {
+        const saled = await axios.post(`${process.env.REACT_APP_BACKEND}sale/get-nft-item`, { tokenID: data.tokenID }).then(res => {
             return res.data;
         }).catch(err => {
             return {
@@ -92,7 +92,7 @@ export default function TradeNFT({ data, className = "mx-0" }) {
 
         try {
             setTrading(true);
-            const { nft: _nft } = await axios.post('http://localhost:7060/sale/get-nft-item', { tokenID: nft.tokenID }).then(res => {
+            const { nft: _nft } = await axios.post(`${process.env.REACT_APP_BACKEND}sale/get-nft-item`, { tokenID: nft.tokenID }).then(res => {
                 return res.data;
             });
 
@@ -162,7 +162,7 @@ export default function TradeNFT({ data, className = "mx-0" }) {
                 signature: result
             };
 
-            await axios.post('http://localhost:7060/sale/create-new-offer', offer).then(res => {
+            await axios.post(`${process.env.REACT_APP_BACKEND}sale/create-new-offer`, offer).then(res => {
                 const { message } = res.data;
                 toast.success(message, {
                   position: "top-center",
@@ -228,7 +228,7 @@ export default function TradeNFT({ data, className = "mx-0" }) {
                 tokenID: nft.tokenID
               };
       
-            await axios.post('http://localhost:7060/sale/cancel-offer', withdraw).then(res => {
+            await axios.post(`${process.env.REACT_APP_BACKEND}sale/cancel-offer`, withdraw).then(res => {
                 
                 const { message } = res.data;
                 toast.info(message, {

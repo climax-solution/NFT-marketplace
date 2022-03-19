@@ -136,7 +136,7 @@ export default function () {
               signature: result
             };
 
-            await axios.post('http://localhost:7060/sale/create-new-offer', offer).then(res => {
+            await axios.post(`${process.env.REACT_APP_BACKEND}sale/create-new-offer`, offer).then(res => {
               const { message } = res.data;
               toast.success(message, {
                 position: "top-center",
@@ -189,7 +189,7 @@ export default function () {
     if (initialUser.walletAddress == undefined) return;
     setCarouselLoading(true);
     try {
-      let list = await axios.post('http://localhost:7060/sale/get-premium-list').then(res => {
+      let list = await axios.post(`${process.env.REACT_APP_BACKEND}sale/get-premium-list`).then(res => {
         return res.data.list;
       });
       list.sort((before, after) => before.price - after.price);

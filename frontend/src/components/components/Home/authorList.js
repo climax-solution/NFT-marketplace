@@ -15,7 +15,7 @@ const authorlist= () => {
     useEffect(async() => {
         const { _web3 } = await getWeb3();
         setWEB3(_web3);
-        await axios.post('http://localhost:7060/activity/get-top-sellers').then(res => {
+        await axios.post(`${process.env.REACT_APP_BACKEND}activity/get-top-sellers`).then(res => {
             setList(res.data);
         }).catch(err => {
 

@@ -49,7 +49,7 @@ export default function() {
     const [royaltyStatus, setRoyaltyStatus] = useState('');
 
     useEffect(async() => {
-        await axios.post('http://localhost:7060/folder/get-folder-list').then(res => {
+        await axios.post(`${process.env.REACT_APP_BACKEND}folder/get-folder-list`).then(res => {
             let _list = [];
             const { list } = res.data;
             list.map(item => {
@@ -104,7 +104,7 @@ export default function() {
                 list: list
             };
 
-            await axios.post('http://localhost:7060/folder/add-items-to-old', newData).then(res => {
+            await axios.post(`${process.env.REACT_APP_BACKEND}folder/add-items-to-old`, newData).then(res => {
 
             }).catch(err => {
                 

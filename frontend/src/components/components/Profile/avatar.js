@@ -27,7 +27,7 @@ export default function Avatar() {
           fileData.append("myfile", files[0]);
           setLoading(true);
           await axios.post(
-            "http://localhost:7060/user/update-avatar",
+            `${process.env.REACT_APP_BACKEND}user/update-avatar`,
             fileData,
             {
               headers: {
@@ -81,7 +81,7 @@ export default function Avatar() {
               )
               : <>
                 <img
-                  src={`http://localhost:7060/avatar/${userData.avatar ? userData.avatar : "empty-avatar.png"}`}
+                  src={`${process.env.REACT_APP_BACKEND}avatar/${userData.avatar ? userData.avatar : "empty-avatar.png"}`}
                   className="position-absolute index-avatar"
                   onError={failedLoadImage}
                   alt=""

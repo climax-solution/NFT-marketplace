@@ -24,7 +24,7 @@ const Folder = ({ folderID }) => {
 
     useEffect(async() => {
         console.log('folderID', folderID)
-        const _list = await axios.post('http://localhost:7060/folder/get-folder-interface', { folderID }).then(res => {
+        const _list = await axios.post(`${process.env.REACT_APP_BACKEND}folder/get-folder-interface`, { folderID }).then(res => {
             const  { list } = res.data;
             console.log(list);
             return list;
@@ -52,7 +52,7 @@ const Folder = ({ folderID }) => {
                             <div className="nft__item m-0 pb-4 h-100 justify-content-between">
                                 <div className="author_list_pp">
                                     <span onClick={()=> navigate(`/collection/${nft.folder.artist}`)}>                                    
-                                        <img className="lazy" src={`http://localhost:7060/avatar/${nft.artistData.avatar}`} alt="" crossOrigin="true"/>
+                                        <img className="lazy" src={`${process.env.REACT_APP_BACKEND}avatar/${nft.artistData.avatar}`} alt="" crossOrigin="true"/>
                                         <i className="fa fa-check"></i>
                                     </span>
                                 </div>

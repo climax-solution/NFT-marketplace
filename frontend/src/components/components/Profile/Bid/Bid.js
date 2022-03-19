@@ -15,7 +15,7 @@ export default function() {
 
     useEffect(async() => {
         if (initialUser.walletAddress) {
-            await axios.post('http://localhost:7060/sale/get-bid-list', {
+            await axios.post(`${process.env.REACT_APP_BACKEND}sale/get-bid-list`, {
                 walletAddress: initialUser.walletAddress
             }).then(async(res) => {
                 const { nfts, bids } = res.data;

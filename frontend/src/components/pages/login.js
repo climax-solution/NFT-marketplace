@@ -45,7 +45,7 @@ const login = () => {
       password
     };
     dispatch(UPDATE_LOADING_PROCESS(true));
-    await axios.post("http://localhost:7060/auth/login", data).then(res => {
+    await axios.post(`${process.env.REACT_APP_BACKEND}auth/login`, data).then(res => {
       toast.success("You have logged in successfully", {theme: "colored"});
       const { token, user } = res.data;
       localStorage.setItem("nftdevelopments-token", JSON.stringify(token));

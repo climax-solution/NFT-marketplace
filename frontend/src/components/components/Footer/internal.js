@@ -14,7 +14,7 @@ export default function InternalLinks() {
             return;
         }
 
-        await axios.post('http://localhost:7060/news/request', { email }).then(res => {
+        await axios.post(`${process.env.REACT_APP_BACKEND}news/request`, { email }).then(res => {
             const { message } = res.data;
             toast.success(message,{
                 theme: "colored",
