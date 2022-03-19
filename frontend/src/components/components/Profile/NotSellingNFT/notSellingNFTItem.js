@@ -33,7 +33,7 @@ export default function NotSaleNFT({ data, NFT, Marketplace, remove }) {
             let _nft = {};
             await axios.get(data.tokenURI).then(async(res) => {
                 if (typeof (res.data) === 'object') _nft = { ...data, ...res.data };
-                // await axios.post('http://localhost:7060/sale/get-nft-item', {
+                // await axios.post(`${process.env.REACT_APP_BACKEND}sale/get-nft-item`, {
                 //     tokenID: data.tokenID,
                 //     walletAddress: initialUser.walletAddress
                 // }).then(result => { _nft = { ..._nft, ...result.data}});

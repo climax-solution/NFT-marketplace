@@ -98,7 +98,7 @@ const explore = () => {
 
   const filterFolder = async() => {
     setLoading(true);
-    let gradList = await axios.post('http://localhost:7060/folder/get-sale-folder-list').then(res => {
+    let gradList = await axios.post(`${process.env.REACT_APP_BACKEND}folder/get-sale-folder-list`).then(res => {
       return res.data.list;
     }).catch(err => {
       return [];

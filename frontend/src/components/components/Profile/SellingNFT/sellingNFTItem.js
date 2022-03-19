@@ -47,7 +47,7 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
         setTrading(true);
         try {
             
-            await axios.post('http://localhost:7060/sale/delist', { tokenID: id, walletAddress: initialUser.walletAddress}).then(res => {
+            await axios.post(`${process.env.REACT_APP_BACKEND}sale/delist`, { tokenID: id, walletAddress: initialUser.walletAddress}).then(res => {
 
             }).catch(err => {
 
@@ -63,7 +63,7 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
                 progress: undefined,
                 theme: "colored"
             });
-            // await axios.post('http://localhost:7060/activity/create-log', data).then(res =>{
+            // await axios.post(`${process.env.REACT_APP_BACKEND}activity/create-log`, data).then(res =>{
 
             // }).catch(err => { });
             await remove();
@@ -122,7 +122,7 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
                 signature: result
             };
 
-            await axios.post('http://localhost:7060/sale/update-premium', data).then(res => {
+            await axios.post(`${process.env.REACT_APP_BACKEND}sale/update-premium`, data).then(res => {
                 toast.success('Success', {
                     position: "top-center",
                     autoClose: 5000,
@@ -172,7 +172,7 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
     },[data])
 
     const refresh = async(tokenID) => {
-        await axios.post('http://localhost:7060/sale/get-nft-item', { tokenID, walletAddress: initialUser.walletAddress }).then(res => {
+        await axios.post(`${process.env.REACT_APP_BACKEND}sale/get-nft-item`, { tokenID, walletAddress: initialUser.walletAddress }).then(res => {
             setNFT({ ...nft, ...res.data.nft });
         }).catch(err => {
             // remove();

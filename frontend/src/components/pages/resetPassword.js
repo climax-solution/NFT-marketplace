@@ -35,7 +35,7 @@ const ResetPassword = () => {
 
         setUpdate(false);
 
-        await axios.post('http://localhost:7060/auth/reset/' + token, { password }).then(res => {
+        await axios.post(`${process.env.REACT_APP_BACKEND}auth/reset/${token}`, { password }).then(res => {
             const { message } = res.data;
             toast.success(message, { theme: "colored" });
             setPassword('');

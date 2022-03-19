@@ -55,7 +55,7 @@ export default function ManageInfo() {
         const _headers = { headers :{ Authorization: JSON.parse(jwtToken) } };
 
         setLoading(true);
-        await axios.post("http://localhost:7060/user/update-user", userData, _headers).then(res => {
+        await axios.post(`${process.env.REACT_APP_BACKEND}user/update-user`, userData, _headers).then(res => {
           const { data } = res;
           dispatch(UPDATE_AUTH(data));
           toast.error("Updated profile successfully!", {

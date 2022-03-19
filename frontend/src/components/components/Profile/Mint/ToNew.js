@@ -100,7 +100,7 @@ export default function() {
                 list: list
             };
 
-            await axios.post('http://localhost:7060/folder/create-new-items', newData).then(res => {
+            await axios.post(`${process.env.REACT_APP_BACKEND}folder/create-new-items`, newData).then(res => {
 
             }).catch(err => {
                 

@@ -37,12 +37,12 @@ const Collection= function() {
   useEffect(async () => {
     const { username } = params;
     const { instanceNFT } = await getWeb3();
-    await axios.post('http://localhost:7060/user/get-user-by-username', { username }).then(async(res) => {
+    await axios.post(`${process.env.REACT_APP_BACKEND}user/get-user-by-username`, { username }).then(async(res) => {
       const { data } = res;
       let _list = await instanceNFT.methods.getPersonalNFT(data.walletAddress).call();
       let sellingList = [];
       _list = _list.filter(item => (item.owner).toLowerCase() == (data.walletAddress).toLowerCase());
-      await axios.post('http://localhost:7060/sale/get-sale-list', { walletAddress: data.walletAddress }).then(res => {
+      await axios.post(`${process.env.REACT_APP_BACKEND}sale/get-sale-list`, { walletAddress: data.walletAddress }).then(res => {
           const { list } = res.data;
           let keys = [];
           list.map(item => {

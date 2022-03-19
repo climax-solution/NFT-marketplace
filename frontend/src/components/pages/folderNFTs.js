@@ -54,7 +54,7 @@ const folderNFTs = () => {
 
     const getInitNFTs = async() => {
         const { id } = params;
-        let gradList = await axios.post('http://localhost:7060/folder/get-folder-detail', { folderID: id}).then(res => {
+        let gradList = await axios.post(`${process.env.REACT_APP_BACKEND}folder/get-folder-detail`, { folderID: id}).then(res => {
             let { list, artist: _artist } = res.data;
             setArtist(_artist);
             return list;
@@ -97,7 +97,7 @@ const folderNFTs = () => {
                                     isLoading ? <Skeleton/>
                                     : (
                                         <div className="text-center">
-                                            <img src={`http://localhost:7060/avatar/${artist.avatar}`} alt="artist" className="rounded-circle" crossOrigin="true"/>
+                                            <img src={`${process.env.REACT_APP_BACKEND}avatar/${artist.avatar}`} alt="artist" className="rounded-circle" crossOrigin="true"/>
                                             <h1 className="text-center">{artist.firstName + " " + artist.lastName}</h1>
                                         </div>
                                     )

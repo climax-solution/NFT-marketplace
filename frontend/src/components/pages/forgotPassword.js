@@ -32,7 +32,7 @@ const ForgotPassword = () => {
     if (flag) return;
     const data = { email };
 
-    await axios.post("http://localhost:7060/auth/forgot", data).then(res => {
+    await axios.post(`${process.env.REACT_APP_BACKEND}auth/forgot`, data).then(res => {
       const { message } = res.data;
       toast.success(message, {theme: "colored"});
     //   navigate('/profile');

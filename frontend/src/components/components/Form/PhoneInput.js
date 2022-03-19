@@ -25,7 +25,7 @@ export default function TextInput({ label, _key, _request, checkable, update }) 
                 return;
             }
 
-            await axios.post('http://localhost:7060/users/check-existing-user', {_key: value}).then(res => {
+            await axios.post(`${process.env.REACT_APP_BACKEND}users/check-existing-user`, {_key: value}).then(res => {
                 setValue(value);
                 update(value);
                 setStatus('');
