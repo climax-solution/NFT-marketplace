@@ -246,31 +246,31 @@ export default function () {
                 >
                   {
                     isTrading ?
-                    <div className='d-flex w-100 h-100 justify-content-center align-items-center'>
-                      <div className='reverse-spinner'></div>
-                    </div>
+                      <div className='d-flex w-100 h-100 justify-content-center align-items-center'>
+                        <div className='reverse-spinner'></div>
+                      </div>
                     : 
-                    <div className='p-5'>
-                      <div className='form-group'>
-                          <label>Please reserve price.</label>
-                          <input
-                              type="number"
-                              className='form-control text-dark border-dark'
-                              value={bidPrice}
-                              onChange={(e) => setBidPrice(e.target.value)}
-                          />
+                      <div className='p-5'>
+                        <div className='form-group'>
+                            <label>Please reserve price.</label>
+                            <input
+                                type="number"
+                                className='form-control text-dark border-dark'
+                                value={bidPrice}
+                                onChange={(e) => setBidPrice(e.target.value)}
+                            />
+                        </div>
+                        <div className='groups'>
+                            <button
+                                className='btn-main btn-apply w-100 px-1'
+                                onClick={placeBid}
+                            >Place</button>
+                            <button
+                                className='btn-main w-100'
+                                onClick={() => setVisible(false)}
+                            >Cancel</button>
+                        </div>
                       </div>
-                      <div className='groups'>
-                          <button
-                              className='btn-main btn-apply w-100 px-1'
-                              onClick={placeBid}
-                          >Place</button>
-                          <button
-                              className='btn-main w-100'
-                              onClick={() => setVisible(false)}
-                          >Cancel</button>
-                      </div>
-                    </div>
                   }
 
               </Modal>

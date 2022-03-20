@@ -7,6 +7,7 @@ import Modal from 'react-awesome-modal';
 import getWeb3 from "../../../utils/getWeb3";
 import { toast } from "react-toastify";
 import { offerSign } from "../../../utils/sign";
+import { marketplace_addr } from "../../../config/address.json";
 
 const MusicArt = lazy(() => import("../Asset/music"));
 const VideoArt = lazy(() => import("../Asset/video"));
@@ -20,9 +21,10 @@ export default function TradeNFT({ data, className = "mx-0" }) {
     const wallet_info = useSelector(({ wallet }) => wallet.wallet_connected);
     const initialUser = useSelector((state) => state.auth.user);
 
-    const [nft, setNFT] = useState();
+    const [nft, setNFTData] = useState();
     const [web3, setWeb3] = useState();
     const [Marketplace, setMarketplace] = useState();
+    const [NFT, setNFT] = useState();
     const [isLoading, setLoading] = useState(true);
     const [isTrading, setTrading] = useState(false);
     const [visible, setVisible] = useState(false);
@@ -34,38 +36,17 @@ export default function TradeNFT({ data, className = "mx-0" }) {
     const [claimable, setClaimable] = useState(false);
 
     useEffect(async() => {
-        console.log("data=>", data);
         const { _web3, instanceMarketplace, instanceNFT } = await getWeb3();
         setWeb3(_web3);
+        setNFT(instanceNFT);
         setMarketplace(instanceMarketplace);
+    },[])
 
-        let _orgNFT = await instanceNFT.methods.getItemNFT(data.tokenID).call();
-        _orgNFT = { ...data, ..._orgNFT};
-        const saled = await axios.post(`${process.env.REACT_APP_BACKEND}sale/get-nft-item`, { tokenID: data.tokenID }).then(res => {
-            return res.data;
-        }).catch(err => {
-            return {
-                nft: {}, childList: []
-            }
-        })
-console.log(saled.childList, typeof(saled.childList));
-        await axios.get(`${_orgNFT.tokenURI}`).then(res => {
-            const { data: metadata } = res;
-            setNFT({ ...data, ...metadata, ...saled.nft });
-            const _price = saled.nft.price;
-            const nftOwner = ( (_orgNFT.owner).toLowerCase() == (initialUser.walletAddress).toLowerCase());
-            const existedBid = typeof(saled.childList) =='array' ? saled.childList.filter(item => (item.walletAddress).toLowerCase() == (initialUser.walletAddress).toLowerCase()) : false;
-            const bidOwner = existedBid ? true : false;
-            const _claimable = Date.parse(new Date(_orgNFT.deadline)) - Date.parse(new Date());
-            
-            setNFTPrice(_price);
-            setNFTOwner(nftOwner);
-            setBidOwner(bidOwner);
-            setClaimable(_claimable);
-        });
-
-        setLoading(false);
-    },[data])
+    useEffect(async() => {
+        if (Marketplace && data) {
+            await refresh();
+        }
+    }, [data, Marketplace])
 
     const failedLoadImage = (e) => {
         e.target.src="/img/empty.jfif";
@@ -99,7 +80,7 @@ console.log(saled.childList, typeof(saled.childList));
 
             if (_nft.action != 'list') throw Error();
 
-            await Marketplace.methods.buy(_nft.tokenID, _nft.walletAddress, _nft.price, false, nft.signature).send({ from: initialUser.walletAddress, value: nft.price });
+            await Marketplace.methods.buy(_nft.tokenID, _nft.walletAddress, _nft.price, _nft.status, nft.signature).send({ from: initialUser.walletAddress, value: nft.price });
             toast.success("Buy success", {
                 position: "top-center",
                 autoClose: 2000,
@@ -122,6 +103,7 @@ console.log(saled.childList, typeof(saled.childList));
                 theme: "colored"
             });
         }
+        await refresh();
         setTrading(false);
     }
 
@@ -153,8 +135,10 @@ console.log(saled.childList, typeof(saled.childList));
             setVisible(false);
             setBidPrice('');
             
+            const { instanceWBNB } = await getWeb3();
+            await instanceWBNB.methods.approve(marketplace_addr, price).send({ from : initialUser.walletAddress });
             const nonce = await Marketplace.methods.nonces(initialUser.walletAddress).call();
-            const result = await offerSign(nonce, activeID, initialUser.walletAddress, price, false);
+            const result = await offerSign(nonce, nft.tokenID, initialUser.walletAddress, price);
   
             const offer = {
                 tokenID: nft.tokenID,
@@ -201,6 +185,7 @@ console.log(saled.childList, typeof(saled.childList));
                 theme: "colored"
             });
         }
+        await refresh();
         setTrading(false);
     }
 
@@ -227,8 +212,8 @@ console.log(saled.childList, typeof(saled.childList));
             const withdraw = {
                 walletAddress: initialUser.walletAddress,
                 tokenID: nft.tokenID
-              };
-      
+            };
+            setTrading(true);
             await axios.post(`${process.env.REACT_APP_BACKEND}sale/cancel-offer`, withdraw).then(res => {
                 
                 const { message } = res.data;
@@ -243,7 +228,6 @@ console.log(saled.childList, typeof(saled.childList));
                   theme: "colored"
                 });
             });
-            // await refresh();
         } catch(err) {
             toast.error(err.message, {
                 position: "top-center",
@@ -256,6 +240,7 @@ console.log(saled.childList, typeof(saled.childList));
                 theme: "colored"
             });
         }
+        await refresh();
         setTrading(false);
     }
 
@@ -280,20 +265,43 @@ console.log(saled.childList, typeof(saled.childList));
     }
 
     const refresh = async() => {
-        const _NFT = await Marketplace.methods.getItemNFT(nft.tokenID).call();
-        setLoading(true);
-        await axios.get(`${_NFT.tokenURI}`).then(res => {
+
+        let _orgNFT = await NFT.methods.getItemNFT(data.tokenID).call();
+        _orgNFT = { ...data, ..._orgNFT};
+        const saled = await axios.post(`${process.env.REACT_APP_BACKEND}sale/get-nft-item`, { tokenID: data.tokenID }).then(res => {
+            return res.data;
+        }).catch(err => {
+            return {
+                nft: {}, childList: []
+            }
+        })
+
+        if (saled.nft?.walletAddress) {
+            if ((_orgNFT.owner).toLowerCase() != (saled.nft.walletAddress).toLowerCase()) {
+                await axios.post(`${process.env.REACT_APP_BACKEND}sale/delist`, {
+                    tokenID: saled.nft.tokenID,
+                    walletAddress: saled.nft.walletAddress
+                });
+            }
+        }
+
+        await axios.get(`${_orgNFT.tokenURI}`).then(res => {
             const { data: metadata } = res;
-            setNFT({ ..._NFT, ...metadata });
-            const _price = !_NFT.existance ? _NFT.marketData.price : (Number(_NFT.currentBidPrice) ? _NFT.currentBidPrice : _NFT.minPrice);
-            const nftOwner =( (_NFT.owner).toLowerCase() == (initialUser.walletAddress).toLowerCase());
-            const bidOwner = (_NFT.currentBidOwner).toLowerCase() == (initialUser.walletAddress).toLowerCase();
-            const _claimable = Date.parse(new Date(_NFT.deadline)) - Date.parse(new Date());
-            
-            setNFTPrice(_price);
+            const nftOwner = ( (_orgNFT.owner).toLowerCase() == (initialUser.walletAddress).toLowerCase());
             setNFTOwner(nftOwner);
-            setBidOwner(bidOwner);
-            setClaimable(_claimable);
+
+            if ((_orgNFT.owner).toLowerCase() == (saled.nft.walletAddress)?.toLowerCase()) {
+                const _price = saled.nft.price;
+                const existedBid = saled.nft.action == 'auction' ? saled.childList.filter(item => (item.walletAddress).toLowerCase() == (initialUser.walletAddress).toLowerCase()) : [];
+                const bidOwner = existedBid.length ? true : false;
+                const _claimable = Date.parse(new Date(saled.nft.deadline).toLocaleDateString()) - Date.parse(new Date());
+
+                setNFTData({ ..._orgNFT, ...metadata, ...saled.nft });
+                setNFTPrice(_price);
+                setBidOwner(bidOwner);
+                setClaimable(_claimable);
+            }
+            else setNFTData({ ..._orgNFT, ...metadata });
         });
 
         setLoading(false);
@@ -307,9 +315,9 @@ console.log(saled.childList, typeof(saled.childList));
                     <>
                         <div className={`nft__item my-0 pb-4 justify-content-between h-100 ${className}`}>
                             {
-                                nft.existance &&
+                                nft.action == "auction" &&
                                 <div className="de_countdown">
-                                    <Clock deadline={nft.endAuction * 1000} />
+                                    <Clock deadline={new Date(nft.deadline).toLocaleDateString()} />
                                 </div>
                             }
                             <div className="nft__item_wrap flex-column position-relative wap-height">
@@ -376,13 +384,13 @@ console.log(saled.childList, typeof(saled.childList));
                                     }
                                 </div>
                             </div>
+                            {
+                                isTrading && 
+                                <div className="trade-loader">
+                                    <div className="nb-spinner"></div>
+                                </div>
+                            }
                         </div>
-                        {
-                            isTrading && 
-                            <div className="trade-loader">
-                                <div className="nb-spinner"></div>
-                            </div>
-                        }
 
                         <Modal
                             visible={visible}

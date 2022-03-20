@@ -55,7 +55,7 @@ const NFTItem = () => {
     const [bidPrice, setBidPrice] = useState('');
     const [updated, setUpdate] = useState(true);
 
-    const [price, setPrice] = useState();
+    const [price, setNFTPrice] = useState();
     const [isNFTOwner, setNFTOwner] = useState(false);
     const [isBidOwner, setBidOwner] = useState(false);
     const [claimable, setClaimable] = useState(false);
@@ -67,29 +67,42 @@ const NFTItem = () => {
         setMarketplace(instanceMarketplace);
         try {
             const { id } = params;
-            const item = await instanceNFT.methods.getItemNFT(id).call();
+            const _orgNFT = await instanceNFT.methods.getItemNFT(id).call();
             const saleData = await axios.post(`${process.env.REACT_APP_BACKEND}sale/get-nft-item`, { tokenID: id}).then(res => {
                 return res.data;
             }).catch(err => {
-                return {}
+                return {
+                    nft: {}, childList: []
+                }
             });
             
-            await axios.get(item.tokenURI).then(async(res) => {
-                const { data } = res;
-                setNFTData({ ...item, ...data, ...saleData.nft });
-                const _price = saleData?.nft?.price ? saleData.nft.price : null;
-                const nftOwner =( (item.owner).toLowerCase() == (initialUser.walletAddress).toLowerCase());
-                const existedBid = saleData.childList.filter(item => (item.walletAddress).toLowerCase() == (initialUser.walletAddress).toLowerCase());
-                const bidOwner = existedBid ? true : false;
-                const _claimable = saleData.nft.deadline ? Date.parse(new Date(saleData.nft.deadline * 1000)) - Date.parse(new Date()) : 0;
-                
-                setPrice(_price);
-                setNFTOwner(nftOwner);
-                setBidOwner(bidOwner);
-                setClaimable(_claimable);
-            }).catch(err => {
+            if (saleData.nft?.walletAddress) {
+                if ((_orgNFT.owner).toLowerCase() != (saleData.nft.walletAddress).toLowerCase()) {
+                    await axios.post(`${process.env.REACT_APP_BACKEND}sale/delist`, {
+                        tokenID: saleData.nft.tokenID,
+                        walletAddress: saleData.nft.walletAddress
+                    });
+                }
+            }
 
-            })
+            await axios.get(`${_orgNFT.tokenURI}`).then(res => {
+                const { data: metadata } = res;
+                const nftOwner = ( (_orgNFT.owner).toLowerCase() == (initialUser.walletAddress).toLowerCase());
+                setNFTOwner(nftOwner);
+    
+                if ((_orgNFT.owner).toLowerCase() == (saleData.nft.walletAddress)?.toLowerCase()) {
+                    const _price = saleData.nft.price;
+                    const existedBid = saleData.action == 'auction' ? saleData.childList.filter(item => (item.walletAddress).toLowerCase() == (initialUser.walletAddress).toLowerCase()) : [];
+                    const bidOwner = existedBid.length ? true : false;
+                    const _claimable = Date.parse(new Date(saleData.nft.deadline).toLocaleDateString()) - Date.parse(new Date());
+    
+                    setNFTData({ ..._orgNFT, ...metadata, ...saleData.nft });
+                    setNFTPrice(_price);
+                    setBidOwner(bidOwner);
+                    setClaimable(_claimable);
+                }
+                else setNFTData({ ..._orgNFT, ...metadata });
+            });
         } catch(err) {
             console.log(err);
             setNFTData({});
@@ -341,60 +354,60 @@ const NFTItem = () => {
                             <section className='container'>
                                 <div className='row mt-md-5 pt-md-4'>
 
-                                <div className="col-md-6 col-sm-12 text-center d-md-block d-flex justify-content-center align-items-center flex-column">
-                                    {
-                                        (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} className="img-fluid img-rounded mb-sm-30" alt=""/>
-                                    }
+                                    <div className="col-md-6 col-sm-12 text-center d-md-block d-flex justify-content-center align-items-center flex-column">
+                                        {
+                                            (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} className="img-fluid img-rounded mb-sm-30" alt=""/>
+                                        }
 
-                                    {
-                                        (nft.type && (nft.type).toLowerCase() == 'music') && <MusicArt data={nft} link={``}/>
-                                    }
+                                        {
+                                            (nft.type && (nft.type).toLowerCase() == 'music') && <MusicArt data={nft} link={``}/>
+                                        }
 
-                                    {
-                                        (nft.type && (nft.type).toLowerCase() == 'video') && <VideoArt data={nft.asset}/>
-                                    }
+                                        {
+                                            (nft.type && (nft.type).toLowerCase() == 'video') && <VideoArt data={nft.asset}/>
+                                        }
 
-                                    { !isNFTOwner && (
-                                        nft.action && (
-                                            nft.action == 'list'
-                                                ? <span className="btn-main py-3 mx-auto w-100 mt-3 mw-500px" onClick={buyNow} >Buy Now</span>
-                                                : (
-                                                    !isBidOwner ? <span className="btn-main mx-auto py-3 w-50 mt-2" onClick={openModal}>Place Bid</span> : (
-                                                        claimable <= 0 && <span className="btn-main mx-auto py-3 w-50 mt-2" onClick={withdrawBid}>Withdraw Bid</span>
+                                        { !isNFTOwner && (
+                                            nft.action && (
+                                                nft.action == 'list'
+                                                    ? <span className="btn-main py-3 mx-auto w-100 mt-3 mw-500px" onClick={buyNow} >Buy Now</span>
+                                                    : (
+                                                        !isBidOwner ? <span className="btn-main mx-auto py-3 w-50 mt-2" onClick={openModal}>Place Bid</span> : (
+                                                            claimable <= 0 && <span className="btn-main mx-auto py-3 w-50 mt-2" onClick={withdrawBid}>Withdraw Bid</span>
+                                                        )
                                                     )
                                                 )
                                             )
-                                        )
-                                    }
-                                </div>
-                                <div className="col-md-6 col-sm-12">
-                                    <div className="item_info">
-                                        {
-                                            nft.action == "auction" && (
-                                                <>
-                                                    Auctions ends in 
-                                                    <div className="de_countdown">
-                                                        <Clock deadline={nft.auctionData.endAuction * 1000} />
-                                                    </div>
-                                                </>
-                                            )
                                         }
-                                        <h2>{nft.nftName}</h2>
-                                        <h5>TOKEN ID : {nft.tokenID} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { price ?`PRICE : ${web3.utils.fromWei(price.toString(), "ether")} BNB` : ""}</h5>
-                                        <div className="item_info_counts">
-                                            <div className="item_info_type"><i className="fa fa-image"></i>{nft.category}</div>
+                                    </div>
+                                    <div className="col-md-6 col-sm-12">
+                                        <div className="item_info">
                                             {
-                                                nft.status == 'premium' && (
-                                                    <div className="item_info_type"><i className="fa fa-sparkles"></i>Premium NFT</div>
+                                                nft.action == "auction" && (
+                                                    <>
+                                                        Auctions ends in 
+                                                        <div className="de_countdown">
+                                                            <Clock deadline={new Date(nft.deadline).toLocaleDateString()} />
+                                                        </div>
+                                                    </>
                                                 )
                                             }
-                                        </div>
-                                        <p>{nft.nftDesc}</p>
+                                            <h2>{nft.nftName}</h2>
+                                            <h5>TOKEN ID : {nft.tokenID} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { price ?`PRICE : ${web3.utils.fromWei(price.toString(), "ether")} BNB` : ""}</h5>
+                                            <div className="item_info_counts">
+                                                <div className="item_info_type"><i className="fa fa-image"></i>{nft.category}</div>
+                                                {
+                                                    nft.status == 'premium' && (
+                                                        <div className="item_info_type"><i className="fa fa-sparkles"></i>Premium NFT</div>
+                                                    )
+                                                }
+                                            </div>
+                                            <p>{nft.nftDesc}</p>
 
-                                        <div className="spacer-40"></div>
-                                        <Attr data={nft.attributes}/>
+                                            <div className="spacer-40"></div>
+                                            <Attr data={nft.attributes}/>
+                                        </div>
                                     </div>
-                                </div>
 
                                 </div>
                                 <Modal

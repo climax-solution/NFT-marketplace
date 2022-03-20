@@ -34,7 +34,7 @@ export default function SellingNFT() {
                 list.map(item => {
                     keys.push((item.tokenID).toString());
                 });
-                _list = _list.map(item => {
+                _list.map(item => {
                     const index = keys.indexOf(item.tokenID);
                     if (index > -1) {
                         sellingList.push({ ...item, ...list[index]});
