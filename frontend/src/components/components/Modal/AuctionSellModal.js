@@ -4,7 +4,7 @@ import Modal from 'react-awesome-modal';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import addresses from "../../../config/address.json";
-import { offerSign } from '../../../utils/sign';
+import { auctionSign } from '../../../utils/sign';
 const { marketplace_addr } = addresses;
 
 const days = [...Array(8).keys()];
@@ -45,7 +45,7 @@ export default function AuctionSellModal({ visible, close, tokenID, web3, NFT, M
             const nftPrice = web3.utils.toWei(price.toString(), 'ether');
             
             const nonce = await Marketplace.methods.nonces(initialUser.walletAddress).call();
-            const signature = await offerSign(nonce, tokenID, initialUser.walletAddress, nftPrice);
+            const signature = await auctionSign(nonce, tokenID, initialUser.walletAddress, nftPrice, false);
             
             if (signature) {
                 await axios.post(`${process.env.REACT_APP_BACKEND}sale/list`, {

@@ -2,7 +2,7 @@ import Web3 from "web3";
 import NFTABI from "../abi/PhotoNFT.json";
 import MarketplaceABI from "../abi/PhotoMarketplace.json";
 import addresses from "../config/address.json";
-const { marketplace_addr, nft_addr } = addresses;
+const { marketplace_addr, nft_addr, wbnb_addr } = addresses;
 
 const node = [
   'https://bsc-dataseed.binance.org',
@@ -35,8 +35,9 @@ const getWeb3 = async() => {
 
   const instanceNFT = new _web3.eth.Contract(NFTABI, nft_addr);
   const instanceMarketplace = new _web3.eth.Contract(MarketplaceABI, marketplace_addr);
+  const instanceWBNB = new _web3.eth.Contract('function approve(address guy, uint wad) public returns (bool)', wbnb_addr);
 
-  return { _web3, instanceNFT, instanceMarketplace };
+  return { _web3, instanceNFT, instanceMarketplace, instanceWBNB };
 }
 
 export default getWeb3;
