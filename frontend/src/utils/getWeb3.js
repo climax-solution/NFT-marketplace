@@ -35,7 +35,7 @@ const getWeb3 = async() => {
 
   const instanceNFT = new _web3.eth.Contract(NFTABI, nft_addr);
   const instanceMarketplace = new _web3.eth.Contract(MarketplaceABI, marketplace_addr);
-  const instanceWBNB = new _web3.eth.Contract('function approve(address guy, uint wad) public returns (bool)', wbnb_addr);
+  const instanceWBNB = new _web3.eth.Contract([{"constant":false,"inputs":[{"name":"guy","type":"address"},{"name":"wad","type":"uint256"}],"name":"approve","outputs":[{"name":"","type":"bool"}],"payable":false,"stateMutability":"nonpayable","type":"function"}], wbnb_addr);
 
   return { _web3, instanceNFT, instanceMarketplace, instanceWBNB };
 }
