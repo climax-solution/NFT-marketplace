@@ -2,11 +2,9 @@ import { lazy, useEffect, useState } from "react";
 import axios from "axios";
 import { createGlobalStyle } from 'styled-components';
 import { useNavigate } from "react-router-dom";
-import Empty from "../Empty";
 
-const MusicArt = lazy(() => import("../Asset/music"));
-const VideoArt = lazy(() => import("../Asset/video"));
 const ItemLoading = lazy(() => import("../Loading/ItemLoading"));
+const Empty = lazy(() => import("../Empty"));
 
 const GlobalStyles = createGlobalStyle`
    .react-loading-skeleton {
@@ -32,11 +30,6 @@ const Folder = ({ folderID }) => {
             return {};
         });
         setNFT(_list);
-        // await axios.get(URI.nftData.tokenURI).then(res => {
-        //     setNFT({ ...init_nft, ...URI, ...res.data});
-        // }).catch(err => {
-        //     console.log(err);
-        // })
         setLoading(false);
     },[folderID])
 
@@ -50,7 +43,7 @@ const Folder = ({ folderID }) => {
                         <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4">
                             <div className="nft__item m-0 pb-4 h-100 justify-content-between">
                                 <div className="author_list_pp">
-                                    <span onClick={()=> navigate(`/collection/${nft.folder.artist}`)}>                                    
+                                    <span onClick={()=> navigate(`/user/${nft.folder.artist}`)}>                                    
                                         <img className="lazy" src={`${process.env.REACT_APP_BACKEND}avatar/${nft.artistData.avatar}`} alt="" crossOrigin="true"/>
                                         <i className="fa fa-check"></i>
                                     </span>
