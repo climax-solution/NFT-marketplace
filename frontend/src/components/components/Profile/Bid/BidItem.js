@@ -37,6 +37,7 @@ export default function({ tokenID }) {
                     <div>
                         <img src={nft.image} className="rounded-circle w-50px ratio-1-1"/>
                         <span>{nft.nftName}</span>
+                        <button className="btn-main">View Bids</button>
                     </div>
                 )
             }
