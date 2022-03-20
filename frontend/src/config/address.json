@@ -1,4 +1,5 @@
 {
     "nft_addr" : "0x5C15F7A49A3CBb7Dfdae1b79A4B1B3a3DD90F524",
-    "marketplace_addr" : "0x3611E8524740e38DD0480dB4F0ff7A44Cde3cE79"
+    "marketplace_addr" : "0x3611E8524740e38DD0480dB4F0ff7A44Cde3cE79",
+    "wbnb_addr": "0xc778417E063141139Fce010982780140Aa0cD5Ab"
 }
