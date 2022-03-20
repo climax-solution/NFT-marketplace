@@ -5,7 +5,7 @@ import Modal from 'react-awesome-modal';
 import axios from 'axios';
 
 import addresses from "../../../config/address.json";
-import sign from '../../../utils/sign';
+import { listSign } from '../../../utils/sign';
 const { marketplace_addr } = addresses;
 
 export default function DirectSellModal({ visible, tokenID, close, Marketplace, web3 }) {
@@ -45,7 +45,7 @@ export default function DirectSellModal({ visible, tokenID, close, Marketplace, 
         try {
             const nftPrice = web3.utils.toWei(price.toString(), 'ether');
             const nonce = await Marketplace.methods.nonces(initialUser.walletAddress).call();
-            const signature = await sign(nonce, tokenID, initialUser.walletAddress, nftPrice, false);
+            const signature = await listSign(nonce, tokenID, initialUser.walletAddress, nftPrice, false);
             if (signature) {
                 await axios.post(`${process.env.REACT_APP_BACKEND}sale/list`, {
                     tokenID, price: nftPrice, walletAddress: initialUser.walletAddress, action: "list",

@@ -6,7 +6,7 @@ import ReactTooltip from "react-tooltip";
 import Modal from 'react-awesome-modal';
 import getWeb3 from "../../../utils/getWeb3";
 import { toast } from "react-toastify";
-import sign from "../../../utils/sign";
+import { offerSign } from "../../../utils/sign";
 
 const MusicArt = lazy(() => import("../Asset/music"));
 const VideoArt = lazy(() => import("../Asset/video"));
@@ -45,16 +45,17 @@ export default function TradeNFT({ data, className = "mx-0" }) {
             return res.data;
         }).catch(err => {
             return {
-                nft: {}, childList: {}
+                nft: {}, childList: []
             }
         })
-
+console.log(saled.childList, typeof(saled.childList));
         await axios.get(`${_orgNFT.tokenURI}`).then(res => {
             const { data: metadata } = res;
             setNFT({ ...data, ...metadata, ...saled.nft });
             const _price = saled.nft.price;
             const nftOwner = ( (_orgNFT.owner).toLowerCase() == (initialUser.walletAddress).toLowerCase());
-            const bidOwner = saled.childList[(initialUser.walletAddress).toLowerCase()] ? true : false;
+            const existedBid = typeof(saled.childList) =='array' ? saled.childList.filter(item => (item.walletAddress).toLowerCase() == (initialUser.walletAddress).toLowerCase()) : false;
+            const bidOwner = existedBid ? true : false;
             const _claimable = Date.parse(new Date(_orgNFT.deadline)) - Date.parse(new Date());
             
             setNFTPrice(_price);
@@ -98,7 +99,7 @@ export default function TradeNFT({ data, className = "mx-0" }) {
 
             if (_nft.action != 'list') throw Error();
 
-            await Marketplace.methods.buy(_nft.tokenID, _nft.walletAddress, _nft.price, _nft.status == "premium" ? true : false, nft.signature).send({ from: initialUser.walletAddress, value: nft.price });
+            await Marketplace.methods.buy(_nft.tokenID, _nft.walletAddress, _nft.price, false, nft.signature).send({ from: initialUser.walletAddress, value: nft.price });
             toast.success("Buy success", {
                 position: "top-center",
                 autoClose: 2000,
@@ -153,7 +154,7 @@ export default function TradeNFT({ data, className = "mx-0" }) {
             setBidPrice('');
             
             const nonce = await Marketplace.methods.nonces(initialUser.walletAddress).call();
-            const result = await sign(nonce, activeID, initialUser.walletAddress, price, false);
+            const result = await offerSign(nonce, activeID, initialUser.walletAddress, price, false);
   
             const offer = {
                 tokenID: nft.tokenID,
