@@ -5,6 +5,8 @@ import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import getWeb3 from "../../../../utils/getWeb3";
+import MusicArt from "../../Asset/music";
+import VideoArt from "../../Asset/video";
 
 export default function BidView() {
 
@@ -23,10 +25,15 @@ export default function BidView() {
         const { instanceNFT, instanceMarketplace, _web3 } = await getWeb3();
         setWeb3(_web3);
         setMarekplace(instanceMarketplace);
+        
+        const _orgNFT = await instanceNFT.methods.getItemNFT(tokenID).call();
+        await axios.get(_orgNFT.tokenURI).then(res => {
+            setMetadata(res.data);
+        })
 
         await axios.post(`${process.env.REACT_APP_BACKEND}sale/get-nft-item`, { tokenID }).then(res => {
             const  { nft, childList } = res.data;
-            const _isOwner = nft.walletAddres.toLowerCase() == initialUser.walletAddres.toLowerCase();
+            const _isOwner = nft.walletAddress.toLowerCase() == initialUser.walletAddress.toLowerCase();
             setOwner(_isOwner);
             setBidList(childList);
         }).catch(err => {
@@ -60,43 +67,87 @@ export default function BidView() {
         }
     }
 
+    const failedLoadImage = (e) => {
+        e.target.src="/img/empty.jfif";
+    }
+
     return (
-        <table class="table">
-            <thead>
-                <tr>
-                <th scope="col">#</th>
-                <th scope="col">Price</th>
-                <th scope="col">Bidder</th>
-                { isOwner ? <th scope="col">Action</th> : "" }
-                </tr>
-            </thead>
-            <tbody>
-                {
-                    isLoading ? (
-                        <>
-                            <tr><td colSpan="4"><Skeleton height={30}/></td></tr>
-                            <tr><td colSpan="4"><Skeleton height={30}/></td></tr>
-                            <tr><td colSpan="4"><Skeleton height={30}/></td></tr>
-                        </>
-                    ) : <>
+        <>
+            <section className='jumbotron breadcumb no-bg'>
+                <div className='mainbreadcumb'>
+                <div className='container'>
+                    <div className='row m-10-hor'>
+                    <div className='col-12'>
+                        <h1 className='text-center'>Explore Bid</h1>
+                    </div>
+                    </div>
+                </div>
+                </div>
+            </section>
+
+            <section className='container'>
+                <div className="row">
+                    <div className="col-md-6 col-12 d-flex justify-content-center align-items-center flex-column">
                         {
-                            bidList.map((item, index) => {
-                                return (
-                                    <tr>
-                                        <td>{index + 1}</td>
-                                        <td>{web3.utils.fromWei(item.price, 'ether')} BNB</td>
-                                        <td>{(item.walletAddres).substr(0, 6) + '...' + (item.walletAddres).substr(-4)}</td>
-                                        { isOwner ? <td><button className="btn-main" onClick={() => accept(index)}>Accept</button></td> : ""}
-                                    </tr>
-                                )
-                            })
+                            isLoading && <Skeleton className="ratio-1-1"/>
                         }
                         {
-                            !bidList.length && <tr><td colSpan="4">No display items</td></tr>
+                            (!metadata.type || metadata.type && (metadata.type).toLowerCase() == 'image') && <img src={metadata.image} onError={failedLoadImage} className="img-fluid img-rounded mb-sm-30" alt=""/>
                         }
-                    </>
-                }
-            </tbody>
-        </table>
+
+                        {
+                            (metadata.type && (metadata.type).toLowerCase() == 'music') && <MusicArt data={metadata} link={``}/>
+                        }
+
+                        {
+                            (metadata.type && (metadata.type).toLowerCase() == 'video') && <VideoArt data={metadata.asset}/>
+                        }
+                        {
+                            <h3 className="text-center my-4">{ isLoading ? <Skeleton/> : metadata.nftName}</h3>
+                        }
+                    </div>
+                    <div className="col-md-6 col-12">
+                        <h3>Bids</h3>
+                        <table className="table table-dark table-bordered table-responsive text-center">
+                            <thead>
+                                <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Price</th>
+                                <th scope="col">Bidder</th>
+                                { isOwner ? <th scope="col">Action</th> : "" }
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    isLoading ? (
+                                        <>
+                                            <tr><td colSpan="4"><Skeleton height={30}/></td></tr>
+                                            <tr><td colSpan="4"><Skeleton height={30}/></td></tr>
+                                            <tr><td colSpan="4"><Skeleton height={30}/></td></tr>
+                                        </>
+                                    ) : <>
+                                        {
+                                            bidList.map((item, index) => {
+                                                return (
+                                                    <tr key={index}>
+                                                        <td>{index + 1}</td>
+                                                        <td>{web3.utils.fromWei(item.price, 'ether')} BNB</td>
+                                                        <td>{(item.walletAddress).substr(0, 6) + '...' + (item.walletAddress).substr(-4)}</td>
+                                                        { isOwner ? <td className="text-center"><button className="btn-main d-inline-block" onClick={() => accept(index)}>Accept</button></td> : ""}
+                                                    </tr>
+                                                )
+                                            })
+                                        }
+                                        {
+                                            !bidList.length && <tr><td colSpan="4" className="text-center">No display items</td></tr>
+                                        }
+                                    </>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </>
     )
 }
