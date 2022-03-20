@@ -10,7 +10,6 @@ const ItemDetailsLoading = () => {
             </div>
             <div className="col-md-6">
                 <div className="item_info">
-                    Auctions ends in 
                     <div className="de_countdown">
                         <Skeleton/>
                     </div>
