@@ -166,6 +166,7 @@ const NFTItem = () => {
                 theme: "colored"
             });
         }
+        setUpdate(true);
         setLoading(false);
     }
 
@@ -246,6 +247,7 @@ const NFTItem = () => {
                 theme: "colored"
             });
         }
+        setUpdate(true);
         setLoading(false);
     }
 
@@ -289,7 +291,6 @@ const NFTItem = () => {
                   theme: "colored"
                 });
             });
-            // await refresh();
         } catch(err) {
             toast.error(err.message, {
                 position: "top-center",
@@ -302,6 +303,7 @@ const NFTItem = () => {
                 theme: "colored"
             });
         }
+        setUpdate(true);
         setLoading(false);
     }
 
@@ -346,10 +348,8 @@ const NFTItem = () => {
                     </div>
                 </section>
                 {
-                    loading && <ItemDetailsLoading/>
-                }
-                {
-                    !loading && (
+                    loading ? <ItemDetailsLoading/>
+                    : (
                         Object.keys(nft).length ?
                             <section className='container'>
                                 <div className='row mt-md-5 pt-md-4'>
