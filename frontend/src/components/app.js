@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from "react-redux";
 import ScrollToTopBtn from './menu/ScrollToTop';
 import { UPDATE_AUTH, UPDATE_LOADING_PROCESS } from '../store/action/auth.action';
 import Loading from './components/Loading/Loading';
+import 'react-toastify/dist/ReactToastify.css';
 
 const Header = lazy(() => import('./menu/header'));
 const Home = lazy(() => import('./pages/home'));
@@ -21,9 +22,8 @@ const Activity = lazy(() => import('./pages/activity'));
 const FolderItems = lazy(() => import('./pages/folderNFTs'));
 const Profile = lazy(() => import('./pages/Profile'));
 const NotFound = lazy(() => import('./components/404'));
-
-import 'react-toastify/dist/ReactToastify.css';
-import Users from './pages/Users';
+const Users = lazy(() => import( './pages/Users'));
+const BidView = lazy(() => import( './components/Profile/Bid/BidView'));
 
 const GlobalStyles = createGlobalStyle`
   :root {
@@ -89,6 +89,7 @@ const app = () => {
                 <Route path="/folder-explorer/:id" element={<FolderItems/>}/>
                 <Route path={Object.keys(userData).length > 2 ? "/profile" : "/404"} element={Object.keys(userData).length > 2 ? <Profile/>: <NotFound/>}/>
                 <Route path="/user/:username" element={<Collection/>}/>
+                <Route path="/explore-bids/:tokenID" element={<BidView/>}/>
             </Routes>
           </Suspense>
         </Router>
