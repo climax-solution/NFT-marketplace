@@ -129,7 +129,8 @@ const folderNFTs = () => {
                                         )
                                     })
                                 }
-                            </InfiniteScroll>)
+                            </InfiniteScroll>
+                        )
                     }
                     {
                         !isLoading && !nfts.length && <Empty/>
