@@ -38,7 +38,10 @@ router.post('/list', async(req, res) => {
 router.post('/delist', async(req, res) => {
     try {
         const { tokenID, walletAddress } = req.body;
-        await SaleSchema.deleteMany({ tokenID, walletAddress });
+        const _existed = await SaleSchema.findOne({ tokenID, walletAddress, action: { $in: ['list', 'auction' ]} });
+        if (_existed) {
+            await SaleSchema.deleteMany({ tokenID });
+        }
         res.status(200).json({
             message: "Unlisted successfully"
         });
@@ -77,7 +80,7 @@ router.post('/update-premium', async(req, res) => {
 
 router.post('/create-new-offer', async(req, res) => {
     try {
-        const { tokenID, price, walletAddress } = req.body;
+        const { tokenID, price, walletAddress, signature } = req.body;
         const _auctioned = await SaleSchema.findOne({ tokenID, action: "auction" });
         if (!_auctioned) {
             return res.status(400).json({
@@ -85,7 +88,7 @@ router.post('/create-new-offer', async(req, res) => {
             });
         }
         
-        const _existed = await SaleSchema.findOne({ tokenID, action: "offer" });
+        const _existed = await SaleSchema.findOne({ tokenID, walletAddress, action: "offer" });
         if (_existed) {
             return res.status(400).json({
                 error: "You have already created offer"
@@ -95,9 +98,11 @@ router.post('/create-new-offer', async(req, res) => {
         const _newOffer = new SaleSchema({
             tokenID,
             price,
-            walletAddress
+            walletAddress,
+            signature,
+            action: "offer"
         });
-        _newOffer.save();
+        await _newOffer.save();
 
         res.status(200).json({
             message: "Your offer is requested"
@@ -182,7 +187,7 @@ router.post('/get-nft-item', async(req, res) => {
 
         let childList = {};
         if (nft.action == 'auction') {
-            childList[nft.walletAddress] = SaleSchema.find({ tokenID: nft.tokenID, action: 'offer' });
+            childList = await SaleSchema.find({ tokenID, action: 'offer' });
         }
 
         res.status(200).json({ nft, childList });
@@ -228,6 +233,24 @@ router.post('/get-bid-list', async(req, res) => {
             error: "Your request is restricted"
         });
     }
-})
+});
 
+router.post('/get-bid-item', async(req, res) => {
+    try {
+        const { id } = req.body;
+        const existed = await SaleSchema.findById(id);
+        if (!existed) {
+        return res.status(400).json({
+                error: "No bid exist"
+            });
+        }
+        res.status(200).json({
+            bid: existed
+        });
+    } catch(err) {
+        res.status(400).json({
+            error: "Your request is restricted"
+        });
+    }
+})
 module.exports = router;
