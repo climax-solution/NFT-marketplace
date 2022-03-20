@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import ReactTooltip from "react-tooltip";
 import getWeb3 from "../../../../utils/getWeb3";
-import sign from "../../../../utils/sign";
+import { listSign } from "../../../../utils/sign";
 
 const MusicArt = lazy(() => import("../../Asset/music"));
 const VideoArt = lazy(() => import("../../Asset/video"));
@@ -113,7 +113,7 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
         setTrading(true);
         try {
             const nonce = await Marketplace.methods.nonces(initialUser.walletAddress).call();
-            const result  = await sign(nonce, id, initialUser.walletAddress, nft.price, status);
+            const result  = await listSign(nonce, id, initialUser.walletAddress, nft.price, status);
 
             const data = {
                 tokenID: id,

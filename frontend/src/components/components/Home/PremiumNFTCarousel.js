@@ -6,7 +6,7 @@ import Modal from 'react-awesome-modal';
 import { toast } from "react-toastify";
 import Carousel from "react-multi-carousel";
 import getWeb3 from "../../../utils/getWeb3";
-import sign from "../../../utils/sign";
+import { offerSign } from "../../../utils/sign";
 
 import "react-multi-carousel/lib/styles.css";
 
@@ -127,7 +127,7 @@ export default function () {
             }
 
             const nonce = await Marketplace.methods.nonces(initialUser.walletAddress).call();
-            const result = await sign(nonce, activeID, initialUser.walletAddress, price, false);
+            const result = await offerSign(nonce, activeID, initialUser.walletAddress, price, false);
 
             const offer = {
               tokenID: activeID,
