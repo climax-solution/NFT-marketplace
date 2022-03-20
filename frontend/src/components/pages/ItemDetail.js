@@ -79,7 +79,8 @@ const NFTItem = () => {
                 setNFTData({ ...item, ...data, ...saleData.nft });
                 const _price = saleData?.nft?.price ? saleData.nft.price : null;
                 const nftOwner =( (item.owner).toLowerCase() == (initialUser.walletAddress).toLowerCase());
-                const bidOwner = saleData?.childList ? (childList[(initialUser.walletAddress).toLowerCase()] ? true : false) : false;
+                const existedBid = saleData.childList.filter(item => (item.walletAddress).toLowerCase() == (initialUser.walletAddress).toLowerCase());
+                const bidOwner = existedBid ? true : false;
                 const _claimable = saleData.nft.deadline ? Date.parse(new Date(saleData.nft.deadline * 1000)) - Date.parse(new Date()) : 0;
                 
                 setPrice(_price);
