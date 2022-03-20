@@ -19,8 +19,8 @@ export default function() {
             await axios.post(`${process.env.REACT_APP_BACKEND}sale/get-bid-list`, {
                 walletAddress: initialUser.walletAddress
             }).then(async(res) => {
-                const { nfts, bids } = res.data;
-                setNFTs(nfts);
+                const { nfts: _nfts, bids } = res.data;
+                setNFTs(_nfts);
                 setRestList(bids);
             }).catch(err => {
                 setNFTs([]);
@@ -55,14 +55,14 @@ export default function() {
                             nfts.map( (nft, index) => {
                                 return (
                                     <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4 position-relative" key={index}>
-                                        <BidItem data={nft.tokenID}/>
+                                        <BidItem tokenID={nft.tokenID}/>
                                     </div>
                                 )
                             })
                         }
                     </InfiniteScroll>
                     {
-                        !(nfts.length + restList.length) && <Empty/>
+                        (nfts.length + restList.length) == 0 && <Empty/>
                     }
                 </>
             }
