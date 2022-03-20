@@ -10,6 +10,7 @@ const TradeNFT = lazy(() => import("../components/FolderNFT/tradeNFT"));
 const Banner = lazy(() => import("../components/Collection/banner"));
 const PremiumNFTLoading = lazy(() => import("../components/Loading/PremiumNFTLoading"));
 const Empty = lazy(() => import("../components/Empty"));
+const Loading = lazy(() => import("../components/Loading/Loading"));
 
 const GlobalStyles = createGlobalStyle`
     .btn-apply {
