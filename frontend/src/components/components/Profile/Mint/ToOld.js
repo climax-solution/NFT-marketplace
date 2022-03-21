@@ -2,8 +2,6 @@ import { useState, useEffect } from 'react';
 import ipfsAPI from "ipfs-api";
 import Select from 'react-select';
 import getWeb3 from '../../../../utils/getWeb3';
-
-import categories from "../../../../config/category.json";
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -43,10 +41,12 @@ export default function() {
     const [categoryOptions, setCateogryOptions] = useState([]);
     const [folderHash, setFolderHash] = useState();
     const [royalty, setRoyalty] = useState();
+    const [count, setCount] = useState('');
     const [isLoading, setLoading] = useState(false);
 
     const [hashStatus, setHashStatus] = useState('');
     const [royaltyStatus, setRoyaltyStatus] = useState('');
+    const [countStatus, setCountStatus] = useState('');
 
     useEffect(async() => {
         await axios.post(`${process.env.REACT_APP_BACKEND}folder/get-folder-list`).then(res => {
@@ -81,20 +81,24 @@ export default function() {
                 flag = 1;
             } else setRoyaltyStatus('');
 
+            if (count < 1) {
+                setCountStatus('This field is required than zero.');
+                flag = 1;
+            } else setCountStatus('');
+
             if (flag) throw Error();
 
             const ipfs = new ipfsAPI('ipfs.infura.io', 5001, {protocol: 'https'});
             const _existed = await ipfs.get(folderHash);
             let nftCount = _existed.length - 1;
 
-            if (!nftCount) {
-                setHashStatus('Please choose folder.');
+            if (nftCount < count) {
+                setHashStatus('Please choose correct folder. Metadata is not enough');
                 throw Error();
             } else setHashStatus('');
 
             const result = await NFT.methods.bulkMint(folderHash, nftCount, Math.floor(royalty * 100)).send({ from: initialUser.walletAddress });
             const lastID = Number(result.events.NFTMinted.returnValues.tokenId);
-            console.log(lastID);
             
             let list = [];
             for (let i = nftCount; i > 0; i ++) list.push(lastID - i - 1);
@@ -125,7 +129,7 @@ export default function() {
     }
 
     return (
-        <div className="col-sm-6 col-12">
+        <div className="old-panel">
             <div className="nft__item p-5 position-relative">
                 {
                     isLoading && (
@@ -144,15 +148,27 @@ export default function() {
                     />
                     <label className='text-danger f-12px'>{hashStatus}</label>
                 </div>
-                <div className="field-set">
-                    <label>Royalty Fee</label>
-                    <input
-                        type="number"
-                        className="form-control mb-1"
-                        value={royalty}
-                        onChange={(e) => setRoyalty(e.target.value)}
-                    />
-                    <label className='text-danger f-12px'>{royaltyStatus}</label>
+                <div className="couple-column">
+                    <div className="field-set">
+                        <label>Royalty Fee</label>
+                        <input
+                            type="number"
+                            className="form-control mb-1"
+                            value={royalty}
+                            onChange={(e) => setRoyalty(e.target.value)}
+                        />
+                        <label className='text-danger f-12px'>{royaltyStatus}</label>
+                    </div>
+                    <div className="field-set">
+                        <label>Count</label>
+                        <input
+                            type="number"
+                            className="form-control mb-1"
+                            value={count}
+                            onChange={(e) => setCount(e.target.value)}
+                        />
+                        <label className='text-danger f-12px'>{countStatus}</label>
+                    </div>
                 </div>
                 <div className="field-set mb-1">
                     <label>Folder List</label>

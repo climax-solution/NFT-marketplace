@@ -123,12 +123,12 @@ const Profile = function() {
           <div className='row'>
             <div className='col-lg-12'>
                 <div className="items_filter">
-                  <ul className="de_nav text-left">
-                    <li id='Mainbtn' className={activeTab == 0 ? 'active' : ''}><span onClick={() => setActiveTab(0)}>On Sale</span></li>
-                    <li id='Mainbtn1' className={activeTab == 1 ? 'active' : ''}><span onClick={() => setActiveTab(1)}>Collected</span></li>
-                    <li id='Mainbtn2' className={activeTab == 2 ? 'active' : ''}><span onClick={() => setActiveTab(2)}>User Info</span></li>
-                    <li id='Mainbtn3' className={activeTab == 3 ? 'active' : ''}><span onClick={() => setActiveTab(3)}>Bids</span></li>
-                    <li id='Mainbtn4' className={activeTab == 4 ? 'active' : ''}><span onClick={() => setActiveTab(4)}>Mint</span></li>
+                  <ul className="de_nav text-md-start text-center">
+                    <li id='Mainbtn' className={activeTab == 0 ? 'active mt-1' : 'mt-1'}><span onClick={() => setActiveTab(0)}>On Sale</span></li>
+                    <li id='Mainbtn1' className={activeTab == 1 ? 'active mt-1' : 'mt-1'}><span onClick={() => setActiveTab(1)}>Collected</span></li>
+                    <li id='Mainbtn2' className={activeTab == 2 ? 'active mt-1' : 'mt-1'}><span onClick={() => setActiveTab(2)}>User Info</span></li>
+                    <li id='Mainbtn3' className={activeTab == 3 ? 'active mt-1' : 'mt-1'}><span onClick={() => setActiveTab(3)}>Bids</span></li>
+                    <li id='Mainbtn4' className={activeTab == 4 ? 'active mt-1' : 'mt-1'}><span onClick={() => setActiveTab(4)}>Mint</span></li>
                   </ul>
               </div>
             </div>
