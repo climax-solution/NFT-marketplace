@@ -8,7 +8,7 @@ import VideoArt from "../../Asset/video";
 import Clock from "../../Clock";
 import ItemLoading from "../../Loading/ItemLoading";
 
-export default function({ tokenID }) {
+export default function({ tokenID, remove }) {
 
     const navigate = useNavigate();
 
@@ -27,6 +27,7 @@ export default function({ tokenID }) {
             await axios.get(_nft.tokenURI).then(res => {
                 setNFT({ ..._nft, ...res.data });
             }).catch(err => {
+                remove();
                 setNFT({});
             })
         }
