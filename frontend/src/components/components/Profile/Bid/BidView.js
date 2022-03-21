@@ -2,15 +2,18 @@ import axios from "axios";
 import { useEffect, useState } from "react"
 import Skeleton from "react-loading-skeleton";
 import { useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import getWeb3 from "../../../../utils/getWeb3";
 import MusicArt from "../../Asset/music";
 import VideoArt from "../../Asset/video";
 
+import { marketplace_addr } from "../../../../config/address.json";
+
 export default function BidView() {
 
     const initialUser = useSelector((state) => state.auth.user);
+    const navigate = useNavigate();
 
     const [bidList, setBidList] = useState([]);
     const [isLoading, setLoading] = useState(true);
@@ -19,11 +22,13 @@ export default function BidView() {
 
     const [web3, setWeb3] = useState({});
     const [Marketplace, setMarekplace] = useState({});
+    const [WBNB, setWBNB] = useState({});
     const { tokenID } = useParams();
 
     useEffect(async() => {
-        const { instanceNFT, instanceMarketplace, _web3 } = await getWeb3();
+        const { instanceNFT, instanceMarketplace, _web3, instanceWBNB } = await getWeb3();
         setWeb3(_web3);
+        setWBNB(instanceWBNB);
         setMarekplace(instanceMarketplace);
         
         const _orgNFT = await instanceNFT.methods.getItemNFT(tokenID).call();
@@ -43,21 +48,39 @@ export default function BidView() {
 
     const accept = async(index) => {
         try {
-            await axios.post(`${process.env.REACT_APP_BACKEND}sale/get-bid`, {id: bidList[index]._id}).then(async(res) => {
+            setLoading(true);
+            const status = await axios.post(`${process.env.REACT_APP_BACKEND}sale/get-nft-item`, { tokenID }).then(res => {
+                const { nft: _nft } = res.data;
+                if (_nft.action == "auction") return _nft.status;
+                else return false;
+            });
+            
+            if (!status) throw Error();
+
+            await axios.post(`${process.env.REACT_APP_BACKEND}sale/get-bid-item`, {id: bidList[index]._id}).then(async(res) => {
                 const { bid } = res.data;
-                await Marketplace.methods.sell(tokenID, bid.walletAddres, bid.price, bid.signature).send({
-                    from: initialUser.walletAddres
+                const bidderBalance = await WBNB.methods.balanceOf(bid.walletAddress).call();
+
+                const bidderAllowance = await WBNB.methods.allowance(bid.walletAddress, marketplace_addr).call();
+                if (bidderBalance * 1 < bid.price * 1 || bidderAllowance * 1 < bid.price * 1) throw Error("This user's WBNB balance is not enough to accept");
+                await Marketplace.methods.sell(tokenID, bid.walletAddress, bid.price, status, bid.signature).send({
+                    from: initialUser.walletAddress
                 });
 
-                await axios.post(`${process.env.REACT_APP_BACKEND}sale/delist`, {
-                    tokenID, walletAddres: initialUser.walletAddres
+                await axios.post(`${process.env.REACT_APP_BACKEND}sale/accept-offer`, {
+                    tokenID, bidder: bid.walletAddress
                 }).then(res => {
 
                 }).catch(err => {
 
-                })
+                });
+                toast.success("Accepted bid", {
+                    theme: 'colored',
+                    autoClose: 2000
+                });
+                navigate('/explore');
             }).catch(err => {
-                throw Error(err.response.data.error);
+                throw Error(err.reponse?.data?.err ? err.reponse.data.err : err.message );
             });
         } catch(err) {
             toast.error(err.message, {
@@ -65,6 +88,7 @@ export default function BidView() {
                 autoClose: 2000
             })
         }
+        setLoading(false);
     }
 
     const failedLoadImage = (e) => {
