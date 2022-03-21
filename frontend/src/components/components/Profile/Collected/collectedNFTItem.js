@@ -88,11 +88,11 @@ export default function NotSaleNFT({ data, NFT, Marketplace, remove }) {
     }
 
     return (
-        <>
+        <div className="d-item col-lg-3 col-md-6 col-sm-6 mt-2 col-xs-12">
             {
                 isLoading ? <ItemLoading/>
                 : (
-                    <div className="d-item col-lg-3 col-md-6 col-sm-6 mt-2 col-xs-12">
+                    <>
                         <div className="nft__item h-100 justify-content-between">
                             <div className="nft__item_wrap">
                                 {
@@ -148,9 +148,9 @@ export default function NotSaleNFT({ data, NFT, Marketplace, remove }) {
                                 tokenID={activeID}
                             />
                         }
-                    </div>
+                    </>
                 )
             }
-        </>
+        </div>
     )
 }

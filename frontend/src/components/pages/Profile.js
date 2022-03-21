@@ -8,7 +8,7 @@ import Mint from "../components/Profile/Mint/Mint";
 import Bid from "../components/Profile/Bid/Bid";
 
 const SellingNFT = lazy(() => import('../components/Profile/SellingNFT/SellingNFT'));
-const NotSellingNFT = lazy(() => import('../components/Profile/NotSellingNFT/NotSellingNFT'));
+const CollectedNFT = lazy(() => import('../components/Profile/Collected/CollectedNFT'));
 const Avatar = lazy(() => import("../components/Profile/avatar"));
 const UserInfo = lazy(() => import("../components/Profile/userInfo"));
 const ManageInfo = lazy(() => import("../components/Profile/manageInfo"));
@@ -144,7 +144,7 @@ const Profile = function() {
           {
               activeTab == 1  && (
                 <div id='zero2' className='onStep fadeIn mn-h-300px'>
-                  <NotSellingNFT/>
+                  <CollectedNFT/>
                 </div>
               )
           }

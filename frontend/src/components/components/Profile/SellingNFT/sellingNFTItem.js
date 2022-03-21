@@ -185,65 +185,63 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
     }
 
     return (
-        <>
+        <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mt-3">
             {
                 isLoading ? <ItemLoading/>
                 : (
                     !Object.keys(nft).length ? ""
                     : (
                         <>
-                            <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mt-3">
-                                <div className="nft__item position-relative my-0 h-100 justify-content-between">
-                                    {
-                                        isTrading && 
-                                        <div className="trade-loader start-0 w-100">
-                                            <div className="nb-spinner"></div>
-                                        </div>
-                                    }
-                                    <div className="nft__item_wrap flex-column position-relative wap-height">
-                                        {
-                                            (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} className="lazy nft__item_preview ratio-1-1" onClick={() => navigate(`/item-detail/${nft.tokenID}`) } role="button" alt=""/>
-                                        }
-
-                                        {
-                                            (nft.type && (nft.type).toLowerCase() == 'music') && <MusicArt data={nft} link={`/item-detail/${nft.tokenID}`}/>
-                                        }
-
-                                        {
-                                            (nft.type && (nft.type).toLowerCase() == 'video') && <VideoArt data={nft.asset}/>
-                                        }
-                                        {
-                                            nft.status == 'premium' && 
-                                            <span>
-
-                                                <a data-tip data-for={`premium-${nft.tokenID}`} className="premium-nft"><i className="fal fa-sparkles"/></a>
-                                                <ReactTooltip id={`premium-${nft.tokenID}`} type='info' effect="solid">
-                                                    <span>Premium NFT</span>
-                                                </ReactTooltip>
-                                            </span>
-                                        }
+                            <div className="nft__item position-relative my-0 h-100 justify-content-between">
+                                {
+                                    isTrading && 
+                                    <div className="trade-loader start-0 w-100">
+                                        <div className="nb-spinner"></div>
                                     </div>
-                                    <div className="nft__item_info">
+                                }
+                                <div className="nft__item_wrap flex-column position-relative wap-height">
+                                    {
+                                        (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} className="lazy nft__item_preview ratio-1-1" onClick={() => navigate(`/item-detail/${nft.tokenID}`) } role="button" alt=""/>
+                                    }
+
+                                    {
+                                        (nft.type && (nft.type).toLowerCase() == 'music') && <MusicArt data={nft} link={`/item-detail/${nft.tokenID}`}/>
+                                    }
+
+                                    {
+                                        (nft.type && (nft.type).toLowerCase() == 'video') && <VideoArt data={nft.asset}/>
+                                    }
+                                    {
+                                        nft.status == 'premium' && 
                                         <span>
-                                            <h4 onClick={() => !isLoading ? navigate(`/item-detail/${nft.tokenID}`) : null }>{ nft.nftName }</h4>
+
+                                            <a data-tip data-for={`premium-${nft.tokenID}`} className="premium-nft"><i className="fal fa-sparkles"/></a>
+                                            <ReactTooltip id={`premium-${nft.tokenID}`} type='info' effect="solid">
+                                                <span>Premium NFT</span>
+                                            </ReactTooltip>
                                         </span>
-                                        <div className="nft__item_price">
-                                            {web3.utils.fromWei(nft.price, "ether")} BNB
-                                        </div>
-                                        <div className="pb-4 trade-btn-group mt-2">
-                                            {
-                                                nft.action !== 'offer' &&
-                                                    <span className="btn-main w-100" onClick={() => putDownSale(nft.tokenID)}>{ nft.action == 'list' ? "Delist" : "Delist auction"}</span>
-                                            }
-                                            { nft.status === 'normal' ? <span className="btn-main mt-2 w-100" onClick={async() => await updatePremiumNFT(nft.tokenID, true)}>Promote to preimum</span> : <span className="btn-main mt-2 w-100"  onClick={() => updatePremiumNFT(nft.tokenID, false)}>Reset to normal</span> }
-                                        </div>
-                                    </div> 
+                                    }
                                 </div>
+                                <div className="nft__item_info">
+                                    <span>
+                                        <h4 onClick={() => !isLoading ? navigate(`/item-detail/${nft.tokenID}`) : null }>{ nft.nftName }</h4>
+                                    </span>
+                                    <div className="nft__item_price">
+                                        {web3.utils.fromWei(nft.price, "ether")} BNB
+                                    </div>
+                                    <div className="pb-4 trade-btn-group mt-2">
+                                        {
+                                            nft.action !== 'offer' &&
+                                                <span className="btn-main w-100" onClick={() => putDownSale(nft.tokenID)}>{ nft.action == 'list' ? "Delist" : "Delist auction"}</span>
+                                        }
+                                        { nft.status === 'normal' ? <span className="btn-main mt-2 w-100" onClick={async() => await updatePremiumNFT(nft.tokenID, true)}>Promote to preimum</span> : <span className="btn-main mt-2 w-100"  onClick={() => updatePremiumNFT(nft.tokenID, false)}>Reset to normal</span> }
+                                    </div>
+                                </div> 
                             </div>
                         </>
                     )
                 )
             }
-        </>
+        </div>
     )
 }
