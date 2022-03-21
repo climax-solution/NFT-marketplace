@@ -39,6 +39,13 @@ export default function() {
         setNFTLists([...nfts, ...list]);
     }
 
+    const remove = (index) => {
+        let exist = [ ...nfts ];
+        exist.splice(index, 1);
+        setNFTs(exist);
+    }
+
+    console.log(nfts, restList);
     return (
         <div className="row">
             {
@@ -52,17 +59,17 @@ export default function() {
                         className="row"
                     >
                         {
-                            nfts.map( (nft, index) => {
+                            nfts.map( (nft, idx) => {
                                 return (
                                     <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4 position-relative" key={index}>
-                                        <BidItem tokenID={nft.tokenID}/>
+                                        <BidItem tokenID={nft.tokenID} remove={() => remove(idx)} key={idx}/>
                                     </div>
                                 )
                             })
                         }
                     </InfiniteScroll>
                     {
-                        (nfts.length + restList.length) == 0 && <Empty/>
+                        (nfts.length + Object.keys(restList).length) == 0 && <Empty/>
                     }
                 </>
             }
