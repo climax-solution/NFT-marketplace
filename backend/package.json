@@ -6,6 +6,7 @@
     "start": "nodemon ./bin/www"
   },
   "dependencies": {
+    "@metamask/eth-sig-util": "^4.0.0",
     "@trycourier/courier": "^3.5.0",
     "bcryptjs": "^2.4.3",
     "chalk": "^2.4.2",
@@ -25,6 +26,7 @@
     "multer": "^1.4.4",
     "nodemon": "^2.0.15",
     "passport": "^0.5.2",
-    "wallet-address-validator": "^0.2.4"
+    "wallet-address-validator": "^0.2.4",
+    "web3": "^1.7.1"
   }
 }
