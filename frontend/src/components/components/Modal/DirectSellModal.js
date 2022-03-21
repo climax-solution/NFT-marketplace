@@ -4,11 +4,10 @@ import { toast } from 'react-toastify';
 import Modal from 'react-awesome-modal';
 import axios from 'axios';
 
-import addresses from "../../../config/address.json";
+import { marketplace_addr } from "../../../config/address.json";
 import { listSign } from '../../../utils/sign';
-const { marketplace_addr } = addresses;
 
-export default function DirectSellModal({ visible, tokenID, close, Marketplace, web3 }) {
+export default function DirectSellModal({ visible, tokenID, close, NFT, Marketplace, web3 }) {
 
     const initialUser = useSelector(({ auth }) => auth.user);
     const wallet_info = useSelector(({ wallet }) => wallet.wallet_connected);
@@ -44,7 +43,11 @@ export default function DirectSellModal({ visible, tokenID, close, Marketplace, 
         setLoading(true);
         try {
             const nftPrice = web3.utils.toWei(price.toString(), 'ether');
+            const approved = await NFT.methods.getApproved(tokenID).call();
             const nonce = await Marketplace.methods.nonces(initialUser.walletAddress).call();
+            if (approved.toLowerCase() != marketplace_addr.toLowerCase())
+                await NFT.methods.approve(marketplace_addr, tokenID).send({ from: initialUser.walletAddress });
+            
             const signature = await listSign(nonce, tokenID, initialUser.walletAddress, nftPrice, false);
             if (signature) {
                 await axios.post(`${process.env.REACT_APP_BACKEND}sale/list`, {
