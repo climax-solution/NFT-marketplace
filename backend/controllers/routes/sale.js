@@ -1,11 +1,12 @@
 let router =  require('express').Router();
+const { listSign, auctionSign, deListSign, offerSign, processOfferSign } = require('../../helpers/check_sign');
 const HistorySchema = require('../../models/history');
 let SaleSchema = require('../../models/sale');
 
 router.post('/list', async(req, res) => {
     try {
-        const { tokenID, price, walletAddress, action, signature, deadline } = req.body;
-        const _existed = await SaleSchema.findOne({ tokenID: tokenID, action: {$in: ['list', 'auction']} });
+        const { nonce, tokenID, price, walletAddress, action, signature, deadline } = req.body;
+        const _existed = await SaleSchema.findOne({ tokenID: tokenID, action: { $in: ['list', 'auction'] } });
         if (_existed) {
             return res.status(400).json({
                 error: "You have already listed"
@@ -13,6 +14,18 @@ router.post('/list', async(req, res) => {
         }
 
         if (action === 'offer') throw new Error();
+
+        let signed = false;
+
+        if (action == 'list') {
+            signed = await listSign(nonce, tokenID, walletAddress, price, false, signature);
+        }
+
+        else if (action == 'auction') {
+            signed = await auctionSign(nonce, tokenID, walletAddress, price, deadline, false, signature);
+        }
+
+        if (!signed) throw Error();
 
         let _sale = new SaleSchema({
             tokenID,
@@ -37,9 +50,11 @@ router.post('/list', async(req, res) => {
 
 router.post('/delist', async(req, res) => {
     try {
-        const { tokenID, walletAddress } = req.body;
+        const { tokenID, walletAddress, signature } = req.body;
         const _existed = await SaleSchema.findOne({ tokenID, walletAddress, action: { $in: ['list', 'auction' ]} });
         if (_existed) {
+            const signed = await deListSign(_existed.action, tokenID, walletAddress, _existed.price, _existed.status, signature);
+            if (!signed) throw Error();
             await SaleSchema.deleteMany({ tokenID });
         }
         res.status(200).json({
@@ -54,7 +69,7 @@ router.post('/delist', async(req, res) => {
 
 router.post('/update-premium', async(req, res) => {
     try {
-        const { tokenID, status, action, signature } = req.body;
+        const { tokenID, status, action, signature, nonce } = req.body;
         if (action === 'offer') throw new Error();
         let _existed = await SaleSchema.findOne({ tokenID, action });
         if (!_existed) {
@@ -63,6 +78,18 @@ router.post('/update-premium', async(req, res) => {
             });
         }
         
+        let signed = false;
+
+        if (action == 'list') {
+            signed = await listSign(nonce, tokenID, walletAddress, _existed.price, status, signature);
+        }
+
+        else if (action == 'auction') {
+            signed = await auctionSign(nonce, tokenID, walletAddress, _existed.price, _existed.deadline, status, signature);
+        }
+
+        if (!signed) throw Error();
+
         _existed.status = status;
         _existed.signature = signature;
 
@@ -80,7 +107,7 @@ router.post('/update-premium', async(req, res) => {
 
 router.post('/create-new-offer', async(req, res) => {
     try {
-        const { tokenID, price, walletAddress, signature } = req.body;
+        const { nonce, tokenID, price, walletAddress, signature } = req.body;
         const _auctioned = await SaleSchema.findOne({ tokenID, action: "auction" });
         if (!_auctioned) {
             return res.status(400).json({
@@ -94,6 +121,9 @@ router.post('/create-new-offer', async(req, res) => {
                 error: "You have already created offer"
             });
         }
+
+        const signed = await offerSign(nonce, tokenID, walletAddress, price, signature);
+        if (!signed) throw Error();
 
         const _newOffer = new SaleSchema({
             tokenID,
@@ -117,7 +147,16 @@ router.post('/create-new-offer', async(req, res) => {
 
 router.post('/cancel-offer', async(req, res) => {
     try {
-        const { walletAddress, tokenID } = req.body;
+        const { walletAddress, tokenID, signature } = req.body;
+        const _existed = await SaleSchema.findOne({ tokenID, walletAddress, action : 'offer' });
+        if (!_existed) {
+            return res.status(400).json({
+                error: "No offer exist"
+            });
+        }
+        const signed = await processOfferSign(tokenID, walletAddress, _existed.price, signature);
+        if (!signed) throw Error();
+
         await SaleSchema.deleteOne({ tokenID, walletAddress, action : 'offer' });
         res.status(200).json({
             message: "Cancelled successfully"
