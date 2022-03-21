@@ -26,7 +26,6 @@ export default function NotSaleNFT({ data, NFT, Marketplace, remove }) {
     const wallet_info = useSelector(({ wallet }) => wallet.wallet_connected);
 
     useEffect(async() => {
-        console.log(data);
         if (data) {
             const { _web3 } = await getWeb3();
             setWeb3(_web3);
