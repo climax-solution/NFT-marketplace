@@ -6,7 +6,7 @@ import ReactTooltip from "react-tooltip";
 import Modal from 'react-awesome-modal';
 import getWeb3 from "../../../utils/getWeb3";
 import { toast } from "react-toastify";
-import { offerSign } from "../../../utils/sign";
+import { offerSign, processOfferSign } from "../../../utils/sign";
 import { marketplace_addr } from "../../../config/address.json";
 
 const MusicArt = lazy(() => import("../Asset/music"));
@@ -141,6 +141,7 @@ export default function TradeNFT({ data, className = "mx-0" }) {
             const result = await offerSign(nonce, nft.tokenID, initialUser.walletAddress, price);
   
             const offer = {
+                nonce,
                 tokenID: nft.tokenID,
                 price,
                 walletAddress: initialUser.walletAddress,
@@ -209,11 +210,14 @@ export default function TradeNFT({ data, className = "mx-0" }) {
         }
 
         try {
+            
+            setTrading(true);
+            const signature = await processOfferSign(nft,tokenID, initialUser.walletAddress, nft.price);
             const withdraw = {
                 walletAddress: initialUser.walletAddress,
-                tokenID: nft.tokenID
+                tokenID: nft.tokenID,
+                signature
             };
-            setTrading(true);
             await axios.post(`${process.env.REACT_APP_BACKEND}sale/cancel-offer`, withdraw).then(res => {
                 
                 const { message } = res.data;
