@@ -48,8 +48,7 @@ const listSign = async (nonce, tokenID, from, price, isPremium, signature) => {
         signature,
         version: SignTypedDataVersion.V3
     });
-
-    if (_web3.utils.toChecksumAddress(recovered) === _web3.utils.toChecksumAddress(from)) return true;
+    if (_web3.utils.toChecksumAddress(recovered) === _web3.utils.toChecksumAddress(from)) return _web3.utils.toChecksumAddress(recovered);
     return false;
 }
 

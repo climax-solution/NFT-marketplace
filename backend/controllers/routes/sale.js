@@ -50,10 +50,10 @@ router.post('/list', async(req, res) => {
 
 router.post('/delist', async(req, res) => {
     try {
-        const { tokenID, walletAddress, signature } = req.body;
-        const _existed = await SaleSchema.findOne({ tokenID, walletAddress, action: { $in: ['list', 'auction' ]} });
+        const { tokenID, signature } = req.body;
+        const _existed = await SaleSchema.findOne({ tokenID, action: { $in: ['list', 'auction' ]} });
         if (_existed) {
-            const signed = await deListSign(_existed.action, tokenID, walletAddress, _existed.price, _existed.status, signature);
+            const signed = await deListSign(_existed.action, tokenID, _existed.walletAddress, _existed.price, _existed.status, signature);
             if (!signed) throw Error();
             await SaleSchema.deleteMany({ tokenID });
         }
@@ -81,11 +81,12 @@ router.post('/update-premium', async(req, res) => {
         let signed = false;
 
         if (action == 'list') {
-            signed = await listSign(nonce, tokenID, walletAddress, _existed.price, status, signature);
+            signed = await listSign(nonce, tokenID, _existed.walletAddress, _existed.price, status == "premium" ? true : false, signature);
         }
 
         else if (action == 'auction') {
-            signed = await auctionSign(nonce, tokenID, walletAddress, _existed.price, _existed.deadline, status, signature);
+            const deadline = Math.floor((Date.parse(new Date(_existed.deadline)) - Date.parse(new Date(_existed.created_at))) / (60 * 60 * 1000));
+            signed = await auctionSign(nonce, tokenID, _existed.walletAddress, _existed.price, deadline, status == "premium" ? true : false, signature);
         }
 
         if (!signed) throw Error();

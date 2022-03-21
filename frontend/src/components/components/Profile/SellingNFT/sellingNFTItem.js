@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import ReactTooltip from "react-tooltip";
 import getWeb3 from "../../../../utils/getWeb3";
-import { deListSign, listSign } from "../../../../utils/sign";
+import { auctionSign, deListSign, listSign } from "../../../../utils/sign";
 
 const MusicArt = lazy(() => import("../../Asset/music"));
 const VideoArt = lazy(() => import("../../Asset/video"));
@@ -46,7 +46,7 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
 
         setTrading(true);
         try {
-            const signature = await deListSign(nft.action, id, initialUser.walletAddress, nft.price, nft.status);
+            const signature = await deListSign(nft.action, id, initialUser.walletAddress, nft.price, nft.status == "premium" ? true : false);
 
             await axios.post(`${process.env.REACT_APP_BACKEND}sale/delist`, { tokenID: id, walletAddress: initialUser.walletAddress, signature}).then(res => {
 
@@ -114,7 +114,13 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
         setTrading(true);
         try {
             const nonce = await Marketplace.methods.nonces(initialUser.walletAddress).call();
-            const signature  = await listSign(nonce, id, initialUser.walletAddress, nft.price, status);
+            let signature  = "";
+            if (nft.action == 'list') {
+                signature = await listSign(nonce, id, initialUser.walletAddress, nft.price, status);
+            } else {
+                const deadline = Math.floor((Date.parse(new Date(nft.deadline)) - Date.parse(new Date(nft.created_at))) / (60 * 60 * 1000));
+                signature = await auctionSign(nonce, id, initialUser.walletAddress, nft.price, deadline, status);
+            }
 
             const data = {
                 nonce,
