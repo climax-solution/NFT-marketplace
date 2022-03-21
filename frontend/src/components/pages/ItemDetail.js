@@ -277,10 +277,12 @@ const NFTItem = () => {
 
         try {
             setLoading(true);
+            const signature = await processOfferSign(nft,tokenID, initialUser.walletAddress, nft.price);
             const withdraw = {
                 walletAddress: initialUser.walletAddress,
-                tokenID: nft.tokenID
-              };
+                tokenID: nft.tokenID,
+                signature
+            };
       
             await axios.post(`${process.env.REACT_APP_BACKEND}sale/cancel-offer`, withdraw).then(res => {
                 

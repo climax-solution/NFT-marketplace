@@ -51,8 +51,13 @@ export default function DirectSellModal({ visible, tokenID, close, NFT, Marketpl
             const signature = await listSign(nonce, tokenID, initialUser.walletAddress, nftPrice, false);
             if (signature) {
                 await axios.post(`${process.env.REACT_APP_BACKEND}sale/list`, {
-                    tokenID, price: nftPrice, walletAddress: initialUser.walletAddress, action: "list",
-                    signature, deadline: 0
+                    nonce,
+                    tokenID,
+                    price: nftPrice,
+                    walletAddress: initialUser.walletAddress,
+                    action: "list",
+                    signature,
+                    deadline: 0
                 }).then(res => {
                     toast.success(res.data.message, {
                         position: "top-center",

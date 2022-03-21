@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import ReactTooltip from "react-tooltip";
 import getWeb3 from "../../../../utils/getWeb3";
-import { listSign } from "../../../../utils/sign";
+import { deListSign, listSign } from "../../../../utils/sign";
 
 const MusicArt = lazy(() => import("../../Asset/music"));
 const VideoArt = lazy(() => import("../../Asset/video"));
@@ -46,8 +46,9 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
 
         setTrading(true);
         try {
-            
-            await axios.post(`${process.env.REACT_APP_BACKEND}sale/delist`, { tokenID: id, walletAddress: initialUser.walletAddress}).then(res => {
+            const signature = await deListSign(nft.action, id, initialUser.walletAddress, nft.price, nft.status);
+
+            await axios.post(`${process.env.REACT_APP_BACKEND}sale/delist`, { tokenID: id, walletAddress: initialUser.walletAddress, signature}).then(res => {
 
             }).catch(err => {
 
@@ -113,13 +114,14 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
         setTrading(true);
         try {
             const nonce = await Marketplace.methods.nonces(initialUser.walletAddress).call();
-            const result  = await listSign(nonce, id, initialUser.walletAddress, nft.price, status);
+            const signature  = await listSign(nonce, id, initialUser.walletAddress, nft.price, status);
 
             const data = {
+                nonce,
                 tokenID: id,
                 action: nft.action,
                 status: status ? "premium" : "normal",
-                signature: result
+                signature
             };
 
             await axios.post(`${process.env.REACT_APP_BACKEND}sale/update-premium`, data).then(res => {
