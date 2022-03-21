@@ -6,6 +6,7 @@ import axios from "axios";
 import Modal from 'react-awesome-modal';
 import { useSelector } from "react-redux";
 import { toast } from "react-toastify";
+import { marketplace_addr } from "../../config/address.json";
 
 const Clock = lazy(() => import("../components/Clock"));
 const Footer = lazy(() => import('../components/footer'));
@@ -13,7 +14,6 @@ const Empty = lazy(() => import("../components/Empty"));
 const Attr = lazy(() => import("../components/ItemDetails/attributes"));
 const MusicArt = lazy(() => import("../components/Asset/music"));
 const VideoArt = lazy(() => import("../components/Asset/video"));
-
 const ItemDetailsLoading = lazy(() => import("../components/Loading/ItemDetailsLoading"));
 
 const GlobalStyles = createGlobalStyle`
@@ -49,6 +49,8 @@ const NFTItem = () => {
     const [nft, setNFTData] = useState();
     const [web3, setWeb3] = useState();
     const [Marketplace, setMarketplace] = useState();
+    const [WBNB, setWBNB] = useState();
+
     const [loading, setLoading] = useState(true);
     const [isTrading, setTrading] = useState(false);
     const [visible, setVisible] = useState(false);
@@ -62,9 +64,11 @@ const NFTItem = () => {
 
     useEffect(async() => {
         if (!updated) return;
-        const { _web3, instanceMarketplace, instanceNFT } = await getWeb3();
+        const { _web3, instanceMarketplace, instanceNFT, instanceWBNB } = await getWeb3();
         setWeb3(_web3);
+        setWBNB(instanceWBNB);
         setMarketplace(instanceMarketplace);
+        
         try {
             const { id } = params;
             const _orgNFT = await instanceNFT.methods.getItemNFT(id).call();
@@ -199,6 +203,7 @@ const NFTItem = () => {
             setVisible(false);
             setBidPrice('');
             
+            await WBNB.methods.approve(marketplace_addr, price).send({ from: initialUser.walletAddress });
             const nonce = await Marketplace.methods.nonces(initialUser.walletAddress).call();
             const result = await sign(nonce, activeID, initialUser.walletAddress, price, false);
   
