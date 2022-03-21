@@ -205,7 +205,6 @@ export const offerSign = async (nonce, tokenID, from, price) => {
                 from,
             },
             function (err, result) {
-                console.log("same", _web3.utils.toChecksumAddress(recovered) === _web3.utils.toChecksumAddress(from), _web3.utils.toChecksumAddress(recovered), _web3.utils.toChecksumAddress(from));
                 if (err) reject(err);
                 else if (result.error) reject(result.err);
                 else if (result.result) resolve(result.result);
@@ -258,7 +257,6 @@ export const processOfferSign = async ( tokenID, from, price) => {
               from,
           },
           function (err, result) {
-              console.log("same", _web3.utils.toChecksumAddress(recovered) === _web3.utils.toChecksumAddress(from), _web3.utils.toChecksumAddress(recovered), _web3.utils.toChecksumAddress(from));
               if (err) reject(err);
               else if (result.error) reject(result.err);
               else if (result.result) resolve(result.result);

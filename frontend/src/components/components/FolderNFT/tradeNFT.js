@@ -136,7 +136,8 @@ export default function TradeNFT({ data, className = "mx-0" }) {
             setBidPrice('');
             
             const { instanceWBNB } = await getWeb3();
-            await instanceWBNB.methods.approve(marketplace_addr, price).send({ from : initialUser.walletAddress });
+            const allowance = await instanceWBNB.methods.allowance(initialUser.walletAddress, marketplace_addr).call();
+            if (allowance * 1 < price * 1) await instanceWBNB.methods.approve(marketplace_addr, price).send({ from : initialUser.walletAddress });
             const nonce = await Marketplace.methods.nonces(initialUser.walletAddress).call();
             const result = await offerSign(nonce, nft.tokenID, initialUser.walletAddress, price);
   
@@ -212,7 +213,7 @@ export default function TradeNFT({ data, className = "mx-0" }) {
         try {
             
             setTrading(true);
-            const signature = await processOfferSign(nft,tokenID, initialUser.walletAddress, nft.price);
+            const signature = await processOfferSign(nft.tokenID, initialUser.walletAddress, nft.price);
             const withdraw = {
                 walletAddress: initialUser.walletAddress,
                 tokenID: nft.tokenID,

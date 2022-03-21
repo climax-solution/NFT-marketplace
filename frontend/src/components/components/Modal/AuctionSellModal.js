@@ -29,7 +29,7 @@ export default function AuctionSellModal({ visible, close, tokenID, web3, NFT, M
         if (message) {
             toast.warning(message, {
                 position: "top-center",
-                autoClose: 5000,
+                autoClose: 2000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,
@@ -47,7 +47,7 @@ export default function AuctionSellModal({ visible, close, tokenID, web3, NFT, M
             if (approved.toLowerCase() != marketplace_addr.toLowerCase())
                 await NFT.methods.approve(marketplace_addr, tokenID).send({ from: initialUser.walletAddress });
 
-            const signature = await auctionSign(nonce, tokenID, initialUser.walletAddress, nftPrice, false);
+            const signature = await auctionSign(nonce, tokenID, initialUser.walletAddress, nftPrice, (day * 24 + hour * 1), false);
             
             if (signature) {
                 await axios.post(`${process.env.REACT_APP_BACKEND}sale/list`, {
@@ -58,6 +58,18 @@ export default function AuctionSellModal({ visible, close, tokenID, web3, NFT, M
                     action: "auction",
                     signature,
                     deadline: (day * 24 + hour * 1)
+                }).then(res => {
+                    const { message } = res.data;
+                    toast.error(message, {
+                        position: "top-center",
+                        autoClose: 2000,
+                        hideProgressBar: false,
+                        closeOnClick: true,
+                        pauseOnHover: true,
+                        draggable: true,
+                        progress: undefined,
+                        theme: "colored"
+                    });
                 });
                 close(true);
             }
@@ -65,7 +77,7 @@ export default function AuctionSellModal({ visible, close, tokenID, web3, NFT, M
         } catch(err) {
             toast.error(err.message, {
                 position: "top-center",
-                autoClose: 5000,
+                autoClose: 2000,
                 hideProgressBar: false,
                 closeOnClick: true,
                 pauseOnHover: true,

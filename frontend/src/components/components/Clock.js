@@ -21,7 +21,7 @@ class Clock extends Component {
   }
 
   getTimeUntil(deadline) {
-    const time = Date.parse(new Date(deadline)) - Date.parse(new Date());
+    const time = Date.parse(new Date(deadline).toISOString()) - Date.parse(new Date().toISOString());
     if (time < 0) {
       this.setState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
     } else {
