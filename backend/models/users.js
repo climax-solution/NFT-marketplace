@@ -61,6 +61,9 @@ const UserSchema = Schema({
         type: Boolean,
         default: false
     },
+    verifyToken: {
+        type: String
+    },
     resetPasswordToken: {
         type: String
     },

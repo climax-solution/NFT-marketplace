@@ -9,6 +9,7 @@ const { CourierClient } = require("@trycourier/courier");
 const checkAuth = require("../../helpers/auth");
 let UserSchema = require('../../models/users');
 const { jwt: JWT } = require("../../config/key");
+const courier = CourierClient({ authorizationToken: "pk_prod_YTMEXMYZA84MWVPTW3KHYS44B1S0"});
 
 router.post('/login', async(req, res) => {
     try {
@@ -24,6 +25,39 @@ router.post('/login', async(req, res) => {
                     error: 'No existing user.'
                 });
             }
+
+            if (!user.verified) {
+
+                const buffer = crypto.randomBytes(48);
+                const verifyToken = buffer.toString('hex');
+
+                user.verifyToken = verifyToken;
+                await user.save();
+
+                await courier.send({
+                    message: {
+                        content: {
+                            title: "Verify your account",
+                            body: `${
+                                'You are receiving this because you have requested to regsitered into platform.\n\n' +
+                                'Please verify account\n\n' +
+                                'https://marketplace.nftdevelopments.site/verify/'
+                            }${verifyToken}/${email}/${username}`
+                        },
+                        data: {
+                            joke: ""
+                        },
+                        to: {
+                            email: email
+                        }
+                    }
+                });
+                return res.status(400).json({
+                    status: true,
+                    message: 'Your account is not verified. Please check your email and verify account.'
+                })
+
+            };
 
             const payload = {
                 id: user.id
@@ -44,7 +78,7 @@ router.post('/login', async(req, res) => {
         }
     } catch(err) {
         res.status(400).json({
-            error: 'Your request could not be processed. Please try again.'
+            error: 'Your request is restricted'
         }); 
     }
 });
@@ -95,6 +129,9 @@ router.post('/register', async(req, res) => {
             return res.status(400).json({ error: 'That wallet address is already in use.' });
         }
 
+        const buffer = crypto.randomBytes(48);
+        const verifyToken = buffer.toString('hex');
+
         let user = new UserSchema({
             email,
             username,
@@ -104,29 +141,85 @@ router.post('/register', async(req, res) => {
             phoneNumber,
             walletAddress,
             brithday,
-            password
+            password,
+            verifyToken
         });
 
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(user.password, salt);
         
         user.password = hash;
-        const registeredUser = await user.save();
+        await user.save();
 
-        const payload = {
-            id: registeredUser.id
-        };
+        // const payload = {
+        //     id: registeredUser.id
+        // };
 
-        const token = jwt.sign(payload, JWT.secret, { expiresIn: JWT.tokenLife });
+        // const token = jwt.sign(payload, JWT.secret, { expiresIn: JWT.tokenLife });
 
-        return res.status(200).json({
-            success: true,
-            token: `Bearer ${token}`,
-            user: registeredUser
+        await courier.send({
+            message: {
+                content: {
+                    title: "Verify your account",
+                    body: `${
+                        'You are receiving this because you have requested to regsitered into platform.\n\n' +
+                        'Please verify account.\n\n' +
+                        'https://marketplace.nftdevelopments.site/verify/'
+                    }${verifyToken}/${email}/${username}`
+                },
+                data: {
+                    joke: ""
+                },
+                to: {
+                    email: email
+                }
+            }
         });
+        res.status(200).json({
+            status: true,
+            message: 'You have registered. Please check your email and verify account.'
+        })
+
+        // return res.status(200).json({
+        //     success: true,
+        //     token: `Bearer ${token}`,
+        //     user: registeredUser
+        // });
 
     } catch(err) {
-        console.error(err);
+        console.log(err)
+        res.status(400).json({
+            error: "Your request is restricted"
+        });
+    }
+});
+
+router.post('/verify', async(req, res) => {
+    try {
+        const { token, email, username } = req.body;
+        console.log(email, username);
+        let _existed = await UserSchema.findOne({ email, username });
+        if (!_existed) {
+            return res.status(400).json({
+                error: "Your account is unregistered"
+            });
+        }
+        _existed = await UserSchema.findOne({ verifyToken: token, email, username, verified: false});
+        if (!_existed) {
+            return res.status(400).json({
+                error: "Token is expired"
+            });
+        }
+        _existed.verified = true;
+        _existed.verifyToken = '';
+        await _existed.save();
+        res.status(200).json({
+            message: "Your account is verfied."
+        })
+    } catch(err) {
+        res.status(400).json({
+            error: "Your request is restricted"
+        });
     }
 });
 
@@ -149,7 +242,6 @@ router.post('/forgot', async(req, res) => {
         existingUser.resetPasswordExpires = Date.now() + 3600000;
 
         existingUser.save();
-        const courier = CourierClient({ authorizationToken: "pk_prod_YTMEXMYZA84MWVPTW3KHYS44B1S0"});
 
         const { requestId } = await courier.send({
             message: {
