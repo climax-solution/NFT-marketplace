@@ -271,3 +271,12 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 .bid-loading .nft-name{
   width: 200px;
 }
+
+.loading-status {
+  position: absolute;
+  top: 50%;
+  margin-top: 35px;
+  width: 100%;
+  text-align: center;
+  color: #03A9F4;
+}

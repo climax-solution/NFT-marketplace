@@ -60,7 +60,6 @@ const NFTItem = () => {
     const [price, setNFTPrice] = useState();
     const [isNFTOwner, setNFTOwner] = useState(false);
     const [isBidOwner, setBidOwner] = useState(false);
-    const [claimable, setClaimable] = useState(false);
 
     useEffect(async() => {
         if (!updated) return;
@@ -98,12 +97,10 @@ const NFTItem = () => {
                     const _price = saleData.nft.price;
                     const existedBid = saleData.action == 'auction' ? saleData.childList.filter(item => (item.walletAddress).toLowerCase() == (initialUser.walletAddress).toLowerCase()) : [];
                     const bidOwner = existedBid.length ? true : false;
-                    const _claimable = Date.parse(new Date(saleData.nft.deadline).toLocaleDateString()) - Date.parse(new Date());
-    
+                    
                     setNFTData({ ..._orgNFT, ...metadata, ...saleData.nft });
                     setNFTPrice(_price);
                     setBidOwner(bidOwner);
-                    setClaimable(_claimable);
                 }
                 else setNFTData({ ..._orgNFT, ...metadata });
             });
@@ -379,9 +376,9 @@ const NFTItem = () => {
                                                 nft.action == 'list'
                                                     ? <span className="btn-main py-3 mx-auto w-100 mt-3 mw-500px" onClick={buyNow} >Buy Now</span>
                                                     : (
-                                                        !isBidOwner ? <span className="btn-main mx-auto py-3 w-50 mt-2" onClick={openModal}>Place Bid</span> : (
-                                                            claimable <= 0 && <span className="btn-main mx-auto py-3 w-50 mt-2" onClick={withdrawBid}>Withdraw Bid</span>
-                                                        )
+                                                        !isBidOwner 
+                                                        ? <span className="btn-main mx-auto py-3 w-50 mt-2" onClick={openModal}>Place Bid</span>
+                                                        : <span className="btn-main mx-auto py-3 w-50 mt-2" onClick={withdrawBid}>Withdraw Bid</span>
                                                     )
                                                 )
                                             )
