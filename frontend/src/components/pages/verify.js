@@ -28,18 +28,20 @@ export default function VerifyAccount() {
     }, [])
 
     return (
-        <div>
+        <div className="verify-panel">
             {
                 isLoading ? (
-                    <div className='d-flex w-100 h-100 justify-content-center align-items-center'>
+                    <div className='d-flex w-100 h-100 flex-column justify-content-center align-items-center'>
                         <div className='reverse-spinner'></div>
-                        <span className="">Verifying....</span>
+                        <span className="mt-4">Verifying....</span>
                     </div>
                 ) : (
-                    <div>
+                    <div className="text-center">
                         <h1 className={verified ? "text-success" : "text-danger"}>{status}</h1>
                         {
-                            verified ? <Link to="/login">Please Login</Link> : ""
+                            verified
+                            ? <Link to="/login" className="text-decoration-none text-success">PLEASE LOGIN <i className="fa fa-arrow-right"/></Link>
+                            : <Link to="/" className="text-decoration-none text-danger"><i className="fa fa-arrow-left"/> RETURN</Link>
                         }
                     </div>
                 )
