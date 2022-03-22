@@ -24,6 +24,7 @@ const Profile = lazy(() => import('./pages/Profile'));
 const NotFound = lazy(() => import('./components/404'));
 const Users = lazy(() => import( './pages/Users'));
 const BidView = lazy(() => import( './components/Profile/Bid/BidView'));
+const VerifyAccount = lazy(() => import('./pages/verify'));
 
 const GlobalStyles = createGlobalStyle`
   :root {
@@ -76,14 +77,12 @@ const app = () => {
                 <Route path="*" element={<NotFound/>}/>
                 <Route exact path="/" element={<Home/>}/>
                 <Route path="/explore" element={<Explore/>}/>
-                {/* <Route path="/helpcenter" element={<Helpcenter/>}/> */}
-                {/* <Route path="/ranking" element={<Rangking/>}/> */}
                 <Route path="/item-detail/:id" element={<ItemDetail/>}/>
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/forgot-password" element={<ForgotPassword/>}/>
                 <Route path="/reset-password/:token" element={<ResetPassword/>}/>
+                <Route path="/verify/:token/:email/:username" element={<VerifyAccount/>}/>
                 <Route path="/register" element={<Register/>}/>
-                {/* <Route path="/create" element={<Create/>}/> */}
                 <Route path="/activity" element={<Activity/>}/>
                 <Route path="/users" element={<Users/>}/>
                 <Route path="/folder-explorer/:id" element={<FolderItems/>}/>

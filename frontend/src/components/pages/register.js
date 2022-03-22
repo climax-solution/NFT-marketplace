@@ -111,14 +111,13 @@ const Register = () => {
             };
 
             await axios.post(`${process.env.REACT_APP_BACKEND}auth/register`, data).then(res => {
-                const { user, token } = res.data;
-                toast.success("you have registered successfully!", {
+                const { message } = res.data;
+                toast.success(message, {
                     theme: "colored",
                     position: "top-center",
-                });
-                localStorage.setItem("nftdevelopments-token", JSON.stringify(token));
-                dispatch(UPDATE_AUTH(user));
-                navigate("/profile");
+                    autoClose: 2000
+                }, () => {navigate("/");});
+                
             }).catch(err => {
                 const { error } = err.response.data;
                 toast.error(error, {
