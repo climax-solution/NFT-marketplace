@@ -35,6 +35,7 @@ const customStyles = {
 export default function() {
 
     const initialUser = useSelector((state) => state.auth.user);
+    const wallet_info = useSelector(({ wallet }) => wallet.wallet_connected);
 
     const [NFT, setNFT] = useState();
     const [activeCategory, setCategory] = useState();
@@ -47,6 +48,7 @@ export default function() {
     const [hashStatus, setHashStatus] = useState('');
     const [royaltyStatus, setRoyaltyStatus] = useState('');
     const [countStatus, setCountStatus] = useState('');
+    const [loadingStatus, setLoadingStatus] = useState('');
 
     useEffect(async() => {
         await axios.post(`${process.env.REACT_APP_BACKEND}folder/get-folder-list`).then(res => {
@@ -68,8 +70,25 @@ export default function() {
     },[])
 
     const mint = async() => {
+        let message = "";
+        if (!initialUser.walletAddress) message = "Please log in";
+        else if (!wallet_info) message = 'Please connect metamask';
+
+        if (message) {
+            toast.warning(message, {
+                position: "top-center",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored"
+            });
+            return;
+        }
+
         try {
-            setLoading(true);
             let flag = 0;
             if (!folderHash) {
                 setHashStatus('This field is required.');
@@ -88,6 +107,9 @@ export default function() {
 
             if (flag) throw Error();
 
+            setLoading(true);
+            setLoadingStatus('Checking metadata...');
+
             const ipfs = new ipfsAPI('ipfs.infura.io', 5001, {protocol: 'https'});
             const _existed = await ipfs.get(folderHash);
             let nftCount = _existed.length - 1;
@@ -97,16 +119,20 @@ export default function() {
                 throw Error();
             } else setHashStatus('');
 
+            setLoadingStatus('Processing mint...');
+
             const result = await NFT.methods.bulkMint(folderHash, nftCount, Math.floor(royalty * 100)).send({ from: initialUser.walletAddress });
             const lastID = Number(result.events.NFTMinted.returnValues.tokenId);
             
             let list = [];
-            for (let i = nftCount; i > 0; i ++) list.push(lastID - i - 1);
+            for (let i = nftCount; i > 0; i --) list.push(lastID - i - 1);
             
             const newData = {
                 folderID: activeCategory.value,
                 list: list
             };
+
+            setLoadingStatus('Creating new folder...');
 
             await axios.post(`${process.env.REACT_APP_BACKEND}folder/add-items-to-old`, newData).then(res => {
 
@@ -124,8 +150,10 @@ export default function() {
                     autoClose: 2000
                 })
             }
-            setLoading(false);
         }
+
+        setLoadingStatus('');
+        setLoading(false);
     }
 
     return (
@@ -135,6 +163,7 @@ export default function() {
                     isLoading && (
                         <div className="trade-loader start-0 w-100">
                             <div className="nb-spinner"></div>
+                            <span className='loading-status'>{loadingStatus}</span>
                         </div>
                     )
                 }

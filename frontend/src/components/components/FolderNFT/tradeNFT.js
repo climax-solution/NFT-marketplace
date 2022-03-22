@@ -33,7 +33,6 @@ export default function TradeNFT({ data, className = "mx-0" }) {
     const [bidPrice, setBidPrice] = useState();
     const [isNFTOwner, setNFTOwner] = useState(false);
     const [isBidOwner, setBidOwner] = useState(false);
-    const [claimable, setClaimable] = useState(false);
 
     useEffect(async() => {
         const { _web3, instanceMarketplace, instanceNFT } = await getWeb3();
@@ -174,7 +173,6 @@ export default function TradeNFT({ data, className = "mx-0" }) {
                   theme: "colored"
                 });
             })
-            // await refresh();
         } catch(err) {
             toast.error(err.message, {
                 position: "top-center",
@@ -299,12 +297,10 @@ export default function TradeNFT({ data, className = "mx-0" }) {
                 const _price = saled.nft.price;
                 const existedBid = saled.nft.action == 'auction' ? saled.childList.filter(item => (item.walletAddress).toLowerCase() == (initialUser.walletAddress).toLowerCase()) : [];
                 const bidOwner = existedBid.length ? true : false;
-                const _claimable = Date.parse(new Date(saled.nft.deadline).toLocaleDateString()) - Date.parse(new Date());
-
+                
                 setNFTData({ ..._orgNFT, ...metadata, ...saled.nft });
                 setNFTPrice(_price);
                 setBidOwner(bidOwner);
-                setClaimable(_claimable);
             }
             else setNFTData({ ..._orgNFT, ...metadata });
         });
@@ -378,11 +374,11 @@ export default function TradeNFT({ data, className = "mx-0" }) {
                                     { nftPrice ? <>{web3.utils.fromWei(nftPrice, 'ether')}<span>BNB</span></> : ""}
                                 </div>
                                 <div className="trade-btn-group mt-2">
-                                    { !isNFTOwner && (
+                                    { (!isNFTOwner && nft.action) && (
                                         nft.action == 'list'
                                             ? <span className="btn-main w-100" onClick={buyNow} >Buy Now</span>
                                             : (
-                                                !isBidOwner ? (claimable > 0 && <span className="btn-main w-100" onClick={openModal}>Place Bid</span>)
+                                                !isBidOwner ? <span className="btn-main w-100" onClick={openModal}>Place Bid</span>
                                                 : <span className="btn-main w-100" onClick={withdrawBid}>Withdraw Bid</span>
                                             )
                                         )

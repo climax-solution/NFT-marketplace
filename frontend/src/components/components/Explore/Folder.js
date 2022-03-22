@@ -21,7 +21,6 @@ const Folder = ({ folderID }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(async() => {
-        console.log('folderID', folderID)
         const _list = await axios.post(`${process.env.REACT_APP_BACKEND}folder/get-folder-interface`, { folderID }).then(res => {
             const  { list } = res.data;
             console.log(list);
@@ -50,7 +49,7 @@ const Folder = ({ folderID }) => {
                                 </div>
                                 <div className="nft__item_wrap ratio-1x1">
                                     {
-                                        (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={`/img/folder/${nft.folder.category}.png`} className="lazy nft__item_preview" onClick={() => navigate(`/folder-explorer/${nft.folder._id}`)} role="button" alt=""/>
+                                        (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={`/img/folder/${nft.folder.category}.png`} className="lazy nft__item_preview ratio-1-1" onClick={() => navigate(`/folder-explorer/${nft.folder._id}`)} role="button" alt=""/>
                                     }
                                 </div>
                                 <div className="nft__item_info mb-0 mt-1">
