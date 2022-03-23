@@ -52,7 +52,7 @@ export default function({ tokenID, remove }) {
                                     <Clock deadline={new Date(nft.deadline).toLocaleDateString()} />
                                 </div>
                             }
-                            <div className="nft__item_wrap flex-column position-relative wap-height">
+                            <div className="nft__item_wrap w-100 ratio-1-1 flex-column position-relative">
                                 
                                 {
                                     (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} className="lazy nft__item_preview ratio-1-1" role="button" onClick={() => navigate(`/item-detail/${nft.tokenID}`)} alt=""/>

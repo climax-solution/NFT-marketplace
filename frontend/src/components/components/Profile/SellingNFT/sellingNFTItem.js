@@ -207,7 +207,7 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
                                         <div className="nb-spinner"></div>
                                     </div>
                                 }
-                                <div className="nft__item_wrap flex-column position-relative wap-height">
+                                <div className="nft__item_wrap w-100 ratio-1-1 flex-column position-relative">
                                     {
                                         (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} className="lazy nft__item_preview ratio-1-1" onClick={() => navigate(`/item-detail/${nft.tokenID}`) } role="button" alt=""/>
                                     }
