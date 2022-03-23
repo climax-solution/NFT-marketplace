@@ -61,7 +61,7 @@ const app = () => {
       }));
     }
   }, []);
-
+console.log("loadingProcessing=>", loadingProcessing);
   if (loadingProcessing)
     return (
       <Loading/>
@@ -71,7 +71,7 @@ const app = () => {
       <GlobalStyles />
       <ToastContainer/>
         <Router>
-          <Suspense fallback={<Loading/>}>
+          <Suspense fallback={""}>
             <Header/>
             <Routes>
                 <Route path="*" element={<NotFound/>}/>

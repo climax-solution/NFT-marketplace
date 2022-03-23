@@ -7,7 +7,6 @@ import { toast } from "react-toastify";
 import Carousel from "react-multi-carousel";
 import getWeb3 from "../../../utils/getWeb3";
 import { offerSign } from "../../../utils/sign";
-
 import "react-multi-carousel/lib/styles.css";
 
 const PremiumNFTLoading = lazy(() => import('../Loading/PremiumNFTLoading'));

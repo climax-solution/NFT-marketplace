@@ -13,17 +13,16 @@ const DirectSellModal = lazy(() => import("../../Modal/DirectSellModal"));
 
 export default function NotSaleNFT({ data, NFT, Marketplace, remove }) {
 
+    const navigate = useNavigate();
+    const initialUser = useSelector(({ auth }) => auth.user);
+    const wallet_info = useSelector(({ wallet }) => wallet.wallet_connected);
+    
     const [web3, setWeb3] = useState(null);
     const [nft, setNFT] = useState([]);
     const [isLoading, setLoading] = useState(true);
     const [auctionVisible, setAuctionVisible] = useState(false);
     const [directVisible, setDirectVisible] = useState(false);
     const [activeID, setActiveID] = useState(-1);
-
-    const navigate = useNavigate();
-
-    const initialUser = useSelector(({ auth }) => auth.user);
-    const wallet_info = useSelector(({ wallet }) => wallet.wallet_connected);
 
     useEffect(async() => {
         if (data) {
@@ -32,10 +31,6 @@ export default function NotSaleNFT({ data, NFT, Marketplace, remove }) {
             let _nft = {};
             await axios.get(data.tokenURI).then(async(res) => {
                 if (typeof (res.data) === 'object') _nft = { ...data, ...res.data };
-                // await axios.post(`${process.env.REACT_APP_BACKEND}sale/get-nft-item`, {
-                //     tokenID: data.tokenID,
-                //     walletAddress: initialUser.walletAddress
-                // }).then(result => { _nft = { ..._nft, ...result.data}});
             }).catch(err => {
 
             });

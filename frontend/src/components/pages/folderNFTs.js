@@ -61,15 +61,7 @@ const folderNFTs = () => {
         }).catch(err => {
 
         })
-        // gradList.sort(function(a, b) {
-        //     let premiumA = a.status;
-        //     let premiumB = b.status;
-        //     if (premiumA && !premiumB) return -1;
-        //     else if (!premiumA && premiumB) return 0;
-        //     else return 1;
-        // });
 
-        // setFolderName(gradList[1]);
         setRestList(gradList);
         setIsLoading(false);
     }

@@ -5,10 +5,11 @@ import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import getWeb3 from "../../../../utils/getWeb3";
-import MusicArt from "../../Asset/music";
-import VideoArt from "../../Asset/video";
-
 import { marketplace_addr } from "../../../../config/address.json";
+
+const MusicArt = lazy(() => import("../../Asset/music"));
+const VideoArt = lazy(() => import("../../Asset/video"));
+
 
 export default function BidView() {
 

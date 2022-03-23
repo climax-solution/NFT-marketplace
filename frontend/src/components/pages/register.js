@@ -4,15 +4,13 @@ import { phone } from "phone";
 import { createGlobalStyle } from 'styled-components';
 import { toast } from 'react-toastify';
 import validator from "validator";
-import { UPDATE_AUTH } from '../../store/action/auth.action';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import CountryList from '../components/Form/CountryDropdown';
 
 const TextInput = lazy(() => import('../components/Form/TextInput'));
 const PhoneInput = lazy(() => import('../components/Form/PhoneInput'));
 const PasswordInput = lazy(() => import('../components/Form/PasswordInput'));
 const DateInput = lazy(() => import('../components/Form/DateInput'));
+const CountryList  = lazy(() => import( '../components/Form/CountryDropdown'));
 const Footer = lazy(() => import('../components/footer'));
 
 const GlobalStyles = createGlobalStyle`
@@ -48,7 +46,6 @@ const GlobalStyles = createGlobalStyle`
 
 const Register = () => {
 
-    const dispatch = useDispatch();
     const navigate = useNavigate();
     
     const [firstName, setFirstName] = useState('');

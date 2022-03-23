@@ -5,16 +5,14 @@ const Empty = lazy(() => import("../Empty"));
 const Folder = lazy(() => import("./Folder"));
 const PremiumNFTLoading = lazy(() => import("../Loading/PremiumNFTLoading"));
 
-export default function FolderList({data, _insMarketplace }) {
+export default function FolderList({data }) {
 
-    const [Marketplace, setMarketplace] = useState({});
     const [folderList, setFolderList] = useState([]);
     const [restList, setRestList] = useState([{},{}]);
     const [loaded, setLoaded] = useState(false);
 
     useEffect(async() => {
         setFolderList([]);
-        setMarketplace(_insMarketplace);
         setRestList(data);
         setLoaded(true);
     },[data])

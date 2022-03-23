@@ -1,10 +1,11 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { lazy, useEffect, useState } from "react";
 import { useSelector } from 'react-redux';
-import BidItem from "./BidItem";
-import Empty from "../../Empty";
-import PremiumNFTLoading from "../../Loading/PremiumNFTLoading";
-import InfiniteScroll from "react-infinite-scroll-component";
+
+const BidItem = lazy(() => import("./BidItem"));
+const Empty = lazy(() => import("../../Empty"));
+const PremiumNFTLoading = lazy(() => import("../../Loading/PremiumNFTLoading"));
+const InfiniteScroll = lazy(() => import("react-infinite-scroll-component"));
 
 export default function() {
     
@@ -45,7 +46,6 @@ export default function() {
         setNFTs(exist);
     }
 
-    console.log(nfts, restList);
     return (
         <div className="row">
             {

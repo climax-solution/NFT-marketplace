@@ -1,7 +1,6 @@
 import React, { useEffect, useState, lazy } from 'react';
 import Select from 'react-select';
 import { createGlobalStyle } from 'styled-components';
-import getWeb3 from '../../utils/getWeb3';
 import categoryOptions from "../../config/category.json";
 import axios from 'axios';
 
@@ -78,7 +77,6 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 const Users = () => {
-  const [Marketplace, setMarketplace] = useState(null);
   const [userList, setUserList] = useState([]);
   const [activeCategory, setCategory] = useState({ value:'', label: 'All categories' });
   const [searchKwd, setRealKwd] = useState('');
@@ -86,15 +84,8 @@ const Users = () => {
   const [isLoading, setLoading] = useState(false);
 
   useEffect(async() => {
-    const { instanceMarketplace } = await getWeb3();
-    setMarketplace(instanceMarketplace);
-    
-  },[])
-
-  useEffect(async() => {
-    if (!Marketplace) return;
     await filterFolder();
-  },[Marketplace, activeCategory, searchKwd])
+  },[activeCategory, searchKwd])
 
   const filterFolder = async() => {
     setLoading(true);

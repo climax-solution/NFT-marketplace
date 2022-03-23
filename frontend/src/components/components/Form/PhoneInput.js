@@ -2,7 +2,6 @@ import axios from "axios";
 import { useEffect, useState } from "react"
 import PhoneInput from "react-phone-input-2";
 import { phone } from "phone";
-
 import 'react-phone-input-2/lib/style.css';
 
 export default function TextInput({ label, _key, _request, checkable, update }) {

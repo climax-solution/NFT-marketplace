@@ -17,7 +17,6 @@ const Clock = lazy(() => import("../Clock"));
 export default function TradeNFT({ data, className = "mx-0" }) {
     
     const navigate = useNavigate();
-
     const wallet_info = useSelector(({ wallet }) => wallet.wallet_connected);
     const initialUser = useSelector((state) => state.auth.user);
 
