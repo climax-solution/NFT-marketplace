@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
 import ipfsAPI from "ipfs-api";
-import Select from 'react-select';
-import getWeb3 from '../../../../utils/getWeb3';
-
-import categories from "../../../../config/category.json";
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import Select from 'react-select';
+import getWeb3 from '../../../../utils/getWeb3';
+import categories from "../../../../config/category.json";
 
 const customStyles = {
     option: (base, state) => ({

@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { lazy, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { createGlobalStyle } from 'styled-components';
-import Footer from '../components/footer';
+
+const Footer = lazy(() => import('../components/footer'));
 
 const GlobalStyles = createGlobalStyle`
   .box-login p{

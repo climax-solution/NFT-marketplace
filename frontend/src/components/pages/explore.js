@@ -2,11 +2,11 @@ import React, { useEffect, useState, lazy } from 'react';
 import Select from 'react-select';
 import { createGlobalStyle } from 'styled-components';
 import categoryOptions from "../../config/category.json";
-import PremiumNFTLoading from '../components/Loading/PremiumNFTLoading';
 import axios from 'axios';
 
 const FolderList = lazy(() => import('../components/Explore/FolderList'));
 const Footer = lazy(() => import('../components/footer'));
+const PremiumNFTLoading = lazy(() => import('../components/Loading/PremiumNFTLoading'));
 
 const customStyles = {
   option: (base, state) => ({

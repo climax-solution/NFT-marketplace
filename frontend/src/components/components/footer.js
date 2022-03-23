@@ -1,4 +1,5 @@
 import React, { lazy } from 'react';
+
 const InternalLinks = lazy(() => import('./Footer/internal'));
 const SocialLinks = lazy(() => import('./Footer/socials'));
 
