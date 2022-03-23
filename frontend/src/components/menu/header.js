@@ -122,7 +122,7 @@ const Header= function() {
         dispatch(WalletConnect());
       })
 
-      provider.on("chainChanged", (chainID) => {
+      provider.on("chainChanged", async(chainID) => {
         if (chainID != '0x3') {
           localStorage.setItem("nftdevelopments-connected", JSON.stringify({ connected: false }));
         }
