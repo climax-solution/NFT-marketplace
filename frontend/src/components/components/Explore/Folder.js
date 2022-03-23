@@ -23,7 +23,6 @@ const Folder = ({ folderID }) => {
     useEffect(async() => {
         const _list = await axios.post(`${process.env.REACT_APP_BACKEND}folder/get-folder-interface`, { folderID }).then(res => {
             const  { list } = res.data;
-            console.log(list);
             return list;
         }).catch(err => {
             return {};

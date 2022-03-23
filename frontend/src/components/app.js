@@ -61,7 +61,7 @@ const app = () => {
       }));
     }
   }, []);
-console.log("loadingProcessing=>", loadingProcessing);
+  
   if (loadingProcessing)
     return (
       <Loading/>
