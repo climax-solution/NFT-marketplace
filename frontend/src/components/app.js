@@ -71,7 +71,7 @@ console.log("loadingProcessing=>", loadingProcessing);
       <GlobalStyles />
       <ToastContainer/>
         <Router>
-          <Suspense fallback={""}>
+          <Suspense fallback={<Loading/>}>
             <Header/>
             <Routes>
                 <Route path="*" element={<NotFound/>}/>

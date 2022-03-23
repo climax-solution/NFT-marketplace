@@ -22,6 +22,7 @@ const login = () => {
   const [password, setPassword] = useState('');
   const [emailStatus, setEmailStatus] = useState('');
   const [passwordStatus, setPasswordStatus] = useState('');
+  const [isLoading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -111,6 +112,13 @@ const login = () => {
                     </div>
                     <div className="spacer-half"></div>
                   </div>
+                  {
+                    isLoading ? (
+                      <div className='d-flex w-100 h-100 justify-content-center align-items-center'>
+                          <div className='reverse-spinner'></div>
+                      </div>
+                    ) : ""
+                  }
                 </div>
               </div>
             </div>
