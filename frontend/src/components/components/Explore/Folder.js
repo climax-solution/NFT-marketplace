@@ -47,7 +47,7 @@ const Folder = ({ folderID }) => {
                                         <i className="fa fa-check"></i>
                                     </span>
                                 </div>
-                                <div className="nft__item_wrap ratio-1x1">
+                                <div className="nft__item_wrap w-100 ratio-1x1">
                                     {
                                         (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={`/img/folder/${nft.folder.category}.png`} className="lazy nft__item_preview ratio-1-1" onClick={() => navigate(`/folder-explorer/${nft.folder._id}`)} role="button" alt=""/>
                                     }
