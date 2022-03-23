@@ -1,4 +1,3 @@
-const checkAuth = require("../../helpers/auth");
 const UserSchema = require("../../models/users");
 const ActivitySchema = require("../../models/activity-log");
 const router = require("express").Router();

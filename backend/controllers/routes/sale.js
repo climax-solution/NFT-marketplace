@@ -2,6 +2,7 @@ let router =  require('express').Router();
 const { listSign, auctionSign, deListSign, offerSign, processOfferSign } = require('../../helpers/check_sign');
 const HistorySchema = require('../../models/history');
 let SaleSchema = require('../../models/sale');
+const ActivitySchema = require("../../models/activity-log");
 
 router.post('/list', async(req, res) => {
     try {
@@ -36,6 +37,15 @@ router.post('/list', async(req, res) => {
             walletAddress
         });
 
+        let logs = new ActivitySchema({
+            walletAddress,
+            tokenID,
+            type : action == 'list' ? 1 : 5 ,
+            price
+        });
+    
+        await logs.save();
+
         await _sale.save();
         res.status(200).json({
             message: "Listed successfully"
@@ -53,6 +63,14 @@ router.post('/delist', async(req, res) => {
         const { tokenID, signature } = req.body;
         const _existed = await SaleSchema.findOne({ tokenID, action: { $in: ['list', 'auction' ]} });
         if (_existed) {
+            let logs = new ActivitySchema({
+                walletAddress : _existed.walletAddress,
+                tokenID,
+                type : _existed.action == 'list' ? 2 : 6 ,
+                price
+            });
+        
+            await logs.save();
             const signed = await deListSign(_existed.action, tokenID, _existed.walletAddress, _existed.price, _existed.status, signature);
             if (!signed) throw Error();
             await SaleSchema.deleteMany({ tokenID });
@@ -96,6 +114,15 @@ router.post('/update-premium', async(req, res) => {
 
         await _existed.save();
 
+        let logs = new ActivitySchema({
+            walletAddress,
+            tokenID,
+            type : status == 'premium' ? 3 : 4 ,
+            price
+        });
+    
+        await logs.save();
+
         res.status(200).json({
             message: "Listed successfully"
         });
@@ -135,6 +162,15 @@ router.post('/create-new-offer', async(req, res) => {
         });
         await _newOffer.save();
 
+        let logs = new ActivitySchema({
+            walletAddress,
+            tokenID,
+            type : 7,
+            price
+        });
+    
+        await logs.save();
+
         res.status(200).json({
             message: "Your offer is requested"
         });
@@ -159,6 +195,16 @@ router.post('/cancel-offer', async(req, res) => {
         if (!signed) throw Error();
 
         await SaleSchema.deleteOne({ tokenID, walletAddress, action : 'offer' });
+        
+        let logs = new ActivitySchema({
+            walletAddress,
+            tokenID,
+            type : 8,
+            price : _existed.price
+        });
+    
+        await logs.save();
+
         res.status(200).json({
             message: "Cancelled successfully"
         });
@@ -186,6 +232,16 @@ router.post('/accept-offer', async(req, res) => {
         
         await newHistory.save();
         await SaleSchema.deleteMany({ tokenID });
+
+        let logs = new ActivitySchema({
+            walletAddress : bidder,
+            tokenID,
+            type : 0,
+            price : _existed.price
+        });
+    
+        await logs.save();
+
         res.status(200).json({
             message: "You have accepted offer"
         });
