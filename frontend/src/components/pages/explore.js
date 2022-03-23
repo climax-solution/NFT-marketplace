@@ -1,7 +1,6 @@
 import React, { useEffect, useState, lazy } from 'react';
 import Select from 'react-select';
 import { createGlobalStyle } from 'styled-components';
-import getWeb3 from '../../utils/getWeb3';
 import categoryOptions from "../../config/category.json";
 import PremiumNFTLoading from '../components/Loading/PremiumNFTLoading';
 import axios from 'axios';
@@ -78,7 +77,6 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 const explore = () => {
-  const [Marketplace, setMarketplace] = useState(null);
   const [folderList, setFolderList] = useState([]);
   const [activeCategory, setCategory] = useState({ value:'', label: 'All categories' });
   const [searchKwd, setRealKwd] = useState('');
@@ -86,15 +84,8 @@ const explore = () => {
   const [isLoading, setLoading] = useState(false);
 
   useEffect(async() => {
-    const { instanceMarketplace } = await getWeb3();
-    setMarketplace(instanceMarketplace);
-    
-  },[])
-
-  useEffect(async() => {
-    if (!Marketplace) return;
     await filterFolder();
-  },[Marketplace, activeCategory, searchKwd])
+  },[activeCategory, searchKwd])
 
   const filterFolder = async() => {
     setLoading(true);
@@ -104,11 +95,6 @@ const explore = () => {
       return [];
     });
 
-    // let gradList1 = [];
-    // for(let idx in gradList) {
-    //   gradList1.push({...gradList[idx] });
-    // };
-    // console.log("gradList",gradList);
     gradList = gradList.filter(item => ((item.name).toLowerCase()).search(searchKwd.toLowerCase()) > -1);
     if (activeCategory.value) gradList = gradList.filter(item => item.category == activeCategory.value);
     setFolderList(gradList);
@@ -174,7 +160,7 @@ const explore = () => {
               </div>
             </div>
           </div>
-          { isLoading ? <PremiumNFTLoading/> : <FolderList data={folderList} _insMarketplace={Marketplace}/> }
+          { isLoading ? <PremiumNFTLoading/> : <FolderList data={folderList}/> }
         </section>
         <Footer />
       </>

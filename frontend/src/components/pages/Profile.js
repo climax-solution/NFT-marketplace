@@ -4,13 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from "react-redux";
 import { UPDATE_AUTH } from "../../store/action/auth.action";
 import { WalletConnect } from "../../store/action/wallet.action";
-import Mint from "../components/Profile/Mint/Mint";
-import Bid from "../components/Profile/Bid/Bid";
 
 const SellingNFT = lazy(() => import('../components/Profile/SellingNFT/SellingNFT'));
 const CollectedNFT = lazy(() => import('../components/Profile/Collected/CollectedNFT'));
 const Avatar = lazy(() => import("../components/Profile/avatar"));
 const UserInfo = lazy(() => import("../components/Profile/userInfo"));
+const Mint = lazy(() => import( "../components/Profile/Mint/Mint"));
+const Bid = lazy(() => import( "../components/Profile/Bid/Bid"));
 const ManageInfo = lazy(() => import("../components/Profile/manageInfo"));
 const Footer = lazy(() => import('../components/footer'));
 

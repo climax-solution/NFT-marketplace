@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { createGlobalStyle } from 'styled-components';
-import { useNavigate } from "react-router-dom";
 import Footer from '../components/footer';
 
 const GlobalStyles = createGlobalStyle`
@@ -19,8 +18,6 @@ const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [emailStatus, setEmailStatus] = useState('');
 
-  const navigate = useNavigate();
-
   const authenticate = async() => {
     let flag = 0;
     if (!email) {
@@ -35,7 +32,6 @@ const ForgotPassword = () => {
     await axios.post(`${process.env.REACT_APP_BACKEND}auth/forgot`, data).then(res => {
       const { message } = res.data;
       toast.success(message, {theme: "colored"});
-    //   navigate('/profile');
     }).catch(err => {
       const { error } = err.response.data;
       toast.error(error, {theme: "colored"});

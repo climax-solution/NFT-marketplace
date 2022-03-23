@@ -14,7 +14,6 @@ export default function SellingNFT() {
     const initialUser = useSelector(({ auth }) => auth.user);
 
     const [nfts, setNFTs] = useState([]);
-    const [nftContract, setNFTContract] = useState({});
     const [marketContract, setMarketContract] = useState({});
     const [restList, setRestList] = useState([]);
     const [loaded, setLoaded] = useState(false);
@@ -23,7 +22,6 @@ export default function SellingNFT() {
         const { instanceMarketplace: Marketplace, instanceNFT } = await getWeb3();
         if (Marketplace) {
             setLoaded(false);
-            setNFTContract(instanceNFT);
             setMarketContract(Marketplace);
             let _list = await instanceNFT.methods.getPersonalNFT(initialUser.walletAddress).call();
             let sellingList = [];

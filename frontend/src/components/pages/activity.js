@@ -2,11 +2,11 @@ import React, {useEffect, useState, lazy} from 'react';
 import InfiniteScroll from "react-infinite-scroll-component";
 import { createGlobalStyle } from 'styled-components';
 import axios from 'axios';
-import ActivityLoading from '../components/Loading/ActivityLoading';
 
 const ActivityItem = lazy(() => import("../components/Activity/row"));
 const Empty = lazy(() => import('../components/Empty'));
 const Footer = lazy(() => import('../components/footer'));
+const ActivityLoading = lazy(() => import('../components/Loading/ActivityLoading'));
 
 const GlobalStyles = createGlobalStyle`
   .activity-list li:after, .fa, .fas {
