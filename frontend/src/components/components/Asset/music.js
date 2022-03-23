@@ -28,7 +28,7 @@ export default function MusicArt({ data, link }) {
                 <div className={`circle-ripple ${isPlay ? 'd-block' : 'd-none'}`}/>
             </div>
             <span onClick={() => link ? navigate(link) : null } className="w-100 ratio-1-1 text-center" role="button">
-                <img src={data.image} onError={failedLoadImage} className="lazy nft__item_preview" alt=""/>
+                <img src={data.image} onError={failedLoadImage} className="lazy nft__item_preview w-100 ratio-1-1" alt=""/>
             </span>
         </div>
     )

@@ -281,8 +281,9 @@ export default function TradeNFT({ data, className = "mx-0" }) {
         if (saled.nft?.walletAddress) {
             if ((_orgNFT.owner).toLowerCase() != (saled.nft.walletAddress).toLowerCase()) {
                 await axios.post(`${process.env.REACT_APP_BACKEND}sale/delist`, {
-                    tokenID: saled.nft.tokenID,
-                    walletAddress: saled.nft.walletAddress
+                    tokenID: saled.nft.tokenID
+                }).catch(err => {
+
                 });
             }
         }
@@ -302,7 +303,7 @@ export default function TradeNFT({ data, className = "mx-0" }) {
                 setBidOwner(bidOwner);
             }
             else setNFTData({ ..._orgNFT, ...metadata });
-        });
+        }).catch(err => {});
 
         setLoading(false);
     }
