@@ -127,7 +127,7 @@ const Header= function() {
           localStorage.setItem("nftdevelopments-connected", JSON.stringify({ connected: false }));
         }
         else {
-          localStorage.setItem("nftdevelopments-connected", JSON.stringify({ connected: true }));
+          await connectWallet();
         }
         dispatch(WalletConnect());
       })

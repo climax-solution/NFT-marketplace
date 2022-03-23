@@ -73,7 +73,11 @@ export default function DirectSellModal({ visible, tokenID, close, NFT, Marketpl
                 close(true);
             }
         } catch(err) {
-            toast.error(err.message, {
+            let message = 'Failed';
+            const parsed = JSON.parse(JSON.stringify(err));
+            if (parsed.code == 4001) message = "Canceled";
+
+            toast.error(message, {
                 position: "top-center",
                 autoClose: 2000,
                 hideProgressBar: false,

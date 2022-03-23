@@ -144,12 +144,20 @@ export default function() {
                 autoClose: 2000
             })
         } catch(err) {
-            if (err.message) {
-                toast.error(err.message, {
-                    theme: "colored",
-                    autoClose: 2000
-                })
-            }
+            let message = 'Failed';
+            const parsed = JSON.parse(JSON.stringify(err));
+            if (parsed.code == 4001) message = "Canceled";
+
+            toast.error(message, {
+                position: "top-center",
+                autoClose: 2000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "colored"
+            });
         }
 
         setLoadingStatus('');
