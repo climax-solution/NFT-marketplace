@@ -60,25 +60,26 @@ router.post('/list', async(req, res) => {
 
 router.post('/delist', async(req, res) => {
     try {
-        const { tokenID, signature } = req.body;
+        const { tokenID } = req.body;
         const _existed = await SaleSchema.findOne({ tokenID, action: { $in: ['list', 'auction' ]} });
         if (_existed) {
             let logs = new ActivitySchema({
                 walletAddress : _existed.walletAddress,
                 tokenID,
                 type : _existed.action == 'list' ? 2 : 6 ,
-                price
+                price: _existed.price
             });
         
             await logs.save();
-            const signed = await deListSign(_existed.action, tokenID, _existed.walletAddress, _existed.price, _existed.status, signature);
-            if (!signed) throw Error();
+            // const signed = await deListSign(_existed.action, tokenID, _existed.walletAddress, _existed.price, _existed.status, signature);
+            // if (!signed) throw Error();
             await SaleSchema.deleteMany({ tokenID });
         }
         res.status(200).json({
             message: "Unlisted successfully"
         });
     } catch(err) {
+        console.log(err);
         res.status(400).json({
             error: "Your request is restricted"
         });

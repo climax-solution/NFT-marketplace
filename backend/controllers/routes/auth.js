@@ -22,7 +22,7 @@ router.post('/login', async(req, res) => {
             
             if (!isMatch) {
                 return res.status(400).json({
-                    error: 'No existing user.'
+                    error: 'Password is not correct.'
                 });
             }
 
@@ -42,19 +42,19 @@ router.post('/login', async(req, res) => {
                                 'You are receiving this because you have requested to regsitered into platform.\n\n' +
                                 'Please verify account\n\n' +
                                 'https://marketplace.nftdevelopments.site/verify/'
-                            }${verifyToken}/${email}/${username}`
+                            }${verifyToken}/${user.email}/${user.username}`
                         },
                         data: {
                             joke: ""
                         },
                         to: {
-                            email: email
+                            email: user.email
                         }
                     }
                 });
                 return res.status(400).json({
                     status: true,
-                    message: 'Your account is not verified. Please check your email and verify account.'
+                    error: 'Your account is not verified. Please check your email and verify account.'
                 })
 
             };
@@ -68,7 +68,7 @@ router.post('/login', async(req, res) => {
             return res.status(200).json({
                 success: true,
                 token: `Bearer ${token}`,
-                user: existingUserName
+                user: user
             });
         }
         else {
