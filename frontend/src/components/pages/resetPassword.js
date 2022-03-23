@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
+import React, { lazy, useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { createGlobalStyle } from 'styled-components';
 import { useNavigate, useParams } from "react-router-dom";
 
-import Footer from '../components/footer';
-import PasswordInput from '../components/Form/PasswordInput';
+const Footer = lazy(() => import('../components/footer'));
+const PasswordInput = lazy(() => import('../components/Form/PasswordInput'));
 
 const GlobalStyles = createGlobalStyle`
   .box-login{

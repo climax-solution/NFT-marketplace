@@ -1,15 +1,14 @@
 import React, {  lazy, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import getWeb3 from "../../utils/getWeb3";
-import Empty from "../components/Empty";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { createGlobalStyle } from 'styled-components';
 import Skeleton from "react-loading-skeleton";
 import axios from "axios";
 
-
 const TradeNFT = lazy(() => import("../components/FolderNFT/tradeNFT"));
 const PremiumNFTLoading = lazy(() => import("../components/Loading/PremiumNFTLoading"));
+const Empty = lazy(() => import("../components/Empty"));
 
 const GlobalStyles = createGlobalStyle`
     .btn-apply {
