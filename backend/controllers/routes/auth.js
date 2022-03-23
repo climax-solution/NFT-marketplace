@@ -314,7 +314,7 @@ router.post('/reset/:token', async(req, res) => {
 router.post('/check-authentication', async(req, res) => {
     const result = await checkAuth(req);
     if (!result) return res.status(400).json({ error: "No validation"});
-    const user = await UserSchema.findOne({ _id: { $in: [result.id]}})
+    const user = await UserSchema.findOne({ _id: { $in: [result.id]}, verified: true });
     res.status(200).json(user);
 });
 
