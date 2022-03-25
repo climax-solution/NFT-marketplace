@@ -235,7 +235,7 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
                                         <h4 onClick={() => !isLoading ? navigate(`/item-detail/${nft.tokenID}`) : null }>{ nft.nftName }</h4>
                                     </span>
                                     <div className="nft__item_price">
-                                        {web3.utils.fromWei(nft.price, "ether")} BNB
+                                        {web3.utils.fromWei(nft.price, "ether")} { nft.action == 'list' ? "BNB" : "WBNB"}
                                     </div>
                                     <div className="pb-4 trade-btn-group mt-2">
                                         {
