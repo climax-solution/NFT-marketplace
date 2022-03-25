@@ -85,7 +85,7 @@ router.post('/login', async(req, res) => {
 
 router.post('/register', async(req, res) => {
     try {
-        const { username, firstName, lastName, email, country, phoneNumber, walletAddress, password, brithday } = req.body;
+        const { username, name, email, walletAddress, password } = req.body;
         if (!emailValidator.validate(email)) {
             return res.status(400).json({ error: 'You must enter an correct email address.' });
         }
@@ -94,7 +94,7 @@ router.post('/register', async(req, res) => {
             return res.status(400).json({ error: 'You must enter an correct BSC wallet address.' });
         }
 
-        if (!firstName || !lastName) {
+        if (!name) {
             return res.status(400).json({ error: 'You must enter your full name.' });
         }
     
@@ -135,12 +135,8 @@ router.post('/register', async(req, res) => {
         let user = new UserSchema({
             email,
             username,
-            firstName,
-            lastName,
-            country,
-            phoneNumber,
+            name,
             walletAddress,
-            brithday,
             password,
             verifyToken
         });
@@ -317,5 +313,4 @@ router.post('/check-authentication', async(req, res) => {
     const user = await UserSchema.findOne({ _id: { $in: [result.id]}, verified: true });
     res.status(200).json(user);
 });
-
 module.exports = router;
