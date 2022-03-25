@@ -10,6 +10,7 @@ export default function User({ data }) {
                 <img
                     src={`${process.env.REACT_APP_BACKEND}avatar/${data.avatar}`}
                     onClick={() => navigate(`/user/${data.username}`)}
+                    className="ratio-1-1"
                     crossOrigin="true"
                     role="button"
                 />
@@ -19,7 +20,7 @@ export default function User({ data }) {
                     className="text-center mb-1"
                     onClick={() => navigate(`/user/${data.username}`)}
                     role="button"
-                >{data.firstName + " " + data.lastName}</h3>
+                >{data.name}</h3>
                 <p
                     className="text-danger text-center"
                     onClick={() => navigate(`/user/${data.username}`)}
