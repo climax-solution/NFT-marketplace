@@ -43,7 +43,7 @@ export default function TextInput({ label, _request,  _key, checkable, update })
             }).catch(err => {
                 const { error } = err.response.data;
                 if (!error) {
-                    setStatus(label + 'already exists');
+                    setStatus(label + ' already exists');
                 }
                 update("");
             });
