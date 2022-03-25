@@ -22,8 +22,8 @@ export default function ManageInfo() {
     },[initUserData])
 
     const updateUserInfo = async() => {
-        const { firstName, lastName, email, password, confirmPassword } = userData;
-        if (!firstName || !lastName || !validator.isEmail(email)) {
+        const { name, email, password, confirmPassword } = userData;
+        if (!name || !validator.isEmail(email)) {
           toast.error("You must input first name, last name, email correctly!", {
             position: "top-center",
             autoClose: 5000,
@@ -107,23 +107,13 @@ export default function ManageInfo() {
                             <div className="spacer-single"></div>
                             <div className="row">
                               <div className="col-md-6 col-12">
-                                <span>First Name</span>
+                                <span>Name</span>
                                 <input
                                   type="text"
                                   className="form-control"
-                                  placeholder="Please enter your first name"
-                                  value={userData.firstName}
-                                  onChange={(e) => setUserData({ ...userData, firstName: e.target.value })}
-                                />
-                              </div>
-                              <div className="col-md-6 col-12">
-                                <span>Last Name</span>
-                                <input
-                                  type="text"
-                                  className="form-control"
-                                  placeholder="Please enter your last name"
-                                  value={userData.lastName}
-                                  onChange={(e) => setUserData({ ...userData, lastName: e.target.value })}
+                                  placeholder="Please enter your name"
+                                  value={userData.name}
+                                  onChange={(e) => setUserData({ ...userData, name: e.target.value })}
                                 />
                               </div>
                               <div className="col-md-6 col-12">

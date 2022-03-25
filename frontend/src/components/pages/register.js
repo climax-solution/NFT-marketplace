@@ -1,16 +1,12 @@
 import React, { useState,lazy } from 'react';
 import axios from 'axios';
-import { phone } from "phone";
 import { createGlobalStyle } from 'styled-components';
 import { toast } from 'react-toastify';
 import validator from "validator";
 import { useNavigate } from 'react-router-dom';
 
 const TextInput = lazy(() => import('../components/Form/TextInput'));
-const PhoneInput = lazy(() => import('../components/Form/PhoneInput'));
 const PasswordInput = lazy(() => import('../components/Form/PasswordInput'));
-const DateInput = lazy(() => import('../components/Form/DateInput'));
-const CountryList  = lazy(() => import( '../components/Form/CountryDropdown'));
 const Footer = lazy(() => import('../components/footer'));
 
 const GlobalStyles = createGlobalStyle`
@@ -48,13 +44,9 @@ const Register = () => {
 
     const navigate = useNavigate();
     
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
+    const [name, setName] = useState('');
     const [email ,setEmail] = useState('');
     const [username, setUserName] = useState('');
-    const [birthday, setBirthDate] = useState('');
-    const [country, setCountry] = useState('United States');
-    const [phoneNumber ,setPhoneNumber] = useState('');
     const [walletAddress, setWalletAddres] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -66,26 +58,14 @@ const Register = () => {
         try {
             let flag = 0;
 
-            if (!firstName) flag = 1;
-
-            if (!lastName) flag = 1;
+            if (!name) flag = 1;
 
             if (!email || !validator.isEmail(email)) flag = 1;
 
             if (!username) flag = 1;
 
-            if (!birthday) flag = 1;
-
-            if (!country) flag = 1;
-
-            if (!phoneNumber) flag = 1;
-
-            else {
-                const res = phone(phoneNumber);
-                if (!res.isValid) flag = 1;
-            }
-
             if (!walletAddress) flag = 1;
+
             else if (!validator.isEthereumAddress(walletAddress)) flag = 1;
 
             if (!password || !confirmPassword || password && confirmPassword && password !== confirmPassword) flag = 1;
@@ -98,11 +78,7 @@ const Register = () => {
             const data = {
                 username,
                 email,
-                firstName,
-                lastName,
-                birthday,
-                phoneNumber,
-                country,
+                name,
                 walletAddress,
                 password
             };
@@ -145,18 +121,9 @@ const Register = () => {
                             <div className="row">
                                 <div className="col-md-6">
                                     <TextInput
-                                        label={"First Name"}
-                                        update={setFirstName}
-                                        _key={"firstname"}
-                                        _request={update}
-                                    />
-                                </div>
-                                
-                                <div className="col-md-6">
-                                    <TextInput
-                                        label={"Last Name"}
-                                        update={setLastName}
-                                        _key={"lastname"}
+                                        label={"Name"}
+                                        update={setName}
+                                        _key={"name"}
                                         _request={update}
                                     />
                                 </div>
@@ -181,29 +148,6 @@ const Register = () => {
                                     />
                                 </div>
                                 
-                                <div className="col-md-6">
-                                    <DateInput
-                                        label={"Birth date"}
-                                        update={setBirthDate}
-                                        _request={update}
-                                    />
-                                </div>
-
-                                <div className="col-md-6">
-                                    <CountryList
-                                        update={setCountry}
-                                        _request={update}
-                                    />
-                                </div>
-
-                                <div className="col-md-6">
-                                    <PhoneInput
-                                        label={"Phone"}
-                                        update={setPhoneNumber}
-                                        _request={update}
-                                    />
-                                </div>
-
                                 <div className="col-md-6">
                                     <TextInput
                                         label={"Wallet Address"}
