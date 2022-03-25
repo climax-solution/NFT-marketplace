@@ -26,7 +26,7 @@ const ActivityItem = ({ data }) => {
         <li className={action[data["type"]][0]} onClick={() => data.username ? navigate(`/user/${data.username}`) : null} role="button">
             <div className="d-flex align-items-center">
                 <img className="lazy ratio-1-1 position-relative" src={`${process.env.REACT_APP_BACKEND}avatar/${data.avatar}`} alt="" crossOrigin="true"/>
-                <h4 className="ms-2">{data.firstName + " " + data.lastName }</h4>
+                <h4 className="ms-2">{data.name }</h4>
             </div>
             <div className="act_list_text ps-0 mt-2 text-break">
                 <h4>{action[data["type"]][1]}</h4>

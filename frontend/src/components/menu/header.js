@@ -347,7 +347,7 @@ const Header= function() {
                           {showpop && 
                             <div className="popshow">
                               <div className="d-name">
-                                  <h3 className="text-black">{user_data.firstName + " " + user_data.lastName }</h3>
+                                  <h3 className="text-black">{user_data.name }</h3>
                               </div>
                               <div className="d-balance">
                                   <h4 className="text-black">Balance</h4>
