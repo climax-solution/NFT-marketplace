@@ -3,10 +3,7 @@ var Mongoose = require("mongoose");
 const { Schema } = Mongoose;
 
 const UserSchema = Schema({
-    firstName: {
-        type: String
-    },
-    lastName: {
+    name: {
         type: String
     },
     username: {
@@ -20,15 +17,9 @@ const UserSchema = Schema({
         },
         lowercase: true
     },
-    phoneNumber: {
-        type: String
-    },
     walletAddress: {
         type: String,
         lowercase: true
-    },
-    country: {
-        type: String
     },
     password: {
         type: String
