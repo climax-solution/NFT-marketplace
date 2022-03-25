@@ -113,7 +113,7 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
 
         setTrading(true);
         try {
-            const nonce = await Marketplace.methods.nonces(initialUser.walletAddress).call();
+            const nonce = await Marketplace.methods.nonces(id).call();
             let signature  = "";
             if (nft.action == 'list') {
                 signature = await listSign(nonce, id, initialUser.walletAddress, nft.price, status);
