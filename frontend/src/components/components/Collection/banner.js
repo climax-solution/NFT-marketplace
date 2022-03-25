@@ -38,7 +38,7 @@ export default function Banner({ userData }) {
                         
                         <div className="profile_name">
                         <h4>
-                            {userData.firstName + " " + userData.lastName}
+                            {userData.name}
                         </h4>
                         <div className="d-flex justify-content-center">
                             <span id="wallet" className="profile_wallet mx-2">{ userData.walletAddress && ((userData.walletAddress).substr(0, 4) + '...' + (userData.walletAddress).substr(-4))}</span>

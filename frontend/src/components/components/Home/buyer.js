@@ -12,7 +12,7 @@ export default function Buyer ({ user, web3 }) {
                 </span>
             </div>                                    
             <div className="author_list_info">
-                <span>{user.firstName + "  " + user.lastName}</span><br/>
+                <span>{user.name}</span><br/>
                 <span className="bot d-inline-block">{web3.utils.fromWei((user.price).toString(), "ether")} BNB</span>
             </div>
         </li>
