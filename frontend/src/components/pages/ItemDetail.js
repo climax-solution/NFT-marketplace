@@ -95,7 +95,7 @@ const NFTItem = () => {
     
                 if ((_orgNFT.owner).toLowerCase() == (saleData.nft.walletAddress)?.toLowerCase()) {
                     const _price = saleData.nft.price;
-                    const existedBid = saleData.action == 'auction' ? saleData.childList.filter(item => (item.walletAddress).toLowerCase() == (initialUser.walletAddress).toLowerCase()) : [];
+                    const existedBid = saleData.nft.action == 'auction' ? saleData.childList.filter(item => (item.walletAddress).toLowerCase() == (initialUser.walletAddress).toLowerCase()) : [];
                     const bidOwner = existedBid.length ? true : false;
                     
                     setNFTData({ ..._orgNFT, ...metadata, ...saleData.nft });

@@ -74,6 +74,7 @@ const folderNFTs = () => {
         
         setNFTLists([...nfts, ...list]);
     }
+    console.log(restList);
 
     return (
         <div>

@@ -52,7 +52,7 @@ export default function BidView() {
             setLoading(true);
             const status = await axios.post(`${process.env.REACT_APP_BACKEND}sale/get-nft-item`, { tokenID }).then(res => {
                 const { nft: _nft } = res.data;
-                if (_nft.action == "auction") return _nft.status;
+                if (_nft.action == "auction") return _nft.status == "premium" ? true : false;
                 else return false;
             });
             

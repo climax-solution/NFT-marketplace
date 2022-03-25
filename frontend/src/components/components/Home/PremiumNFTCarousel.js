@@ -3,7 +3,6 @@ import { createGlobalStyle } from "styled-components";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import Carousel from "react-multi-carousel";
-import getWeb3 from "../../../utils/getWeb3";
 import "react-multi-carousel/lib/styles.css";
 
 const PremiumNFTLoading = lazy(() => import('../Loading/PremiumNFTLoading'));
@@ -41,7 +40,6 @@ export default function () {
   const initialUser = useSelector(({ auth }) => auth.user);
 
   const [list, setList] = useState([]);
-  const [Marketplace, setMarketplace] = useState({});
   const [carouselLoading, setCarouselLoading] = useState(true);
 
   const responsive = {
@@ -63,16 +61,9 @@ export default function () {
       items: 1
     }
   };
-
-  useEffect(async () => {
-    const { _web3, instanceMarketplace } = await getWeb3();
-    setWEB3(_web3);
-    setMarketplace(instanceMarketplace);
-  },[])
-
   useEffect(async() => {
-    if (Marketplace) await fetchNFT();
-  },[initialUser, Marketplace])
+    await fetchNFT();
+  },[initialUser])
 
   const fetchNFT = async() => {
     if (initialUser.walletAddress == undefined) return;
@@ -108,9 +99,8 @@ export default function () {
                   swipeable={false}
                   draggable={false}
                   responsive={responsive}
-                  ssr // means to render carousel on server-side.
                   infinite={true}
-                  autoPlay={true}
+                  autoPlay={false}
                   autoPlaySpeed={2000}
                   keyBoardControl={true}
                   containerClass="carousel-container"
