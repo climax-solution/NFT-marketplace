@@ -205,8 +205,8 @@ const NFTItem = () => {
             setBidPrice('');
             
             await WBNB.methods.approve(marketplace_addr, price).send({ from: initialUser.walletAddress });
-            const nonce = await Marketplace.methods.nonces(initialUser.walletAddress).call();
-            const result = await sign(nonce, activeID, initialUser.walletAddress, price, false);
+            const nonce = await Marketplace.methods.nonces(nft.tokenID).call();
+            const result = await sign(nonce, nft.tokenID, initialUser.walletAddress, price, false);
   
             const offer = {
                 tokenID: nft.tokenID,

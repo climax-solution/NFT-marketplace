@@ -44,7 +44,7 @@ export default function DirectSellModal({ visible, tokenID, close, NFT, Marketpl
         try {
             const nftPrice = web3.utils.toWei(price.toString(), 'ether');
             const approved = await NFT.methods.getApproved(tokenID).call();
-            const nonce = await Marketplace.methods.nonces(initialUser.walletAddress).call();
+            const nonce = await Marketplace.methods.nonces(tokenID).call();
             if (approved.toLowerCase() != marketplace_addr.toLowerCase())
                 await NFT.methods.approve(marketplace_addr, tokenID).send({ from: initialUser.walletAddress });
             
