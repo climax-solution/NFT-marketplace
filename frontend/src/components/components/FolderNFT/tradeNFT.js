@@ -78,7 +78,7 @@ export default function TradeNFT({ data, className = "mx-0" }) {
 
             if (_nft.action != 'list') throw Error();
 
-            await Marketplace.methods.buy(_nft.tokenID, _nft.walletAddress, _nft.price, _nft.status, nft.signature).send({ from: initialUser.walletAddress, value: nft.price });
+            await Marketplace.methods.buy(_nft.tokenID, _nft.walletAddress, _nft.price, _nft.status == "premium" ? true : false, nft.signature).send({ from: initialUser.walletAddress, value: nft.price });
             toast.success("Buy success", {
                 position: "top-center",
                 autoClose: 2000,
