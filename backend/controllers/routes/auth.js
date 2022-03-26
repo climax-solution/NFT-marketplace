@@ -102,14 +102,6 @@ router.post('/register', async(req, res) => {
             return res.status(400).json({ error: 'You must enter a password.' });
         }
 
-        if (!country) {
-            return res.status(400).json({ error: 'You must enter a country.' });
-        }
-
-        if (!phoneNumber) {
-            return res.status(400).json({ error: 'You must enter a phone number.' });
-        }
-
         if (!username) {
             return res.status(400).json({ error: 'You must enter a user name.' });
         }

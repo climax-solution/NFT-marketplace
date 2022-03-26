@@ -43,6 +43,12 @@ const UserSchema = Schema({
     tiktok: {
         type: String
     },
+    telegram: {
+        type: String
+    },
+    description: {
+        type: String
+    },
     role: {
         type: String,
         default: 'ROLE_VISITOR',
