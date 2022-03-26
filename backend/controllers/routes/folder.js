@@ -159,8 +159,10 @@ router.post('/get-folder-interface', async(req, res) => {
     try {
         const { folderID } = req.body;
         const folder = await FolderSchema.findById(folderID);
-        const artistData = await UserSchema.findOne({ username: folder.artist }) 
-        res.status(200).json({ list: { folder, artistData }});
+        const artistData = await UserSchema.findOne({ username: folder.artist });
+        const initialNFT = await NFTSchema.findOne({ folderID });
+
+        res.status(200).json({ list: { folder, artistData }, initialNFT });
     } catch(err) {
         res.status(400).json({
             error: "Your request is restricted"
