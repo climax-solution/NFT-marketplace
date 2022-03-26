@@ -5,9 +5,9 @@ import { useSelector } from "react-redux";
 import ReactTooltip from "react-tooltip";
 import Modal from 'react-awesome-modal';
 import getWeb3 from "../../../utils/getWeb3";
-import { toast } from "react-toastify";
 import { offerSign, processOfferSign } from "../../../utils/sign";
 import { marketplace_addr } from "../../../config/address.json";
+import { warning_toastify, success_toastify, error_toastify, info_toastify } from "../../../utils/notify";
 
 const ItemLoading = lazy(() => import("../Loading/ItemLoading"));
 const Clock = lazy(() => import("../Clock"));
@@ -45,10 +45,6 @@ export default function TradeNFT({ data, className = "mx-0" }) {
         }
     }, [data, Marketplace])
 
-    const failedLoadImage = (e) => {
-        e.target.src="/img/empty.jfif";
-    }
-
     const buyNow = async() => {
 
         let message = "";
@@ -56,16 +52,7 @@ export default function TradeNFT({ data, className = "mx-0" }) {
         else if (!wallet_info) message = 'Please connect metamask';
 
         if (message) {
-            toast.warning(message, {
-                position: "top-center",
-                autoClose: 2000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored"
-            });
+            warning_toastify(message);
             return;
         }
 
@@ -78,31 +65,14 @@ export default function TradeNFT({ data, className = "mx-0" }) {
             if (_nft.action != 'list') throw Error();
 
             await Marketplace.methods.buy(_nft.tokenID, _nft.walletAddress, _nft.price, _nft.status == "premium" ? true : false, nft.signature).send({ from: initialUser.walletAddress, value: nft.price });
-            toast.success("Buy success", {
-                position: "top-center",
-                autoClose: 2000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored"
-            });
+            success_toastify("Buy success");
+
         } catch(err) {
             let message = 'Failed';
             const parsed = JSON.parse(JSON.stringify(err));
             if (parsed.code == 4001) message = "Canceled";
 
-            toast.error(message, {
-                position: "top-center",
-                autoClose: 2000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored"
-            });
+            error_toastify(message);
         }
         await refresh();
         setTrading(false);
@@ -117,16 +87,7 @@ export default function TradeNFT({ data, className = "mx-0" }) {
         else if (bidPrice < minPrice) message = 'Minimum price is ' + minPrice + 'BNB';
 
         if (message) {
-            toast.error(message, {
-                position: "top-center",
-                autoClose: 2000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored"
-            });
+            error_toastify(message);
             return;
         }
 
@@ -152,44 +113,18 @@ export default function TradeNFT({ data, className = "mx-0" }) {
 
             await axios.post(`${process.env.REACT_APP_BACKEND}sale/create-new-offer`, offer).then(res => {
                 const { message } = res.data;
-                toast.success(message, {
-                  position: "top-center",
-                  autoClose: 2000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-                  theme: "colored"
-                });
+                success_toastify(message);
+
               }).catch(err => {
                 const { error } = err.response.data;
-                toast.success(error, {
-                  position: "top-center",
-                  autoClose: 2000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-                  theme: "colored"
-                });
+                success_toastify(message);
             })
         } catch(err) {
             let message = 'Failed';
             const parsed = JSON.parse(JSON.stringify(err));
             if (parsed.code == 4001) message = "Canceled";
 
-            toast.error(message, {
-                position: "top-center",
-                autoClose: 2000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored"
-            });
+            error_toastify(message);
         }
         await refresh();
         setTrading(false);
@@ -201,16 +136,7 @@ export default function TradeNFT({ data, className = "mx-0" }) {
 
         if (!wallet_info) message = 'Please connect metamask';
         if (message) {
-            toast.warning(message, {
-                position: "top-center",
-                autoClose: 2000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored"
-            });
+            warning_toastify(message);
             return;
         }
 
@@ -226,32 +152,14 @@ export default function TradeNFT({ data, className = "mx-0" }) {
             await axios.post(`${process.env.REACT_APP_BACKEND}sale/cancel-offer`, withdraw).then(res => {
                 
                 const { message } = res.data;
-                toast.info(message, {
-                  position: "top-center",
-                  autoClose: 2000,
-                  hideProgressBar: false,
-                  closeOnClick: true,
-                  pauseOnHover: true,
-                  draggable: true,
-                  progress: undefined,
-                  theme: "colored"
-                });
+                info_toastify(message);
             });
         } catch(err) {
             let message = 'Failed';
             const parsed = JSON.parse(JSON.stringify(err));
             if (parsed.code == 4001) message = "Canceled";
 
-            toast.error(message, {
-                position: "top-center",
-                autoClose: 2000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored"
-            });
+            error_toastify(message);
         }
         await refresh();
         setTrading(false);
@@ -262,16 +170,7 @@ export default function TradeNFT({ data, className = "mx-0" }) {
         if (!initialUser.walletAddress) message = 'Please log in';
         else if (!wallet_info) message = 'Please connect metamask';
         if (message) {
-          toast.warning(message, {
-              position: "top-center",
-              autoClose: 2000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "colored"
-          });
+          warning_toastify(message);
           return;
         }
         setVisible(true);

@@ -3,9 +3,9 @@ import { useEffect, useState } from "react"
 import Skeleton from "react-loading-skeleton";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { toast } from "react-toastify";
 import getWeb3 from "../../../../utils/getWeb3";
 import { marketplace_addr } from "../../../../config/address.json";
+import { success_toastify, error_toastify } from "../../../../utils/notify";
 
 const MusicArt = lazy(() => import("../../Asset/music"));
 const VideoArt = lazy(() => import("../../Asset/video"));
@@ -75,10 +75,7 @@ export default function BidView() {
                 }).catch(err => {
 
                 });
-                toast.success("Accepted bid", {
-                    theme: 'colored',
-                    autoClose: 2000
-                });
+                success_toastify("Accepted bid");
                 navigate('/explore');
             }).catch(err => {
                 throw Error(err.reponse?.data?.err ? err.reponse.data.err : err.message );
@@ -88,16 +85,7 @@ export default function BidView() {
             const parsed = JSON.parse(JSON.stringify(err));
             if (parsed.code == 4001) message = "Canceled";
 
-            toast.error(message, {
-                position: "top-center",
-                autoClose: 2000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored"
-            });
+            error_toastify(message);
         }
         setLoading(false);
     }

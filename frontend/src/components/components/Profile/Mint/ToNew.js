@@ -2,10 +2,10 @@ import { useState, useEffect } from 'react';
 import ipfsAPI from "ipfs-api";
 import axios from 'axios';
 import { useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
 import Select from 'react-select';
 import getWeb3 from '../../../../utils/getWeb3';
 import categories from "../../../../config/category.json";
+import { error_toastify, success_toastify, warning_toastify } from '../../../../utils/notify';
 
 const customStyles = {
     option: (base, state) => ({
@@ -65,16 +65,7 @@ export default function() {
         else if (!wallet_info) message = 'Please connect metamask';
 
         if (message) {
-            toast.warning(message, {
-                position: "top-center",
-                autoClose: 2000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored"
-            });
+            warning_toastify(message);
             return;
         }
 
@@ -135,25 +126,13 @@ export default function() {
             }).catch(err => {
                 
             });
-            toast.success("Mint success", {
-                theme: "colored",
-                autoClose: 2000
-            })
+            success_toastify("Mint success");
         } catch(err) {
             let message = 'Failed';
             const parsed = JSON.parse(JSON.stringify(err));
             if (parsed.code == 4001) message = "Canceled";
 
-            toast.error(message, {
-                position: "top-center",
-                autoClose: 2000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored"
-            });
+            error_toastify(message);
         }
         setLoadingStatus('');
         setLoading(false);
@@ -171,6 +150,7 @@ export default function() {
                     )
                 }
                 <div className="field-set">
+                    <span className='d-block mb-2 text-white'>Mint into new folder</span>
                     <label>Metadata folder</label>
                     <input
                         type="text"

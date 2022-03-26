@@ -7,8 +7,8 @@ import useOnclickOutside from "react-cool-onclickoutside";
 import { useSelector, useDispatch } from "react-redux";
 import { UPDATE_AUTH } from "../../store/action/auth.action";
 import getWeb3 from "../../utils/getWeb3";
+import { warning_toastify, success_toastify, info_toastify } from "../../utils/notify";
 import { WalletConnect } from "../../store/action/wallet.action";
-import { toast } from "react-toastify";
 
 const GlobalStyles = createGlobalStyle`
   .navbar {
@@ -143,7 +143,7 @@ const Header= function() {
   }
   
   const copyAlert = () => {
-    toast.info('Copied', {
+    info_toastify('Copied', {
       position: "top-center",
       autoClose: 5000,
       hideProgressBar: false,
@@ -163,16 +163,7 @@ const Header= function() {
       else {
         localStorage.setItem("nftdevelopments-connected", JSON.stringify({ connected: true }));
         dispatch(WalletConnect());
-        toast.success('Connected', {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        theme: "colored"
-        });
+        success_toastify('Connected');
       }
     } catch(err) {
       let message = "";
@@ -190,16 +181,7 @@ const Header= function() {
         else {
           message = err.message;
         }
-        toast.warning(message, {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored"
-        });
+        warning_toastify(message);
       }
     }
   }
@@ -207,16 +189,7 @@ const Header= function() {
   const disConnectWallet = () => {
     localStorage.setItem("nftdevelopments-connected", JSON.stringify({ connected: false }));
     dispatch(WalletConnect());
-    toast.info('Disconnected', {
-      position: "top-center",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-        theme: "colored"
-    });
+    info_toastify('Disconnected');
   }
 
   return (

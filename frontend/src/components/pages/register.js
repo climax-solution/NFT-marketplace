@@ -1,9 +1,9 @@
 import React, { useState,lazy } from 'react';
 import axios from 'axios';
 import { createGlobalStyle } from 'styled-components';
-import { toast } from 'react-toastify';
 import validator from "validator";
 import { useNavigate } from 'react-router-dom';
+import { success_toastify, error_toastify } from "../../utils/notify";
 
 const TextInput = lazy(() => import('../components/Form/TextInput'));
 const PasswordInput = lazy(() => import('../components/Form/PasswordInput'));
@@ -85,18 +85,12 @@ const Register = () => {
 
             await axios.post(`${process.env.REACT_APP_BACKEND}auth/register`, data).then(res => {
                 const { message } = res.data;
-                toast.success(message, {
-                    theme: "colored",
-                    position: "top-center",
-                    autoClose: 2000
-                }, () => {navigate("/");});
+                success_toastify(message);
+                navigate("/");
                 
             }).catch(err => {
                 const { error } = err.response.data;
-                toast.error(error, {
-                    theme: "colored",
-                    position: "top-center",
-                });
+                error_toastify(error);
             })
         } catch(err) {
             console.log(err);

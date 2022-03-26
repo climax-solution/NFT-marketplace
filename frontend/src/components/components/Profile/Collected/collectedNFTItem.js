@@ -3,7 +3,7 @@ import { lazy, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import getWeb3 from "../../../../utils/getWeb3";
-import { toast } from "react-toastify";
+import { warning_toastify} from "../../../../utils/notify";
 
 const MusicArt = lazy(() => import("../../Asset/music"));
 const VideoArt = lazy(() => import("../../Asset/video"));
@@ -46,16 +46,7 @@ export default function NotSaleNFT({ data, NFT, Marketplace, remove }) {
     const listOnSale = (id) => {
         if (!initialUser.walletAddress)
         if (!wallet_info) {
-            toast.warning('Please connect metamask', {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored"
-            });
+            warning_toastify('Please connect metamask');
             return;
         }
 
@@ -65,16 +56,7 @@ export default function NotSaleNFT({ data, NFT, Marketplace, remove }) {
 
     const listOnAuction = (id) => {
         if (!wallet_info) {
-            toast.warning('Please connect metamask', {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored"
-            });
+            warning_toastify('Please connect metamask');
             return;
         }
 

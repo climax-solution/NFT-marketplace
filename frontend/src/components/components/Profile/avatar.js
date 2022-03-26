@@ -2,9 +2,9 @@ import axios from "axios";
 import { useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-toastify";
 import { createGlobalStyle } from "styled-components";
 import { UPDATE_AUTH } from "../../../store/action/auth.action";
+import { success_toastify, error_toastify } from "../../../utils/notify";
 
 const GlobalStyles = createGlobalStyle`
   .avatar-image {
@@ -37,27 +37,9 @@ export default function Avatar() {
             }
           ).then(res => {
             dispatch(UPDATE_AUTH(res.data));
-            toast.success("Updated avatar successfully!", {
-              position: "top-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "colored"
-            });
+            success_toastify("Updated avatar successfully!");
           }).catch(err => {
-            toast.error("Update failed", {
-              position: "top-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              progress: undefined,
-              theme: "colored"
-            });
+            error_toastify("Update failed");
           })
           setLoading(false);
         }
