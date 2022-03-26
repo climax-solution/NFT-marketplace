@@ -1,18 +1,10 @@
 import { CopyToClipboard } from "react-copy-to-clipboard/lib/Component";
-import { toast } from "react-toastify";
+import { info_toastify } from "../../../utils/notify";
+
 export default function Banner({ userData }) {
 
     const copyAlert = () => {
-        toast.info("Copied", {
-            position: "top-center",
-            autoClose: 2000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored"
-        });
+        info_toastify("copied");
     }
 
     const failedLoadImage = (e) => {

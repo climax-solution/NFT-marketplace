@@ -2,9 +2,9 @@ import axios from "axios";
 import { lazy, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import ReactTooltip from "react-tooltip";
 import getWeb3 from "../../../../utils/getWeb3";
+import { warning_toastify, success_toastify, error_toastify } from "../../../../utils/notify";
 import { auctionSign, deListSign, listSign } from "../../../../utils/sign";
 
 const MusicArt = lazy(() => import("../../Asset/music"));
@@ -31,16 +31,7 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
         else if (!wallet_info) message = 'Please connect metamask';
         
         if (message) {
-            toast.warning(message, {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored"
-            });
+            warning_toastify(message);
             return;
         }
 
@@ -54,35 +45,15 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
 
             })
 
-            toast.success('Success', {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored"
-            });
-            // await axios.post(`${process.env.REACT_APP_BACKEND}activity/create-log`, data).then(res =>{
-
-            // }).catch(err => { });
+            success_toastify('Success');
+            
             await remove();
         } catch(err) {
             let message = "";
             if (err?.code == 4001) message = "Cancelled";
             else message = "Failed";
 
-            toast.error(message, {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored"
-            });
+            error_toastify(message);
 
             if (err.code != 4001) {
                 await refresh();
@@ -98,16 +69,7 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
         else if (!wallet_info) message = 'Please connect metamask';
         
         if (message) {
-            toast.warning(message, {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored"
-            });
+            warning_toastify(message);
             return;
         }
 
@@ -131,16 +93,7 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
             };
 
             await axios.post(`${process.env.REACT_APP_BACKEND}sale/update-premium`, data).then(res => {
-                toast.success('Success', {
-                    position: "top-center",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "colored"
-                });
+                success_toastify('Success');
             }).catch(err => {
 
             })
@@ -149,16 +102,7 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
             if (err?.code == 4001) message = "Cancelled";
             else message = "Failed";
 
-            toast.error(message, {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored"
-            });
+            error_toastify(message);
         }
         await refresh(id);
         setTrading(false);

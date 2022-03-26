@@ -1,8 +1,8 @@
 import axios from 'axios';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import validator from "validator";
+import { warning_toastify, success_toastify, error_toastify, info_toastify } from "../../../utils/notify";
 
 export default function InternalLinks() {
 
@@ -10,22 +10,16 @@ export default function InternalLinks() {
 
     const sendEmail = async() => {
         if (!validator.isEmail(email)) {
-            toast.warning("Email is invalid");
+            warning_toastify("Email is invalid");
             return;
         }
 
         await axios.post(`${process.env.REACT_APP_BACKEND}news/request`, { email }).then(res => {
             const { message } = res.data;
-            toast.success(message,{
-                theme: "colored",
-                position: "top-center"
-            });
+            success_toastify(message);
         }).catch(err => {
             const { error } = err.response.data;
-            toast.error(error, {
-                theme: "colored",
-                position: "top-center"
-            });
+            error_toastify(error);
         })
         setEmail('');
     }

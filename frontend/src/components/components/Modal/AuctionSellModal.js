@@ -2,9 +2,9 @@ import axios from 'axios';
 import { useState } from 'react';
 import Modal from 'react-awesome-modal';
 import { useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
 import { marketplace_addr } from "../../../config/address.json";
 import { auctionSign } from '../../../utils/sign';
+import { warning_toastify, error_toastify } from "../../../utils/notify";
 
 const days = [...Array(8).keys()];
 const hours = [...Array(24).keys()];
@@ -27,16 +27,7 @@ export default function AuctionSellModal({ visible, close, tokenID, web3, NFT, M
         else if (!day && !hour) message = 'Please choose duration';
 
         if (message) {
-            toast.warning(message, {
-                position: "top-center",
-                autoClose: 2000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored"
-            });
+            warning_toastify(message);
             return;
         }
         setLoading(true);
@@ -60,16 +51,7 @@ export default function AuctionSellModal({ visible, close, tokenID, web3, NFT, M
                     deadline: (day * 24 + hour * 1)
                 }).then(res => {
                     const { message } = res.data;
-                    toast.error(message, {
-                        position: "top-center",
-                        autoClose: 2000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "colored"
-                    });
+                    error_toastify(message);
                 });
                 close(true);
             }
@@ -79,16 +61,7 @@ export default function AuctionSellModal({ visible, close, tokenID, web3, NFT, M
             const parsed = JSON.parse(JSON.stringify(err));
             if (parsed.code == 4001) message = "Canceled";
 
-            toast.error(message, {
-                position: "top-center",
-                autoClose: 2000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored"
-            });
+            error_toastify(message);
             close();
         }
         setLoading(false);

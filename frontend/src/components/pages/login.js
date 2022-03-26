@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
-import { toast } from 'react-toastify';
 import { createGlobalStyle } from 'styled-components';
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import Footer from '../components/footer';
 import { UPDATE_AUTH, UPDATE_LOADING_PROCESS } from '../../store/action/auth.action';
+import { success_toastify, error_toastify } from "../../utils/notify";
 
 const GlobalStyles = createGlobalStyle`
   .box-login p{
@@ -47,14 +47,14 @@ const login = () => {
     };
     dispatch(UPDATE_LOADING_PROCESS(true));
     await axios.post(`${process.env.REACT_APP_BACKEND}auth/login`, data).then(res => {
-      toast.success("You have logged in successfully", {theme: "colored"});
+      success_toastify("You have logged in successfully");
       const { token, user } = res.data;
       localStorage.setItem("nftdevelopments-token", JSON.stringify(token));
       dispatch(UPDATE_AUTH(user));
       navigate('/profile');
     }).catch(err => {
       const { error } = err.response.data;
-      toast.error(error, {theme: "colored"});
+      error_toastify(error);
     })
     dispatch(UPDATE_LOADING_PROCESS(false));
   }

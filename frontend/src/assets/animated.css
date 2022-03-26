@@ -284,3 +284,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
   transform: translate(-50%, -50%);
   color: #03A9F4;
 }
+
+.bg-dark-transparent {
+  background-color: rgba(0, 0, 0, 0.3);
+}

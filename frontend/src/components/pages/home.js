@@ -1,7 +1,6 @@
 import React, { lazy } from 'react';
 import { createGlobalStyle } from 'styled-components';
 
-const Particle = lazy(() => import('../components/Home/Particle'));
 const SliderMainParticle = lazy(() => import('../components/Home/SliderMainParticle'));
 const FeatureBox = lazy(() => import('../components/Home/FeatureBox'));
 const PremiumNFTCarousel = lazy(() => import('../components/Home/PremiumNFTCarousel'));
@@ -75,7 +74,6 @@ const homeone= () => {
       <>
         <GlobalStyles />
         <section className="jumbotron no-bg" style={{backgroundImage: `url(${'./img/background/bg.webp'})`}}>
-          <Particle/>
           <SliderMainParticle/>
         </section>
         

@@ -5,8 +5,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { UPDATE_AUTH } from "../../../store/action/auth.action";
 import { WalletConnect } from "../../../store/action/wallet.action";
-import Loading from "../Loading/Loading";
-import { toast } from "react-toastify";
+import { error_toastify } from "../../../utils/notify";
 
 export default function ManageInfo() {
     
@@ -24,30 +23,12 @@ export default function ManageInfo() {
     const updateUserInfo = async() => {
         const { name, email, password, confirmPassword } = userData;
         if (!name || !validator.isEmail(email)) {
-          toast.error("You must input first name, last name, email correctly!", {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-        theme: "colored"
-          });
+          error_toastify("You must input first name, last name, email correctly!");
           return;
         }
     
         if (!password || password && password !== confirmPassword) {
-          toast.error("Please confirm your password!", {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-        theme: "colored"
-          });
+          error_toastify("Please confirm your password!");
           return;
         }
         
@@ -58,28 +39,11 @@ export default function ManageInfo() {
         await axios.post(`${process.env.REACT_APP_BACKEND}user/update-user`, userData, _headers).then(res => {
           const { data } = res;
           dispatch(UPDATE_AUTH(data));
-          toast.error("Updated profile successfully!", {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-        theme: "colored"
-          });
+          error_toastify("YUpdated profile successfully!");
+
         }).catch(err => {
           const { error } = err.response.data;
-          toast.error(error, {
-            position: "top-center",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-        theme: "colored"
-          });
+          error_toastify(error);
           logout();
         })
 
@@ -98,12 +62,19 @@ export default function ManageInfo() {
 
     return(
         <>
-          { isLoading && <Loading/> }
             {
                 Object.keys(userData).length && (
                     <div id='zero4' className='onStep fadeIn'>
                       <div id="form-create-item" className="form-border row justify-content-center" action="#">
-                        <div className="field-set col-md-8 mg-auto p-4 user-info">
+                        
+                        <div className="field-set col-md-8 mg-auto p-4 position-relative user-info">
+                            {
+                                isLoading && (
+                                  <div className='d-flex w-100 h-100 flex-column justify-content-center align-items-center start-0 top-0 position-absolute bg-dark-transparent' >
+                                    <div className='reverse-spinner'></div>
+                                  </div>
+                                )
+                            }
                             <div className="spacer-single"></div>
                             <div className="row">
                               <div className="col-md-6 col-12">
@@ -177,6 +148,16 @@ export default function ManageInfo() {
                                 />
                               </div>
                               <div className="col-md-6 col-12">
+                                <span>Telegram</span>
+                                <input
+                                  type="text"
+                                  className="form-control"
+                                  placeholder="Please enter your tiktok profile link"
+                                  value={userData.telegram}
+                                  onChange={(e) => setUserData({ ...userData, telegram: e.target.value })}
+                                />
+                              </div>
+                              <div className="col-md-6 col-12">
                                 <span>Password</span>
                                 <input
                                   type="password"
@@ -194,6 +175,15 @@ export default function ManageInfo() {
                                   placeholder="Please confirm password"
                                   value={userData.confirmPassword}
                                   onChange={(e) => setUserData({ ...userData, confirmPassword: e.target.value })}
+                                />
+                              </div>
+                              <div className="col-12">
+                                <span>Description</span>
+                                <textarea
+                                  className="form-control"
+                                  placeholder="Please enter bio about you"
+                                  value={userData.description}
+                                  onChange={(e) => setUserData({ ...userData, description: e.target.value })}
                                 />
                               </div>
                             </div>

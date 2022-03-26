@@ -1,7 +1,7 @@
 import React, { lazy, useState } from 'react';
 import axios from 'axios';
-import { toast } from 'react-toastify';
 import { createGlobalStyle } from 'styled-components';
+import { success_toastify, error_toastify } from "../../utils/notify";
 
 const Footer = lazy(() => import('../components/footer'));
 
@@ -32,10 +32,10 @@ const ForgotPassword = () => {
 
     await axios.post(`${process.env.REACT_APP_BACKEND}auth/forgot`, data).then(res => {
       const { message } = res.data;
-      toast.success(message, {theme: "colored"});
+      success_toastify(message);
     }).catch(err => {
       const { error } = err.response.data;
-      toast.error(error, {theme: "colored"});
+      error_toastify(error);
     })
   }
 

@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { toast } from 'react-toastify';
 import Modal from 'react-awesome-modal';
 import axios from 'axios';
 
 import { marketplace_addr } from "../../../config/address.json";
 import { listSign } from '../../../utils/sign';
+import { warning_toastify, success_toastify, error_toastify } from "../../../utils/notify";
 
 export default function DirectSellModal({ visible, tokenID, close, NFT, Marketplace, web3 }) {
 
@@ -27,16 +27,7 @@ export default function DirectSellModal({ visible, tokenID, close, NFT, Marketpl
         }
 
         if (message) {
-            toast.warning(message, {
-                position: "top-center",
-                autoClose: 2000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored"
-            });
+            warning_toastify(message);
             return;
         }
 
@@ -59,16 +50,7 @@ export default function DirectSellModal({ visible, tokenID, close, NFT, Marketpl
                     signature,
                     deadline: 0
                 }).then(res => {
-                    toast.success(res.data.message, {
-                        position: "top-center",
-                        autoClose: 2000,
-                        hideProgressBar: false,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "colored"
-                    });
+                    success_toastify(res.data.message);
                 });
                 close(true);
             }
@@ -77,16 +59,7 @@ export default function DirectSellModal({ visible, tokenID, close, NFT, Marketpl
             const parsed = JSON.parse(JSON.stringify(err));
             if (parsed.code == 4001) message = "Canceled";
 
-            toast.error(message, {
-                position: "top-center",
-                autoClose: 2000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "colored"
-            });
+            error_toastify(message);
             close();
         }
         setLoading(false);
