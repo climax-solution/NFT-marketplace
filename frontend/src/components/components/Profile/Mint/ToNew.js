@@ -45,6 +45,7 @@ export default function() {
     const [folderHash, setFolderHash] = useState();
     const [royalty, setRoyalty] = useState();
     const [folderName, setFolderName] = useState();
+    const [description, setDescription] = useState();
     const [count, setCount] = useState('');
     const [isLoading, setLoading] = useState(false);
 
@@ -118,7 +119,8 @@ export default function() {
                 name: folderName,
                 artist: initialUser.username,
                 category: activeCategory.value,
-                list: list
+                list,
+                description
             };
 
             await axios.post(`${process.env.REACT_APP_BACKEND}folder/create-new-items`, newData).then(res => {
@@ -208,6 +210,16 @@ export default function() {
                     </div>
                 </div>
                 <div className="field-set">
+                    <label>Folder Description</label>
+                    <textarea
+                        type="text"
+                        className="form-control mb-1"
+                        value={description}
+                        onChange={(e) => setDescription(e.target.value)}
+                        rows={4}
+                    />
+                </div>
+                <div className="field-set mt-2">
                     <button
                         className="btn-main py-3 w-25 mx-auto"
                         onClick={mint}
