@@ -145,7 +145,7 @@ router.post('/get-folder-detail', async(req, res) => {
         const folder = await FolderSchema.findById(folderID);
         const artist = await UserSchema.findOne({ username: folder.artist });
         res.status(200).json({
-            list, artist
+            list, artist, description: folder.description
         });
     } catch(err) {
         console.log(err);

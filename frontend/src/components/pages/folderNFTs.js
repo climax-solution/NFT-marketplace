@@ -33,6 +33,7 @@ const folderNFTs = () => {
     const [nfts, setNFTLists] = useState([]);
     const [restList, setRestList] = useState([]);
     const [artist, setArtist] = useState();
+    const [description, setDescription] = useState();
     const [isLoading, setIsLoading] = useState(true);
 
     useEffect(async () => {
@@ -54,8 +55,9 @@ const folderNFTs = () => {
     const getInitNFTs = async() => {
         const { id } = params;
         let gradList = await axios.post(`${process.env.REACT_APP_BACKEND}folder/get-folder-detail`, { folderID: id}).then(res => {
-            let { list, artist: _artist } = res.data;
+            let { list, artist: _artist, description: _desc } = res.data;
             setArtist(_artist);
+            setDescription(_desc);
             return list;
         }).catch(err => {
 
@@ -90,6 +92,7 @@ const folderNFTs = () => {
                                         <div className="d-flex align-items-center justify-content-center flex-column profile_avatar">
                                             <img src={`${process.env.REACT_APP_BACKEND}avatar/${artist.avatar}`} alt="artist" className="rounded-circle mx-150px ratio-1-1" crossOrigin="true"/>
                                             <h1 className="text-center">{artist.name}</h1>
+                                            <p className="text-center">{description}</p>
                                         </div>
                                     )
                                 }

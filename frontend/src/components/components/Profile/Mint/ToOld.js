@@ -39,10 +39,11 @@ export default function() {
 
     const [NFT, setNFT] = useState();
     const [activeCategory, setCategory] = useState();
-    const [categoryOptions, setCateogryOptions] = useState([]);
+    const [folderList, setFolderList] = useState([]);
     const [folderHash, setFolderHash] = useState();
     const [royalty, setRoyalty] = useState();
     const [count, setCount] = useState('');
+    const [description, setDescription] = useState();
     const [isLoading, setLoading] = useState(false);
 
     const [hashStatus, setHashStatus] = useState('');
@@ -57,10 +58,11 @@ export default function() {
             list.map(item => {
                 _list.push({
                     value: item._id,
-                    label: item.name
+                    label: item.name,
+                    description: item.description
                 })
             });
-            setCateogryOptions(_list);
+            setFolderList(_list);
             setCategory(_list[0]);
         }).catch(err => {
 
@@ -194,7 +196,7 @@ export default function() {
                         styles={customStyles}
                         menuContainerStyle={{'zIndex': 999}}
                         value={activeCategory}
-                        options={categoryOptions}
+                        options={folderList}
                         onChange={(value) => {
                             setCategory(value);
                         }}
@@ -202,6 +204,16 @@ export default function() {
                     <label className='f-12px'></label>
                 </div>
                 <div className="field-set">
+                    <label>Folder Description</label>
+                    <textarea
+                        type="text"
+                        className="form-control mb-1 bg-transparent"
+                        rows={4}
+                        value={activeCategory?.description}
+                        readOnly
+                    />
+                </div>
+                <div className="field-set mt-2">
                     <button
                         className="btn-main py-3 w-25 mx-auto"
                         onClick={mint}

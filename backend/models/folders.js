@@ -14,6 +14,9 @@ const FolderSchema = Schema({
         type: String,
         lowercase: true
     },
+    description: {
+        type: String
+    },
     updated_at: {
         type: Date
     },
