@@ -2,9 +2,10 @@ import { lazy, useEffect, useState } from "react";
 import axios from "axios";
 import { createGlobalStyle } from 'styled-components';
 import { useNavigate } from "react-router-dom";
+import getWeb3 from "../../../utils/getWeb3";
+import Art from "../Asset/art";
 
 const ItemLoading = lazy(() => import("../Loading/ItemLoading"));
-const Empty = lazy(() => import("../Empty"));
 
 const GlobalStyles = createGlobalStyle`
    .react-loading-skeleton {
@@ -21,9 +22,17 @@ const Folder = ({ folderID }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(async() => {
-        const _list = await axios.post(`${process.env.REACT_APP_BACKEND}folder/get-folder-interface`, { folderID }).then(res => {
-            const  { list } = res.data;
-            return list;
+        const { instanceNFT } = await getWeb3();
+        const _list = await axios.post(`${process.env.REACT_APP_BACKEND}folder/get-folder-interface`, { folderID }).then(async(res) => {
+            const  { list, initialNFT } = res.data;
+            let initNFTData = {};
+            if (initialNFT) {
+                const tokenURI = await instanceNFT.methods.tokenURI(initialNFT.tokenID).call();
+                initNFTData = await axios.get(tokenURI).then(result => {
+                    return result.data;
+                });
+            }
+            return { ...list, ...initNFTData};
         }).catch(err => {
             return {};
         });
@@ -47,9 +56,13 @@ const Folder = ({ folderID }) => {
                                     </span>
                                 </div>
                                 <div className="nft__item_wrap w-100 ratio-1x1">
-                                    {
-                                        (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={`/img/folder/${nft.folder.category}.png`} className="lazy nft__item_preview ratio-1-1" onClick={() => navigate(`/folder-explorer/${nft.folder._id}`)} role="button" alt=""/>
-                                    }
+                                    <Art
+                                        tokenID={nft.tokenID}
+                                        image={nft.image}
+                                        asset={nft.asset}
+                                        redirect={() => navigate(`/folder-explorer/${nft.folder._id}`)}
+                                        type={nft.type}
+                                    />
                                 </div>
                                 <div className="nft__item_info mb-0 mt-1">
                                     <span>
@@ -59,7 +72,7 @@ const Folder = ({ folderID }) => {
                                 </div>
                             </div>
                         </div>
-                    ) : <Empty/>
+                    ) : ""
                 )
             }
         </>
