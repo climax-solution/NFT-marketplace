@@ -1,15 +1,15 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function MusicArt({ data, link }) {
+export default function MusicArt({ tokenID, image, asset, redirect }) {
 
     const [isPlay, setPlay] = useState(false);
     const navigate = useNavigate();
 
     const playMusic = () => {
         setPlay(!isPlay);
-        if (!isPlay) document.getElementsByClassName(`track-${data.tokenID}`)[0].play();
-        else document.getElementsByClassName(`track-${data.tokenID}`)[0].pause();
+        if (!isPlay) document.getElementsByClassName(`track-${tokenID}`)[0].play();
+        else document.getElementsByClassName(`track-${tokenID}`)[0].pause();
     }
     
     const failedLoadImage = (e) => {
@@ -19,7 +19,7 @@ export default function MusicArt({ data, link }) {
     return (
         <div className="d-flex align-items-center position-relative">
             <div className="nft_type_wrap">
-                <audio className={`track-${data.tokenID}`} src={data.asset} type="audio/mpeg"/>
+                <audio className={`track-${tokenID}`} src={asset} type="audio/mpeg"/>
 
                 <div className="player-container">
                     <div className={`play-pause ${isPlay ? 'pause' : 'play'}`} onClick={playMusic}/>
@@ -27,8 +27,8 @@ export default function MusicArt({ data, link }) {
                 
                 <div className={`circle-ripple ${isPlay ? 'd-block' : 'd-none'}`}/>
             </div>
-            <span onClick={() => link ? navigate(link) : null } className="w-100 ratio-1-1 text-center" role="button">
-                <img src={data.image} onError={failedLoadImage} className="lazy nft__item_preview w-100 ratio-1-1" alt=""/>
+            <span onClick={redirect} className="w-100 ratio-1-1 text-center" role="button">
+                <img src={image} onError={failedLoadImage} className="lazy nft__item_preview w-100 ratio-1-1" alt=""/>
             </span>
         </div>
     )
