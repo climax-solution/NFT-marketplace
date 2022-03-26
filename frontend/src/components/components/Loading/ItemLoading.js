@@ -6,7 +6,7 @@ export default function ItemLoading() {
             <div className="nft__item position-relative m-0 h-100 justify-content-between">
                 <div className="nft__item_wrap w-100 ratio-1-1">
                     <span>
-                        <Skeleton className="lazy nft__item_preview ratio ratio-1x1"/>
+                        <Skeleton className="lazy nft__item_preview ratio-1-1"/>
                     </span>
                 </div>
                 <div className="nft__item_info">
