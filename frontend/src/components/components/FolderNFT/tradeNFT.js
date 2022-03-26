@@ -9,10 +9,9 @@ import { toast } from "react-toastify";
 import { offerSign, processOfferSign } from "../../../utils/sign";
 import { marketplace_addr } from "../../../config/address.json";
 
-const MusicArt = lazy(() => import("../Asset/music"));
-const VideoArt = lazy(() => import("../Asset/video"));
 const ItemLoading = lazy(() => import("../Loading/ItemLoading"));
 const Clock = lazy(() => import("../Clock"));
+const Art = lazy(() => import( "../Asset/art"));
 
 export default function TradeNFT({ data, className = "mx-0" }) {
     
@@ -280,6 +279,7 @@ export default function TradeNFT({ data, className = "mx-0" }) {
 
     const refresh = async() => {
 
+        setLoading(true);
         let _orgNFT = await NFT.methods.getItemNFT(data.tokenID).call();
         _orgNFT = { ...data, ..._orgNFT};
         const saled = await axios.post(`${process.env.REACT_APP_BACKEND}sale/get-nft-item`, { tokenID: data.tokenID }).then(res => {
@@ -315,7 +315,8 @@ export default function TradeNFT({ data, className = "mx-0" }) {
                 setBidOwner(bidOwner);
             }
             else setNFTData({ ..._orgNFT, ...metadata });
-        }).catch(err => {});
+        }).catch(err => {
+        });
 
         setLoading(false);
     }
@@ -323,118 +324,115 @@ export default function TradeNFT({ data, className = "mx-0" }) {
     return (
         <>
             {
-                isLoading ? <ItemLoading/>
+                isLoading ? <div className={className ? "d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4 position-relative mx-0" : ""}><ItemLoading/></div>
                 : (
-                    <>
-                        <div className={`nft__item my-0 pb-4 justify-content-between h-100 ${className}`}>
-                            {
-                                nft.action == "auction" &&
-                                <div className="de_countdown">
-                                    <Clock deadline={new Date(nft.deadline).toLocaleDateString()} />
-                                </div>
-                            }
-                            <div className="nft__item_wrap w-100 ratio-1-1 flex-column position-relative">
-                                
+                    (nft && Object.keys(nft).length > 0) ?
+                        <div className={className ? "d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4 position-relative mx-0" : ""}>
+                            <div className={`nft__item my-0 pb-4 justify-content-between h-100 ${className}`}>
                                 {
-                                    (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} className="lazy nft__item_preview ratio-1-1" role="button" onClick={() => navigate(`/item-detail/${nft.tokenID}`)} alt=""/>
+                                    nft?.action == "auction" &&
+                                    <div className="de_countdown">
+                                        <Clock deadline={new Date(nft.deadline).toLocaleDateString()} />
+                                    </div>
                                 }
+                                <div className="nft__item_wrap w-100 ratio-1-1 flex-column position-relative">
+                                    
+                                    <Art
+                                        tokenID={nft.tokenID}
+                                        image={nft.image}
+                                        asset={nft.asset}
+                                        redirect={() => navigate(`/item-detail/${nft.tokenID}`)}
+                                        type={nft.type}
+                                    />
 
-                                {
-                                    (nft.type && (nft.type).toLowerCase() == 'music') && <MusicArt data={nft} link={`/item-detail/${nft.tokenID}`}/>
-                                }
+                                    {
+                                        isNFTOwner && 
+                                        <span>
+                                            <small data-tip data-for={`owner-${nft.tokenID}`} className="owner-check"><i className="fal fa-badge-check"/></small>
+                                            <ReactTooltip id={`owner-${nft.tokenID}`} type='info' effect="solid">
+                                                <span>Your NFT</span>
+                                            </ReactTooltip>
+                                        </span>
+                                    }
+                                    {
+                                        isBidOwner && 
+                                        <span>
 
-                                {
-                                    (nft.type && (nft.type).toLowerCase() == 'video') && <VideoArt data={nft.asset}/>
-                                }
+                                            <a data-tip data-for={`bid-${nft.tokenID}`} className="bid-check"><i className="fal fa-clock"/></a>
+                                            <ReactTooltip id={`bid-${nft.tokenID}`} type='info' effect="solid">
+                                                <span>Pending Bid</span>
+                                            </ReactTooltip>
+                                        </span>
+                                    }
 
-                                {
-                                    isNFTOwner && 
-                                    <span>
-                                        <small data-tip data-for={`owner-${nft.tokenID}`} className="owner-check"><i className="fal fa-badge-check"/></small>
-                                        <ReactTooltip id={`owner-${nft.tokenID}`} type='info' effect="solid">
-                                            <span>Your NFT</span>
-                                        </ReactTooltip>
-                                    </span>
-                                }
-                                {
-                                    isBidOwner && 
-                                    <span>
+                                    {
+                                        nft.status == 'premium' && 
+                                        <span>
 
-                                        <a data-tip data-for={`bid-${nft.tokenID}`} className="bid-check"><i className="fal fa-clock"/></a>
-                                        <ReactTooltip id={`bid-${nft.tokenID}`} type='info' effect="solid">
-                                            <span>Pending Bid</span>
-                                        </ReactTooltip>
-                                    </span>
-                                }
-
-                                {
-                                    nft.status == 'premium' && 
-                                    <span>
-
-                                        <a data-tip data-for={`premium-${nft.tokenID}`} className="premium-nft"><i className="fal fa-sparkles"/></a>
-                                        <ReactTooltip id={`premium-${nft.tokenID}`} type='info' effect="solid">
-                                            <span>Premium NFT</span>
-                                        </ReactTooltip>
-                                    </span>
-                                }
-                            </div>
-                            <div className="nft__item_info mb-0">
-                                <span>
-                                    <h4 onClick={() => navigate(`/item-detail/${nft.tokenID}`)}>{nft.nftName}</h4>
-                                </span>
-                                <div className="nft__item_price">
-                                    { nftPrice ? <>{web3.utils.fromWei(nftPrice, 'ether')}<span>{ nft.action == 'list' ? "BNB" : "WBNB" }</span></> : ""}
-                                </div>
-                                <div className="trade-btn-group mt-2">
-                                    { (!isNFTOwner && nft.action) && (
-                                        nft.action == 'list'
-                                            ? <span className="btn-main w-100" onClick={buyNow} >Buy Now</span>
-                                            : (
-                                                !isBidOwner ? <span className="btn-main w-100" onClick={openModal}>Place Bid</span>
-                                                : <span className="btn-main w-100" onClick={withdrawBid}>Withdraw Bid</span>
-                                            )
-                                        )
+                                            <a data-tip data-for={`premium-${nft.tokenID}`} className="premium-nft"><i className="fal fa-sparkles"/></a>
+                                            <ReactTooltip id={`premium-${nft.tokenID}`} type='info' effect="solid">
+                                                <span>Premium NFT</span>
+                                            </ReactTooltip>
+                                        </span>
                                     }
                                 </div>
-                            </div>
-                            {
-                                isTrading && 
-                                <div className="trade-loader">
-                                    <div className="nb-spinner"></div>
+                                <div className="nft__item_info mb-0">
+                                    <span>
+                                        <h4 onClick={() => navigate(`/item-detail/${nft.tokenID}`)}>{nft.nftName}</h4>
+                                    </span>
+                                    <div className="nft__item_price">
+                                        { nftPrice ? <>{web3.utils.fromWei(nftPrice, 'ether')}<span>{ nft.action == 'list' ? "BNB" : "WBNB" }</span></> : ""}
+                                    </div>
+                                    <div className="trade-btn-group mt-2">
+                                        { (!isNFTOwner && nft.action) && (
+                                            nft.action == 'list'
+                                                ? <span className="btn-main w-100" onClick={buyNow} >Buy Now</span>
+                                                : (
+                                                    !isBidOwner ? <span className="btn-main w-100" onClick={openModal}>Place Bid</span>
+                                                    : <span className="btn-main w-100" onClick={withdrawBid}>Withdraw Bid</span>
+                                                )
+                                            )
+                                        }
+                                    </div>
                                 </div>
-                            }
-                        </div>
+                                {
+                                    isTrading && 
+                                    <div className="trade-loader">
+                                        <div className="nb-spinner"></div>
+                                    </div>
+                                }
+                            </div>
 
-                        <Modal
-                            visible={visible}
-                            width="300"
-                            height="200"
-                            effect="fadeInUp"
-                            onClickAway={null}
-                        >
-                            <div className='p-5'>
-                                <div className='form-group'>
-                                    <label>Please reserve price.</label>
-                                    <input
-                                        type="number"
-                                        className='form-control text-dark border-dark'
-                                        value={bidPrice}
-                                        onChange={(e) => setBidPrice(e.target.value)}
-                                    />
+                            <Modal
+                                visible={visible}
+                                width="300"
+                                height="200"
+                                effect="fadeInUp"
+                                onClickAway={null}
+                            >
+                                <div className='p-5'>
+                                    <div className='form-group'>
+                                        <label>Please reserve price.</label>
+                                        <input
+                                            type="number"
+                                            className='form-control text-dark border-dark'
+                                            value={bidPrice}
+                                            onChange={(e) => setBidPrice(e.target.value)}
+                                        />
+                                    </div>
+                                    <div className='groups'>
+                                        <button
+                                            className='btn-main btn-apply w-100 px-1'
+                                            onClick={placeBid}
+                                        >Place</button>
+                                        <button
+                                            className='btn-main w-100'
+                                            onClick={() => setVisible(false)}
+                                        >Cancel</button>
+                                    </div>
                                 </div>
-                                <div className='groups'>
-                                    <button
-                                        className='btn-main btn-apply w-100 px-1'
-                                        onClick={placeBid}
-                                    >Place</button>
-                                    <button
-                                        className='btn-main w-100'
-                                        onClick={() => setVisible(false)}
-                                    >Cancel</button>
-                                </div>
-                            </div>
-                        </Modal>
-                    </>
+                            </Modal>
+                        </div> : ""
                 )
             }
         </>
