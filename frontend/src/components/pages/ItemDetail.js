@@ -12,9 +12,8 @@ const Clock = lazy(() => import("../components/Clock"));
 const Footer = lazy(() => import('../components/footer'));
 const Empty = lazy(() => import("../components/Empty"));
 const Attr = lazy(() => import("../components/ItemDetails/attributes"));
-const MusicArt = lazy(() => import("../components/Asset/music"));
-const VideoArt = lazy(() => import("../components/Asset/video"));
 const ItemDetailsLoading = lazy(() => import("../components/Loading/ItemDetailsLoading"));
+const Art = lazy(() => import("../components/Asset/art"));
 
 const GlobalStyles = createGlobalStyle`
     .border-grey {
@@ -111,10 +110,6 @@ const NFTItem = () => {
         setUpdate(false);
         setLoading(false);
     },[updated, ])
-
-    const failedLoadImage = (e) => {
-        e.target.src="/img/empty.jfif";
-    }
 
     const buyNow = async() => {
 
@@ -371,17 +366,13 @@ const NFTItem = () => {
                                 <div className='row mt-md-5 pt-md-4'>
 
                                     <div className="col-md-6 col-sm-12 text-center d-md-block d-flex justify-content-center align-items-center flex-column">
-                                        {
-                                            (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} className="img-fluid img-rounded mb-sm-30" alt=""/>
-                                        }
-
-                                        {
-                                            (nft.type && (nft.type).toLowerCase() == 'music') && <MusicArt data={nft} link={``}/>
-                                        }
-
-                                        {
-                                            (nft.type && (nft.type).toLowerCase() == 'video') && <VideoArt data={nft.asset}/>
-                                        }
+                                        <Art
+                                            tokenID={nft.tokenID}
+                                            image={nft.image}
+                                            asset={nft.asset}
+                                            redirect={() => null}
+                                            type={nft.type}
+                                        />
 
                                         { !isNFTOwner && (
                                             nft.action && (
