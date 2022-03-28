@@ -1,5 +1,12 @@
 import { CopyToClipboard } from "react-copy-to-clipboard/lib/Component";
+import { createGlobalStyle } from "styled-components";
 import { info_toastify } from "../../../utils/notify";
+
+const GlobalStyles = createGlobalStyle`
+    .border-grey {
+        border-color: #4e4e4e !important;
+    }
+`;
 
 export default function Banner({ userData }) {
 
@@ -13,6 +20,7 @@ export default function Banner({ userData }) {
 
     return (
         <>
+            <GlobalStyles/>
             <section id='profile_banner' className='jumbotron breadcumb no-bg' style={{backgroundImage: `url(${'/img/background/4.jpg'})`}}>
                 <div className='mainbreadcumb'>
                 </div>
@@ -29,18 +37,19 @@ export default function Banner({ userData }) {
                         </div>
                         
                         <div className="profile_name">
-                        <h4>
-                            {userData.name}
-                        </h4>
-                        <div className="d-flex justify-content-center">
-                            <span id="wallet" className="profile_wallet mx-2">{ userData.walletAddress && ((userData.walletAddress).substr(0, 4) + '...' + (userData.walletAddress).substr(-4))}</span>
-                            <CopyToClipboard
-                            text={userData.walletAddress}
-                            onCopy={copyAlert}
-                            >
-                            <button id="btn_copy" className="position-relative">Copy</button>
-                            </CopyToClipboard>
-                        </div>
+                            <h4>
+                                {userData.name}
+                            </h4>
+                            <div className="d-flex justify-content-center">
+                                <span id="wallet" className="profile_wallet mx-2">{ userData.walletAddress && ((userData.walletAddress).substr(0, 4) + '...' + (userData.walletAddress).substr(-4))}</span>
+                                <CopyToClipboard
+                                text={userData.walletAddress}
+                                onCopy={copyAlert}
+                                >
+                                <button id="btn_copy" className="position-relative">Copy</button>
+                                </CopyToClipboard>
+                            </div>
+                            <p className="bio mt-3 border p-3 word-break-all rounded border-grey text-center">{userData?.description}</p>
                         </div>
                     </div>
                 </div>
