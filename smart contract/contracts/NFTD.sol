@@ -106,7 +106,6 @@ contract NFTD is ERC721Enumerable, ERC721URIStorage, Ownable {
     }
 
     mapping(uint256 => Royalty) private royalties;
-    mapping(address => bool) private whitelist;
 
     event NFTMinted(uint tokenId);
 
@@ -116,18 +115,13 @@ contract NFTD is ERC721Enumerable, ERC721URIStorage, Ownable {
     
     }
 
-    modifier onlyWhitelist() {
-        require(whitelist[msg.sender] || msg.sender == owner(), "account is not whitelist");
-        _;
-    }
-
-    function bulkMint(string memory baseURI, uint256 count, uint amount) public onlyWhitelist {
+    function bulkMint(string memory baseURI, address royaltyAddress, uint256 count, uint amount) public {
         require(amount > 0 && amount <= 1000, "Royalty fee is 0 ~ 10%");
         for (uint i = 0; i < count; i ++) {
             _mint(msg.sender, lastID);
             string memory _BaseURI = string(abi.encodePacked("https://ipfs.io/ipfs/", baseURI, "/", i.toString()));
             _setTokenURI(lastID, _BaseURI);
-            royalties[lastID] = Royalty(msg.sender, amount);
+            royalties[lastID] = Royalty(royaltyAddress, amount);
             lastID ++;
         }
         emit NFTMinted(lastID);
@@ -142,12 +136,6 @@ contract NFTD is ERC721Enumerable, ERC721URIStorage, Ownable {
         });
     }
 
-    function bulkApprove(address to, uint start, uint count) public onlyWhitelist {
-        for (uint i; i < count; i ++) {
-            approve(to, start + i);
-        }
-    }
-
     function getPersonalNFT(address owner_) external view returns (ItemNFT[] memory) {
 
         uint count = balanceOf(owner_);
@@ -159,10 +147,6 @@ contract NFTD is ERC721Enumerable, ERC721URIStorage, Ownable {
             list[i] = getItemNFT(index);
         }
         return list;
-    }
-
-    function setWhitelist(address account, bool status) external onlyOwner {
-        whitelist[account] = status;
     }
 
     function getRoyalty(uint tokenID) public view returns (Royalty memory) {
