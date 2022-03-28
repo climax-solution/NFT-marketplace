@@ -231,7 +231,7 @@ export default function TradeNFT({ data, className = "mx-0" }) {
                                 {
                                     nft?.action == "auction" &&
                                     <div className="de_countdown">
-                                        <Clock deadline={new Date(nft.deadline).toLocaleDateString()} />
+                                        <Clock deadline={new Date(nft.deadline)} />
                                     </div>
                                 }
                                 <div className="nft__item_wrap w-100 ratio-1-1 flex-column position-relative">
