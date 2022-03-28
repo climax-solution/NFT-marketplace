@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import ipfsAPI from "ipfs-api";
+import validator from "validator";
 import Select from 'react-select';
 import getWeb3 from '../../../../utils/getWeb3';
 import { warning_toastify, success_toastify, error_toastify } from "../../../../utils/notify";
@@ -43,13 +44,14 @@ export default function() {
     const [folderHash, setFolderHash] = useState();
     const [royalty, setRoyalty] = useState();
     const [count, setCount] = useState('');
-    const [description, setDescription] = useState();
+    const [royaltyAddress, setRoyaltyAddress] = useState('');
     const [isLoading, setLoading] = useState(false);
 
     const [hashStatus, setHashStatus] = useState('');
     const [royaltyStatus, setRoyaltyStatus] = useState('');
     const [countStatus, setCountStatus] = useState('');
     const [loadingStatus, setLoadingStatus] = useState('');
+    const [addressStatus, setAddressStatus] = useState('');
 
     useEffect(async() => {
         await axios.post(`${process.env.REACT_APP_BACKEND}folder/get-folder-list`).then(res => {
@@ -98,7 +100,12 @@ export default function() {
                 flag = 1;
             } else setCountStatus('');
 
-            if (flag) throw Error();
+            if (!validator.isEthereumAddress(royaltyAddress) || !royaltyAddress) {
+                setAddressStatus('Not valid account address');
+                flag = 1;
+            } else setAddressStatus('');
+
+            if (flag) return;
 
             setLoading(true);
             setLoadingStatus('Checking metadata...');
@@ -114,7 +121,7 @@ export default function() {
 
             setLoadingStatus('Processing mint...');
 
-            const result = await NFT.methods.bulkMint(folderHash, nftCount, Math.floor(royalty * 100)).send({ from: initialUser.walletAddress });
+            const result = await NFT.methods.bulkMint(folderHash, royaltyAddress, count, Math.floor(royalty * 100)).send({ from: initialUser.walletAddress });
             const lastID = Number(result.events.NFTMinted.returnValues.tokenId);
             
             let list = [];
@@ -188,6 +195,16 @@ export default function() {
                         />
                         <label className='text-danger f-12px'>{countStatus}</label>
                     </div>
+                </div>
+                <div className="field-set">
+                    <label>Royalty Address</label>
+                    <input
+                        type="text"
+                        className="form-control mb-1"
+                        value={royaltyAddress}
+                        onChange={(e) => setRoyaltyAddress(e.target.value)}
+                    />
+                    <label className='text-danger f-12px'>{addressStatus}</label>
                 </div>
                 <div className="field-set mb-1">
                     <label>Folder List</label>

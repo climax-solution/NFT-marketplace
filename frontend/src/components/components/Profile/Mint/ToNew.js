@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import ipfsAPI from "ipfs-api";
 import axios from 'axios';
+import validator from "validator";
 import { useSelector } from 'react-redux';
 import Select from 'react-select';
 import getWeb3 from '../../../../utils/getWeb3';
@@ -47,6 +48,7 @@ export default function() {
     const [folderName, setFolderName] = useState();
     const [description, setDescription] = useState();
     const [count, setCount] = useState('');
+    const [royaltyAddress, setRoyaltyAddress] = useState('');
     const [isLoading, setLoading] = useState(false);
 
     const [hashStatus, setHashStatus] = useState('');
@@ -54,6 +56,7 @@ export default function() {
     const [nameStatus, setNameStatus] = useState('');
     const [countStatus, setCountStatus] = useState('');
     const [loadingStatus, setLoadingStatus] = useState('');
+    const [addressStatus, setAddressStatus] = useState('');
 
     useEffect(async() => {
         const { instanceNFT } = await getWeb3();
@@ -92,7 +95,12 @@ export default function() {
                 flag = 1;
             } else setCountStatus('');
 
-            if (flag) throw Error();
+            if (!validator.isEthereumAddress(royaltyAddress) || !royaltyAddress) {
+                setAddressStatus('Not valid account address');
+                flag = 1;
+            } else setAddressStatus('');
+
+            if (flag) return;
 
             setLoading(true);
             setLoadingStatus('Checking metadata...');
@@ -108,7 +116,9 @@ export default function() {
 
             setLoadingStatus('Processing mint...');
 
-            const result = await NFT.methods.bulkMint(folderHash, count, Math.floor(royalty * 100)).send({ from: initialUser.walletAddress });
+            const result = await NFT.methods.bulkMint(folderHash, count, Math.floor(royalty * 100)).send({
+                from: initialUser.walletAddress
+            });
             const lastID = Number(result.events.NFTMinted.returnValues.tokenId);
 
             setLoadingStatus('Creating new folder...');
@@ -183,6 +193,16 @@ export default function() {
                         />
                         <label className='text-danger f-12px'>{countStatus}</label>
                     </div>
+                </div>
+                <div className="field-set">
+                    <label>Royalty Address</label>
+                    <input
+                        type="text"
+                        className="form-control mb-1"
+                        value={royaltyAddress}
+                        onChange={(e) => setRoyaltyAddress(e.target.value)}
+                    />
+                    <label className='text-danger f-12px'>{addressStatus}</label>
                 </div>
                 <div className="couple-column">
                     <div className="field-set">
