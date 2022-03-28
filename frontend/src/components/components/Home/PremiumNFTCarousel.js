@@ -98,6 +98,7 @@ export default function () {
                 <Carousel
                   swipeable={false}
                   draggable={false}
+                  ssr
                   responsive={responsive}
                   infinite={true}
                   autoPlay={false}
