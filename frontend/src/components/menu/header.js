@@ -123,7 +123,7 @@ const Header= function() {
       })
 
       provider.on("chainChanged", async(chainID) => {
-        if (chainID != '0x3') {
+        if (chainID != '0x61') {
           localStorage.setItem("nftdevelopments-connected", JSON.stringify({ connected: false }));
         }
         else {
