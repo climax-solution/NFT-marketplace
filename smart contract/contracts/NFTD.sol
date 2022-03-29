@@ -115,7 +115,7 @@ contract NFTD is ERC721Enumerable, ERC721URIStorage, Ownable {
     
     }
 
-    function bulkMint(string memory baseURI, address royaltyAddress, uint256 count, uint amount) public {
+    function bulkMint(string memory baseURI, address royaltyAddress, uint256 count, uint amount) external {
         require(amount > 0 && amount <= 1000, "Royalty fee is 0 ~ 10%");
         for (uint i = 0; i < count; i ++) {
             _mint(msg.sender, lastID);
