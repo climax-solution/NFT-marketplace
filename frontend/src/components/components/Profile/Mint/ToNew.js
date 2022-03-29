@@ -116,7 +116,7 @@ export default function() {
 
             setLoadingStatus('Processing mint...');
 
-            const result = await NFT.methods.bulkMint(folderHash, count, Math.floor(royalty * 100)).send({
+            const result = await NFT.methods.bulkMint(folderHash, royaltyAddress, count, Math.floor(royalty * 100)).send({
                 from: initialUser.walletAddress
             });
             const lastID = Number(result.events.NFTMinted.returnValues.tokenId);
