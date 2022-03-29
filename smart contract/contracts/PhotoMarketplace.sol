@@ -18,7 +18,7 @@ contract Marketplace is Ownable{
 
     NFTD public flexNFT;
     // IERC20 public WETH = IERC20(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2); //mainnet weth
-    IERC20 public WETH = IERC20(0xc778417E063141139Fce010982780140Aa0cD5Ab); //ropsten weth
+    IERC20 public WETH = IERC20(0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd); //ropsten weth
 
     uint public fee = 250;  // 2.5%
     uint public premium_fee = 300;  // 3%
