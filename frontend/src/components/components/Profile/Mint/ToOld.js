@@ -125,7 +125,7 @@ export default function() {
             const lastID = Number(result.events.NFTMinted.returnValues.tokenId);
             
             let list = [];
-            for (let i = nftCount; i > 0; i --) list.push(lastID - i);
+            for (let i = count; i > 0; i --) list.push(lastID - i);
             
             const newData = {
                 folderID: activeCategory.value,

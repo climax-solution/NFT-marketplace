@@ -123,7 +123,7 @@ export default function() {
 
             setLoadingStatus('Creating new folder...');
             let list = [];
-            for (let i = nftCount; i > 0; i --) list.push(lastID - i);
+            for (let i = count; i > 0; i --) list.push(lastID - i);
             
             const newData = {
                 name: folderName,
