@@ -4,7 +4,7 @@ import { marketplace_addr } from "../config/address.json";
 export const listSign = async (nonce, tokenID, from, price, isPremium) => {
     const msgParams = JSON.stringify({
         domain: {
-          chainId: 3,
+          chainId: 97,
           name: 'NFT Developments Marketplace',
           verifyingContract: marketplace_addr,
           version: '1'
@@ -57,7 +57,7 @@ export const listSign = async (nonce, tokenID, from, price, isPremium) => {
 export const auctionSign = async (nonce, tokenID, from, price, deadline, isPremium) => {
   const msgParams = JSON.stringify({
       domain: {
-        chainId: 3,
+        chainId: 97,
         name: 'NFT Developments Marketplace',
         verifyingContract: marketplace_addr,
         version: '1'
@@ -112,7 +112,7 @@ export const auctionSign = async (nonce, tokenID, from, price, deadline, isPremi
 export const deListSign = async (action, tokenID, from, price, isPremium) => {
   const msgParams = JSON.stringify({
       domain: {
-        chainId: 3,
+        chainId: 97,
         name: 'NFT Developments Marketplace',
         verifyingContract: marketplace_addr,
         version: '1'
@@ -165,7 +165,7 @@ export const deListSign = async (action, tokenID, from, price, isPremium) => {
 export const offerSign = async (nonce, tokenID, from, price) => {
     const msgParams = JSON.stringify({
         domain: {
-          chainId: 3,
+          chainId: 97,
           name: 'NFT Developments Marketplace',
           verifyingContract: marketplace_addr,
           version: '1'
@@ -217,7 +217,7 @@ export const processOfferSign = async ( tokenID, from, price) => {
   const action = 'remove';
   const msgParams = JSON.stringify({
       domain: {
-        chainId: 3,
+        chainId: 97,
         name: 'NFT Developments Marketplace',
         verifyingContract: marketplace_addr,
         version: '1'
