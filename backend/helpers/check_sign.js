@@ -1,9 +1,9 @@
-const marketplace_addr = "0xEd3Fd2B82c32F4B3d3CDDdd3467EE19D228D3Ed8";
+const marketplace_addr = "0x8F409AE29A88Eb87e8cFD8090DD807F8aDb02F2E";
 const Web3 = require('web3');
 const { SignTypedDataVersion, recoverTypedSignature } = require('@metamask/eth-sig-util');
 
 const getWeb3 = async() => {
-    const provider = new Web3.providers.HttpProvider("https://ropsten.infura.io/v3/e5f6b05589544b1bb8526dc3c034c63e");
+    const provider = new Web3.providers.HttpProvider("https://data-seed-prebsc-1-s1.binance.org:8545/");
     const _web3 = new Web3(provider);
     return { _web3 };
 }
@@ -11,7 +11,7 @@ const getWeb3 = async() => {
 const listSign = async (nonce, tokenID, from, price, isPremium, signature) => {
     const msgParams = JSON.stringify({
         domain: {
-          chainId: 3,
+          chainId: 97,
           name: 'NFT Developments Marketplace',
           verifyingContract: marketplace_addr,
           version: '1'
@@ -48,6 +48,8 @@ const listSign = async (nonce, tokenID, from, price, isPremium, signature) => {
         signature,
         version: SignTypedDataVersion.V3
     });
+    console.log(nonce, tokenID, from, price, isPremium, signature);
+    console.log(recovered);
     if (_web3.utils.toChecksumAddress(recovered) === _web3.utils.toChecksumAddress(from)) return _web3.utils.toChecksumAddress(recovered);
     return false;
 }
@@ -55,7 +57,7 @@ const listSign = async (nonce, tokenID, from, price, isPremium, signature) => {
 const auctionSign = async (nonce, tokenID, from, price, deadline, isPremium, signature) => {
     const msgParams = JSON.stringify({
         domain: {
-            chainId: 3,
+            chainId: 97,
             name: 'NFT Developments Marketplace',
             verifyingContract: marketplace_addr,
             version: '1'
@@ -102,7 +104,7 @@ const auctionSign = async (nonce, tokenID, from, price, deadline, isPremium, sig
 const deListSign = async (action, tokenID, from, price, isPremium, signature) => {
     const msgParams = JSON.stringify({
         domain: {
-            chainId: 3,
+            chainId: 97,
             name: 'NFT Developments Marketplace',
             verifyingContract: marketplace_addr,
             version: '1'
@@ -147,7 +149,7 @@ const deListSign = async (action, tokenID, from, price, isPremium, signature) =>
 const offerSign = async (nonce, tokenID, from, price, signature) => {
     const msgParams = JSON.stringify({
         domain: {
-          chainId: 3,
+          chainId: 97,
           name: 'NFT Developments Marketplace',
           verifyingContract: marketplace_addr,
           version: '1'
@@ -191,7 +193,7 @@ const processOfferSign = async ( tokenID, from, price, signature) => {
     const action = 'remove';
     const msgParams = JSON.stringify({
         domain: {
-            chainId: 3,
+            chainId: 97,
             name: 'NFT Developments Marketplace',
             verifyingContract: marketplace_addr,
             version: '1'

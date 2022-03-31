@@ -6,7 +6,7 @@ const UserSchema = require('../../models/users');
 
 router.post('/create-new-items', async(req, res) => {
     try {
-        const { name, artist, category, list } = req.body;
+        const { name, artist, category, list, description } = req.body;
         if (!name) {
             return res.status(400).json({
                 error: "Name is not defined"
@@ -34,7 +34,8 @@ router.post('/create-new-items', async(req, res) => {
         let folder = new FolderSchema({
             name,
             artist,
-            category
+            category,
+            description
         });
 
         const newFolder = await folder.save();
