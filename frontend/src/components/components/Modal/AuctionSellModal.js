@@ -4,7 +4,7 @@ import Modal from 'react-awesome-modal';
 import { useSelector } from 'react-redux';
 import { marketplace_addr } from "../../../config/address.json";
 import { auctionSign } from '../../../utils/sign';
-import { warning_toastify, error_toastify } from "../../../utils/notify";
+import { warning_toastify, error_toastify, success_toastify } from "../../../utils/notify";
 
 const days = [...Array(8).keys()];
 const hours = [...Array(24).keys()];
@@ -51,7 +51,7 @@ export default function AuctionSellModal({ visible, close, tokenID, web3, NFT, M
                     deadline: (day * 24 + hour * 1)
                 }).then(res => {
                     const { message } = res.data;
-                    error_toastify(message);
+                    success_toastify(message);
                 });
                 close(true);
             }
