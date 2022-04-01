@@ -10,6 +10,7 @@ import { auctionSign, deListSign, listSign } from "../../../../utils/sign";
 const MusicArt = lazy(() => import("../../Asset/music"));
 const VideoArt = lazy(() => import("../../Asset/video"));
 const ItemLoading = lazy(() => import("../../Loading/ItemLoading"));
+const Clock = lazy(() => import("../../Clock"));
 
 export default function NFTItem({ data, NFT, Marketplace, remove }) {
 
@@ -149,6 +150,12 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
                                     isTrading && 
                                     <div className="trade-loader start-0 w-100">
                                         <div className="nb-spinner"></div>
+                                    </div>
+                                }
+                                {
+                                    nft?.action == "auction" &&
+                                    <div className="de_countdown">
+                                        <Clock deadline={new Date(nft.deadline)} />
                                     </div>
                                 }
                                 <div className="nft__item_wrap w-100 ratio-1-1 flex-column position-relative">
