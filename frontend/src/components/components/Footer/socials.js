@@ -1,4 +1,5 @@
 const socials =  [
+    {id: 0, link: 'https://facebook.com/NFTDevelopments', icon: 'fab fa-facebook'},
     {id: 1, link: 'https://twitter.com/NFTDevelopments', icon: 'fab fa-twitter'},
     {id: 2, link: 'https://instagram.com/NFTDevelopments', icon: 'fab fa-instagram'},
     {id: 3, link: 'https://tiktok.com/@NFTDevelopments', icon: 'fab fa-tiktok'},
