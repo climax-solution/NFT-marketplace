@@ -102,7 +102,7 @@ const Collection= function() {
               >
                 {
                   nfts.map( (nft, index) => (
-                    <TradeNFT data={nft}/>
+                    <TradeNFT data={nft} key={index}/>
                     )
                   )
                 }
