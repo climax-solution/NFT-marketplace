@@ -6,7 +6,27 @@ const GlobalStyles = createGlobalStyle`
     .border-grey {
         border-color: #4e4e4e !important;
     }
+    .social-links {
+        max-width: 500px;
+        text-align: center;
+        margin: auto;
+        height: 40px;
+        margin-top: 20px;
+        i {
+            display: inline-block;
+            cursor: pointer;
+        }
+    }
 `;
+
+const socials =  [
+    {key: "facebook", icon: 'fab fa-facebook'},
+    {key: "twitter", icon: 'fab fa-twitter'},
+    {key: "instagram", icon: 'fab fa-instagram'},
+    {key: "tiktok", icon: 'fab fa-tiktok'},
+    {key: "linkedin", icon: 'fab fa-linkedin'},
+    {key: "telegram", icon: 'fab fa-telegram'},
+];
 
 export default function Banner({ userData }) {
 
@@ -18,6 +38,7 @@ export default function Banner({ userData }) {
         e.target.src="/img/empty.jfif";
     }
 
+    console.log(userData);
     return (
         <>
             <GlobalStyles/>
@@ -49,7 +70,26 @@ export default function Banner({ userData }) {
                                 <button id="btn_copy" className="position-relative">Copy</button>
                                 </CopyToClipboard>
                             </div>
-                            <p className="bio mt-3 border p-3 word-break-all rounded border-grey text-center">{userData?.description}</p>
+                            {
+                                userData ? 
+                                    <div className="social-links">
+                                        {
+                                            socials.map((item, index) => {
+                                                if (userData[item.key]) {
+                                                    return (
+                                                        <span onClick={()=> window.open(`${userData[item.key]}`, "_blank")} key={index}><i className={item.icon}></i></span>
+                                                    )
+                                                }
+                                            })
+                                        }
+                                    </div>
+                                : ""
+                            }
+                            {
+                                userData?.description ?
+                                    <p className="bio mt-3 border p-3 word-break-all rounded border-grey text-center">{userData?.description}</p>
+                                : ""
+                            }
                         </div>
                     </div>
                 </div>
