@@ -85,7 +85,7 @@ router.post('/update-user', async(req, res) => {
     try {
         let data = req.body;
         const existedUser = await UserSchema.findOne({
-            _id: mongoose.Types.ObjectId(id),
+            _id: mongoose.Types.ObjectId("6224bd2f9dc0889b77e059e3"),
             verified: true
         });
         if (!existedUser) {
@@ -106,7 +106,6 @@ router.post('/update-user', async(req, res) => {
             data.verifyToken = verifyToken;
             data.verified = false;
 
-            await UserSchema.findOneAndUpdate({ _id: mongoose.Types.ObjectId(id) }, data);
             await courier.send({
                 message: {
                     content: {
