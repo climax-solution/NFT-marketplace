@@ -3,6 +3,7 @@ const FolderSchema = require('../../models/folders');
 const NFTSchema = require('../../models/nfts');
 const SaleSchema = require('../../models/sale');
 const UserSchema = require('../../models/users');
+const mongoose = require('mongoose');
 
 router.post('/create-new-items', async(req, res) => {
     try {
