@@ -4,11 +4,13 @@ let walletValidator = require('wallet-address-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
-const { CourierClient } = require("@trycourier/courier");
 
 const checkAuth = require("../../helpers/auth");
 let UserSchema = require('../../models/users');
 const { jwt: JWT } = require("../../config/key");
+
+const { CourierClient } = require("@trycourier/courier");
+const mongoose = require('mongoose');
 const courier = CourierClient({ authorizationToken: "pk_prod_YTMEXMYZA84MWVPTW3KHYS44B1S0"});
 
 router.post('/login', async(req, res) => {
@@ -302,7 +304,7 @@ router.post('/reset/:token', async(req, res) => {
 router.post('/check-authentication', async(req, res) => {
     const result = await checkAuth(req);
     if (!result) return res.status(400).json({ error: "No validation"});
-    const user = await UserSchema.findOne({ _id: { $in: [result.id]}, verified: true });
+    const user = await UserSchema.findOne({ _id: mongoose.Types.ObjectId(result.id), verified: true });
     res.status(200).json(user);
 });
 module.exports = router;
