@@ -5,7 +5,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { UPDATE_AUTH } from "../../../store/action/auth.action";
 import { WalletConnect } from "../../../store/action/wallet.action";
-import { error_toastify } from "../../../utils/notify";
+import { error_toastify, success_toastify } from "../../../utils/notify";
 
 export default function ManageInfo() {
     
@@ -21,26 +21,34 @@ export default function ManageInfo() {
     },[initUserData])
 
     const updateUserInfo = async() => {
-        const { name, email, password, confirmPassword } = userData;
+        let updatedData = { ...userData };
+        const { name, email, password, confirmPassword } = updatedData;
         if (!name || !validator.isEmail(email)) {
-          error_toastify("You must input first name, last name, email correctly!");
+          error_toastify("You must input name, email correctly!");
           return;
         }
     
-        if (!password || password && password !== confirmPassword) {
+        if (password && confirmPassword && password !== confirmPassword) {
           error_toastify("Please confirm your password!");
           return;
+        } else {
+          delete updatedData['password'];
+          delete updatedData['confirmPassword'];
         }
         
         const jwtToken = localStorage.getItem("nftdevelopments-token");
         const _headers = { headers :{ Authorization: JSON.parse(jwtToken) } };
 
         setLoading(true);
-        await axios.post(`${process.env.REACT_APP_BACKEND}user/update-user`, userData, _headers).then(res => {
-          const { data } = res;
-          dispatch(UPDATE_AUTH(data));
-          error_toastify("YUpdated profile successfully!");
-
+        await axios.post(`${process.env.REACT_APP_BACKEND}user/update-user`, updatedData, _headers).then(res => {
+          const { message, status } = res.data;
+          success_toastify(message);
+          if (!status) {
+            dispatch(UPDATE_AUTH(res.data.user));
+          }
+          else {
+            setTimeout(3000, () => logout());
+          }
         }).catch(err => {
           const { error } = err.response.data;
           error_toastify(error);
