@@ -1,5 +1,5 @@
 let router =  require('express').Router();
-const { listSign, auctionSign, deListSign, offerSign, processOfferSign } = require('../../helpers/check_sign');
+const { listSign, auctionSign, offerSign, processOfferSign } = require('../../helpers/check_sign');
 const HistorySchema = require('../../models/history');
 let SaleSchema = require('../../models/sale');
 const ActivitySchema = require("../../models/activity-log");
@@ -257,15 +257,35 @@ router.post('/accept-offer', async(req, res) => {
 router.post('/get-premium-list', async(req, res) => {
     try {
         const { walletAddress } = req.body;
-        const list = await SaleSchema.find({
+        let expiredAuction = await SaleSchema.find({
+            action: 'auction',
+            deadline: {
+                $lt: Date.now()
+            }
+        })
+
+        expiredAuction.map(async(item) => {
+            await SaleSchema.deleteMany({
+                tokenID: item.tokenID,
+                action: ['offer', 'auction']
+            });
+        });
+
+        let list = await SaleSchema.find({
             status: "premium",
             walletAddress: { $ne: walletAddress },
-            action: { $in: ['list', 'auction'] }
+            action: { $in: ['list', 'auction'] },
+            deadline: {
+                $gt: Date.now(),
+                $in: [0]
+            }
         }).sort({ price: 1 }).limit(10);
+
         res.status(200).json({
             list
         });
     } catch(err) {
+        console.log(err);
         res.status(400).json({
             error: "Your request is restricted"
         })
@@ -275,6 +295,21 @@ router.post('/get-premium-list', async(req, res) => {
 router.post('/get-nft-item', async(req, res) => {
     try {
         const { tokenID } = req.body;
+        
+        let expiredAuction = await SaleSchema.find({
+            action: 'auction',
+            deadline: {
+                $lt: Date.now()
+            }
+        })
+
+        expiredAuction.map(async(item) => {
+            await SaleSchema.deleteMany({
+                tokenID: item.tokenID,
+                action: ['offer', 'auction']
+            });
+        });
+
         let nft = await SaleSchema.findOne({ tokenID, action: {$in : ['list', 'auction']}});
         if (!nft) {
             return res.status(400).json({
@@ -299,7 +334,31 @@ router.post('/get-nft-item', async(req, res) => {
 router.post('/get-sale-list', async(req, res) => {
     try {
         const { walletAddress } = req.body;
-        let nfts = await SaleSchema.find({ walletAddress, action: {$in : ['list', 'auction']}});
+        
+        let expiredAuction = await SaleSchema.find({
+            action: 'auction',
+            deadline: {
+                $lt: Date.now()
+            }
+        })
+
+        expiredAuction.map(async(item) => {
+            await SaleSchema.deleteMany({
+                tokenID: item.tokenID,
+                action: ['offer', 'auction']
+            });
+        });
+
+        let nfts = await SaleSchema.find({
+            walletAddress,
+            action: {
+                $in : ['list', 'auction']
+            },
+            deadline: {
+                $gt: Date.now(),
+                $in: [0]
+            }
+        });
         res.status(200).json({ list: !nfts ? [] : nfts });
     } catch(err) {
         res.status(400).json({
@@ -311,6 +370,21 @@ router.post('/get-sale-list', async(req, res) => {
 router.post('/get-bid-list', async(req, res) => {
     try {
         const { walletAddress } = req.body;
+        
+        let expiredAuction = await SaleSchema.find({
+            action: 'auction',
+            deadline: {
+                $lt: Date.now()
+            }
+        })
+
+        expiredAuction.map(async(item) => {
+            await SaleSchema.deleteMany({
+                tokenID: item.tokenID,
+                action: ['offer', 'auction']
+            });
+        });
+
         let saleList = await SaleSchema.find({ walletAddress, action: "auction" });
         let bidList = {};
         saleList.map(async(item, index) => {
@@ -349,5 +423,6 @@ router.post('/get-bid-item', async(req, res) => {
             error: "Your request is restricted"
         });
     }
-})
+});
+
 module.exports = router;
