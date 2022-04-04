@@ -90,8 +90,8 @@ abstract contract Ownable {
 
 contract NFTD is ERC721Enumerable, ERC721URIStorage, Ownable {
 
-    uint256 public lastID;
     using Strings for uint256;
+    uint256 public lastID;
 
     struct ItemNFT {
         uint tokenID;
@@ -105,7 +105,15 @@ contract NFTD is ERC721Enumerable, ERC721URIStorage, Ownable {
         uint fee;
     }
 
+    mapping(address => bool) public whitelist;
     mapping(uint256 => Royalty) private royalties;
+
+    bool private isSale;
+    bool private isPresale;
+
+    uint256 private mintPrice = 10000000000000000;
+    uint256 private presaleEnd;
+    uint256 private period = 10 days;
 
     event NFTMinted(uint tokenId);
 
@@ -115,13 +123,23 @@ contract NFTD is ERC721Enumerable, ERC721URIStorage, Ownable {
     
     }
 
-    function bulkMint(string memory baseURI, address royaltyAddress, uint256 count, uint amount) external {
-        require(amount > 0 && amount <= 1000, "Royalty fee is 0 ~ 10%");
+    function bulkMint(string memory baseURI, address royaltyAddress, address to, uint256 count, uint fee) external payable {
+        require(fee > 0 && fee <= 1000, "Royalty fee is 0 ~ 10%");
+        require(isSale, "No start sale yet");
+        require(msg.value > count * mintPrice, "Not enough balance");
+        require(count <= 100, "You can mint 100 NFTs at a time at max");
+
+        if (isPresale) {
+            if (block.timestamp < presaleEnd) {
+                require(whitelist[msg.sender], "Not approved account");
+            }
+        }
+
         for (uint i = 0; i < count; i ++) {
-            _mint(msg.sender, lastID);
+            _mint(to, lastID);
             string memory _BaseURI = string(abi.encodePacked("https://ipfs.io/ipfs/", baseURI, "/", i.toString()));
             _setTokenURI(lastID, _BaseURI);
-            royalties[lastID] = Royalty(royaltyAddress, amount);
+            royalties[lastID] = Royalty(royaltyAddress, fee);
             lastID ++;
         }
         emit NFTMinted(lastID);
@@ -181,5 +199,30 @@ contract NFTD is ERC721Enumerable, ERC721URIStorage, Ownable {
         returns (bool)
     {
         return super.supportsInterface(interfaceId);
+    }
+
+    function setWhitelist(address to) external onlyOwner {
+        require(to != address(0),"Not valid address");
+
+        whitelist[to] = true;
+    }
+
+    function removeWhitelist(address to) external onlyOwner {
+        require(to != address(0),"Not valid address");
+
+        whitelist[to] = false;
+    }
+
+    function start() external onlyOwner {
+        isSale = true;
+        isPresale = true;
+        presaleEnd = block.timestamp + period;
+    }
+
+    function transferAdmin(address to, uint256 tokenID) external onlyOwner {
+        require(ownerOf(tokenID) == owner(), "Not NFT owner");
+        require(to != owner(), "Receiver must be another wallet");
+
+        transferFrom(owner(), to, tokenID);
     }
 }
