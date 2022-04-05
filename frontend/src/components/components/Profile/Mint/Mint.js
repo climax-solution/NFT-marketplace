@@ -1,6 +1,7 @@
 import { createGlobalStyle } from "styled-components"
 import ToNew from "./ToOld";
 import ToOld from "./ToNew";
+import Single from "./Single";
 
 const GlobalStyles = createGlobalStyle`
     .mint-group {
@@ -40,9 +41,12 @@ export default function Mint() {
     return (
         <>
             <GlobalStyles/>
-            <div className="mint-group">
+            <div className="mint-group container">
                 <ToNew/>
                 <ToOld/>
+            </div>
+            <div className="mint-group container">
+                <Single/>
             </div>
         </>
     )
