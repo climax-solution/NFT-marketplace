@@ -10,8 +10,8 @@ let LikedLogs = require("../../models/activity-log");
 const checkAuth = require("../../helpers/auth");
 
 const { CourierClient } = require("@trycourier/courier");
-const courier = CourierClient({ authorizationToken: "pk_prod_YTMEXMYZA84MWVPTW3KHYS44B1S0"});
-
+const courier = CourierClient({ authorizationToken: "pk_prod_X9RTESPDMXMBN7KFYP37EDJBNS44"});
+//pk_prod_YTMEXMYZA84MWVPTW3KHYS44B1S0
 router.post('/get-user', async(req, res) => {
     const token = await checkAuth(req);
     if (!token) {
@@ -121,6 +121,9 @@ router.post('/update-user', async(req, res) => {
                     },
                     to: {
                         email: data.email
+                    },
+                    timeout: {
+                        message: 600000
                     }
                 }
             });

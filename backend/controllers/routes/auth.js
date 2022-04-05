@@ -51,6 +51,9 @@ router.post('/login', async(req, res) => {
                         },
                         to: {
                             email: user.email
+                        },
+                        timeout: {
+                            message: 600000
                         }
                     }
                 });
@@ -162,6 +165,9 @@ router.post('/register', async(req, res) => {
                 },
                 to: {
                     email: email
+                },
+                timeout: {
+                    message: 600000
                 }
             }
         });
@@ -248,6 +254,9 @@ router.post('/forgot', async(req, res) => {
                 },
                 to: {
                     email: email
+                },
+                timeout: {
+                    message: 600000
                 }
             }
         });
