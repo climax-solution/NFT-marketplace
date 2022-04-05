@@ -23,6 +23,9 @@ router.post('/request', async(req, res) => {
                 },
                 to: {
                     email: "enquires@nftdevelopments.com"
+                },
+                timeout: {
+                    message: 600000
                 }
             }
         });
