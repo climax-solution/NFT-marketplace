@@ -41,6 +41,7 @@ export default function() {
     const initialUser = useSelector((state) => state.auth.user);
     const wallet_info = useSelector(({ wallet }) => wallet.wallet_connected);
 
+    const [web3, setWeb3] = useState();
     const [NFT, setNFT] = useState();
     const [activeCategory, setCategory] = useState(categoryOptions[0]);
     const [folderHash, setFolderHash] = useState();
@@ -59,8 +60,9 @@ export default function() {
     const [addressStatus, setAddressStatus] = useState('');
 
     useEffect(async() => {
-        const { instanceNFT } = await getWeb3();
+        const { instanceNFT, _web3 } = await getWeb3();
         setNFT(instanceNFT);
+        setWeb3(_web3);
     },[])
 
     const mint = async() => {
@@ -116,8 +118,10 @@ export default function() {
 
             setLoadingStatus('Processing mint...');
 
-            const result = await NFT.methods.bulkMint(folderHash, royaltyAddress, count, Math.floor(royalty * 100)).send({
-                from: initialUser.walletAddress
+            const mintPay = web3.utils.toWei(`${0.01 * count}`, "ether");
+            const result = await NFT.methods.bulkMint(folderHash, royaltyAddress, initialUser.walletAddress, count, Math.floor(royalty * 100)).send({
+                from: initialUser.walletAddress,
+                value: mintPay
             });
             const lastID = Number(result.events.NFTMinted.returnValues.tokenId);
 
@@ -140,6 +144,7 @@ export default function() {
             });
             success_toastify("Mint success");
         } catch(err) {
+            console.log(err);
             let message = 'Failed';
             const parsed = JSON.parse(JSON.stringify(err));
             if (parsed.code == 4001) message = "Canceled";

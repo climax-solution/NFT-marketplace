@@ -187,7 +187,7 @@ export default function() {
 
             const result = await NFT.methods.singleMint(tokenURI, royaltyAddress, Math.floor(royalty * 100)).send({
                 from: initialUser.walletAddress,
-                value: "11000000000000000"
+                value: "10000000000000000"
             });
             const lastID = Number(result.events.NFTMinted.returnValues.tokenId);
                         
@@ -283,14 +283,6 @@ export default function() {
             <GlobalStyles/>
             <div className="old-panel">
                 <div className="nft__item p-5 position-relative">
-                    {
-                        isLoading && (
-                            <div className="trade-loader start-0 w-100">
-                                <div className="nb-spinner"></div>
-                                <span className='loading-status'>{loadingStatus}</span>
-                            </div>
-                        )
-                    }
                     <span className='d-block mb-2 text-white'>Mint Single NFT</span>
                     <div className='field-set cursor-pointer my-2'>
                         <label className={`${assetStatus ? "border-danger text-danger" : ""} text-center nft-art d-block`}>
@@ -440,12 +432,13 @@ export default function() {
 
             <Modal
                 visible={isLoading}
-                width="500"
+                width="400"
+                height="300"
                 effect="fadeInUp"
                 onClickAway={closeModal}
             >
-                <div className='position-relative'>
-                    <div className="trade-loader start-0 w-100">
+                <div className='position-relative w-100 h-100'>
+                    <div className="trade-loader start-0 w-100 bg-white">
                         <div className="nb-spinner"></div>
                         <span className='loading-status'>{loadingStatus}</span>
                     </div>

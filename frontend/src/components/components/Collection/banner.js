@@ -38,7 +38,6 @@ export default function Banner({ userData }) {
         e.target.src="/img/empty.jfif";
     }
 
-    console.log(userData);
     return (
         <>
             <GlobalStyles/>
