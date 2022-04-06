@@ -7,8 +7,7 @@ import getWeb3 from "../../../../utils/getWeb3";
 import { warning_toastify, success_toastify, error_toastify } from "../../../../utils/notify";
 import { auctionSign, deListSign, listSign } from "../../../../utils/sign";
 
-const MusicArt = lazy(() => import("../../Asset/music"));
-const VideoArt = lazy(() => import("../../Asset/video"));
+const Art = lazy(() => import("../../Asset/art"));
 const ItemLoading = lazy(() => import("../../Loading/ItemLoading"));
 const Clock = lazy(() => import("../../Clock"));
 
@@ -159,17 +158,13 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
                                     </div>
                                 }
                                 <div className="nft__item_wrap w-100 ratio-1-1 flex-column position-relative">
-                                    {
-                                        (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} className="lazy nft__item_preview ratio-1-1" onClick={() => navigate(`/item-detail/${nft.tokenID}`) } role="button" alt=""/>
-                                    }
-
-                                    {
-                                        (nft.type && (nft.type).toLowerCase() == 'music') && <MusicArt data={nft} link={`/item-detail/${nft.tokenID}`}/>
-                                    }
-
-                                    {
-                                        (nft.type && (nft.type).toLowerCase() == 'video') && <VideoArt data={nft.asset}/>
-                                    }
+                                    <Art
+                                        tokenID={nft.tokenID}
+                                        image={nft.image}
+                                        asset={nft.asset}
+                                        redirect={() => navigate(`/folder-explorer/${nft.folder._id}`)}
+                                        type={nft.type}
+                                    />
                                     {
                                         nft.status == 'premium' && 
                                         <span>

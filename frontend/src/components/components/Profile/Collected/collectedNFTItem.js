@@ -5,8 +5,7 @@ import { useSelector } from "react-redux";
 import getWeb3 from "../../../../utils/getWeb3";
 import { warning_toastify} from "../../../../utils/notify";
 
-const MusicArt = lazy(() => import("../../Asset/music"));
-const VideoArt = lazy(() => import("../../Asset/video"));
+const Art = lazy(() => import("../../Asset/art"));
 const ItemLoading = lazy(() => import("../../Loading/ItemLoading"));
 const AuctionSellModal = lazy(() => import("../../Modal/AuctionSellModal"));
 const DirectSellModal = lazy(() => import("../../Modal/DirectSellModal"));
@@ -72,17 +71,13 @@ export default function NotSaleNFT({ data, NFT, Marketplace, remove }) {
                     <>
                         <div className="nft__item h-100 justify-content-between">
                             <div className="nft__item_wrap w-100 ratio-1-1">
-                                {
-                                    (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} role="button" className="lazy nft__item_preview ratio-1-1" onClick={() => navigate(`/item-detail/${nft.tokenID}`)} alt=""/>
-                                }
-
-                                {
-                                    (nft.type && (nft.type).toLowerCase() == 'music') && <MusicArt data={nft} link={`/item-detail/${nft.tokenID}`}/>
-                                }
-
-                                {
-                                    (nft.type && (nft.type).toLowerCase() == 'video') && <VideoArt data={nft.asset}/>
-                                }
+                                <Art
+                                    tokenID={nft.tokenID}
+                                    image={nft.image}
+                                    asset={nft.asset}
+                                    redirect={() => navigate(`/folder-explorer/${nft.folder._id}`)}
+                                    type={nft.type}
+                                />
                             </div>
                             <div className="nft__item_info">
                                 <span>
