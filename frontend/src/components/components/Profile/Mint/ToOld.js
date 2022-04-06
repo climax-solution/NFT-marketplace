@@ -38,6 +38,7 @@ export default function() {
     const initialUser = useSelector((state) => state.auth.user);
     const wallet_info = useSelector(({ wallet }) => wallet.wallet_connected);
 
+    const [web3, setWeb3] = useState();
     const [NFT, setNFT] = useState();
     const [activeCategory, setCategory] = useState();
     const [folderList, setFolderList] = useState([]);
@@ -54,7 +55,7 @@ export default function() {
     const [addressStatus, setAddressStatus] = useState('');
 
     useEffect(async() => {
-        await axios.post(`${process.env.REACT_APP_BACKEND}folder/get-folder-list`).then(res => {
+        await axios.post(`${process.env.REACT_APP_BACKEND}folder/get-folder-list`, { artist: initialUser.username}).then(res => {
             let _list = [];
             const { list } = res.data;
             list.map(item => {
@@ -69,8 +70,9 @@ export default function() {
         }).catch(err => {
 
         })
-        const { instanceNFT } = await getWeb3();
+        const { instanceNFT, _web3 } = await getWeb3();
         setNFT(instanceNFT);
+        setWeb3(_web3);
     },[])
 
     const mint = async() => {
@@ -121,7 +123,11 @@ export default function() {
 
             setLoadingStatus('Processing mint...');
 
-            const result = await NFT.methods.bulkMint(folderHash, royaltyAddress, count, Math.floor(royalty * 100)).send({ from: initialUser.walletAddress });
+            const mintPay = web3.utils.toWei(`${0.01 * count}`, "ether");
+            const result = await NFT.methods.bulkMint(folderHash, royaltyAddress, initialUser.walletAddress, count, Math.floor(royalty * 100)).send({
+                from: initialUser.walletAddress,
+                value: mintPay
+            });
             const lastID = Number(result.events.NFTMinted.returnValues.tokenId);
             
             let list = [];
