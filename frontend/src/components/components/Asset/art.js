@@ -11,7 +11,7 @@ const Art = ({ tokenID, image, asset, redirect, type }) => {
     return (
         <>
             {
-                (!type || type && (type).toLowerCase() == 'image') && <img src={image} onError={failedLoadImage} className="lazy nft__item_preview ratio-1-1" role="button" onClick={redirect} alt=""/>
+                (!type || type && (type).toLowerCase() == 'image') && <img src={image ? image : asset} onError={failedLoadImage} className="lazy nft__item_preview ratio-1-1" role="button" onClick={redirect} alt=""/>
             }
 
             {
