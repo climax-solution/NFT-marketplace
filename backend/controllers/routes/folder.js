@@ -108,7 +108,15 @@ router.post('/add-items-to-old', async(req, res) => {
 
 router.post('/get-folder-list', async(req, res) => {
     try {
-        const list = await FolderSchema.find();
+        const { artist } = req.body;
+        let list;
+        if (artist) {
+            list = await FolderSchema.find({
+                artist
+            });
+        } else {
+            list = await FolderSchema.find();
+        }
         res.status(200).json({
             list
         });
