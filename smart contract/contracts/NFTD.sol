@@ -91,7 +91,6 @@ abstract contract Ownable {
 contract NFTD is ERC721Enumerable, ERC721URIStorage, Ownable {
 
     using Strings for uint256;
-    uint256 public lastID;
 
     struct ItemNFT {
         uint tokenID;
@@ -105,15 +104,11 @@ contract NFTD is ERC721Enumerable, ERC721URIStorage, Ownable {
         uint fee;
     }
 
-    mapping(address => bool) public whitelist;
     mapping(uint256 => Royalty) private royalties;
 
     bool private isSale;
-    bool private isPresale;
-
     uint256 private mintPrice = 10000000000000000;
-    uint256 private presaleEnd;
-    uint256 private period = 10 days;
+    uint256 public lastID;
 
     event NFTMinted(uint tokenId);
 
@@ -126,14 +121,8 @@ contract NFTD is ERC721Enumerable, ERC721URIStorage, Ownable {
     function bulkMint(string memory baseURI, address royaltyAddress, address to, uint256 count, uint fee) external payable {
         require(fee > 0 && fee <= 1000, "Royalty fee is 0 ~ 10%");
         require(isSale, "No start sale yet");
-        require(msg.value > count * mintPrice, "Not enough balance");
+        require(msg.value >= count * mintPrice, "Not enough balance");
         require(count <= 100, "You can mint 100 NFTs at a time at max");
-
-        if (isPresale) {
-            if (block.timestamp < presaleEnd) {
-                require(whitelist[msg.sender], "Not approved account");
-            }
-        }
 
         for (uint i = 0; i < count; i ++) {
             _mint(to, lastID);
@@ -142,6 +131,19 @@ contract NFTD is ERC721Enumerable, ERC721URIStorage, Ownable {
             royalties[lastID] = Royalty(royaltyAddress, fee);
             lastID ++;
         }
+        emit NFTMinted(lastID);
+    }
+
+    function singleMint(string memory _tokenURI, address royaltyAddress, uint fee) external payable {
+        require(fee > 0 && fee <= 1000, "Royalty fee is 0 ~ 10%");
+        require(isSale, "No start sale yet");
+        require(msg.value >= mintPrice, "Not enough balance");
+
+        _mint(msg.sender, lastID);
+        _setTokenURI(lastID, _tokenURI);
+        royalties[lastID] = Royalty(royaltyAddress, fee);
+        lastID ++;
+        
         emit NFTMinted(lastID);
     }
 
@@ -201,22 +203,9 @@ contract NFTD is ERC721Enumerable, ERC721URIStorage, Ownable {
         return super.supportsInterface(interfaceId);
     }
 
-    function setWhitelist(address to) external onlyOwner {
-        require(to != address(0),"Not valid address");
-
-        whitelist[to] = true;
-    }
-
-    function removeWhitelist(address to) external onlyOwner {
-        require(to != address(0),"Not valid address");
-
-        whitelist[to] = false;
-    }
-
     function start() external onlyOwner {
+        require(!isSale, "Already started");
         isSale = true;
-        isPresale = true;
-        presaleEnd = block.timestamp + period;
     }
 
     function transferAdmin(address to, uint256 tokenID) external onlyOwner {
