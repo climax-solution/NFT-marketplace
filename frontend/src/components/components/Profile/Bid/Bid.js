@@ -61,7 +61,7 @@ export default function() {
                         {
                             nfts.map( (nft, idx) => {
                                 return (
-                                    <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4 position-relative" key={index}>
+                                    <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4 position-relative" key={idx}>
                                         <BidItem tokenID={nft.tokenID} remove={() => remove(idx)} key={idx}/>
                                     </div>
                                 )
