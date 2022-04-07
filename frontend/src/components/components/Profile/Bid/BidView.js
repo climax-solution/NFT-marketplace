@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState } from "react"
+import { lazy, useEffect, useState } from "react"
 import Skeleton from "react-loading-skeleton";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
