@@ -3,5 +3,5 @@ const PhotoNFT = artifacts.require("NFTD");
 const owner = "0x0F09aE2ba91449a7B4201721f98f482cAF9737Ee";
 
 module.exports = async function(deployer) {
-    await deployer.deploy(PhotoNFT, owner);
+    // await deployer.deploy(PhotoNFT, owner);
 };
