@@ -5,7 +5,7 @@ import getWeb3 from "../../../../utils/getWeb3";
 import axios from "axios";
 
 const Empty = lazy(() => import("../../Empty"));
-const NFTItem = lazy(() => import("./sellingNFTItem"));
+const Item = lazy(() => import("./sellingNFTItem"));
 const PremiumNFTLoading = lazy(() => import("../../Loading/PremiumNFTLoading"));
 
 
@@ -82,7 +82,7 @@ export default function SellingNFT() {
                 className="row overflow-unset"
             >
                 { nfts.map( (nft, index) => (
-                    <NFTItem data={nft} key={index} Marketplace={marketContract} remove={() => removeItem(index)}/>
+                    <Item data={nft} key={index} Marketplace={marketContract} remove={() => removeItem(index)}/>
                 ))}
             </InfiniteScroll>
             { !loaded ? <PremiumNFTLoading/> : (!nfts.length && <Empty/>) }
