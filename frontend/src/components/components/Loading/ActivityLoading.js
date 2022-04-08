@@ -5,8 +5,8 @@ export default function ActivityLoading() {
     return (
         <>
             {
-                items.map(item => (
-                    <li className='list-unstyled loading-item'>
+                items.map((item, index) => (
+                    <li className='list-unstyled loading-item' key={index}>
                         <div className="d-flex align-items-center">
                             <Skeleton className="lazy w-100px rounded-circle ratio-1-1 position-relative"/>
                             <h4 className="ms-2 mx-150px w-100"><Skeleton/></h4>

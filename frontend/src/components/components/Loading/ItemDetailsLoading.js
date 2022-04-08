@@ -24,8 +24,8 @@ const ItemDetailsLoading = () => {
                     <div className="spacer-40"></div>
                     <div className='row'>                        
                         {
-                            items.map(item => (
-                                <div className="col-md-6 col-12 mb-3">
+                            items.map((item, index) => (
+                                <div className="col-md-6 col-12 mb-3" key={index}>
                                     <Skeleton className='ratio ratio-1x1'/>
                                 </div>
                             ))

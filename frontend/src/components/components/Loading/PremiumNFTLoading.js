@@ -5,8 +5,8 @@ const PremiumNFTLoading = () => {
     return (
         <div className="row">
             {
-                items.map(item => (
-                    <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 pb-3">
+                items.map((item, index) => (
+                    <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 pb-3" key={index}>
                         <ItemLoading/>
                     </div>
                 ))
