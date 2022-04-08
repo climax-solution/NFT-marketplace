@@ -1,5 +1,7 @@
 import Skeleton from 'react-loading-skeleton'
 
+const items = [...Array(6).keys()];
+
 const ItemDetailsLoading = () => {
     return (
         <section className='container'>
@@ -20,25 +22,14 @@ const ItemDetailsLoading = () => {
                     <p><Skeleton/></p>
 
                     <div className="spacer-40"></div>
-                    <div className='row'>
-                        <div className="col-md-6 col-12 mb-3">
-                            <Skeleton className='ratio ratio-1x1'/>
-                        </div>
-                        <div className="col-md-6 col-12 mb-3">
-                            <Skeleton className='ratio ratio-1x1'/>
-                        </div>
-                        <div className="col-md-6 col-12 mb-3">
-                            <Skeleton className='ratio ratio-1x1'/>
-                        </div>
-                        <div className="col-md-6 col-12 mb-3">
-                            <Skeleton className='ratio ratio-1x1'/>
-                        </div>
-                        <div className="col-md-6 col-12 mb-3">
-                            <Skeleton className='ratio ratio-1x1'/>
-                        </div>
-                        <div className="col-md-6 col-12 mb-3">
-                            <Skeleton className='ratio ratio-1x1'/>
-                        </div>
+                    <div className='row'>                        
+                        {
+                            items.map(item => (
+                                <div className="col-md-6 col-12 mb-3">
+                                    <Skeleton className='ratio ratio-1x1'/>
+                                </div>
+                            ))
+                        }
                     </div>
                     
                 </div>
