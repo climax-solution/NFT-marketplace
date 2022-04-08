@@ -6,7 +6,7 @@ import axios from "axios";
 
 const Empty = lazy(() => import("../../Empty"));
 const PremiumNFTLoading = lazy(() => import("../../Loading/PremiumNFTLoading"));
-const NotSaleNFT = lazy(() => import("./collectedNFTItem"));
+const Item = lazy(() => import("./collectedNFTItem"));
 
 export default function CollectedNFT() {
 
@@ -79,7 +79,7 @@ export default function CollectedNFT() {
                 className="row overflow-unset"
             >
                 {nfts.map( (nft, index) => (
-                    <NotSaleNFT data={nft} key={index} remove={() => removeItem(index)} NFT={nftContract} Marketplace={marketContract}/>
+                    <Item data={nft} key={index} remove={() => removeItem(index)} NFT={nftContract} Marketplace={marketContract}/>
                 ))}
             </InfiniteScroll>
 
