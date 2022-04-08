@@ -13,6 +13,7 @@ export default function User({ data }) {
                     className="ratio-1-1"
                     crossOrigin="true"
                     role="button"
+                    alt=""
                 />
             </div>
             <div className="user-name mt-5">
