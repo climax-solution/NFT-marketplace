@@ -38,10 +38,6 @@ export default function NotSaleNFT({ data, NFT, Marketplace, remove }) {
         }
     },[data])
 
-    const failedLoadImage = (e) => {
-        e.target.src="/img/empty.jfif";
-    }
-
     const listOnSale = (id) => {
         if (!initialUser.walletAddress)
         if (!wallet_info) {
@@ -64,65 +60,68 @@ export default function NotSaleNFT({ data, NFT, Marketplace, remove }) {
     }
 
     return (
-        <div className="d-item col-lg-3 col-md-6 col-sm-6 mt-2 col-xs-12">
+        <>
             {
-                isLoading ? <ItemLoading/>
+                isLoading ? <div className="d-item col-lg-3 col-md-6 col-sm-6 mt-2 col-xs-12"><ItemLoading/></div>
                 : (
-                    <>
-                        <div className="nft__item h-100 justify-content-between">
-                            <div className="nft__item_wrap w-100 ratio-1-1">
-                                <Art
-                                    tokenID={nft.tokenID}
-                                    image={nft.image}
-                                    asset={nft.asset}
-                                    redirect={() => navigate(`/folder-explorer/${nft.folder._id}`)}
-                                    type={nft.type}
-                                />
-                            </div>
-                            <div className="nft__item_info">
-                                <span>
-                                    <h4 onClick={() => !isLoading ? navigate(`/item-detail/${nft.tokenID}`) : null }>{ nft.nftName }</h4>
-                                </span>
-                                {/* <div className="nft__item_price">{ web3.utils.fromWei(nft.marketData.price, "ether")} BNB </div> */}
-                                <div className="pb-4 trade-btn-group mt-2">
-                                    <span className="btn-main w-100" onClick={() => listOnSale(nft.tokenID)}>List</span>
-                                    <span className="btn-main w-100 mt-2" onClick={() => listOnAuction(nft.tokenID)}>List on auction</span>
+                    !Object.keys(nft).length ? ""
+                    : (
+                        <div className="d-item col-lg-3 col-md-6 col-sm-6 mt-2 col-xs-12">
+                            <div className="nft__item h-100 justify-content-between">
+                                <div className="nft__item_wrap w-100 ratio-1-1">
+                                    <Art
+                                        tokenID={nft.tokenID}
+                                        image={nft.image}
+                                        asset={nft.asset}
+                                        redirect={() => navigate(`/item-detail/${nft.tokenID}`)}
+                                        type={nft.type}
+                                    />
                                 </div>
-                            </div> 
+                                <div className="nft__item_info">
+                                    <span>
+                                        <h4 onClick={() => !isLoading ? navigate(`/item-detail/${nft.tokenID}`) : null }>{ nft.nftName }</h4>
+                                    </span>
+                                    {/* <div className="nft__item_price">{ web3.utils.fromWei(nft.marketData.price, "ether")} BNB </div> */}
+                                    <div className="pb-4 trade-btn-group mt-2">
+                                        <span className="btn-main w-100" onClick={() => listOnSale(nft.tokenID)}>List</span>
+                                        <span className="btn-main w-100 mt-2" onClick={() => listOnAuction(nft.tokenID)}>List on auction</span>
+                                    </div>
+                                </div> 
+                            </div>
+                            {
+                                auctionVisible && <AuctionSellModal
+                                    visible={auctionVisible}
+                                    close={
+                                        (status = false) => {
+                                            if (status) remove();
+                                            setAuctionVisible(false)
+                                        }
+                                    }
+                                    Marketplace={Marketplace}
+                                    NFT={NFT}
+                                    web3={web3}
+                                    tokenID={activeID}
+                                />
+                            }
+                            {
+                                directVisible && <DirectSellModal
+                                    visible={directVisible}
+                                    close={
+                                        (status = false) => {
+                                            if (status) remove();
+                                            setDirectVisible(false)
+                                        }
+                                    }
+                                    Marketplace={Marketplace}
+                                    NFT={NFT}
+                                    web3={web3}
+                                    tokenID={activeID}
+                                />
+                            }
                         </div>
-                        {
-                            auctionVisible && <AuctionSellModal
-                                visible={auctionVisible}
-                                close={
-                                    (status = false) => {
-                                        if (status) remove();
-                                        setAuctionVisible(false)
-                                    }
-                                }
-                                Marketplace={Marketplace}
-                                NFT={NFT}
-                                web3={web3}
-                                tokenID={activeID}
-                            />
-                        }
-                        {
-                            directVisible && <DirectSellModal
-                                visible={directVisible}
-                                close={
-                                    (status = false) => {
-                                        if (status) remove();
-                                        setDirectVisible(false)
-                                    }
-                                }
-                                Marketplace={Marketplace}
-                                NFT={NFT}
-                                web3={web3}
-                                tokenID={activeID}
-                            />
-                        }
-                    </>
+                    )
                 )
             }
-        </div>
+        </>
     )
 }

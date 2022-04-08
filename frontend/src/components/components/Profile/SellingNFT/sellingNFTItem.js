@@ -132,18 +132,14 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
         
     }
 
-    const failedLoadImage = (e) => {
-        e.target.src="/img/empty.jfif";
-    }
-
     return (
-        <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mt-3">
+        <>
             {
-                isLoading ? <ItemLoading/>
+                isLoading ? <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mt-3"><ItemLoading/></div>
                 : (
                     !Object.keys(nft).length ? ""
                     : (
-                        <>
+                        <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mt-3">
                             <div className="nft__item position-relative my-0 h-100 justify-content-between">
                                 {
                                     isTrading && 
@@ -162,7 +158,7 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
                                         tokenID={nft.tokenID}
                                         image={nft.image}
                                         asset={nft.asset}
-                                        redirect={() => navigate(`/folder-explorer/${nft.folder._id}`)}
+                                        redirect={() => navigate(`/item-detail/${nft.tokenID}`)}
                                         type={nft.type}
                                     />
                                     {
@@ -192,10 +188,10 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
                                     </div>
                                 </div> 
                             </div>
-                        </>
+                        </div>
                     )
                 )
             }
-        </div>
+        </>
     )
 }

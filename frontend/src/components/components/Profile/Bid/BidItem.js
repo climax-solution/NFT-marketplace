@@ -4,8 +4,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import getWeb3 from "../../../../utils/getWeb3";
 
-const MusicArt = lazy(() => import("../../Asset/music"));
-const VideoArt = lazy(() => import("../../Asset/video"));
+const Art = lazy(() => import("../../Asset/art"));
 const Clock = lazy(() => import("../../Clock"));
 const ItemLoading = lazy(() => import("../../Loading/ItemLoading"));
 
@@ -34,11 +33,7 @@ export default function({ tokenID, remove }) {
         }
         setLoading(false);
     },[tokenID])
-
-    const failedLoadImage = (e) => {
-        e.target.src="/img/empty.jfif";
-    }
-
+    
     return (
         <div>
             {
@@ -55,17 +50,13 @@ export default function({ tokenID, remove }) {
                             }
                             <div className="nft__item_wrap w-100 ratio-1-1 flex-column position-relative">
                                 
-                                {
-                                    (!nft.type || nft.type && (nft.type).toLowerCase() == 'image') && <img src={nft.image} onError={failedLoadImage} className="lazy nft__item_preview ratio-1-1" role="button" onClick={() => navigate(`/item-detail/${nft.tokenID}`)} alt=""/>
-                                }
-
-                                {
-                                    (nft.type && (nft.type).toLowerCase() == 'music') && <MusicArt data={nft} link={`/item-detail/${nft.tokenID}`}/>
-                                }
-
-                                {
-                                    (nft.type && (nft.type).toLowerCase() == 'video') && <VideoArt data={nft.asset}/>
-                                }
+                                <Art
+                                    tokenID={nft.tokenID}
+                                    image={nft.image}
+                                    asset={nft.asset}
+                                    redirect={() => navigate(`/item-detail/${nft.tokenID}`)}
+                                    type={nft.type}
+                                />
 
                             </div>
                             <div className="nft__item_info mb-0">

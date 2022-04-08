@@ -7,9 +7,7 @@ import getWeb3 from "../../../../utils/getWeb3";
 import { marketplace_addr } from "../../../../config/address.json";
 import { success_toastify, error_toastify } from "../../../../utils/notify";
 
-const MusicArt = lazy(() => import("../../Asset/music"));
-const VideoArt = lazy(() => import("../../Asset/video"));
-
+const Art = lazy(() => import("../../Asset/art"));
 
 export default function BidView() {
 
@@ -90,10 +88,6 @@ export default function BidView() {
         setLoading(false);
     }
 
-    const failedLoadImage = (e) => {
-        e.target.src="/img/empty.jfif";
-    }
-
     return (
         <>
             <section className='jumbotron breadcumb no-bg'>
@@ -111,20 +105,14 @@ export default function BidView() {
             <section className='container'>
                 <div className="row">
                     <div className="col-md-6 col-12 d-flex justify-content-center align-items-center flex-column">
-                        {
-                            isLoading && <Skeleton className="ratio-1-1"/>
-                        }
-                        {
-                            (!metadata.type || metadata.type && (metadata.type).toLowerCase() == 'image') && <img src={metadata.image} onError={failedLoadImage} className="img-fluid img-rounded mb-sm-30" alt=""/>
-                        }
+                        <Art
+                            tokenID={metadata.tokenID}
+                            image={metadata.image}
+                            asset={metadata.asset}
+                            redirect={() => null}
+                            type={metadata.type}
+                        />
 
-                        {
-                            (metadata.type && (metadata.type).toLowerCase() == 'music') && <MusicArt data={metadata} link={``}/>
-                        }
-
-                        {
-                            (metadata.type && (metadata.type).toLowerCase() == 'video') && <VideoArt data={metadata.asset}/>
-                        }
                         {
                             <h3 className="text-center my-4">{ isLoading ? <Skeleton/> : metadata.nftName}</h3>
                         }
