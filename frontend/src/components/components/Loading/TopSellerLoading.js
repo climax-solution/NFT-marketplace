@@ -6,8 +6,8 @@ const TopSellerLoading = () => {
         <div>
             <ul className="author_list list-unstyled">
                 {
-                    items.map(item => (
-                        <li>
+                    items.map((item, index) => (
+                        <li key={index}>
                             <Skeleton
                                 height={50}
                             />
