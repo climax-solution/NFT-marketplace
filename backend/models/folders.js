@@ -17,6 +17,10 @@ const FolderSchema = Schema({
     description: {
         type: String
     },
+    isPublic:{
+        type: Boolean,
+        default: false
+    },
     updated_at: {
         type: Date
     },
