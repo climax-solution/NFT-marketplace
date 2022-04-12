@@ -69,7 +69,7 @@ export default function ManageInfo() {
     }
 
     return(
-        <>
+        <div id='zero3' className='onStep fadeIn mn-h-300px'>
             {
                 Object.keys(userData).length && (
                     <div id='zero4' className='onStep fadeIn'>
@@ -207,6 +207,6 @@ export default function ManageInfo() {
                     </div>
                 )
             }
-        </>
+        </div>
     )
 }

@@ -67,7 +67,7 @@ export default function CollectedNFT() {
     }
 
     return (
-        <>
+        <div id='zero2' className='onStep fadeIn mn-h-300px'>
             {
                 !loaded && <PremiumNFTLoading/>
             }
@@ -84,6 +84,6 @@ export default function CollectedNFT() {
             </InfiniteScroll>
 
             { loaded && !nfts.length && <Empty/>}
-        </>
+        </div>
     )
 }

@@ -1,17 +1,12 @@
 import React, { useState, lazy } from "react";
 import { createGlobalStyle } from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { useDispatch } from "react-redux";
 import { UPDATE_AUTH } from "../../store/action/auth.action";
 import { WalletConnect } from "../../store/action/wallet.action";
 
-const SellingNFT = lazy(() => import('../components/Profile/SellingNFT/SellingNFT'));
-const CollectedNFT = lazy(() => import('../components/Profile/Collected/CollectedNFT'));
 const Avatar = lazy(() => import("../components/Profile/avatar"));
 const UserInfo = lazy(() => import("../components/Profile/userInfo"));
-const Mint = lazy(() => import( "../components/Profile/Mint/Mint"));
-const Bid = lazy(() => import( "../components/Profile/Bid/Bid"));
-const ManageInfo = lazy(() => import("../components/Profile/manageInfo"));
 const Footer = lazy(() => import('../components/footer'));
 
 const GlobalStyles = createGlobalStyle`
@@ -124,42 +119,54 @@ const Profile = function() {
             <div className='col-lg-12'>
                 <div className="items_filter">
                   <ul className="de_nav text-md-start text-center">
-                    <li id='Mainbtn' className={activeTab == 0 ? 'active mt-1' : 'mt-1'}><span onClick={() => setActiveTab(0)}>On Sale</span></li>
-                    <li id='Mainbtn1' className={activeTab == 1 ? 'active mt-1' : 'mt-1'}><span onClick={() => setActiveTab(1)}>Collected</span></li>
-                    <li id='Mainbtn2' className={activeTab == 2 ? 'active mt-1' : 'mt-1'}><span onClick={() => setActiveTab(2)}>User Info</span></li>
-                    <li id='Mainbtn3' className={activeTab == 3 ? 'active mt-1' : 'mt-1'}><span onClick={() => setActiveTab(3)}>Bids</span></li>
-                    <li id='Mainbtn4' className={activeTab == 4 ? 'active mt-1' : 'mt-1'}><span onClick={() => setActiveTab(4)}>Mint</span></li>
+                    <li
+                      id='Mainbtn'
+                      className={activeTab == 0 ? 'active mt-1' : 'mt-1'}
+                    >
+                      <span
+                        onClick={() => { navigate(''); setActiveTab(0); }}
+                      >On Sale</span></li>
+                    <li
+                      id='Mainbtn1'
+                      className={activeTab == 1 ? 'active mt-1' : 'mt-1'}
+                    >
+                      <span
+                        onClick={() => { navigate('collected'); setActiveTab(1); }}
+                      >Collected</span></li>
+                    <li
+                      id='Mainbtn2'
+                      className={activeTab == 2 ? 'active mt-1' : 'mt-1'}
+                    >
+                      <span
+                        onClick={() => { navigate('userinfo'); setActiveTab(2); }}
+                      >User Info</span></li>
+                    <li
+                      id='Mainbtn3'
+                      className={activeTab == 3 ? 'active mt-1' : 'mt-1'}
+                    >
+                      <span
+                        onClick={() => { navigate('bids'); setActiveTab(3); }}
+                      >Bids</span></li>
+                    <li
+                      id='Mainbtn4'
+                      className={activeTab == 4 ? 'active mt-1' : 'mt-1'}
+                    >
+                      <span
+                        onClick={() => { navigate('mint'); setActiveTab(4); }}
+                      >Mint</span></li>
+                    <li
+                      id='Mainbtn5'
+                      className={activeTab == 5 ? 'active mt-1' : 'mt-1'}
+                    >
+                      <span
+                        onClick={() => { navigate('folders'); setActiveTab(5); }}
+                      >Folders</span></li>
                   </ul>
               </div>
             </div>
           </div>
 
-          {
-              activeTab == 0 && (
-                <div id='zero1' className='onStep fadeIn mn-h-300px'>
-                  <SellingNFT/>
-                </div>
-              )
-          }
-          {
-              activeTab == 1  && (
-                <div id='zero2' className='onStep fadeIn mn-h-300px'>
-                  <CollectedNFT/>
-                </div>
-              )
-          }
-
-          {
-            activeTab == 2 && <ManageInfo/>
-          }
-
-          {
-            activeTab == 3 && <Bid/>
-          }
-
-          {
-            activeTab == 4 && <Mint/>
-          }
+          <Outlet/>
         </section>
 
         <Footer />

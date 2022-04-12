@@ -44,7 +44,7 @@ export default function Mint() {
     const [isBulk, setIsBulk] = useState(true);
     
     return (
-        <>
+        <div id='zero5' className='onStep fadeIn mn-h-300px'>
             <GlobalStyles/>
             <div className="d-flex align-items-center justify-content-end">
                 <span className={!isBulk ? "text-light text-bold" : ""}>Single Mint</span>
@@ -76,6 +76,6 @@ export default function Mint() {
                     <Single/>
                 </div>
             }
-        </>
+        </div>
     )
 }

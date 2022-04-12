@@ -1,6 +1,6 @@
 import React, { lazy, Suspense, useEffect } from 'react';
 import axios from 'axios';
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Navigate, Route, Routes } from "react-router-dom";
 import { createGlobalStyle } from 'styled-components';
 import { ToastContainer } from 'react-toastify';
 import { useSelector, useDispatch } from "react-redux";
@@ -22,8 +22,14 @@ const Activity = lazy(() => import('./pages/activity'));
 const FolderItems = lazy(() => import('./pages/folderNFTs'));
 const Profile = lazy(() => import('./pages/Profile'));
 const NotFound = lazy(() => import('./components/404'));
-const Users = lazy(() => import( './pages/Users'));
-const BidView = lazy(() => import( './components/Profile/Bid/BidView'));
+const Users = lazy(() => import('./pages/Users'));
+const BidView = lazy(() => import('./components/Profile/Bid/BidView'));
+const SellingNFT = lazy(() => import('./components/Profile/SellingNFT/SellingNFT'));
+const CollectedNFT = lazy(() => import('./components/Profile/Collected/CollectedNFT'));
+const ManageInfo = lazy(() => import('./components/Profile/manageInfo'));
+const Bid = lazy(() => import('./components/Profile/Bid/Bid'));
+const Mint = lazy(() => import('./components/Profile/Mint/Mint'));
+const FolderList = lazy(() => import('./components/Profile/Folders'));
 const VerifyAccount = lazy(() => import('./pages/verify'));
 
 const GlobalStyles = createGlobalStyle`
@@ -44,13 +50,14 @@ const app = () => {
     if (jwtToken) {
       await axios.post(`${process.env.REACT_APP_BACKEND}auth/check-authentication`, {}, { headers :{ Authorization: JSON.parse(jwtToken) } }).then(res => {
         const { data } = res;
-        dispatch(UPDATE_LOADING_PROCESS(false));
         dispatch(UPDATE_AUTH(data ? data : {walletAddress: ''}));
-      }).catch((err) => {
         dispatch(UPDATE_LOADING_PROCESS(false));
+      }).catch((err) => {
         dispatch(UPDATE_AUTH({
           walletAddress: ''
         }));
+        dispatch(UPDATE_LOADING_PROCESS(false));
+
       })
     }
 
@@ -66,6 +73,7 @@ const app = () => {
     return (
       <Loading/>
     )
+    console.log(userData, loadingProcessing);
   return (
     <div className="wraper">
       <GlobalStyles />
@@ -86,9 +94,17 @@ const app = () => {
                 <Route path="/activity" element={<Activity/>}/>
                 <Route path="/users" element={<Users/>}/>
                 <Route path="/folder-explorer/:id" element={<FolderItems/>}/>
-                <Route path={Object.keys(userData).length > 2 ? "/profile" : "/404"} element={Object.keys(userData).length > 2 ? <Profile/>: <NotFound/>}/>
+                <Route path='profile' element={Object.keys(userData).length > 2 ? <Profile/> : <Navigate replace to="/404"/>}>
+                  <Route index element={<SellingNFT/>}/>
+                  <Route path="collected" element={<CollectedNFT/>}/>
+                  <Route path="userinfo" element={<ManageInfo/>}/>
+                  <Route path="bids" element={<Bid/>}/>
+                  <Route path="mint" element={<Mint/>}/>
+                  <Route path="folders" element={<FolderList/>}/>
+                </Route>
                 <Route path="/user/:username" element={<Collection/>}/>
                 <Route path="/explore-bids/:tokenID" element={<BidView/>}/>
+                <Route path='*' element={<NotFound/>}/>
             </Routes>
           </Suspense>
         </Router>
