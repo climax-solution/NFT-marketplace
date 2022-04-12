@@ -10,33 +10,31 @@ const PremiumNFTLoading = lazy(() => import("../../Loading/PremiumNFTLoading"));
 export default function FolderList() {
 
     const [folderList, setFolderList] = useState([]);
-    const [restList, setRestList] = useState([{},{}]);
+    const [restList, setRestList] = useState([]);
     const [loaded, setLoaded] = useState(false);
 
     const initialUser = useSelector(({ auth }) => auth.user);
-    const [folders, setFolders] = useState([]);
 
     useEffect(async() => {
         const headers = JSON.parse(localStorage.getItem('nftdevelopments-token'));
         await axios.post(`${process.env.REACT_APP_BACKEND}folder/get-folder-list`, {artist: initialUser.username}).then(res => {
             const { list } = res.data;
             setRestList(list);
+            setFolderList([]);
+            setLoaded(true);
         }).catch(err => {
-
+            setRestList([]);
+            setFolderList([]);
+            setLoaded(true);
         })
-        setFolderList([]);
-        setLoaded(true);
+        
     }, []);
 
-    // useEffect(async() => {
-    //     setFolderList([]);
-    //     setRestList(data);
-    //     setLoaded(true);
-    // },[data])
-    
     useEffect(async() => {
-        if (loaded) await fetchFolders();
-    },[restList])
+        if (loaded) {
+            await fetchFolders();
+        }
+    },[restList, loaded])
 
     const fetchFolders = async() => {
         let list = restList;
@@ -51,10 +49,8 @@ export default function FolderList() {
         setLoaded(false);
     }
     
-    console.log(folderList, restList);
-
     return (
-        <>
+        <div id='zero5' className='onStep fadeIn mn-h-300px'>
             <InfiniteScroll
                 dataLength={folderList.length}
                 next={fetchFolders}
@@ -67,6 +63,6 @@ export default function FolderList() {
                 ))}
             </InfiniteScroll>
             {!folderList.length && !restList.length && <Empty/>}
-        </>
+        </div>
     )
 }

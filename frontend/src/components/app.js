@@ -73,7 +73,7 @@ const app = () => {
     return (
       <Loading/>
     )
-    console.log(userData, loadingProcessing);
+    
   return (
     <div className="wraper">
       <GlobalStyles />
