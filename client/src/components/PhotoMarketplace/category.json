@@ -1,7 +1,0 @@
-[
-    { "value": "", "label": "All" },
-    { "value": "physical", "label": "Physical Assets" },
-    { "value": "digital", "label": "Digital Assets" },
-    { "value": "art", "label": "Art" },
-    { "value": "music", "label": "Music" }
-]
