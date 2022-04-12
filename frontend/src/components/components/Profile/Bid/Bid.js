@@ -47,9 +47,9 @@ export default function() {
     }
 
     return (
-        <div className="row">
+        <div id='zero4' className='onStep fadeIn mn-h-300px'>
             {
-                isLoading ? <PremiumNFTLoading/>:
+                isLoading ? <div className="row"><PremiumNFTLoading/></div>:
                 <>
                     <InfiniteScroll
                         dataLength={nfts.length}

@@ -73,7 +73,7 @@ export default function SellingNFT() {
     }
     
     return (
-        <>
+        <div id='zero1' className='onStep fadeIn mn-h-300px'>
             <InfiniteScroll
                 dataLength={nfts.length}
                 next={fetchNFT}
@@ -86,6 +86,6 @@ export default function SellingNFT() {
                 ))}
             </InfiniteScroll>
             { !loaded ? <PremiumNFTLoading/> : (!nfts.length && <Empty/>) }
-        </>
+        </div>
     )
 }
