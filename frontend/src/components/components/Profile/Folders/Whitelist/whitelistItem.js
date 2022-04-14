@@ -20,10 +20,13 @@ const GlobalStyles = createGlobalStyle`
                 height: 60px;
             }
         }
+        .scaleX--1 {
+            transform: scaleX(-1);
+        }
     }
 `;
 
-export default function WhitelistItem({ avatar, name, username }) {
+export default function WhitelistItem({ avatar, name, username, isWhite }) {
     return (
         <>
             <GlobalStyles/>
@@ -39,7 +42,10 @@ export default function WhitelistItem({ avatar, name, username }) {
                         <span className="user-name text-danger">@{username}</span>
                     </div>
                 </div>
-                <button className="btn btn-main">Add</button>
+                {
+                    isWhite ? <button className="btn-main scaleX--1"><i className="fa fa-reply"/></button>
+                    : <button className="btn-main btn-green"><i className="fa fa-reply"/></button>
+                }
             </div>
         </>
     )
