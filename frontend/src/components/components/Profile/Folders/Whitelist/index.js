@@ -25,6 +25,26 @@ const GlobalStyles = createGlobalStyle`
             display: flex;
             flex-direction: column;
             grid-gap: 10px;
+
+            /* width */
+            ::-webkit-scrollbar {
+                width: 10px;
+            }
+
+            /* Track */
+            ::-webkit-scrollbar-track {
+                background: #f1f1f1; 
+            }
+            
+            /* Handle */
+            ::-webkit-scrollbar-thumb {
+                background: #888; 
+            }
+
+            /* Handle on hover */
+            ::-webkit-scrollbar-thumb:hover {
+                background: #555; 
+            }
         }
     }
 
@@ -48,12 +68,19 @@ export default function Whitelist() {
     const [whitelist, setWhitelist] = useState([]);
     const [folderinfo, setFolderInfo] = useState([]);
     const [unWhitelist, setUnWhitelist] = useState([]);
+
+    const [orgWhitelist, setOrgWhiteList] = useState([]);
+    const [orgUnWhiteList, setOrgUnWhiteList] = useState([]);
+
     const [isLoading, setLoading] = useState(true);
 
     useEffect(async() =>{
         await axios.post(`${process.env.REACT_APP_BACKEND}folder/get-private-folder-info`, {folderID}).then(res => {
             const { whiteList, restList, folderInfo } = res.data;
             console.log(restList, whiteList);
+            setOrgWhiteList(whiteList);
+            setOrgUnWhiteList(restList);
+
             setWhitelist(whiteList);
             setUnWhitelist(restList);
             setFolderInfo(folderInfo);
@@ -62,6 +89,20 @@ export default function Whitelist() {
         })
         setLoading(false);
     }, []);
+
+    const filterWhiteList = (e) => {
+        const kwd = (e.target.value).toLowerCase().trim();
+        let _list = [...orgWhitelist];
+        if (kwd) _list = _list.filter(item => item.name.indexOf(kwd) > -1 || item.username.indexOf(kwd) > -1 );
+        setWhitelist(_list);
+    }
+
+    const filterUnWhiteList = (e) => {
+        const kwd = (e.target.value).toLowerCase().trim();
+        let _list = [...orgUnWhiteList];
+        if (kwd) _list = _list.filter(item => item.name.indexOf(kwd) > -1 || item.username.indexOf(kwd) > -1 );
+        setUnWhitelist(_list);
+    }
 
     return (
         <div className="container">
@@ -76,6 +117,7 @@ export default function Whitelist() {
                         <input
                             className="form-control"
                             placeholder="Search user"
+                            onChange={filterWhiteList}
                         />
                     </div>
                     <div className="whitelist list">
@@ -83,14 +125,15 @@ export default function Whitelist() {
                             isLoading ? <WhiteListLoading/>
                             : <>
                             {
-                                !unWhitelist.length ? <p>No items to display</p>
+                                !whitelist.length ? <p>No items to display</p>
                                 : (
-                                    unWhitelist.map((item, index) => (
+                                    whitelist.map((item, index) => (
                                         <WhitelistItem
                                             avatar={item.avatar}
                                             name={item.name}
                                             username={item.username}
                                             isWhite={true}
+                                            userID={item._id}
                                             key={index}
                                         />
                                     ))
@@ -112,6 +155,7 @@ export default function Whitelist() {
                         <input
                             className="form-control"
                             placeholder="Search user"
+                            onChange={filterUnWhiteList}
                         />
                     </div>
                     <div className="un-whitelist list">
@@ -127,6 +171,7 @@ export default function Whitelist() {
                                             name={item.name}
                                             username={item.username}
                                             isWhite={false}
+                                            userID={item._id}
                                             key={index}
                                         />
                                     ))

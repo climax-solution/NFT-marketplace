@@ -1,4 +1,7 @@
+import axios from "axios";
+import { useParams } from "react-router-dom";
 import { createGlobalStyle } from "styled-components"
+import { error_toastify, success_toastify } from "../../../../../utils/notify";
 
 const GlobalStyles = createGlobalStyle`
     .whitelist-item {
@@ -26,7 +29,30 @@ const GlobalStyles = createGlobalStyle`
     }
 `;
 
-export default function WhitelistItem({ avatar, name, username, isWhite }) {
+export default function WhitelistItem({ userID, avatar, name, username, isWhite }) {
+
+    const { folderID } = useParams();
+
+    const updateUser = async() => {
+        const api = `${process.env.REACT_APP_BACKEND}folder/${isWhite ? "remove-user-from-whitelist" : "add-user-to-whitelist" }`;
+        
+        const data = {
+            folderID, user: userID    
+        };
+
+        const jwtToken = localStorage.getItem("nftdevelopments-token");
+        const _headers = { headers :{ Authorization: JSON.parse(jwtToken) } };
+
+        await axios.post(api, data, _headers).then(res => {
+            const { message } = res.data;
+            success_toastify(message);
+        }).catch(err => {
+            console.log(err.response);
+            // const { error } = err.response.data;
+            // error_toastify(error);
+        });
+    }
+
     return (
         <>
             <GlobalStyles/>
@@ -43,8 +69,8 @@ export default function WhitelistItem({ avatar, name, username, isWhite }) {
                     </div>
                 </div>
                 {
-                    isWhite ? <button className="btn-main scaleX--1"><i className="fa fa-reply"/></button>
-                    : <button className="btn-main btn-green"><i className="fa fa-reply"/></button>
+                    isWhite ? <button className="btn-main scaleX--1" onClick={updateUser}><i className="fa fa-reply"/></button>
+                    : <button className="btn-main btn-green" onClick={updateUser}><i className="fa fa-reply"/></button>
                 }
             </div>
         </>
