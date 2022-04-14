@@ -17,14 +17,7 @@ const GlobalStyles = createGlobalStyle`
   .nft__item {
     height: calc(100% - 20px);
   }
-
-  .btn-apply {
-    background: #3fb737;
-  }
-
-  .btn-apply:hover {
-      box-shadow: 2px 2px 20px 0px #3fb737;
-  }
+ 
 
   .groups {
       display: grid;

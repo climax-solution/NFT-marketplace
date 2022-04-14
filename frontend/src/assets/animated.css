@@ -288,3 +288,11 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 .bg-dark-transparent {
   background-color: rgba(0, 0, 0, 0.3);
 }
+
+.btn-apply, .btn-green {
+  background: #3fb737 !important;
+}
+
+.btn-apply:hover, .btn-green:hover {
+  box-shadow: 2px 2px 20px 0px #3fb737 !important;
+}

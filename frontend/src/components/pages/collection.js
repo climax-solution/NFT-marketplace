@@ -13,13 +13,6 @@ const Empty = lazy(() => import("../components/Empty"));
 const Loading = lazy(() => import("../components/Loading/Loading"));
 
 const GlobalStyles = createGlobalStyle`
-    .btn-apply {
-      background: #3fb737;
-    }
-
-    .btn-apply:hover {
-      box-shadow: 2px 2px 20px 0px #3fb737;
-    }
     .groups {
       display: grid;
       grid-template-columns: auto auto;
