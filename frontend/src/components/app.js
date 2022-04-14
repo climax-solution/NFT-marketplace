@@ -31,6 +31,7 @@ const Bid = lazy(() => import('./components/Profile/Bid/Bid'));
 const Mint = lazy(() => import('./components/Profile/Mint/Mint'));
 const FolderList = lazy(() => import('./components/Profile/Folders'));
 const VerifyAccount = lazy(() => import('./pages/verify'));
+const Whitelist = lazy(() => import('./components/Profile/Folders/Whitelist'));
 
 const GlobalStyles = createGlobalStyle`
   :root {
@@ -101,6 +102,7 @@ const app = () => {
                   <Route path="bids" element={<Bid/>}/>
                   <Route path="mint" element={<Mint/>}/>
                   <Route path="folders" element={<FolderList/>}/>
+                  <Route path="folders/manage-whitelist/:folderID" element={<Whitelist/>}/>
                 </Route>
                 <Route path="/user/:username" element={<Collection/>}/>
                 <Route path="/explore-bids/:tokenID" element={<BidView/>}/>

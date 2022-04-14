@@ -8,8 +8,7 @@ const Whitelist = Schema({
     },
     folderID: {
         type: String
-    },
-    timestamps: true
-});
+    }
+}, {timestamps: true});
 
 module.exports = Mongoose.model('Whitelist', Whitelist);
