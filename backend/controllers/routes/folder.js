@@ -259,4 +259,25 @@ router.post('/add-user-to-whitelist', async(req, res) => {
     }
 });
 
+router.post('/get-private-folder-info', async(req, res) => {
+    try {
+        const { folderID } = req.body;
+        const whiteList = await WhitelistSchema.find({ folderID });
+        let whiteID = [];
+        whiteList.map(item => {
+            whiteID.push(item._id);
+        });
+        const restList = await UserSchema.find({ _id: { $nin: whiteID }});
+        res.status(200).json({
+            whiteList,
+            restList
+        })
+    } catch (err) {
+        console.log(err);
+        res.status(400).json({
+            error : "Your request is restricted"
+        });
+    }
+});
+
 module.exports = router;

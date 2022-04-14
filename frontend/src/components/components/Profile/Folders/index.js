@@ -2,6 +2,7 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import React, { useState, useEffect, lazy } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { Outlet } from "react-router-dom";
 
 const Empty = lazy(() => import("../../Empty"));
 const Folder = lazy(() => import("./Item"));
@@ -63,6 +64,7 @@ export default function FolderList() {
                 ))}
             </InfiniteScroll>
             {!folderList.length && !restList.length && <Empty/>}
+            <Outlet/>
         </div>
     )
 }
