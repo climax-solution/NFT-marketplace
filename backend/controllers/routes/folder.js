@@ -3,6 +3,7 @@ const FolderSchema = require('../../models/folders');
 const NFTSchema = require('../../models/nfts');
 const SaleSchema = require('../../models/sale');
 const UserSchema = require('../../models/users');
+const WhitelistSchema = require('../../models/whitelist');
 const mongoose = require('mongoose');
 const checkAuth = require('../../helpers/auth');
 
@@ -262,6 +263,7 @@ router.post('/add-user-to-whitelist', async(req, res) => {
 router.post('/get-private-folder-info', async(req, res) => {
     try {
         const { folderID } = req.body;
+        const folderInfo = await FolderSchema.findById(folderID);
         const whiteList = await WhitelistSchema.find({ folderID });
         let whiteID = [];
         whiteList.map(item => {
@@ -270,7 +272,8 @@ router.post('/get-private-folder-info', async(req, res) => {
         const restList = await UserSchema.find({ _id: { $nin: whiteID }});
         res.status(200).json({
             whiteList,
-            restList
+            restList,
+            folderInfo
         })
     } catch (err) {
         console.log(err);
