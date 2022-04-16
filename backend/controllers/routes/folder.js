@@ -260,14 +260,61 @@ router.post('/add-user-to-whitelist', async(req, res) => {
     }
 });
 
+router.post('/remove-user-from-whitelist', async(req, res) => {
+    try {
+        const token = await checkAuth(req);
+        if (!token) {
+            return res.status(400).json({
+                error: 'Session expired'
+            });
+        }
+        const { id } = token;
+        const result = await UserSchema.findById(id);
+        if (!result) {
+            return res.status(400).json({
+                error: "not existing user"
+            });
+        }
+        const { folderID, user } = req.body;
+
+        const folder = await FolderSchema.findById(folderID);
+        if (folder && folder.isPulic) {
+            return res.status(400).json({
+                error: "This folder was moved to public"
+            });
+        }
+
+        const isSetted = await WhitelistSchema.findOne({ user, folderID });
+        if (isSetted) {
+            await WhitelistSchema.deleteOne({ user, folderID });
+            res.status(200).json({
+                message: "Removed from whitelist"
+            });
+        }
+
+        else {
+            res.status(400).json({
+                message: "No user exist"
+            });
+        }
+    } catch(err) {
+        res.status(400).json({
+            error: "Your request is restricted"
+        });
+    }
+});
+
 router.post('/get-private-folder-info', async(req, res) => {
     try {
         const { folderID } = req.body;
         const folderInfo = await FolderSchema.findById(folderID);
-        const whiteList = await WhitelistSchema.find({ folderID });
+        const savedList = await WhitelistSchema.find({ folderID });
         let whiteID = [];
-        whiteList.map(item => {
-            whiteID.push(item._id);
+        const whiteList = [];
+        savedList.map(item => {
+            whiteID.push(item.user);
+            const user = UserSchema.findById(item.user);
+            whiteList.push(user);
         });
         const restList = await UserSchema.find({ _id: { $nin: whiteID }});
         res.status(200).json({
