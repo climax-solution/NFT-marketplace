@@ -29,7 +29,8 @@ const CollectedNFT = lazy(() => import('./components/Profile/Collected/Collected
 const ManageInfo = lazy(() => import('./components/Profile/manageInfo'));
 const Bid = lazy(() => import('./components/Profile/Bid/Bid'));
 const Mint = lazy(() => import('./components/Profile/Mint/Mint'));
-const FolderList = lazy(() => import('./components/Profile/Folders'));
+const ManageFolder = lazy(() => import('./components/Profile/Folders'));
+const FolderList = lazy(() => import('./components/Profile/Folders/Folderlist'));
 const VerifyAccount = lazy(() => import('./pages/verify'));
 const Whitelist = lazy(() => import('./components/Profile/Folders/Whitelist'));
 
@@ -101,8 +102,10 @@ const app = () => {
                   <Route path="userinfo" element={<ManageInfo/>}/>
                   <Route path="bids" element={<Bid/>}/>
                   <Route path="mint" element={<Mint/>}/>
-                  <Route path="folders" element={<FolderList/>}/>
-                  <Route path="folders/manage-whitelist/:folderID" element={<Whitelist/>}/>
+                  <Route path="folders" element={<ManageFolder/>}>
+                    <Route index element={<FolderList/>}/>
+                    <Route path="manage-whitelist/:folderID" element={<Whitelist/>}/>
+                  </Route>
                 </Route>
                 <Route path="/user/:username" element={<Collection/>}/>
                 <Route path="/explore-bids/:tokenID" element={<BidView/>}/>

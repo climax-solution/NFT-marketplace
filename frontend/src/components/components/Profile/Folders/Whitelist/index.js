@@ -73,8 +73,10 @@ export default function Whitelist() {
     const [orgUnWhiteList, setOrgUnWhiteList] = useState([]);
 
     const [isLoading, setLoading] = useState(true);
+    const [updated, setUpdated] = useState(false);
 
     useEffect(async() =>{
+        setLoading(true);
         await axios.post(`${process.env.REACT_APP_BACKEND}folder/get-private-folder-info`, {folderID}).then(res => {
             const { whiteList, restList, folderInfo } = res.data;
             console.log(restList, whiteList);
@@ -88,7 +90,7 @@ export default function Whitelist() {
 
         })
         setLoading(false);
-    }, []);
+    }, [updated]);
 
     const filterWhiteList = (e) => {
         const kwd = (e.target.value).toLowerCase().trim();
@@ -134,6 +136,8 @@ export default function Whitelist() {
                                             username={item.username}
                                             isWhite={true}
                                             userID={item._id}
+                                            update={() => setUpdated(!updated)}
+                                            activeLoading={setLoading}
                                             key={index}
                                         />
                                     ))
@@ -172,6 +176,8 @@ export default function Whitelist() {
                                             username={item.username}
                                             isWhite={false}
                                             userID={item._id}
+                                            update={() => setUpdated(!updated)}
+                                            activeLoading={setLoading}
                                             key={index}
                                         />
                                     ))
