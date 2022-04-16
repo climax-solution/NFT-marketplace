@@ -2,10 +2,10 @@ import { lazy, useEffect, useState } from "react";
 import axios from "axios";
 import { createGlobalStyle } from 'styled-components';
 import { useNavigate } from "react-router-dom";
-import getWeb3 from "../../../../utils/getWeb3";
-import Art from "../../Asset/art";
+import getWeb3 from "../../../../../utils/getWeb3";
+import Art from "../../../Asset/art";
 
-const ItemLoading = lazy(() => import("../../Loading/ItemLoading"));
+const ItemLoading = lazy(() => import("../../../Loading/ItemLoading"));
 
 const GlobalStyles = createGlobalStyle`
    .react-loading-skeleton {
@@ -54,6 +54,8 @@ const Folder = ({ folderID }) => {
                 const tokenURI = await instanceNFT.methods.tokenURI(initialNFT.tokenID).call();
                 initNFTData = await axios.get(tokenURI).then(result => {
                     return result.data;
+                }).catch(err => {
+                    return {};
                 });
             }
             return { ...list, ...initNFTData};

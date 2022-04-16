@@ -29,11 +29,12 @@ const GlobalStyles = createGlobalStyle`
     }
 `;
 
-export default function WhitelistItem({ userID, avatar, name, username, isWhite }) {
+export default function WhitelistItem({ userID, avatar, name, username, isWhite, update, activeLoading }) {
 
     const { folderID } = useParams();
 
     const updateUser = async() => {
+        activeLoading(true);
         const api = `${process.env.REACT_APP_BACKEND}folder/${isWhite ? "remove-user-from-whitelist" : "add-user-to-whitelist" }`;
         
         const data = {
@@ -47,10 +48,11 @@ export default function WhitelistItem({ userID, avatar, name, username, isWhite 
             const { message } = res.data;
             success_toastify(message);
         }).catch(err => {
-            console.log(err.response);
+            console.log(JSON.parse(JSON.stringify(err)));
             // const { error } = err.response.data;
-            // error_toastify(error);
+        // error_toastify(error);
         });
+        update();
     }
 
     return (
