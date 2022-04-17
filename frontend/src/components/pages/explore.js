@@ -92,7 +92,7 @@ const explore = () => {
 
   const filterFolder = async() => {
     setLoading(true);
-    let gradList = await axios.post(`${process.env.REACT_APP_BACKEND}folder/get-sale-folder-list`, {user: initialUser.username}).then(res => {
+    let gradList = await axios.post(`${process.env.REACT_APP_BACKEND}folder/get-sale-folder-list`, {user: initialUser?.username ? initialUser.username: ""}).then(res => {
       return res.data.list;
     }).catch(err => {
       return [];

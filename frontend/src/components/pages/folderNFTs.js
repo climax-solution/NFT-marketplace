@@ -51,7 +51,7 @@ const folderNFTs = () => {
 
     const getInitNFTs = async() => {
         const { id } = params;
-        let gradList = await axios.post(`${process.env.REACT_APP_BACKEND}folder/get-folder-detail`, { folderID: id, user: initialUser.username}).then(res => {
+        let gradList = await axios.post(`${process.env.REACT_APP_BACKEND}folder/get-folder-detail`, { folderID: id, user: initialUser?.username ? initialUser.username : ""}).then(res => {
             let { list, artist: _artist, description: _desc } = res.data;
             setArtist(_artist);
             setDescription(_desc);

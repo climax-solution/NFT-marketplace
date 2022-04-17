@@ -109,6 +109,7 @@ export default function() {
 
             const ipfs = new ipfsAPI('ipfs.infura.io', 5001, {protocol: 'https'});
             const _existed = await ipfs.get(folderHash);
+            console.log(_existed);
             let nftCount = _existed.length - 1;
 
             if (nftCount < count) {
@@ -140,7 +141,7 @@ export default function() {
             await axios.post(`${process.env.REACT_APP_BACKEND}folder/create-new-items`, newData).then(res => {
 
             }).catch(err => {
-                
+                console.log(err);
             });
             success_toastify("Mint success");
         } catch(err) {
