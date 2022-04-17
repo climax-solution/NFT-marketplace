@@ -29,7 +29,7 @@ const GlobalStyles = createGlobalStyle`
     }
 `;
 
-export default function WhitelistItem({ userID, avatar, name, username, isWhite, update, activeLoading }) {
+export default function WhitelistItem({ avatar, name, username, isWhite, update, activeLoading }) {
 
     const { folderID } = useParams();
 
@@ -38,7 +38,7 @@ export default function WhitelistItem({ userID, avatar, name, username, isWhite,
         const api = `${process.env.REACT_APP_BACKEND}folder/${isWhite ? "remove-user-from-whitelist" : "add-user-to-whitelist" }`;
         
         const data = {
-            folderID, user: userID    
+            folderID, user: username    
         };
 
         const jwtToken = localStorage.getItem("nftdevelopments-token");

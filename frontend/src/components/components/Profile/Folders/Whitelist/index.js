@@ -136,7 +136,6 @@ export default function Whitelist() {
                                             name={item.name}
                                             username={item.username}
                                             isWhite={true}
-                                            userID={item._id}
                                             update={() => setUpdated(!updated)}
                                             activeLoading={setLoading}
                                             key={index}
@@ -176,7 +175,6 @@ export default function Whitelist() {
                                             name={item.name}
                                             username={item.username}
                                             isWhite={false}
-                                            userID={item._id}
                                             update={() => setUpdated(!updated)}
                                             activeLoading={setLoading}
                                             key={index}
