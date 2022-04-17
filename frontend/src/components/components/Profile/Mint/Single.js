@@ -37,7 +37,7 @@ const customStyles = {
 
 const GlobalStyles = createGlobalStyle`
     .nft-art {
-        padding: 40px 0;
+        padding: 20px 0;
         border: solid 1px rgba(255, 255, 255, 0.1);
         border-radius: 6px;
     }
@@ -285,7 +285,7 @@ export default function() {
                 <div className="nft__item p-5 position-relative">
                     <span className='d-block mb-2 text-white'>Mint Single NFT</span>
                     <div className='field-set cursor-pointer my-2'>
-                        <label className={`${assetStatus ? "border-danger text-danger" : ""} text-center nft-art d-block`}>
+                        <label className={`${assetStatus ? "border-danger text-danger" : ""} w-100 btn-main text-center nft-art d-block`}>
                             Please choose NFT art
                             <input
                                 type="file"
