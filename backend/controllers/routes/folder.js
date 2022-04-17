@@ -135,7 +135,7 @@ router.post('/get-sale-folder-list', async(req, res) => {
 
         for (let i = list.length - 1; i >= 0; i --) {
             if (!list[i].isPublic && list[i].artist != user.toLowerCase()) {
-                const whiteItem = await WhitelistSchema.findOne({ user, folderID: list._id});
+                const whiteItem = await WhitelistSchema.findOne({ user, folderID: list[i]._id});
                 if (!whiteItem) list.splice(i, 1);
             }
         }
