@@ -4,6 +4,7 @@ import { createGlobalStyle } from 'styled-components';
 import { useNavigate } from "react-router-dom";
 import getWeb3 from "../../../../../utils/getWeb3";
 import Art from "../../../Asset/art";
+import { error_toastify, success_toastify } from "../../../../../utils/notify";
 
 const ItemLoading = lazy(() => import("../../../Loading/ItemLoading"));
 
@@ -28,6 +29,9 @@ const GlobalStyles = createGlobalStyle`
         grid-gap: 10px;
         justify-content: center;
         align-items: center;
+        button {
+            width: 200px;
+        }
         .btn:before {
             background-image: none !important;
         }
@@ -42,7 +46,7 @@ const Folder = ({ folderID }) => {
 
     const navigate = useNavigate();
 
-    const [nft, setNFT] = useState({});
+    const [folder, setNFT] = useState({});
     const [loading, setLoading] = useState(true);
 
     useEffect(async() => {
@@ -66,39 +70,65 @@ const Folder = ({ folderID }) => {
         setLoading(false);
     },[folderID])
 
-    console.log(nft, loading);
+    const updateFolder = async(status) => {
+        setLoading(true);
+        const jwtToken = localStorage.getItem("nftdevelopments-token");
+        const _headers = { headers :{ Authorization: JSON.parse(jwtToken) } };
+        const data = {
+            folderID, status
+        };
+        await axios.post(`${process.env.REACT_APP_BACKEND}folder/convert-folder-type`, data, _headers).then(res => {
+            const { message } = res.data;
+            success_toastify(message);
+            setNFT({ ...folder, isPublic: status});
+        }).catch(err => {
+            const { error } = err.response.data;
+            error_toastify(error);
+        });
+        setLoading(false);
+    }
+
     return (
         <>
             <GlobalStyles/>
             {
                 loading ? <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4"><ItemLoading/></div>
                 : (
-                    Object.keys(nft).length ? (
+                    Object.keys(folder).length ? (
                         <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4">
                             <div className="nft__item folder-item m-0 pb-4 h-100 justify-content-between">
                                 <div className="nft__item_wrap w-100 ratio-1x1">
                                     <Art
-                                        tokenID={nft.tokenID}
-                                        image={nft.image}
-                                        asset={nft.asset}
-                                        redirect={() => navigate(`/folder-explorer/${nft.folder._id}`)}
-                                        type={nft.type}
+                                        tokenID={folder.tokenID}
+                                        image={folder.image}
+                                        asset={folder.asset}
+                                        redirect={() => navigate(`/folder-explorer/${folder.folder._id}`)}
+                                        type={folder.type}
                                     />
                                 </div>
                                 <div className="nft__item_info mb-0 mt-1">
                                     <span>
                                         <h4>
-                                            <span onClick={() => navigate(`/folder-explorer/${nft.folder._id}`)} className="text-white">{nft.folder.name}</span></h4>
+                                            <span onClick={() => navigate(`/folder-explorer/${folder.folder._id}`)} className="text-white">{folder.folder.name}</span></h4>
                                     </span>
                                 </div>
                                 <div className="btn-group-overlay">
                                     {
-                                        !nft.isPublic ? 
+                                        !folder.isPublic ? 
                                         <>
-                                            <button className="btn btn-success">Make To Public</button>
-                                            <button className="btn btn-success">Manage User</button>
+                                            <button
+                                                className="btn btn-success"
+                                                onClick={() => updateFolder(true)}
+                                            >Make To Public</button>
+                                            <button
+                                                className="btn btn-success"
+                                                onClick={() => navigate('manage-whitelist/'+folderID)}
+                                            >Manage User</button>
                                         </>
-                                        : <button className="btn btn-success">Make To Private</button>
+                                        : <button
+                                            className="btn btn-success"
+                                            onClick={() => updateFolder(false)}
+                                        >Make To Private</button>
                                     }
                                 </div>
                             </div>
