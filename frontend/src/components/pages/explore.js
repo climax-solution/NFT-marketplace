@@ -3,6 +3,7 @@ import Select from 'react-select';
 import { createGlobalStyle } from 'styled-components';
 import categoryOptions from "../../config/category.json";
 import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 const FolderList = lazy(() => import('../components/Explore/FolderList'));
 const Footer = lazy(() => import('../components/footer'));
@@ -77,6 +78,8 @@ const GlobalStyles = createGlobalStyle`
 `;
 
 const explore = () => {
+
+  const initialUser = useSelector(({ auth }) => auth.user);
   const [folderList, setFolderList] = useState([]);
   const [activeCategory, setCategory] = useState({ value:'', label: 'All categories' });
   const [searchKwd, setRealKwd] = useState('');
@@ -89,7 +92,7 @@ const explore = () => {
 
   const filterFolder = async() => {
     setLoading(true);
-    let gradList = await axios.post(`${process.env.REACT_APP_BACKEND}folder/get-sale-folder-list`).then(res => {
+    let gradList = await axios.post(`${process.env.REACT_APP_BACKEND}folder/get-sale-folder-list`, {user: initialUser.username}).then(res => {
       return res.data.list;
     }).catch(err => {
       return [];

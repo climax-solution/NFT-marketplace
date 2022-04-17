@@ -1,10 +1,11 @@
 import React, {  lazy, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import getWeb3 from "../../utils/getWeb3";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { createGlobalStyle } from 'styled-components';
 import Skeleton from "react-loading-skeleton";
 import axios from "axios";
+import { useSelector } from "react-redux";
 
 const TradeNFT = lazy(() => import("../components/FolderNFT/tradeNFT"));
 const PremiumNFTLoading = lazy(() => import("../components/Loading/PremiumNFTLoading"));
@@ -22,6 +23,9 @@ const GlobalStyles = createGlobalStyle`
 const folderNFTs = () => {
 
     const params = useParams();
+    const navigate = useNavigate();
+    
+    const initialUser = useSelector(({ auth }) => auth.user);
     const [Marketplace, setMarketplace] = useState(null);
     const [nfts, setNFTLists] = useState([]);
     const [restList, setRestList] = useState([]);
@@ -47,13 +51,13 @@ const folderNFTs = () => {
 
     const getInitNFTs = async() => {
         const { id } = params;
-        let gradList = await axios.post(`${process.env.REACT_APP_BACKEND}folder/get-folder-detail`, { folderID: id}).then(res => {
+        let gradList = await axios.post(`${process.env.REACT_APP_BACKEND}folder/get-folder-detail`, { folderID: id, user: initialUser.username}).then(res => {
             let { list, artist: _artist, description: _desc } = res.data;
             setArtist(_artist);
             setDescription(_desc);
             return list;
         }).catch(err => {
-
+            navigate('/404');
         })
 
         setRestList(gradList);
