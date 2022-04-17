@@ -42,7 +42,6 @@ router.post('/create-new-items', async(req, res) => {
         });
 
         const newFolder = await folder.save();
-        console.log(list[0]);
         for (let i = 0; i < list.length; i ++) {
             const _existingNFT = await NFTSchema.findOne({ tokenID: list[i] });
             if (!_existingNFT) {
@@ -131,7 +130,16 @@ router.post('/get-folder-list', async(req, res) => {
 
 router.post('/get-sale-folder-list', async(req, res) => {
     try {
+        const { user } = req.body;
         let list = await FolderSchema.find();
+
+        for (let i = list.length - 1; i >= 0; i --) {
+            if (!list[i].isPublic && list[i].artist != user.toLowerCase()) {
+                const whiteItem = await WhitelistSchema.findOne({ user, folderID: list._id});
+                if (!whiteItem) list.splice(i, 1);
+            }
+        }
+
         list.map(item => {
             const ban = NFTSchema.findOne({ folderID: item._id.toString() });
             item.tokenID = ban.tokenID;
@@ -148,13 +156,17 @@ router.post('/get-sale-folder-list', async(req, res) => {
 
 router.post('/get-folder-detail', async(req, res) => {
     try {
-        const { folderID } = req.body;
+        const { folderID, user } = req.body;
+        const folder = await FolderSchema.findById(folderID);
+        if (!folder.isPublic && folder.artist != user.toLowerCase()) {
+            const whiteItem = await WhitelistSchema.findOne({ folderID, user });
+            if (!whiteItem) throw Error("Not allowed");
+        }
         let list = await NFTSchema.find({ folderID });
         for await (let item of list) {
             const saled = await SaleSchema.findOne({ tokenID: item.tokenID, action: {$in: ['list', 'auction'] }});
             item = { ...item, ...saled};
         }
-        const folder = await FolderSchema.findById(folderID);
         const artist = await UserSchema.findOne({ username: folder.artist });
         res.status(200).json({
             list, artist, description: folder.description
@@ -182,7 +194,7 @@ router.post('/get-folder-interface', async(req, res) => {
     }
 });
 
-router.post('/covert-folder-type', async(req, res) => {
+router.post('/convert-folder-type', async(req, res) => {
     try {
         const token = await checkAuth(req);
         if (!token) {
@@ -310,12 +322,14 @@ router.post('/get-private-folder-info', async(req, res) => {
         const folderInfo = await FolderSchema.findById(folderID);
         const savedList = await WhitelistSchema.find({ folderID });
         let whiteID = [];
-        const whiteList = [];
-        savedList.map(item => {
+        let whiteList = [];
+        
+        for await (let item of savedList) {
             whiteID.push(item.user);
-            const user = UserSchema.findById(item.user);
+            const user = await UserSchema.findById(item.user);
             whiteList.push(user);
-        });
+        }
+
         const restList = await UserSchema.find({ _id: { $nin: whiteID }});
         res.status(200).json({
             whiteList,
