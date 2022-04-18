@@ -80,7 +80,7 @@ const Folder = ({ folderID }) => {
         await axios.post(`${process.env.REACT_APP_BACKEND}folder/convert-folder-type`, data, _headers).then(res => {
             const { message } = res.data;
             success_toastify(message);
-            setNFT({ ...folder, isPublic: status});
+            setNFT({ ...folder, folder: {...folder.folder, isPublic: status} });
         }).catch(err => {
             const { error } = err.response.data;
             error_toastify(error);
@@ -114,7 +114,7 @@ const Folder = ({ folderID }) => {
                                 </div>
                                 <div className="btn-group-overlay">
                                     {
-                                        !folder.isPublic ? 
+                                        !folder.folder.isPublic ? 
                                         <>
                                             <button
                                                 className="btn btn-success"
