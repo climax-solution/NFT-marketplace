@@ -35,7 +35,7 @@ contract Marketplace is Ownable{
             keccak256(bytes("EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)")),
             keccak256("NFT Developments Marketplace"),
             keccak256("1"),
-            3,
+            97,
             address(this)
         ));
         BUY_SALT = keccak256(bytes("List(uint256 nonce,address from,uint256 tokenID,uint256 price,bool isPremium)"));
