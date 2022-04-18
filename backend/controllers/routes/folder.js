@@ -132,7 +132,7 @@ router.post('/get-sale-folder-list', async(req, res) => {
     try {
         const { user } = req.body;
         let list = await FolderSchema.find();
-
+	console.log(list);
         for (let i = list.length - 1; i >= 0; i --) {
             if (!list[i].isPublic && list[i].artist != user.toLowerCase()) {
                 const whiteItem = await WhitelistSchema.findOne({ user, folderID: list[i]._id});
@@ -148,6 +148,7 @@ router.post('/get-sale-folder-list', async(req, res) => {
             list
         });
     } catch(err) {
+console.log(err);
         res.status(400).json({
             error: "Your request is restricted"
         });
@@ -210,7 +211,7 @@ router.post('/convert-folder-type', async(req, res) => {
             });    
         }
         const { folderID, status } = req.body;
-        await FolderSchema.findByIdAndUpdate(folderID, { isPulic: status});
+        await FolderSchema.findByIdAndUpdate(folderID, { isPublic: status});
         if (status == true) {
             await WhitelistSchema.deleteMany({ folderID });
         }
@@ -321,16 +322,16 @@ router.post('/get-private-folder-info', async(req, res) => {
         const { folderID } = req.body;
         const folderInfo = await FolderSchema.findById(folderID);
         const savedList = await WhitelistSchema.find({ folderID });
-        let whiteID = [];
+        let whiteID = [folderInfo.artist];
         let whiteList = [];
-        
-        for await (let item of savedList) {
-            whiteID.push(item.user);
-            const user = await UserSchema.findById(item.user);
+        console.log(savedList);
+        for await (let item of savedList) {            
+            const user = await UserSchema.findOne({username: item.user});
+        	whiteID.push(item.user);
             whiteList.push(user);
         }
 
-        const restList = await UserSchema.find({ _id: { $nin: whiteID }});
+        const restList = await UserSchema.find({ username: { $nin: whiteID }});
         res.status(200).json({
             whiteList,
             restList,

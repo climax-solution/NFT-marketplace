@@ -19,7 +19,7 @@ const SaleSchema = Schema({
         enum: ['list', 'auction', 'offer']
     },
     deadline: {
-        type: Date
+        type: Number
     },
     signature: {
         type: String

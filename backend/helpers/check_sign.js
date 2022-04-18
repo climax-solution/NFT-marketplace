@@ -1,4 +1,4 @@
-const marketplace_addr = "0x8F409AE29A88Eb87e8cFD8090DD807F8aDb02F2E";
+const marketplace_addr = "0x8ce97f184e9Bb718aFD8a58845f67D5261d70E9c";
 const Web3 = require('web3');
 const { SignTypedDataVersion, recoverTypedSignature } = require('@metamask/eth-sig-util');
 

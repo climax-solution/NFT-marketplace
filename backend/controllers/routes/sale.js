@@ -32,7 +32,7 @@ router.post('/list', async(req, res) => {
             tokenID,
             price,
             action,
-            deadline : Date.parse(new Date()) + deadline * 3600 * 1000 ,
+            deadline : deadline ? Date.now() + deadline * 3600 * 1000 : 0,
             signature,
             walletAddress
         });
@@ -359,6 +359,21 @@ router.post('/get-sale-list', async(req, res) => {
                 $in: [0]
             }
         });
+
+        nfts = await SaleSchema.find({
+            "$or": [
+                { 
+                    action: "list",
+                    deadline: 0,
+                    walletAddress
+                },
+                {
+                    deadline: { $gt: Date.now() },
+                    action: "auction",
+                    walletAddress
+                }
+            ]
+        })
         res.status(200).json({ list: !nfts ? [] : nfts });
     } catch(err) {
         res.status(400).json({
