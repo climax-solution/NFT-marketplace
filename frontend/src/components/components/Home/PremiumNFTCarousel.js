@@ -62,7 +62,12 @@ export default function () {
     if (initialUser.walletAddress == undefined) return;
     setCarouselLoading(true);
     try {
-      let list = await axios.post(`${process.env.REACT_APP_BACKEND}sale/get-premium-list`).then(res => {
+      let list = await axios.post(
+        `${process.env.REACT_APP_BACKEND}sale/get-premium-list`,
+        {
+          walletAddress: initialUser?.walletAddress ? initialUser.walletAddress : ""
+        }
+      ).then(res => {
         return res.data.list;
       });
       list.sort((before, after) => before.price - after.price);
