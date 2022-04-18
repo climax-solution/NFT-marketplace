@@ -1,8 +1,12 @@
 let router =  require('express').Router();
 const { listSign, auctionSign, offerSign, processOfferSign } = require('../../helpers/check_sign');
 const HistorySchema = require('../../models/history');
-let SaleSchema = require('../../models/sale');
+const SaleSchema = require('../../models/sale');
 const ActivitySchema = require("../../models/activity-log");
+const UserSchema = require("../../models/users");
+const FolderSchema = require("../../models/folders");
+const WhitelistSchema = require('../../models/whitelist');
+const NFTSchema = require("../../models/nfts");
 
 router.post('/list', async(req, res) => {
     try {
@@ -257,6 +261,16 @@ router.post('/accept-offer', async(req, res) => {
 router.post('/get-premium-list', async(req, res) => {
     try {
         const { walletAddress } = req.body;
+        const user = await UserSchema.findOne({ walletAddress });
+        let privateFolders = await FolderSchema.find({ isPublic: false });
+        let notAllowed = [];
+        for (let i = privateFolders.length - 1; i >= 0 ; i --) {
+            const whiteItem = await WhitelistSchema.findOne({ folderID: privateFolders[i]._id.toString(), user: user?.username ? user.username : "" });
+            if (privateFolders[i].artist == user?.username || whiteItem) {
+                notAllowed.push(privateFolders[i]._id.toString());
+            }
+        }
+
         let expiredAuction = await SaleSchema.find({
             action: 'auction',
             deadline: {
@@ -271,14 +285,28 @@ router.post('/get-premium-list', async(req, res) => {
             });
         });
 
+        let tokenID = [];
+
+        const nfts = await NFTSchema.find({
+            folderID: { $in: notAllowed }
+        });
+        nfts.map(item => tokenID.push(item.tokenID));
+
         let list = await SaleSchema.find({
-            status: "premium",
-            walletAddress: { $ne: walletAddress },
-            action: { $in: ['list', 'auction'] },
-            deadline: {
-                $gt: Date.now(),
-                $in: [0]
-            }
+            "$or": [
+                { 
+                    status: "premium",
+                    action: "list",
+                    deadline: 0,
+                    tokenID: { $in: tokenID }
+                },
+                {
+                    status: "premium",
+                    action: "auction",
+                    deadline: { $gt: Date.now() },
+                    tokenID: { $in: tokenID }
+                }
+            ]
         }).sort({ price: 1 }).limit(10);
 
         res.status(200).json({
@@ -350,17 +378,6 @@ router.post('/get-sale-list', async(req, res) => {
         });
 
         let nfts = await SaleSchema.find({
-            walletAddress,
-            action: {
-                $in : ['list', 'auction']
-            },
-            deadline: {
-                $gt: Date.now(),
-                $in: [0]
-            }
-        });
-
-        nfts = await SaleSchema.find({
             "$or": [
                 { 
                     action: "list",

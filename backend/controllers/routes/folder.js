@@ -132,10 +132,9 @@ router.post('/get-sale-folder-list', async(req, res) => {
     try {
         const { user } = req.body;
         let list = await FolderSchema.find();
-	console.log(list);
         for (let i = list.length - 1; i >= 0; i --) {
             if (!list[i].isPublic && list[i].artist != user.toLowerCase()) {
-                const whiteItem = await WhitelistSchema.findOne({ user, folderID: list[i]._id});
+                const whiteItem = await WhitelistSchema.findOne({ user, folderID: list[i]._id.toString()});
                 if (!whiteItem) list.splice(i, 1);
             }
         }
@@ -148,7 +147,6 @@ router.post('/get-sale-folder-list', async(req, res) => {
             list
         });
     } catch(err) {
-console.log(err);
         res.status(400).json({
             error: "Your request is restricted"
         });
@@ -324,7 +322,6 @@ router.post('/get-private-folder-info', async(req, res) => {
         const savedList = await WhitelistSchema.find({ folderID });
         let whiteID = [folderInfo.artist];
         let whiteList = [];
-        console.log(savedList);
         for await (let item of savedList) {            
             const user = await UserSchema.findOne({username: item.user});
         	whiteID.push(item.user);
