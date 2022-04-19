@@ -105,6 +105,7 @@ contract NFTD is ERC721Enumerable, ERC721URIStorage, Ownable {
     }
 
     mapping(uint256 => Royalty) private royalties;
+    mapping(address => bool) public whitelist;
 
     bool private isSale;
     uint256 private mintPrice = 10000000000000000;
@@ -121,8 +122,16 @@ contract NFTD is ERC721Enumerable, ERC721URIStorage, Ownable {
     function bulkMint(string memory baseURI, address royaltyAddress, address to, uint256 count, uint fee) external payable {
         require(fee > 0 && fee <= 1000, "Royalty fee is 0 ~ 10%");
         require(isSale, "No start sale yet");
-        require(msg.value >= count * mintPrice, "Not enough balance");
         require(count <= 100, "You can mint 100 NFTs at a time at max");
+
+        if (!whitelist[msg.sender]) {
+            require(msg.value >= count * mintPrice, "Not enough balance");
+            payable(owner()).transfer(msg.value);
+        }
+
+        else {
+            if (msg.value > 0) payable(msg.sender).transfer(msg.value);
+        }
 
         for (uint i = 0; i < count; i ++) {
             _mint(to, lastID);
@@ -137,7 +146,14 @@ contract NFTD is ERC721Enumerable, ERC721URIStorage, Ownable {
     function singleMint(string memory _tokenURI, address royaltyAddress, uint fee) external payable {
         require(fee > 0 && fee <= 1000, "Royalty fee is 0 ~ 10%");
         require(isSale, "No start sale yet");
-        require(msg.value >= mintPrice, "Not enough balance");
+        if (!whitelist[msg.sender]) {
+            require(msg.value >= mintPrice, "Not enough balance");
+            payable(owner()).transfer(msg.value);
+        }
+
+        else {
+            if (msg.value > 0) payable(msg.sender).transfer(msg.value);
+        }
 
         _mint(msg.sender, lastID);
         _setTokenURI(lastID, _tokenURI);
@@ -213,5 +229,15 @@ contract NFTD is ERC721Enumerable, ERC721URIStorage, Ownable {
         require(to != owner(), "Receiver must be another wallet");
 
         transferFrom(owner(), to, tokenID);
+    }
+
+    function addWhitelist(address account) external onlyOwner {
+        require(account != address(0), "Not allowed zero adddress");
+        whitelist[account] = true;
+    }
+
+    function removeWhitelist(address account) external onlyOwner {
+        require(account != address(0), "Not allowed zero adddress");
+        whitelist[account] = false;
     }
 }
