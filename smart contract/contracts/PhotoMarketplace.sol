@@ -14,6 +14,7 @@ contract Marketplace is Ownable{
 
     string public constant salt = "NFTD MARKETPLACE";
     mapping(uint => uint) public nonces;
+    mapping(address => bool) public whitelist;
 
     NFTD public flexNFT;
     // IERC20 public WBNB = IERC20(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2); //mainnet weth
@@ -60,7 +61,13 @@ contract Marketplace is Ownable{
         } else {
             feeValue = msg.value.mul(fee).div(10000);
         }
-        if(feeValue > 0) payable(treasurer).transfer(feeValue);
+
+        if(feeValue > 0) {
+            address receiver = treasurer;
+            if (whitelist[msg.sender]) receiver = msg.sender;
+            payable(receiver).transfer(feeValue);
+        }
+
         if(royaltyFee > 0) payable(royalty.receiver).transfer(royaltyFee);
         payable(from).transfer(msg.value - feeValue - royaltyFee);
     }
@@ -83,7 +90,11 @@ contract Marketplace is Ownable{
         } else {
             feeValue = price.mul(fee).div(10000);
         }
-        if(feeValue > 0) WBNB.transferFrom(to, treasurer, feeValue);
+        if(feeValue > 0) {
+            address receiver = treasurer;
+            if (whitelist[msg.sender]) receiver = msg.sender;
+            WBNB.transferFrom(to, receiver, feeValue);
+        }
         if(royaltyFee > 0) WBNB.transferFrom(to, royalty.receiver, royaltyFee);
         WBNB.transferFrom(to, from, price - feeValue - royaltyFee);
     }
@@ -97,4 +108,13 @@ contract Marketplace is Ownable{
         treasurer = _treasurer;
     }
 
+    function addWhitelist(address account) external onlyOwner {
+        require(account != address(0), "Not allowed zero adddress");
+        whitelist[account] = true;
+    }
+
+    function removeWhitelist(address account) external onlyOwner {
+        require(account != address(0), "Not allowed zero adddress");
+        whitelist[account] = false;
+    }
 }
