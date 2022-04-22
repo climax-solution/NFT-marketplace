@@ -119,7 +119,7 @@ const Folder = ({ folderID }) => {
                                             <button
                                                 className="btn btn-success"
                                                 onClick={() => updateFolder(true)}
-                                            >Make To Public</button>
+                                            >Make Public</button>
                                             <button
                                                 className="btn btn-success"
                                                 onClick={() => navigate('manage-whitelist/'+folderID)}
@@ -128,7 +128,7 @@ const Folder = ({ folderID }) => {
                                         : <button
                                             className="btn btn-success"
                                             onClick={() => updateFolder(false)}
-                                        >Make To Private</button>
+                                        >Make Private</button>
                                     }
                                 </div>
                             </div>
