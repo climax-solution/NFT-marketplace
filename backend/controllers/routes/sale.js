@@ -120,7 +120,7 @@ router.post('/update-premium', async(req, res) => {
         await _existed.save();
 
         let logs = new ActivitySchema({
-            walletAddress,
+            walletAddress: _existed.walletAddress,
             tokenID,
             type : status == 'premium' ? 3 : 4 ,
             price
