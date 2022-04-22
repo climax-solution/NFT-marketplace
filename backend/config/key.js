@@ -9,5 +9,9 @@ module.exports = {
     jwt: {
         secret: "climax",
         tokenLife: '7d'
+    },
+    ADMIN: {
+        secret: "NFTD Admin",
+        tokenLife: '1h'
     }
 }
