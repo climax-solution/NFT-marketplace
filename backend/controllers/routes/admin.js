@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const { ADMIN } = require("../../config/key");
 const UserSchema = require('../../models/users');
 const AdminSchema = require('../../models/admin');
-const FolderSchema = require('../../models/folder');
+const FolderSchema = require('../../models/folders');
 
 router.post('/login', async(req, res) => {
     try {
@@ -14,9 +14,10 @@ router.post('/login', async(req, res) => {
         if (admin.username == username) {
             const isMatch = await bcrypt.compare(password, admin.password);
             if (isMatch) {
-                const token = jwt.sign({ id: admin.id }, ADMIN, { expiresIn: ADMIN.tokenLife });
+                const token = jwt.sign({ id: admin._id.toString() }, ADMIN.secret, { expiresIn: ADMIN.tokenLife });
                 res.status(200).json({
                     token,
+                    expiresIn: 3600,
                     status: true
                 });
             }
@@ -32,6 +33,51 @@ router.post('/login', async(req, res) => {
             });
         }
     } catch(err) {
+        res.status(400).json({
+            error: "Your request is restricted"
+        });
+    }
+});
+
+router.post('/register', async(req, res) => {
+    try {
+        const { username, password } = req.body;
+        
+        const exist = await AdminSchema.find();
+        if (exist.length) {
+            return res.status(400).json({
+                error: "You have already registered"
+            });
+        }
+
+        if (!password) {
+            return res.status(400).json({ error: 'You must enter a password.' });
+        }
+
+        if (!username) {
+            return res.status(400).json({ error: 'You must enter a user name.' });
+        }
+
+        let user = new AdminSchema({
+            username,
+            password,
+        });
+
+        const salt = await bcrypt.genSalt(10);
+        const hash = await bcrypt.hash(user.password, salt);
+        
+        user.password = hash;
+        const _user = await user.save();
+
+        const token = jwt.sign({ id: _user._id.toString() }, ADMIN.secret, { expiresIn: ADMIN.tokenLife });
+        res.status(200).json({
+            token,
+            expiresIn: ADMIN.tokenLife,
+            status: true
+        });
+
+    } catch(err) {
+        console.log(err)
         res.status(400).json({
             error: "Your request is restricted"
         });
