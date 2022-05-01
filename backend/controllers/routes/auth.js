@@ -316,4 +316,5 @@ router.post('/check-authentication', async(req, res) => {
     const user = await UserSchema.findOne({ _id: mongoose.Types.ObjectId(result.id), verified: true });
     res.status(200).json(user);
 });
+
 module.exports = router;
