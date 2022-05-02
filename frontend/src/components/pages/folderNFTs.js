@@ -6,6 +6,8 @@ import { createGlobalStyle } from 'styled-components';
 import Skeleton from "react-loading-skeleton";
 import axios from "axios";
 import { useSelector } from "react-redux";
+import Select from 'react-select';
+import { filterDropdown } from "../../config/styles.js";
 
 const TradeNFT = lazy(() => import("../components/FolderNFT/tradeNFT"));
 const PremiumNFTLoading = lazy(() => import("../components/Loading/PremiumNFTLoading"));
@@ -18,8 +20,22 @@ const GlobalStyles = createGlobalStyle`
         grid-template-columns: auto auto;
         column-gap: 15px;
     }
+
+    .dropdownSelect {
+        width: 200px;
+    }
 `;
 
+const filters = [
+    {
+        label: "All",
+        value: false
+    },
+    {
+        label: "For Sale",
+        value: true
+    }
+]
 const folderNFTs = () => {
 
     const params = useParams();
@@ -32,6 +48,7 @@ const folderNFTs = () => {
     const [artist, setArtist] = useState();
     const [description, setDescription] = useState();
     const [isLoading, setIsLoading] = useState(true);
+    const [active, setActive] = useState(filters[1]);
 
     useEffect(async () => {
         if (!isLoading) {
@@ -45,9 +62,12 @@ const folderNFTs = () => {
 
     useEffect(async() => {
         if (Marketplace) {
+            setIsLoading(true);
+            setNFTLists([]);
+            setRestList([]);
             await getInitNFTs();
         }
-    },[Marketplace])
+    },[Marketplace, active])
 
     const getInitNFTs = async() => {
         const { id } = params;
@@ -55,6 +75,9 @@ const folderNFTs = () => {
             let { list, artist: _artist, description: _desc } = res.data;
             setArtist(_artist);
             setDescription(_desc);
+            if (active.value) {
+                list = list.filter(item => item.action == "list" || item.action == "auction");
+            }
             return list;
         }).catch(err => {
             navigate('/404');
@@ -99,6 +122,24 @@ const folderNFTs = () => {
                     </div>
                 </section>
                 <section className='container'>
+                    <div className="d-flex align-items-center justify-content-end w-100 gap-3 mb-3">
+                        <div>
+                            <span className="fs-6">Filter:</span>
+                        </div>
+                        <div className='dropdownSelect one'>
+                            <Select
+                                className='select1'
+                                styles={filterDropdown}
+                                menuContainerStyle={{'zIndex': 999}}
+                                value={active}
+                                options={filters}
+                                onChange={(value) => {
+                                    setActive(value);
+                                    // setFolderList([]);
+                                }}
+                            />
+                        </div>
+                    </div>
                     {
                         isLoading && <PremiumNFTLoading/>
                     }

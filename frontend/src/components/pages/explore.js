@@ -4,36 +4,11 @@ import { createGlobalStyle } from 'styled-components';
 import categoryOptions from "../../config/category.json";
 import axios from 'axios';
 import { useSelector } from 'react-redux';
+import { filterDropdown } from "../../config/styles.js";
 
 const FolderList = lazy(() => import('../components/Explore/FolderList'));
 const Footer = lazy(() => import('../components/footer'));
 const PremiumNFTLoading = lazy(() => import('../components/Loading/PremiumNFTLoading'));
-
-const customStyles = {
-  option: (base, state) => ({
-    ...base,
-    background: "#212428",
-    color: "#fff",
-    borderRadius: state.isFocused ? "0" : 0,
-    "&:hover": {
-      background: "#16181b",
-    }
-  }),
-  menu: base => ({
-    ...base,
-    background: "#212428 !important",
-    borderRadius: 0,
-    marginTop: 0
-  }),
-  menuList: base => ({
-    ...base,
-    padding: 0
-  }),
-  control: (base, state) => ({
-    ...base,
-    padding: 2
-  })
-};
 
 const GlobalStyles = createGlobalStyle`
   .items_filter {
@@ -150,7 +125,7 @@ const explore = () => {
                   <div className='dropdownSelect one'>
                     <Select
                       className='select1'
-                      styles={customStyles}
+                      styles={filterDropdown}
                       menuContainerStyle={{'zIndex': 999}}
                       value={activeCategory}
                       options={categoryOptions}
