@@ -7,32 +7,7 @@ import Select from 'react-select';
 import getWeb3 from '../../../../utils/getWeb3';
 import categories from "../../../../config/category.json";
 import { error_toastify, success_toastify, warning_toastify } from '../../../../utils/notify';
-
-const customStyles = {
-    option: (base, state) => ({
-      ...base,
-      background: "#212428",
-      color: "#fff",
-      borderRadius: state.isFocused ? "0" : 0,
-      "&:hover": {
-        background: "#16181b",
-      }
-    }),
-    menu: base => ({
-      ...base,
-      background: "#212428 !important",
-      borderRadius: 0,
-      marginTop: 0
-    }),
-    menuList: base => ({
-      ...base,
-      padding: 0
-    }),
-    control: (base, state) => ({
-      ...base,
-      padding: 2
-    })
-};
+import { filterDropdown } from "../../../../config/styles.js";
 
 const categoryOptions = categories.slice(1, categories.length);
 
@@ -225,7 +200,7 @@ export default function() {
                         <label>Category</label>
                         <Select
                             className='select1'
-                            styles={customStyles}
+                            styles={filterDropdown}
                             menuContainerStyle={{'zIndex': 999}}
                             value={activeCategory}
                             options={categoryOptions}
