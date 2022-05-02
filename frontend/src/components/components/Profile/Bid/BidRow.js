@@ -55,6 +55,7 @@ export default function BidRow({ index, data, price, isOwner, startLoading }) {
             let message = 'Failed';
             const parsed = JSON.parse(JSON.stringify(err));
             if (parsed.code == 4001) message = "Canceled";
+            else if (err?.message) message = err.message;
 
             error_toastify(message);
         }
