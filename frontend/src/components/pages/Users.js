@@ -1,7 +1,6 @@
 import React, { useEffect, useState, lazy } from 'react';
-import Select from 'react-select';
+// import Select from 'react-select';
 import { createGlobalStyle } from 'styled-components';
-import categoryOptions from "../../config/category.json";
 import axios from 'axios';
 
 const UserList = lazy(() => import('../components/Users/UserList'));

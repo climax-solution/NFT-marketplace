@@ -6,32 +6,7 @@ import getWeb3 from '../../../../utils/getWeb3';
 import { warning_toastify, success_toastify, error_toastify } from "../../../../utils/notify";
 import axios from 'axios';
 import { useSelector } from 'react-redux';
-
-const customStyles = {
-    option: (base, state) => ({
-      ...base,
-      background: "#212428",
-      color: "#fff",
-      borderRadius: state.isFocused ? "0" : 0,
-      "&:hover": {
-        background: "#16181b",
-      }
-    }),
-    menu: base => ({
-      ...base,
-      background: "#212428 !important",
-      borderRadius: 0,
-      marginTop: 0
-    }),
-    menuList: base => ({
-      ...base,
-      padding: 0
-    }),
-    control: (base, state) => ({
-      ...base,
-      padding: 2
-    })
-};
+import { filterDropdown } from "../../../../config/styles.js";
 
 export default function() {
 
@@ -216,7 +191,7 @@ export default function() {
                     <label>Folder List</label>
                     <Select
                         className='select1'
-                        styles={customStyles}
+                        styles={filterDropdown}
                         menuContainerStyle={{'zIndex': 999}}
                         value={activeCategory}
                         options={folderList}
