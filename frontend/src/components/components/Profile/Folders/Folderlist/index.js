@@ -45,7 +45,6 @@ export default function FolderList() {
             setRestList(restList.slice(8, restList.length));
         }
         else setRestList([]);
-        setLoaded(false);
     }
     
     return (
@@ -61,7 +60,10 @@ export default function FolderList() {
                     <Folder folderID={nft._id} key={index}/>
                 ))}
             </InfiniteScroll>
-            {!folderList.length && !restList.length && <Empty/>}
+            { loaded && !folderList.length && !restList.length && <Empty/> }
+            {
+                !loaded && <PremiumNFTLoading/>
+            }
         </>
     )
 }
