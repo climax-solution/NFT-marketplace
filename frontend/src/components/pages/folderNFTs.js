@@ -48,7 +48,7 @@ const folderNFTs = () => {
     const [artist, setArtist] = useState();
     const [description, setDescription] = useState();
     const [isLoading, setIsLoading] = useState(true);
-    const [active, setActive] = useState(filters[1]);
+    const [active, setActive] = useState(filters[0]);
 
     useEffect(async () => {
         if (!isLoading) {
