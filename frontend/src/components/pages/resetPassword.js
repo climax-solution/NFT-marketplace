@@ -4,7 +4,6 @@ import { createGlobalStyle } from 'styled-components';
 import { useNavigate, useParams } from "react-router-dom";
 import { success_toastify, error_toastify } from "../../utils/notify";
 
-import Footer from '../components/footer';
 import PasswordInput from '../components/Form/PasswordInput';
 
 const GlobalStyles = createGlobalStyle`
@@ -91,8 +90,6 @@ const ResetPassword = () => {
           </div>
         </div>
       </section>
-
-      <Footer />
     </div>
   )
 };

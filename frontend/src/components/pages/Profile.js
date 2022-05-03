@@ -7,7 +7,6 @@ import { WalletConnect } from "../../store/action/wallet.action";
 
 import Avatar from "../components/Profile/avatar";
 import UserInfo from "../components/Profile/userInfo";
-import Footer from '../components/footer';
 
 const GlobalStyles = createGlobalStyle`
   .ml-12 {
@@ -161,8 +160,6 @@ const Profile = function() {
 
           <Outlet/>
         </section>
-
-        <Footer />
       </>
     </div>
   );

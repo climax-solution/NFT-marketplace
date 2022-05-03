@@ -5,7 +5,6 @@ import SliderMainParticle from '../components/Home/SliderMainParticle';
 import FeatureBox from '../components/Home/FeatureBox';
 import PremiumNFTCarousel from '../components/Home/PremiumNFTCarousel';
 import AuthorList from '../components/Home/authorList';
-import Footer from '../components/footer';
 
 const GlobalStyles = createGlobalStyle`
   .btn-main{
@@ -90,8 +89,6 @@ const homeone= () => {
               <FeatureBox/>
           </div>
         </section>
-  
-        <Footer />
       </>
     </div>
   )

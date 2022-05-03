@@ -33,6 +33,7 @@ const ManageFolder = lazy(() => import('./components/Profile/Folders'));
 const FolderList = lazy(() => import('./components/Profile/Folders/Folderlist'));
 const VerifyAccount = lazy(() => import('./pages/verify'));
 const Whitelist = lazy(() => import('./components/Profile/Folders/Whitelist'));
+const Footer = lazy(() => import('../components/footer'));
 
 const GlobalStyles = createGlobalStyle`
   :root {
@@ -84,7 +85,6 @@ const app = () => {
           <Suspense fallback={<Loading/>}>
             <Header/>
             <Routes>
-                <Route path="*" element={<NotFound/>}/>
                 <Route exact path="/" element={<Home/>}/>
                 <Route path="/explore" element={<Explore/>}/>
                 <Route path="/item-detail/:id" element={<ItemDetail/>}/>
@@ -111,6 +111,7 @@ const app = () => {
                 <Route path="/explore-bids/:tokenID" element={<BidView/>}/>
                 <Route path='*' element={<NotFound/>}/>
             </Routes>
+            <Footer/>
           </Suspense>
         </Router>
       <ScrollToTopBtn />

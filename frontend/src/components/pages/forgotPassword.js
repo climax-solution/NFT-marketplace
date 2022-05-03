@@ -3,8 +3,6 @@ import axios from 'axios';
 import { createGlobalStyle } from 'styled-components';
 import { success_toastify, error_toastify } from "../../utils/notify";
 
-import Footer from '../components/footer';
-
 const GlobalStyles = createGlobalStyle`
   .box-login p{
     color: #a2a2a2 !important;
@@ -83,8 +81,6 @@ const ForgotPassword = () => {
           </div>
         </div>
       </section>
-
-      <Footer />
     </div>
   )
 };

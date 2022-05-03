@@ -9,7 +9,6 @@ import { useSelector } from "react-redux";
 import { marketplace_addr } from "../../config/address.json";
 
 import Clock from "../components/Clock";
-import Footer from '../components/footer';
 import Empty from "../components/Empty";
 import Attr from "../components/ItemDetails/attributes";
 import ItemDetailsLoading from "../components/Loading/ItemDetailsLoading";
@@ -349,7 +348,6 @@ const NFTItem = () => {
                         : !Object.keys(nft).length && <Empty/>
                     )
                 }
-                <Footer />
             </>
         </div>
     );

@@ -5,7 +5,6 @@ import getWeb3 from "../../utils/getWeb3";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { createGlobalStyle } from 'styled-components';
 
-import Footer from '../components/footer';
 import TradeNFT from "../components/FolderNFT/tradeNFT";
 import Banner from "../components/Collection/banner";
 import PremiumNFTLoading from "../components/Loading/PremiumNFTLoading";
@@ -107,7 +106,6 @@ const Collection= function() {
           </>
           )
         }
-        <Footer />
     </div>
   );
 }

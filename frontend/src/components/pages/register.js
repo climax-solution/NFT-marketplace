@@ -7,7 +7,6 @@ import { success_toastify, error_toastify } from "../../utils/notify";
 
 import TextInput from '../components/Form/TextInput';
 import PasswordInput from '../components/Form/PasswordInput';
-import Footer from '../components/footer';
 
 const GlobalStyles = createGlobalStyle`
     .country-select {
@@ -184,8 +183,6 @@ const Register = () => {
 
                     </div>
                 </section>
-
-                <Footer />
             </>
         </div>
 

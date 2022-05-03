@@ -3,7 +3,6 @@ import axios from 'axios';
 import { createGlobalStyle } from 'styled-components';
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import Footer from '../components/footer';
 import { UPDATE_AUTH, UPDATE_LOADING_PROCESS } from '../../store/action/auth.action';
 import { success_toastify, error_toastify } from "../../utils/notify";
 
@@ -125,8 +124,6 @@ const login = () => {
           </div>
         </div>
       </section>
-
-      <Footer />
     </div>
   )
 };
