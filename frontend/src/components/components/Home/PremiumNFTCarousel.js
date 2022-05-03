@@ -18,7 +18,6 @@ const GlobalStyles = createGlobalStyle`
     height: calc(100% - 20px);
   }
  
-
   .groups {
       display: grid;
       grid-template-columns: auto auto;

@@ -1,43 +1,11 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { createGlobalStyle } from 'styled-components';
 import validator from "validator";
 import { useNavigate } from 'react-router-dom';
 import { success_toastify, error_toastify } from "../../utils/notify";
 
 import TextInput from '../components/Form/TextInput';
 import PasswordInput from '../components/Form/PasswordInput';
-
-const GlobalStyles = createGlobalStyle`
-    .country-select {
-        display: block !important;
-    }
-    .react-tel-input {
-        .form-control {
-            width: 100% !important;
-            height: auto !important;
-            background: transparent !important;
-            border-color: rgba(255,2555,255, 0.1) !important;
-        }
-
-        .form-control:focus {
-            color: #212529;
-            background-color: #fff !important;
-            border-color: #86b7fe;
-            outline: 0;
-            box-shadow: 0 0 0 0.25rem rgb(13 110 253 / 25%);
-        }
-
-        .flag-dropdown {
-            background: transparent !important;
-            border: none !important;
-            border-right: 1px solid rgba(255,255,255,0.1) !important;
-        }
-        .form-control:focus + .flag-dropdown {
-            border-color: #cacaca;
-        }
-    }
-`;
 
 const Register = () => {
 
@@ -98,92 +66,89 @@ const Register = () => {
 
     return (
         <div>
-            <>
-                <GlobalStyles />
-                <section className='container'>
-                    <div className="row">
-                    <div className='spacer-double'></div>
-                    <div className="col-md-8 offset-md-2">
-                    <h3>Don't have an account? Register now.</h3>
-                    <p>Registering provides another layer of protection for your NFTs. So register now! And let’s start collecting.</p>
+            <section className='container'>
+                <div className="row">
+                <div className='spacer-double'></div>
+                <div className="col-md-8 offset-md-2">
+                <h3>Don't have an account? Register now.</h3>
+                <p>Registering provides another layer of protection for your NFTs. So register now! And let’s start collecting.</p>
 
-                    <div className="spacer-10"></div>
+                <div className="spacer-10"></div>
 
-                    <div name="contactForm" id='contact_form' className="form-border" action='#'>
+                <div name="contactForm" id='contact_form' className="form-border" action='#'>
 
-                            <div className="row">
-                                <div className="col-md-6">
-                                    <TextInput
-                                        label={"Name"}
-                                        update={setName}
-                                        _key={"name"}
-                                        _request={update}
-                                    />
-                                </div>
+                        <div className="row">
+                            <div className="col-md-6">
+                                <TextInput
+                                    label={"Name"}
+                                    update={setName}
+                                    _key={"name"}
+                                    _request={update}
+                                />
+                            </div>
 
-                                <div className="col-md-6">
-                                    <TextInput
-                                        label={"Email"}
-                                        update={setEmail}
-                                        _key={"email"}
-                                        checkable={true}
-                                        _request={update}
-                                    />
-                                </div>
+                            <div className="col-md-6">
+                                <TextInput
+                                    label={"Email"}
+                                    update={setEmail}
+                                    _key={"email"}
+                                    checkable={true}
+                                    _request={update}
+                                />
+                            </div>
 
-                                <div className="col-md-6">
-                                    <TextInput
-                                        label={"Choose a Username"}
-                                        update={setUserName}
-                                        _key={"username"}
-                                        checkable={true}
-                                        _request={update}
-                                    />
+                            <div className="col-md-6">
+                                <TextInput
+                                    label={"Choose a Username"}
+                                    update={setUserName}
+                                    _key={"username"}
+                                    checkable={true}
+                                    _request={update}
+                                />
+                            </div>
+                            
+                            <div className="col-md-6">
+                                <TextInput
+                                    label={"Wallet Address"}
+                                    update={setWalletAddres}
+                                    _key={"walletAddress"}
+                                    checkable={true}
+                                    _request={update}
+                                />
+                            </div>
+
+                            <div className="col-md-6">
+                                <PasswordInput
+                                    label={"Password"}
+                                    update={setPassword}
+                                    _request={update}
+                                    _equal = {password && confirmPassword ? password === confirmPassword : true}
+                                />
+                            </div>
+
+                            <div className="col-md-6">
+                                <PasswordInput
+                                    label={"Re-enter Password"}
+                                    update={setConfirmPassword}
+                                    _request={update}
+                                    _equal = {password && confirmPassword ? password === confirmPassword : true}
+                                />
+                            </div>
+
+                            <div className="col-md-12">
+                                <div id='submit' className="pull-left mt-4">
+                                    <input type='submit' id='send_message' value='Register Now' className="btn btn-main color-2" onClick={register}/>
                                 </div>
                                 
-                                <div className="col-md-6">
-                                    <TextInput
-                                        label={"Wallet Address"}
-                                        update={setWalletAddres}
-                                        _key={"walletAddress"}
-                                        checkable={true}
-                                        _request={update}
-                                    />
-                                </div>
-
-                                <div className="col-md-6">
-                                    <PasswordInput
-                                        label={"Password"}
-                                        update={setPassword}
-                                        _request={update}
-                                        _equal = {password && confirmPassword ? password === confirmPassword : true}
-                                    />
-                                </div>
-
-                                <div className="col-md-6">
-                                    <PasswordInput
-                                        label={"Re-enter Password"}
-                                        update={setConfirmPassword}
-                                        _request={update}
-                                        _equal = {password && confirmPassword ? password === confirmPassword : true}
-                                    />
-                                </div>
-
-                                <div className="col-md-12">
-                                    <div id='submit' className="pull-left mt-4">
-                                        <input type='submit' id='send_message' value='Register Now' className="btn btn-main color-2" onClick={register}/>
-                                    </div>
-                                    
-                                    <div className="clearfix"></div>
-                                </div>
-
+                                <div className="clearfix"></div>
                             </div>
+
                         </div>
                     </div>
+                </div>
 
-                    </div>
-                </section>
-            </>
+                </div>
+            </section>
         </div>
 
     );
