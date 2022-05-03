@@ -5,33 +5,6 @@ import axios from 'axios';
 
 import UserList from '../components/Users/UserList';
 import PremiumNFTLoading from  '../components/Loading/PremiumNFTLoading';
-import Footer from '../components/footer';
-
-const customStyles = {
-  option: (base, state) => ({
-    ...base,
-    background: "#212428",
-    color: "#fff",
-    borderRadius: state.isFocused ? "0" : 0,
-    "&:hover": {
-      background: "#16181b",
-    }
-  }),
-  menu: base => ({
-    ...base,
-    background: "#212428 !important",
-    borderRadius: 0,
-    marginTop: 0
-  }),
-  menuList: base => ({
-    ...base,
-    padding: 0
-  }),
-  control: (base, state) => ({
-    ...base,
-    padding: 2
-  })
-};
 
 const GlobalStyles = createGlobalStyle`
   .items_filter {
@@ -164,7 +137,6 @@ const Users = () => {
             : <UserList data={userList}/>
           }
         </section>
-        <Footer />
       </>
     </div>
   )

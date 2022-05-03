@@ -5,7 +5,6 @@ import axios from 'axios';
 
 import ActivityItem from "../components/Activity/row";
 import Empty from '../components/Empty';
-import Footer from '../components/footer';
 import ActivityLoading from '../components/Loading/ActivityLoading';
 
 const GlobalStyles = createGlobalStyle`
@@ -174,7 +173,6 @@ const Activity= function() {
           </div>
         </section>
 
-        <Footer />
       </>
     </div>
 

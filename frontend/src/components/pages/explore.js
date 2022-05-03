@@ -7,7 +7,6 @@ import { useSelector } from 'react-redux';
 import { filterDropdown } from "../../config/styles.js";
 
 import FolderList from '../components/Explore/FolderList';
-import Footer from '../components/footer';
 import PremiumNFTLoading from '../components/Loading/PremiumNFTLoading';
 
 const GlobalStyles = createGlobalStyle`
@@ -140,7 +139,6 @@ const explore = () => {
           </div>
           { isLoading ? <PremiumNFTLoading/> : <FolderList data={folderList}/> }
         </section>
-        <Footer />
       </>
     </div>
   )
