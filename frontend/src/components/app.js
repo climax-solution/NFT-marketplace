@@ -33,7 +33,7 @@ const ManageFolder = lazy(() => import('./components/Profile/Folders'));
 const FolderList = lazy(() => import('./components/Profile/Folders/Folderlist'));
 const VerifyAccount = lazy(() => import('./pages/verify'));
 const Whitelist = lazy(() => import('./components/Profile/Folders/Whitelist'));
-const Footer = lazy(() => import('../components/footer'));
+const Footer = lazy(() => import('./components/footer'));
 
 const GlobalStyles = createGlobalStyle`
   :root {
