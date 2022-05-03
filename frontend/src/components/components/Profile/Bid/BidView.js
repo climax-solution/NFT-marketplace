@@ -1,12 +1,12 @@
 import axios from "axios";
-import { lazy, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import Skeleton from "react-loading-skeleton";
 import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import getWeb3 from "../../../../utils/getWeb3";
 
-const Art = lazy(() => import("../../Asset/art"));
-const BidRow = lazy(() => import( "./BidRow"));
+import Art from "../../Asset/art";
+import BidRow from  "./BidRow";
 
 export default function BidView() {
 

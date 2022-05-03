@@ -1,12 +1,12 @@
-import React, { useState, useEffect, lazy } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import InfiniteScroll from "react-infinite-scroll-component";
 import getWeb3 from "../../../../utils/getWeb3";
 import axios from "axios";
 
-const Empty = lazy(() => import("../../Empty"));
-const Item = lazy(() => import("./sellingNFTItem"));
-const PremiumNFTLoading = lazy(() => import("../../Loading/PremiumNFTLoading"));
+import Empty from "../../Empty";
+import Item from "./sellingNFTItem";
+import PremiumNFTLoading from "../../Loading/PremiumNFTLoading";
 
 
 export default function SellingNFT() {

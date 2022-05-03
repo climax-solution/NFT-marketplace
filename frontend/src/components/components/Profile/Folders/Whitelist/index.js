@@ -1,10 +1,10 @@
 import axios from "axios";
-import { lazy, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { createGlobalStyle } from "styled-components";
 
-const WhiteListLoading = lazy(() => import("../../../Loading/whiteListLoading"));
-const WhitelistItem = lazy(() => import("./whitelistItem"));
+import WhiteListLoading from "../../../Loading/whiteListLoading";
+import WhitelistItem from "./whitelistItem";
 
 const GlobalStyles = createGlobalStyle`
     .container {

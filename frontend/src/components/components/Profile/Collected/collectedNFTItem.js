@@ -1,14 +1,14 @@
 import axios from "axios";
-import { lazy, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import getWeb3 from "../../../../utils/getWeb3";
 import { warning_toastify} from "../../../../utils/notify";
 
-const Art = lazy(() => import("../../Asset/art"));
-const ItemLoading = lazy(() => import("../../Loading/ItemLoading"));
-const AuctionSellModal = lazy(() => import("../../Modal/AuctionSellModal"));
-const DirectSellModal = lazy(() => import("../../Modal/DirectSellModal"));
+import Art from "../../Asset/art";
+import ItemLoading from "../../Loading/ItemLoading";
+import AuctionSellModal from "../../Modal/AuctionSellModal";
+import DirectSellModal from "../../Modal/DirectSellModal";
 
 export default function NotSaleNFT({ data, NFT, Marketplace, remove }) {
 

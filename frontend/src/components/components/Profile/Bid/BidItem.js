@@ -1,12 +1,12 @@
 import axios from "axios";
-import { lazy, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import getWeb3 from "../../../../utils/getWeb3";
 
-const Art = lazy(() => import("../../Asset/art"));
-const Clock = lazy(() => import("../../Clock"));
-const ItemLoading = lazy(() => import("../../Loading/ItemLoading"));
+import Art from "../../Asset/art";
+import Clock from "../../Clock";
+import ItemLoading from "../../Loading/ItemLoading";
 
 export default function({ tokenID, remove }) {
 

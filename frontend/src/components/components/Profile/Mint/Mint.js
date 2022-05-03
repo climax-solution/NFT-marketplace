@@ -1,10 +1,10 @@
 import { createGlobalStyle } from "styled-components"
 import Switch from "react-switch";
-import { lazy, useState } from "react";
+import { useState } from "react";
 
-const ToNew = lazy(() => import("./ToOld"));
-const ToOld = lazy(() => import("./ToNew"));
-const Single = lazy(() => import("./Single"));
+import ToNew from "./ToOld";
+import ToOld from "./ToNew";
+import Single from "./Single";
 
 const GlobalStyles = createGlobalStyle`
     .mint-group {

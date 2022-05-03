@@ -1,10 +1,10 @@
 import axios from 'axios';
-import React, { useEffect, useState, lazy } from 'react';
+import React, { useEffect, useState } from 'react';
 import getWeb3 from '../../../utils/getWeb3';
 
-const Empty = lazy(() => import('../Empty'));
-const TopSellerLoading = lazy(() => import('../Loading/TopSellerLoading'));
-const Buyer = lazy(() => import('./buyer'));
+import Empty from '../Empty';
+import TopSellerLoading from '../Loading/TopSellerLoading';
+import Buyer from './buyer';
 
 const authorlist= () => {
     

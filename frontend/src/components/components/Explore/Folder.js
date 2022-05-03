@@ -1,11 +1,11 @@
-import { lazy, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { createGlobalStyle } from 'styled-components';
 import { useNavigate } from "react-router-dom";
 import getWeb3 from "../../../utils/getWeb3";
 import Art from "../Asset/art";
 
-const ItemLoading = lazy(() => import("../Loading/ItemLoading"));
+import ItemLoading from "../Loading/ItemLoading";
 
 const GlobalStyles = createGlobalStyle`
    .react-loading-skeleton {

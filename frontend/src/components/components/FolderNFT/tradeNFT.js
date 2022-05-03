@@ -1,5 +1,5 @@
 import axios from "axios";
-import { lazy, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import ReactTooltip from "react-tooltip";
@@ -9,9 +9,9 @@ import { offerSign, processOfferSign } from "../../../utils/sign";
 import { marketplace_addr } from "../../../config/address.json";
 import { warning_toastify, success_toastify, error_toastify, info_toastify } from "../../../utils/notify";
 
-const ItemLoading = lazy(() => import("../Loading/ItemLoading"));
-const Clock = lazy(() => import("../Clock"));
-const Art = lazy(() => import( "../Asset/art"));
+import ItemLoading from "../Loading/ItemLoading";
+import Clock from "../Clock";
+import Art from  "../Asset/art";
 
 export default function TradeNFT({ data, className = "mx-0" }) {
     

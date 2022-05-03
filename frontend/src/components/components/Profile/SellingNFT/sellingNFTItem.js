@@ -1,5 +1,5 @@
 import axios from "axios";
-import { lazy, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import ReactTooltip from "react-tooltip";
@@ -7,9 +7,9 @@ import getWeb3 from "../../../../utils/getWeb3";
 import { warning_toastify, success_toastify, error_toastify } from "../../../../utils/notify";
 import { auctionSign, deListSign, listSign } from "../../../../utils/sign";
 
-const Art = lazy(() => import("../../Asset/art"));
-const ItemLoading = lazy(() => import("../../Loading/ItemLoading"));
-const Clock = lazy(() => import("../../Clock"));
+import Art from "../../Asset/art";
+import ItemLoading from "../../Loading/ItemLoading";
+import Clock from "../../Clock";
 
 export default function NFTItem({ data, NFT, Marketplace, remove }) {
 

@@ -1,4 +1,4 @@
-import React, {  lazy, useEffect, useState } from "react";
+import React, {  useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import getWeb3 from "../../utils/getWeb3";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -9,9 +9,9 @@ import { useSelector } from "react-redux";
 import Select from 'react-select';
 import { filterDropdown } from "../../config/styles.js";
 
-const TradeNFT = lazy(() => import("../components/FolderNFT/tradeNFT"));
-const PremiumNFTLoading = lazy(() => import("../components/Loading/PremiumNFTLoading"));
-const Empty = lazy(() => import("../components/Empty"));
+import TradeNFT from "../components/FolderNFT/tradeNFT";
+import PremiumNFTLoading from "../components/Loading/PremiumNFTLoading";
+import Empty from "../components/Empty";
 
 const GlobalStyles = createGlobalStyle`
     

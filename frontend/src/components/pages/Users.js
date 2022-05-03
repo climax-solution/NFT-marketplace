@@ -1,11 +1,11 @@
-import React, { useEffect, useState, lazy } from 'react';
+import React, { useEffect, useState } from 'react';
 // import Select from 'react-select';
 import { createGlobalStyle } from 'styled-components';
 import axios from 'axios';
 
-const UserList = lazy(() => import('../components/Users/UserList'));
-const PremiumNFTLoading = lazy(() => import( '../components/Loading/PremiumNFTLoading'));
-const Footer = lazy(() => import('../components/footer'));
+import UserList from '../components/Users/UserList';
+import PremiumNFTLoading from  '../components/Loading/PremiumNFTLoading';
+import Footer from '../components/footer';
 
 const customStyles = {
   option: (base, state) => ({

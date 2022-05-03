@@ -1,10 +1,10 @@
-import React, { useState, useEffect, lazy } from "react";
+import React, { useState, useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { createGlobalStyle } from "styled-components";
 
-const Empty = lazy(() => import("../Empty"));
-const User = lazy(() => import("./User"));
-const PremiumNFTLoading = lazy(() => import("../Loading/PremiumNFTLoading"));
+import Empty from "../Empty";
+import User from "./User";
+import PremiumNFTLoading from "../Loading/PremiumNFTLoading";
 
 const GlobalStyles = createGlobalStyle`
     .user-card {

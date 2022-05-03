@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useEffect } from 'react';
+import React, { Suspense, useEffect, lazy } from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Navigate, Route, Routes } from "react-router-dom";
 import { createGlobalStyle } from 'styled-components';
