@@ -63,10 +63,10 @@ export default function Banner({ userData }) {
                             <div className="d-flex justify-content-center">
                                 <span id="wallet" className="profile_wallet mx-2">{ userData.walletAddress && ((userData.walletAddress).substr(0, 4) + '...' + (userData.walletAddress).substr(-4))}</span>
                                 <CopyToClipboard
-                                text={userData.walletAddress}
-                                onCopy={copyAlert}
+                                    text={userData.walletAddress}
+                                    onCopy={copyAlert}
                                 >
-                                <button id="btn_copy" className="position-relative">Copy</button>
+                                    <button id="btn_copy" className="position-relative">Copy</button>
                                 </CopyToClipboard>
                             </div>
                             {

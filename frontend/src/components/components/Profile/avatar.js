@@ -7,6 +7,14 @@ import { UPDATE_AUTH } from "../../../store/action/auth.action";
 import { success_toastify, error_toastify } from "../../../utils/notify";
 
 const GlobalStyles = createGlobalStyle`
+  
+  .edit-btn {
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    cursor: pointer;
+  }
+  
   .avatar-image {
     max-width: 150px;
   }

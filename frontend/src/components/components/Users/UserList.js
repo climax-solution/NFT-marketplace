@@ -23,21 +23,18 @@ const GlobalStyles = createGlobalStyle`
         box-sizing: border-box;
         margin: 0.25em !important;
         border: 1px solid rgba(56,51,51,0.15);
+
         .avatar img{
             width: 110px;
             hegith: 110px;
             border-radius: 50%;
         }
-    }
 
-    @media screen and (min-width: 1000px) and (max-width: 1300px) {
-        .user-card {
+        @media screen and (min-width: 1000px) and (max-width: 1300px) {
             max-width: calc(25% - 1em);
         }
-    }
-
-    @media screen and (min-width: 600px) and (max-width: 1000px) {
-        .user-card {
+    
+        @media screen and (min-width: 600px) and (max-width: 1000px) {
             max-width: calc(50% - 1em);
         }
     }
