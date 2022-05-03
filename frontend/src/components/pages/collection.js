@@ -1,16 +1,16 @@
-import React, { useEffect, useState, lazy } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import getWeb3 from "../../utils/getWeb3";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { createGlobalStyle } from 'styled-components';
 
-const Footer = lazy(() => import('../components/footer'));
-const TradeNFT = lazy(() => import("../components/FolderNFT/tradeNFT"));
-const Banner = lazy(() => import("../components/Collection/banner"));
-const PremiumNFTLoading = lazy(() => import("../components/Loading/PremiumNFTLoading"));
-const Empty = lazy(() => import("../components/Empty"));
-const Loading = lazy(() => import("../components/Loading/Loading"));
+import Footer from '../components/footer';
+import TradeNFT from "../components/FolderNFT/tradeNFT";
+import Banner from "../components/Collection/banner";
+import PremiumNFTLoading from "../components/Loading/PremiumNFTLoading";
+import Empty from "../components/Empty";
+import Loading from "../components/Loading/Loading";
 
 const GlobalStyles = createGlobalStyle`
     .groups {

@@ -1,13 +1,13 @@
-import React, { useEffect, useState, lazy } from "react";
+import React, { useEffect, useState } from "react";
 import { createGlobalStyle } from "styled-components";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
 
-const PremiumNFTLoading = lazy(() => import('../Loading/PremiumNFTLoading'));
-const Empty = lazy(() => import("../Empty"));
-const TradeNFT  = lazy(() => import( "../FolderNFT/tradeNFT"));
+import PremiumNFTLoading from '../Loading/PremiumNFTLoading';
+import Empty from "../Empty";
+import TradeNFT  from  "../FolderNFT/tradeNFT";
 
 const GlobalStyles = createGlobalStyle`
   .text-grey {

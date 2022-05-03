@@ -1,11 +1,11 @@
 import axios from "axios";
 import { useSelector } from "react-redux";
-import React, { useState, useEffect, lazy } from "react";
+import React, { useState, useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-const Empty = lazy(() => import("../../../Empty"));
-const Folder = lazy(() => import("./Item"));
-const PremiumNFTLoading = lazy(() => import("../../../Loading/PremiumNFTLoading"));
+import Empty from "../../../Empty";
+import Folder from "./Item";
+import PremiumNFTLoading from "../../../Loading/PremiumNFTLoading";
 
 export default function FolderList() {
 

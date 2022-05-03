@@ -1,4 +1,4 @@
-import React, { useEffect, useState, lazy } from 'react';
+import React, { useEffect, useState } from 'react';
 import Select from 'react-select';
 import { createGlobalStyle } from 'styled-components';
 import categoryOptions from "../../config/category.json";
@@ -6,9 +6,9 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { filterDropdown } from "../../config/styles.js";
 
-const FolderList = lazy(() => import('../components/Explore/FolderList'));
-const Footer = lazy(() => import('../components/footer'));
-const PremiumNFTLoading = lazy(() => import('../components/Loading/PremiumNFTLoading'));
+import FolderList from '../components/Explore/FolderList';
+import Footer from '../components/footer';
+import PremiumNFTLoading from '../components/Loading/PremiumNFTLoading';
 
 const GlobalStyles = createGlobalStyle`
   .items_filter {

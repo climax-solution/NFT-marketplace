@@ -1,13 +1,13 @@
-import React, { useState,lazy } from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
 import { createGlobalStyle } from 'styled-components';
 import validator from "validator";
 import { useNavigate } from 'react-router-dom';
 import { success_toastify, error_toastify } from "../../utils/notify";
 
-const TextInput = lazy(() => import('../components/Form/TextInput'));
-const PasswordInput = lazy(() => import('../components/Form/PasswordInput'));
-const Footer = lazy(() => import('../components/footer'));
+import TextInput from '../components/Form/TextInput';
+import PasswordInput from '../components/Form/PasswordInput';
+import Footer from '../components/footer';
 
 const GlobalStyles = createGlobalStyle`
     .country-select {

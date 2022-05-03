@@ -1,7 +1,7 @@
-import React, { lazy } from 'react';
+import React from 'react';
 
-const InternalLinks = lazy(() => import('./Footer/internal'));
-const SocialLinks = lazy(() => import('./Footer/socials'));
+import InternalLinks from './Footer/internal';
+import SocialLinks from './Footer/socials';
 
 const footer= () => (
   <footer className="footer-light">

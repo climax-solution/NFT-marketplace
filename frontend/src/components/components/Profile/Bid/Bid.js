@@ -1,11 +1,11 @@
 import axios from "axios";
-import { lazy, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from 'react-redux';
 
-const BidItem = lazy(() => import("./BidItem"));
-const Empty = lazy(() => import("../../Empty"));
-const PremiumNFTLoading = lazy(() => import("../../Loading/PremiumNFTLoading"));
-const InfiniteScroll = lazy(() => import("react-infinite-scroll-component"));
+import BidItem from "./BidItem";
+import Empty from "../../Empty";
+import PremiumNFTLoading from "../../Loading/PremiumNFTLoading";
+import InfiniteScroll from "react-infinite-scroll-component";
 
 export default function() {
     

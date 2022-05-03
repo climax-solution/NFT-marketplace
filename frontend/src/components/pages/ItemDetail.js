@@ -1,4 +1,4 @@
-import React, { useEffect, useState, lazy } from "react";
+import React, { useEffect, useState } from "react";
 import { createGlobalStyle } from 'styled-components';
 import { useParams } from "react-router-dom";
 import getWeb3 from "../../utils/getWeb3";
@@ -8,12 +8,12 @@ import Modal from 'react-awesome-modal';
 import { useSelector } from "react-redux";
 import { marketplace_addr } from "../../config/address.json";
 
-const Clock = lazy(() => import("../components/Clock"));
-const Footer = lazy(() => import('../components/footer'));
-const Empty = lazy(() => import("../components/Empty"));
-const Attr = lazy(() => import("../components/ItemDetails/attributes"));
-const ItemDetailsLoading = lazy(() => import("../components/Loading/ItemDetailsLoading"));
-const Art = lazy(() => import("../components/Asset/art"));
+import Clock from "../components/Clock";
+import Footer from '../components/footer';
+import Empty from "../components/Empty";
+import Attr from "../components/ItemDetails/attributes";
+import ItemDetailsLoading from "../components/Loading/ItemDetailsLoading";
+import Art from "../components/Asset/art";
 
 const GlobalStyles = createGlobalStyle`
     .border-grey {

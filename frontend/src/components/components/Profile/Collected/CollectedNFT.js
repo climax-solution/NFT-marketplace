@@ -1,12 +1,12 @@
-import React, { useState, useEffect, lazy } from "react";
+import React, { useState, useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { useSelector } from "react-redux";
 import getWeb3 from "../../../../utils/getWeb3";
 import axios from "axios";
 
-const Empty = lazy(() => import("../../Empty"));
-const PremiumNFTLoading = lazy(() => import("../../Loading/PremiumNFTLoading"));
-const Item = lazy(() => import("./collectedNFTItem"));
+import Empty from "../../Empty";
+import PremiumNFTLoading from "../../Loading/PremiumNFTLoading";
+import Item from "./collectedNFTItem";
 
 export default function CollectedNFT() {
 

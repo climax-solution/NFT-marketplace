@@ -1,11 +1,11 @@
-import React, { lazy } from 'react';
+import React from 'react';
 import { createGlobalStyle } from 'styled-components';
 
-const SliderMainParticle = lazy(() => import('../components/Home/SliderMainParticle'));
-const FeatureBox = lazy(() => import('../components/Home/FeatureBox'));
-const PremiumNFTCarousel = lazy(() => import('../components/Home/PremiumNFTCarousel'));
-const AuthorList = lazy(() => import('../components/Home/authorList'));
-const Footer = lazy(() => import('../components/footer'));
+import SliderMainParticle from '../components/Home/SliderMainParticle';
+import FeatureBox from '../components/Home/FeatureBox';
+import PremiumNFTCarousel from '../components/Home/PremiumNFTCarousel';
+import AuthorList from '../components/Home/authorList';
+import Footer from '../components/footer';
 
 const GlobalStyles = createGlobalStyle`
   .btn-main{

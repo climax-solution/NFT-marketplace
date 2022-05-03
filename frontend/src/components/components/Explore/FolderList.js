@@ -1,9 +1,9 @@
-import React, { useState, useEffect, lazy } from "react";
+import React, { useState, useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-const Empty = lazy(() => import("../Empty"));
-const Folder = lazy(() => import("./Folder"));
-const PremiumNFTLoading = lazy(() => import("../Loading/PremiumNFTLoading"));
+import Empty from "../Empty";
+import Folder from "./Folder";
+import PremiumNFTLoading from "../Loading/PremiumNFTLoading";
 
 export default function FolderList({data }) {
 
