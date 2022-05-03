@@ -7,8 +7,12 @@ import getWeb3 from '../../../../utils/getWeb3';
 import { warning_toastify, success_toastify, error_toastify } from "../../../../utils/notify";
 import axios from 'axios';
 import { useSelector } from 'react-redux';
+import { Checkbox } from 'pretty-checkbox-react';
 import { createGlobalStyle } from 'styled-components';
 import { filterDropdown } from "../../../../config/styles.js";
+import '@djthoms/pretty-checkbox';
+import categories from "../../../../config/category.json";
+const categoryOptions = categories.slice(1, categories.length);
 
 const GlobalStyles = createGlobalStyle`
     .nft-art {
@@ -64,6 +68,12 @@ export default function() {
     const [nftDesc, setNFTDescription] = useState('');
     const [royalty, setRoyalty] = useState();
     const [royaltyAddress, setRoyaltyAddress] = useState('');
+    const [folderName, setFolderName] = useState('');
+    const [folderDesc, setFolderDesc] = useState('');
+    const [folderStatus, setFolderStatus] = useState({
+        name: "",
+        desc: ""
+    })
     const [isLoading, setLoading] = useState(false);
 
     const [preview, setPreivew] = useState("/img/preview.png");
@@ -74,8 +84,10 @@ export default function() {
     const [royaltyStatus, setRoyaltyStatus] = useState('');
     const [loadingStatus, setLoadingStatus] = useState('');
     const [addressStatus, setAddressStatus] = useState('');
+    const [activeCategory, setCategory] = useState(categoryOptions[0]);
 
     const [visible, setOpenModal] = useState(false);
+    const [willCreate, setWillCreate] = useState(false);
     const [attributes, setAttributes] = useState([{
         "trait_type": "",
         "value": ""
@@ -133,6 +145,15 @@ export default function() {
                 flag = 1;
             } else setRoyaltyStatus('');
 
+            if (willCreate) {
+                if (!folderName) {
+                    setFolderStatus({ ...folderStatus, name: "This field is required."});
+                    flag = 1;
+                }
+                
+            } else {
+                setFolderStatus({ ...folderStatus, name: "" });
+            }
 
             if (!validator.isEthereumAddress(royaltyAddress) || !royaltyAddress) {
                 setAddressStatus('Not valid account address');
@@ -166,20 +187,33 @@ export default function() {
             });
             const lastID = Number(result.events.NFTMinted.returnValues.tokenId);
                         
-            const newData = {
+            let newData = {
                 folderID: activeFolder.value,
                 list: [lastID - 1]
             };
 
-            setLoadingStatus('Creating new folder...');
+            let api = `${process.env.REACT_APP_BACKEND}folder/add-items-to-old`;
+            if (willCreate) {
+                setLoadingStatus('Creating new folder...');
+                newData = {
+                    list: [lastID - 1],
+                    name: folderName,
+                    artist: initialUser.username,
+                    description: folderDesc,
+                    category: activeCategory.value
+                };
+                api = `${process.env.REACT_APP_BACKEND}folder/create-new-items`;
+            }
+            else setLoadingStatus('Adding NFT to folder...');
 
-            await axios.post(`${process.env.REACT_APP_BACKEND}folder/add-items-to-old`, newData).then(res => {
+            await axios.post(api, newData).then(res => {
 
             }).catch(err => {
                 
             });
-            success_toastify("Mint success")
+            success_toastify("Mint success");
         } catch(err) {
+            console.log(err);
             let message = 'Failed';
             const parsed = JSON.parse(JSON.stringify(err));
             if (parsed.code == 4001) message = "Canceled";
@@ -258,7 +292,15 @@ export default function() {
             <GlobalStyles/>
             <div className="old-panel">
                 <div className="nft__item p-5 position-relative">
-                    <span className='d-block mb-2 text-white'>Mint Single NFT</span>
+                    <div className='d-flex mb-2 justify-content-between align-items-center'>
+                        <span className='d-block text-white'>Mint Single NFT</span>
+                        <Checkbox
+                            color='danger-o'
+                            shape='round'
+                            bigger
+                            onChange={() => setWillCreate(!willCreate)}
+                        >Add New Folder</Checkbox>
+                    </div>
                     <div className='field-set cursor-pointer my-2'>
                         <label className={`${assetStatus ? "border-danger text-danger" : ""} w-100 btn-main text-center nft-art d-block`}>
                             Please choose NFT art
@@ -313,20 +355,58 @@ export default function() {
                         </div>
                         <span className='open-btn' onClick={() => setOpenModal(true)}><i className='fa fa-plus'/></span>
                     </div>
-                    <div className="field-set mt-3">
-                        <label>Folder List</label>
-                        <Select
-                            className='select1'
-                            styles={filterDropdown}
-                            menuContainerStyle={{'zIndex': 999}}
-                            value={activeFolder}
-                            options={folderList}
-                            onChange={(value) => {
-                                setActiveFolder(value);
-                            }}
-                        />
-                        <label className='f-12px'></label>
-                    </div>
+                    {
+                        !willCreate ? 
+                            <div className="field-set mt-3">
+                                <label>Folder List</label>
+                                <Select
+                                    className='select1'
+                                    styles={filterDropdown}
+                                    menuContainerStyle={{'zIndex': 999}}
+                                    value={activeFolder}
+                                    options={folderList}
+                                    onChange={(value) => {
+                                        setActiveFolder(value);
+                                    }}
+                                />
+                                <label className='f-12px'></label>
+                            </div>
+                        : <>
+                            <div className='field-set mt-3'>
+                                <label>Folder Name</label>
+                                <input
+                                    type="text"
+                                    className={`${folderStatus.name ? "border-danger" : ""} form-control mb-1`}
+                                    value={folderName}
+                                    onChange={(e) => setFolderName(e.target.value)}
+                                />
+                                <label className='text-danger f-12px'>{folderStatus.name}</label>
+                            </div>
+                            <div className="field-set">
+                                <label>Category</label>
+                                <Select
+                                    className='select1'
+                                    styles={filterDropdown}
+                                    menuContainerStyle={{'zIndex': 999}}
+                                    value={activeCategory}
+                                    options={categoryOptions}
+                                    onChange={(value) => {
+                                        setCategory(value);
+                                    }}
+                                />
+                            </div>
+                            <div className="field-set">
+                                <label>Folder Description</label>
+                                <textarea
+                                    type="text"
+                                    className="form-control mb-1 bg-transparent text-white"
+                                    rows={4}
+                                    value={folderDesc}
+                                    onChange={(e) => setFolderDesc(e.target.value)}
+                                />
+                            </div>
+                        </>
+                    }
                     <div className="field-set">
                         <label>NFT Description</label>
                         <textarea
@@ -340,9 +420,9 @@ export default function() {
                 </div>
             </div>
             <div className='old-panel'>
-                <div className='nft__item'>
+                <div className='nft__item align-items-center'>
                     <img src={preview} className="ratio-1-1 w-300px"/>
-                    <div className="field-set mt-2">
+                    <div className="field-set mt-2 w-100">
                         <button
                             className="btn-main py-3 w-100 mx-auto"
                             onClick={mint}
