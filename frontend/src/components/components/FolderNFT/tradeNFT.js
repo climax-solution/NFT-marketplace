@@ -181,7 +181,7 @@ export default function TradeNFT({ data, className = "mx-0" }) {
         setLoading(true);
         let _orgNFT = await NFT.methods.getItemNFT(data.tokenID).call();
         _orgNFT = { ...data, ..._orgNFT};
-        const saled = await axios.post(`${process.env.REACT_APP_BACKEND}sale/get-nft-item`, { tokenID: data.tokenID }).then(res => {
+        let saled = await axios.post(`${process.env.REACT_APP_BACKEND}sale/get-nft-item`, { tokenID: data.tokenID }).then(res => {
             return res.data;
         }).catch(err => {
             return {
@@ -199,23 +199,45 @@ export default function TradeNFT({ data, className = "mx-0" }) {
             }
         }
 
-        await axios.get(`${_orgNFT.tokenURI}`).then(res => {
-            const { data: metadata } = res;
+        if (saled.nft.isSale) {
             const nftOwner = ( (_orgNFT.owner).toLowerCase() == (initialUser.walletAddress).toLowerCase());
-            setNFTOwner(nftOwner);
+            const _price = saled.nft.price;
+            const existedBid = saled.nft.action == 'auction' ? saled.childList.filter(item => (item.walletAddress).toLowerCase() == (initialUser.walletAddress).toLowerCase()) : [];
+            const bidOwner = existedBid.length ? true : false;
 
-            if ((_orgNFT.owner).toLowerCase() == (saled.nft.walletAddress)?.toLowerCase()) {
-                const _price = saled.nft.price;
-                const existedBid = saled.nft.action == 'auction' ? saled.childList.filter(item => (item.walletAddress).toLowerCase() == (initialUser.walletAddress).toLowerCase()) : [];
-                const bidOwner = existedBid.length ? true : false;
+            setNFTOwner(nftOwner);
+            setNFTPrice(_price);
+            setBidOwner(bidOwner);
+        }
+
+        if (!saled.nft.metadata) {
+            await axios.get(`${_orgNFT.tokenURI}`).then(async(res) => {
+                const { data: metadata } = res;             
                 
                 setNFTData({ ..._orgNFT, ...metadata, ...saled.nft });
-                setNFTPrice(_price);
-                setBidOwner(bidOwner);
+    
+                await axios.post(`${process.env.REACT_APP_BACKEND}folder/update-metadata`, {
+                    tokenID: data.tokenID,
+                    metadata
+                }).then(res => {
+    
+                }).catch(me_err => {
+    
+                })
+            }).catch(err => {
+            
+            });
+        }
+        
+        else {
+            try {
+                const _meta = JSON.parse(saled.nft.metadata);
+                delete saled.nft.metadata;
+                setNFTData({ ..._orgNFT, ..._meta, ...saled.nft });
+            } catch(err) {
+
             }
-            else setNFTData({ ..._orgNFT, ...metadata });
-        }).catch(err => {
-        });
+        }
 
         setLoading(false);
     }

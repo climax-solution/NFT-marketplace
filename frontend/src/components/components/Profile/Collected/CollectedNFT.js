@@ -10,7 +10,7 @@ import Item from "./collectedNFTItem";
 
 export default function CollectedNFT() {
 
-    const initUser = useSelector((state) => state.auth.user);
+    const initialUser = useSelector((state) => state.auth.user);
 
     const [nftContract, setNFTContract] = useState({});
     const [marketContract, setMarketContract] = useState({});
@@ -23,16 +23,16 @@ export default function CollectedNFT() {
         if (Marketplace) {
             setNFTContract(NFT);
             setMarketContract(Marketplace);
-            let _list = await NFT.methods.getPersonalNFT(initUser.walletAddress).call();
+            let _list = await NFT.methods.getPersonalNFT(initialUser.walletAddress).call();
             _list = [..._list];
             // // _list = _list.filter(item => item.owner == initialUser.walletAddress);
-            await axios.post(`${process.env.REACT_APP_BACKEND}sale/get-sale-list`, { walletAddress: initUser.walletAddress }).then(res => {
+            await axios.post(`${process.env.REACT_APP_BACKEND}sale/get-sale-list`, { walletAddress: initialUser.walletAddress }).then(res => {
                 const { list } = res.data;
                 let keys = [];
                 list.map(item => {
                     keys.push((item.tokenID).toString());
                 });
-                _list = _list.filter(item => (item.owner).toLowerCase() == (initUser.walletAddress).toLowerCase() && keys.indexOf(item.tokenID) < 0);
+                _list = _list.filter(item => (item.owner).toLowerCase() == (initialUser.walletAddress).toLowerCase() && keys.indexOf(item.tokenID) < 0);
             }).catch(err => {
 
             });

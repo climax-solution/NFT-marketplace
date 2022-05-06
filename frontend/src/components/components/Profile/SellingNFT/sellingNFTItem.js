@@ -113,11 +113,29 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
             const { _web3 } = await getWeb3();
             setWeb3(_web3);
             let _nft = {};
-            await axios.get(data.tokenURI).then(async(res) => {
-                if (typeof (res.data) === 'object') _nft = { ...data, ...res.data };
+            let saleData = await axios.post(`${process.env.REACT_APP_BACKEND}sale/get-nft-item`, { tokenID: data.tokenID}).then(res => {
+                return res.data;
             }).catch(err => {
-
+                return {
+                    nft: {}, childList: []
+                }
             });
+            if (!saleData.nft.metadata) {
+                await axios.get(data.tokenURI).then(async(res) => {
+                    if (typeof (res.data) === 'object') _nft = { ...data, ...res.data };
+                }).catch(err => {
+    
+                });
+            }
+            
+            else {
+                try {
+                    const _meta = JSON.parse(saleData.nft.metadata);
+                    _nft = { ...data, ..._meta };
+                } catch(err) {
+    
+                }
+            }
             setNFT(_nft);
             setLoading(false);
         }

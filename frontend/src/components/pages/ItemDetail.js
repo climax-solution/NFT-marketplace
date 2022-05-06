@@ -62,7 +62,7 @@ const NFTItem = () => {
         try {
             const { id } = params;
             const _orgNFT = await instanceNFT.methods.getItemNFT(id).call();
-            const saleData = await axios.post(`${process.env.REACT_APP_BACKEND}sale/get-nft-item`, { tokenID: id}).then(res => {
+            let saleData = await axios.post(`${process.env.REACT_APP_BACKEND}sale/get-nft-item`, { tokenID: id}).then(res => {
                 return res.data;
             }).catch(err => {
                 return {
@@ -79,22 +79,47 @@ const NFTItem = () => {
                 }
             }
 
-            await axios.get(`${_orgNFT.tokenURI}`).then(res => {
-                const { data: metadata } = res;
+            if (saleData.nft.isSale) {
                 const nftOwner = ( (_orgNFT.owner).toLowerCase() == (initialUser.walletAddress).toLowerCase());
+                const _price = saleData.nft.price;
+                const existedBid = saleData.nft.action == 'auction' ? saleData.childList.filter(item => (item.walletAddress).toLowerCase() == (initialUser.walletAddress).toLowerCase()) : [];
+                const bidOwner = existedBid.length ? true : false;
+
                 setNFTOwner(nftOwner);
+                setNFTPrice(_price);
+                setBidOwner(bidOwner);
+            }
+                        
+            if (!saleData.nft.metadata) {
+                await axios.get(`${_orgNFT.tokenURI}`).then(async(res) => {
+                    const { data: metadata } = res;
+        
+                    await axios.post(`${process.env.REACT_APP_BACKEND}folder/update-metadata`, {
+                        tokenID: id,
+                        metadata
+                    }).then(res => {
+        
+                    }).catch(me_err => {
+        
+                    })
+
+                    if ((_orgNFT.owner).toLowerCase() == (saleData.nft.walletAddress)?.toLowerCase()) {
+                        setNFTData({ ..._orgNFT, ...metadata, ...saleData.nft });
+                    }
+                    else setNFTData({ ..._orgNFT, ...metadata });
+                });
+            }
+
+            else {
+                try {
+                    const _meta = JSON.parse(saleData.nft.metadata);
+                    delete saleData.nft.metadata;
+                    setNFTData({ ..._orgNFT, ..._meta, ...saleData.nft });
+                } catch(err) {
     
-                if ((_orgNFT.owner).toLowerCase() == (saleData.nft.walletAddress)?.toLowerCase()) {
-                    const _price = saleData.nft.price;
-                    const existedBid = saleData.nft.action == 'auction' ? saleData.childList.filter(item => (item.walletAddress).toLowerCase() == (initialUser.walletAddress).toLowerCase()) : [];
-                    const bidOwner = existedBid.length ? true : false;
-                    
-                    setNFTData({ ..._orgNFT, ...metadata, ...saleData.nft });
-                    setNFTPrice(_price);
-                    setBidOwner(bidOwner);
                 }
-                else setNFTData({ ..._orgNFT, ...metadata });
-            });
+            }
+
         } catch(err) {
             console.log(err);
             setNFTData({});
