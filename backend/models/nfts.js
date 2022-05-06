@@ -5,10 +5,15 @@ const { Schema } = Mongoose;
 const FolderSchema = Schema({
     folderID: {
         type: String,
+        required: true,
         lowercase: true
     },
     tokenID: {
-        type: Number
+        type: Number,
+        required: true
+    },
+    metadata: {
+        type: String,
     },
     updated_at: {
         type: Date
