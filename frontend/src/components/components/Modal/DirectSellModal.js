@@ -52,6 +52,7 @@ export default function DirectSellModal({ visible, tokenID, close, NFT, Marketpl
                 }).then(res => {
                     success_toastify(res.data.message);
                 });
+                setLoading(false);
                 close(true);
             }
         } catch(err) {
@@ -60,9 +61,9 @@ export default function DirectSellModal({ visible, tokenID, close, NFT, Marketpl
             if (parsed.code == 4001) message = "Canceled";
 
             error_toastify(message);
+            setLoading(false);
             close();
         }
-        setLoading(false);
     }
 
     const _closeModal = () => {
