@@ -343,12 +343,12 @@ router.post('/get-nft-item', async(req, res) => {
         });
 
         let nft = await SaleSchema.findOne({ tokenID, action: {$in : ['list', 'auction']}});
-        if (!nft) {
-            return res.status(400).json({
-                error: "Not on sale"
-            });
-        }
+        if (!nft) nft = { ...nft, isSale: false };
+        else nft = { ...nft, isSale: true };
 
+        const _collect = await NFTSchema.findOne({ tokenID });
+        nft = { ...nft, metadata: _collect?.metadata };
+        
         let childList = {};
         if (nft.action == 'auction') {
             childList = await SaleSchema.find({ tokenID, action: 'offer' });
