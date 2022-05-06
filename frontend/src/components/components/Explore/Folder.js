@@ -8,10 +8,6 @@ import Art from "../Asset/art";
 import ItemLoading from "../Loading/ItemLoading";
 
 const GlobalStyles = createGlobalStyle`
-   .react-loading-skeleton {
-        background-color: #2a2b2c !important;
-        background-image: linear-gradient(90deg ,#2a2b2c,#444,#2a2b2c ) !important;
-    }
 `;
 
 const Folder = ({ folderID }) => {
@@ -22,18 +18,52 @@ const Folder = ({ folderID }) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(async() => {
-        const { instanceNFT } = await getWeb3();
         const _list = await axios.post(`${process.env.REACT_APP_BACKEND}folder/get-folder-interface`, { folderID }).then(async(res) => {
             const  { list, initialNFT } = res.data;
+            console.log(initialNFT);
             let initNFTData = {};
             if (initialNFT) {
-                const tokenURI = await instanceNFT.methods.tokenURI(initialNFT.tokenID).call();
-                initNFTData = await axios.get(tokenURI).then(result => {
-                    return result.data;
+                
+                let saleData = await axios.post(`${process.env.REACT_APP_BACKEND}sale/get-nft-item`, { tokenID: initialNFT.tokenID }).then(res => {
+                    return res.data;
+                }).catch(errt => {
+                    return {
+                        nft: {}, childList: []
+                    }
                 });
+                if (!saleData.nft.metadata) {
+                    const { instanceNFT } = await getWeb3();
+                    const tokenURI = await instanceNFT.methods.tokenURI(initialNFT.tokenID).call();
+                    await axios.get(tokenURI).then(async(meta) => {
+                        if (typeof (meta.data) === 'object') {
+                            initNFTData = meta.data;
+                            await axios.post(`${process.env.REACT_APP_BACKEND}folder/update-metadata`, {
+                                tokenID: initialNFT.tokenID,
+                                metadata: meta.data
+                            }).then(updatedRes => {
+                
+                            }).catch(me_err => {
+                
+                            })
+                        }
+                    }).catch(me_errs => {
+                        console.log(me_errs);
+        
+                    });
+                }
+                
+                else {
+                    try {
+                        initNFTData = JSON.parse(saleData.nft.metadata);
+                    } catch(errs) {
+        
+                    }
+                }
             }
+
             return { ...list, ...initNFTData};
         }).catch(err => {
+            console.log(err);
             return {};
         });
         setNFT(_list);

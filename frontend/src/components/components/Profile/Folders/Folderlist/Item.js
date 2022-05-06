@@ -9,10 +9,6 @@ import { error_toastify, success_toastify } from "../../../../../utils/notify";
 import ItemLoading from "../../../Loading/ItemLoading";
 
 const GlobalStyles = createGlobalStyle`
-   .react-loading-skeleton {
-        background-color: #2a2b2c !important;
-        background-image: linear-gradient(90deg ,#2a2b2c,#444,#2a2b2c ) !important;
-    }
 
     .btn-group-overlay {
         position: absolute;
