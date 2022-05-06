@@ -22,15 +22,26 @@ export default function BidView() {
 
     useEffect(async() => {
         const { instanceNFT, _web3 } = await getWeb3();
-        setWeb3(_web3);
-        
-        const _orgNFT = await instanceNFT.methods.getItemNFT(tokenID).call();
-        await axios.get(_orgNFT.tokenURI).then(res => {
-            setMetadata(res.data);
-        })
+        setWeb3(_web3);        
 
-        await axios.post(`${process.env.REACT_APP_BACKEND}sale/get-nft-item`, { tokenID }).then(res => {
+        await axios.post(`${process.env.REACT_APP_BACKEND}sale/get-nft-item`, { tokenID }).then(async(res) => {
             const  { nft, childList } = res.data;
+            if (nft.metadata) {
+                try {
+                    const _meta = JSON.parse(nft.metadata);
+                    setMetadata(_meta);
+                } catch(err) {
+    
+                }
+            }
+
+            else {
+                const _orgNFT = await instanceNFT.methods.getItemNFT(tokenID).call();
+        
+                await axios.get(_orgNFT.tokenURI).then(res => {
+                    setMetadata(res.data);
+                })
+            }
             const _isOwner = nft.walletAddress.toLowerCase() == initialUser.walletAddress.toLowerCase();
             setOwner(_isOwner);
             setBidList(childList);
