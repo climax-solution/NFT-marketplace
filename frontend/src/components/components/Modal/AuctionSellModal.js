@@ -53,6 +53,7 @@ export default function AuctionSellModal({ visible, close, tokenID, web3, NFT, M
                     const { message } = res.data;
                     success_toastify(message);
                 });
+                setLoading(false);
                 close(true);
             }
             
@@ -62,9 +63,9 @@ export default function AuctionSellModal({ visible, close, tokenID, web3, NFT, M
             if (parsed.code == 4001) message = "Canceled";
 
             error_toastify(message);
+            setLoading(false);
             close();
         }
-        setLoading(false);
     }
 
     const _closeModal = () => {
