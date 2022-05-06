@@ -162,9 +162,10 @@ router.post('/get-folder-detail', async(req, res) => {
             if (!whiteItem) throw Error("Not allowed");
         }
         let list = await NFTSchema.find({ folderID });
+        console.log("list", list);
         for await (let item of list) {
             const saled = await SaleSchema.findOne({ tokenID: item.tokenID, action: {$in: ['list', 'auction'] }});
-            item = { ...item, ...saled};
+            item = { ...saled, tokenID: item.tokenID };
         }
         const artist = await UserSchema.findOne({ username: folder.artist });
         res.status(200).json({
@@ -338,6 +339,36 @@ router.post('/get-private-folder-info', async(req, res) => {
         console.log(err);
         res.status(400).json({
             error : "Your request is restricted"
+        });
+    }
+});
+
+router.post('/update-metadata', async(req, res) => {
+    try {
+        const { tokenID, metadata } = req.body;
+        const _exist = await NFTSchema.findOne({ tokenID });
+        if (_exist) {
+            if (!_exist.metadata || !_exist.metadata.length) {
+                const result = await NFTSchema.updateOne({ tokenID }, JSON.stringify(metadata));
+                console.log(result);
+                res.status(200).json({
+                    status: true
+                });
+            }
+            res.status(200).json({
+                status: false,
+                message: "already set"
+            });
+        }
+        else {
+            res.status(200).json({
+                status: false,
+                message: "no nft exist"
+            });
+        }
+    } catch(err) {
+        res.status(200).json({
+            status: false
         });
     }
 });
