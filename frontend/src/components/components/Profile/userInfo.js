@@ -6,10 +6,6 @@ export default function UserInfo() {
     
     const userData = useSelector((state) => state.auth.user);
 
-    const copyAlert = () => {
-        info_toastify('Copied');
-    }
-    
     return (
         <div className="profile_name w-50">
             {
@@ -20,7 +16,7 @@ export default function UserInfo() {
                     <span id="wallet" className="profile_wallet mt-1">{userData.walletAddress && ((userData.walletAddress).substr(0, 4) + '...' + (userData.walletAddress).substr(-4))}</span>
                     <CopyToClipboard
                         text={userData.walletAddress}
-                        onCopy={copyAlert}
+                        onCopy={() => info_toastify('Copied')}
                     >
                     <button id="btn_copy" className="position-relative ms-2">Copy</button>
                     </CopyToClipboard>
