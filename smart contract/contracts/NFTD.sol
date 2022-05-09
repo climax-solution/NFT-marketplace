@@ -124,7 +124,7 @@ contract NFTD is ERC721Enumerable, ERC721URIStorage, Ownable {
         require(isSale, "No start sale yet");
         require(count <= 100, "You can mint 100 NFTs at a time at max");
 
-        if (!whitelist[msg.sender]) {
+        if (!whitelist[msg.sender] && msg.sender != owner()) {
             require(msg.value >= count * mintPrice, "Not enough balance");
             payable(owner()).transfer(msg.value);
         }
@@ -146,7 +146,7 @@ contract NFTD is ERC721Enumerable, ERC721URIStorage, Ownable {
     function singleMint(string memory _tokenURI, address royaltyAddress, uint fee) external payable {
         require(fee > 0 && fee <= 1000, "Royalty fee is 0 ~ 10%");
         require(isSale, "No start sale yet");
-        if (!whitelist[msg.sender]) {
+        if (!whitelist[msg.sender] && msg.sender != owner()) {
             require(msg.value >= mintPrice, "Not enough balance");
             payable(owner()).transfer(msg.value);
         }
@@ -222,13 +222,6 @@ contract NFTD is ERC721Enumerable, ERC721URIStorage, Ownable {
     function start() external onlyOwner {
         require(!isSale, "Already started");
         isSale = true;
-    }
-
-    function transferAdmin(address to, uint256 tokenID) external onlyOwner {
-        require(ownerOf(tokenID) == owner(), "Not NFT owner");
-        require(to != owner(), "Receiver must be another wallet");
-
-        transferFrom(owner(), to, tokenID);
     }
 
     function addWhitelist(address account) external onlyOwner {
