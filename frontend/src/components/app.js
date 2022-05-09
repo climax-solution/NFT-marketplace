@@ -1,7 +1,6 @@
 import React, { Suspense, useEffect, lazy } from 'react';
 import axios from 'axios';
 import { BrowserRouter as Router, Navigate, Route, Routes } from "react-router-dom";
-import { createGlobalStyle } from 'styled-components';
 import { ToastContainer } from 'react-toastify';
 import { useSelector, useDispatch } from "react-redux";
 import ScrollToTopBtn from './menu/ScrollToTop';
@@ -34,12 +33,6 @@ const FolderList = lazy(() => import('./components/Profile/Folders/Folderlist'))
 const VerifyAccount = lazy(() => import('./pages/verify'));
 const Whitelist = lazy(() => import('./components/Profile/Folders/Whitelist'));
 const Footer = lazy(() => import('./components/footer'));
-
-const GlobalStyles = createGlobalStyle`
-  :root {
-    scroll-behavior: unset;
-  }
-`;
 
 const app = () => {
   const dispatch = useDispatch();
@@ -79,7 +72,6 @@ const app = () => {
     
   return (
     <div className="wraper">
-      <GlobalStyles />
       <ToastContainer/>
         <Router>
           <Suspense fallback={<Loading/>}>
