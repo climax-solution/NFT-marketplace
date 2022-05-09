@@ -6,6 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import useOnclickOutside from "react-cool-onclickoutside";
 import { useSelector, useDispatch } from "react-redux";
 import { UPDATE_AUTH } from "../../store/action/auth.action";
+import Web3 from  'web3';
 import getWeb3 from "../../utils/getWeb3";
 import { warning_toastify, success_toastify, info_toastify } from "../../utils/notify";
 import { WalletConnect } from "../../store/action/wallet.action";
@@ -157,6 +158,12 @@ const Header= function() {
 
   const connectWallet = async() => {
     try {
+      const _web3 = new Web3(window.ethereum);
+      const chainID = await _web3.eth.getChainId();
+      if (chainID != '0x61') {
+        throw Error('Please switch to BSC testnet');
+      };
+
       const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
       // console.log(accounts, user_data.walletAddress);
       if ((accounts[0]).toLowerCase() != (user_data.walletAddress).toLowerCase()) throw new Error("Please switch account and connect.");
