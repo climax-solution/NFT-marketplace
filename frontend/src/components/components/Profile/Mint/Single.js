@@ -9,9 +9,12 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { Checkbox } from 'pretty-checkbox-react';
 import { createGlobalStyle } from 'styled-components';
+import detects from "detect-file-type";
 import { filterDropdown } from "../../../../config/styles.js";
 import '@djthoms/pretty-checkbox';
 import categories from "../../../../config/category.json";
+import VideoArt from '../../Asset/video';
+import MusicArt from '../../Asset/music';
 const categoryOptions = categories.slice(1, categories.length);
 
 const GlobalStyles = createGlobalStyle`
@@ -26,7 +29,8 @@ const GlobalStyles = createGlobalStyle`
     }
 
     .w-300px {
-        width: 300px !important;
+        min-width: 300px !important;
+        max-width: 300px !important;
     }
 
     .properties-group {
@@ -56,6 +60,10 @@ const GlobalStyles = createGlobalStyle`
     }
 `;
 
+const image_ext = ['jpg', 'png', 'gif'];
+const audio_ext = ['mp3', 'wav', 'ogg'];
+const video_ext = ['mp4', 'avi', 'webm'];
+
 export default function() {
 
     const initialUser = useSelector((state) => state.auth.user);
@@ -70,6 +78,7 @@ export default function() {
     const [royaltyAddress, setRoyaltyAddress] = useState('');
     const [folderName, setFolderName] = useState('');
     const [folderDesc, setFolderDesc] = useState('');
+    const [fileType, setFileType] = useState('image');
     const [folderStatus, setFolderStatus] = useState({
         name: "",
         desc: ""
@@ -77,6 +86,8 @@ export default function() {
     const [isLoading, setLoading] = useState(false);
 
     const [preview, setPreivew] = useState("/img/preview.png");
+    const [musicPre, setMusicPre] = useState('');
+    const [musicPreArt, setMusicPreArt] = useState('');
     const [asset, setAsset] = useState();
 
     const [assetStatus, setAssetStatus] = useState(false);
@@ -130,6 +141,13 @@ export default function() {
 
         try {
             let flag = 0;
+            
+
+            if (fileType == 'music' && !musicPreArt) {
+                flag = 1;
+                setAssetStatus(true);
+            } else setAssetStatus(false);
+
             if (!asset) {
                 flag = 1;
                 setAssetStatus(true);
@@ -169,13 +187,18 @@ export default function() {
 
             const art = await ipfs.files.add(asset);
 
-            const metadata = {
+            let metadata = {
                 nftName,
                 nftDesc,
                 asset: `https://ipfs.io/ipfs/${art[0].hash}`,
-                type: "image",
+                type: fileType,
                 attributes
             };
+
+            if (fileType == 'music') {
+                const _preArt = await ipfs.files.add(musicPreArt);
+                metadata = { ...metadata, image: 'https://ipfs.io/ipfs/' + _preArt[0].hash };
+            }
 
             const uploaded = await ipfs.files.add(Buffer.from(JSON.stringify(metadata)));
             const tokenURI = 'https://ipfs.io/ipfs/' + uploaded[0].hash;
@@ -231,10 +254,35 @@ export default function() {
             const saveReader = new window.FileReader();
 
             saveReader.readAsArrayBuffer(file);
-            saveReader.onloadend = function (e) {
-                setPreivew(window.URL.createObjectURL(file))
-                setAsset(Buffer(saveReader.result));
-                setAddressStatus(false);
+            saveReader.onloadend = async function (evt) {
+                await detects.fromBuffer(Buffer(saveReader.result), (err, result) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                    else {
+                        const { ext } = result;
+                        let flag = 0;
+                        if (image_ext.indexOf(ext) > -1)  {
+                            setFileType('image');
+                            flag = 1;
+                        }
+                        else if (audio_ext.indexOf(ext) > -1)  {
+                            setFileType('music');
+                            flag = 1;
+                        }
+                        else if (video_ext.indexOf(ext) > -1)  {
+                            setFileType('video');
+                            flag = 1;
+                        }
+
+                        if (flag) {
+                            setPreivew(window.URL.createObjectURL(file))
+                            setAsset(Buffer(saveReader.result));
+                            setAddressStatus(false);
+                        }
+                    }
+                });
+                
             }.bind(this);
         }
     }
@@ -287,6 +335,30 @@ export default function() {
         setOpenModal(false);
     }
 
+    const importBGArt = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            const saveReader = new window.FileReader();
+
+            saveReader.readAsArrayBuffer(file);
+            saveReader.onloadend = async function (evt) {
+                await detects.fromBuffer(Buffer(saveReader.result), (err, result) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                    else {
+                        const { ext } = result;
+                        if (image_ext.indexOf(ext) > -1)  {
+                            setMusicPre(window.URL.createObjectURL(file));
+                            setMusicPreArt(Buffer(saveReader.result));
+                        }
+                    }
+                });
+                
+            }.bind(this);
+        }
+    }
+
     return (
         <>
             <GlobalStyles/>
@@ -306,11 +378,27 @@ export default function() {
                             Please choose NFT art
                             <input
                                 type="file"
+                                accept="audio/*,video/*,image/*"
                                 onChange={importAsset}
                                 hidden
                             />
                         </label>
                     </div>
+                    {
+                        (fileType == 'music' && asset) ?
+                        <div className='field-set cursor-pointer my-2'>
+                            <label className={`${assetStatus ? "border-danger text-danger" : ""} w-100 btn-main text-center nft-art d-block`}>
+                                Please choose background art
+                                <input
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={importBGArt}
+                                    hidden
+                                />
+                            </label>
+                        </div>
+                        : ""
+                    }
                     <div className="field-set">
                         <label>NFT name</label>
                         <input
@@ -419,9 +507,20 @@ export default function() {
                     </div>
                 </div>
             </div>
-            <div className='old-panel'>
+            <div className='old-panel w-300px'>
                 <div className='nft__item align-items-center'>
-                    <img src={preview} className="ratio-1-1 w-300px"/>
+                    {
+                        fileType == 'image' ? <img src={preview} className="ratio-1-1 w-100"/>
+                        : (
+                            fileType == 'video' ? <VideoArt data={preview}/>
+                            : <MusicArt
+                                tokenID={1}
+                                image={musicPre}
+                                asset={asset}
+                                redirect="#"
+                            />
+                        )
+                    }
                     <div className="field-set mt-2 w-100">
                         <button
                             className="btn-main py-3 w-100 mx-auto"

@@ -6,6 +6,7 @@
   "dependencies": {
     "@djthoms/pretty-checkbox": "^3.1.0",
     "axios": "^0.25.0",
+    "detect-file-type": "^0.2.8",
     "elegant-icons": "0.0.1",
     "ipfs-api": "^26.1.2",
     "moment": "^2.29.1",
@@ -18,6 +19,7 @@
     "react-dom": "^17.0.2",
     "react-infinite-scroll-component": "^6.1.0",
     "react-loading-skeleton": "^2.2.0",
+    "react-media-player": "^0.7.9",
     "react-multi-carousel": "^2.6.5",
     "react-player": "^2.9.0",
     "react-redux": "^7.2.6",
@@ -40,8 +42,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "postbuild": "purgecss --css build/static/css/*.css --content build/index.html build/static/js/*.js --output build/static/css"
+    "eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
