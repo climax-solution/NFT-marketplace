@@ -1,10 +1,8 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 
 export default function MusicArt({ tokenID, image, asset, redirect }) {
 
     const [isPlay, setPlay] = useState(false);
-    const navigate = useNavigate();
 
     const playMusic = () => {
         setPlay(!isPlay);
