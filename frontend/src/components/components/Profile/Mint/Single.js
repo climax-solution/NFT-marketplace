@@ -13,11 +13,14 @@ import detects from "detect-file-type";
 import { filterDropdown } from "../../../../config/styles.js";
 import '@djthoms/pretty-checkbox';
 import categories from "../../../../config/category.json";
-import VideoArt from '../../Asset/video';
 import MusicArt from '../../Asset/music';
 const categoryOptions = categories.slice(1, categories.length);
 
 const GlobalStyles = createGlobalStyle`
+    .preview-video {
+        object-fit: cover;
+    }
+
     .nft-art {
         padding: 20px 0;
         border: solid 1px rgba(255, 255, 255, 0.1);
@@ -512,9 +515,9 @@ export default function() {
                     {
                         fileType == 'image' ? <img src={preview} className="ratio-1-1 w-100"/>
                         : (
-                            fileType == 'video' ? <VideoArt data={preview}/>
+                            fileType == 'video' ? <video src={preview} controls className="ratio-1-1 w-100 h-100 preview-video"/>
                             : <MusicArt
-                                tokenID={1}
+                                tokenID={'#'}
                                 image={musicPre}
                                 asset={asset}
                                 redirect="#"

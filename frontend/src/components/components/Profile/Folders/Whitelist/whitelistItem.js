@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { createGlobalStyle } from "styled-components"
-import { error_toastify, success_toastify } from "../../../../../utils/notify";
+import { success_toastify } from "../../../../../utils/notify";
 
 const GlobalStyles = createGlobalStyle`
     .whitelist-item {

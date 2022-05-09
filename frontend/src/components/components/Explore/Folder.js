@@ -1,14 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { createGlobalStyle } from 'styled-components';
 import { useNavigate } from "react-router-dom";
 import getWeb3 from "../../../utils/getWeb3";
 import Art from "../Asset/art";
-
 import ItemLoading from "../Loading/ItemLoading";
-
-const GlobalStyles = createGlobalStyle`
-`;
 
 const Folder = ({ folderID }) => {
 
@@ -72,7 +67,6 @@ const Folder = ({ folderID }) => {
 
     return (
         <>
-            <GlobalStyles/>
             {
                 loading ? <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4"><ItemLoading/></div>
                 : (
