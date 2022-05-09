@@ -45,16 +45,20 @@ const login = () => {
       password
     };
     dispatch(UPDATE_LOADING_PROCESS(true));
-    await axios.post(`${process.env.REACT_APP_BACKEND}auth/login`, data).then(res => {
-      success_toastify("You have logged in successfully");
-      const { token, user } = res.data;
-      localStorage.setItem("nftdevelopments-token", JSON.stringify(token));
-      dispatch(UPDATE_AUTH(user));
-      navigate('/profile');
-    }).catch(err => {
-      const { error } = err.response.data;
-      error_toastify(error);
-    })
+    try {
+      await axios.post(`${process.env.REACT_APP_BACKEND}auth/login`, data).then(res => {
+        success_toastify("You have logged in successfully");
+        const { token, user } = res.data;
+        localStorage.setItem("nftdevelopments-token", JSON.stringify(token));
+        dispatch(UPDATE_AUTH(user));
+        navigate('/profile');
+      }).catch(err => {
+        const { error } = err.response.data;
+        error_toastify(error);
+      })
+    } catch(err) {
+      
+    }
     dispatch(UPDATE_LOADING_PROCESS(false));
   }
 
