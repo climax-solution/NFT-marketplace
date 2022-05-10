@@ -1,34 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { createGlobalStyle } from 'styled-components';
 import { useParams } from "react-router-dom";
-import getWeb3 from "../../utils/getWeb3";
-import { warning_toastify, success_toastify, error_toastify, info_toastify } from "../../utils/notify";
+import getWeb3 from "../../../utils/getWeb3";
+import { warning_toastify, success_toastify, error_toastify, info_toastify } from "../../../utils/notify";
 import axios from "axios";
 import Modal from 'react-awesome-modal';
 import { useSelector } from "react-redux";
-import { marketplace_addr } from "../../config/address.json";
+import { marketplace_addr } from "../../../config/address.json";
 
-import Clock from "../components/Clock";
-import Empty from "../components/Empty";
-import Attr from "../components/ItemDetails/attributes";
-import ItemDetailsLoading from "../components/Loading/ItemDetailsLoading";
-import Art from "../components/Asset/art";
-
-const GlobalStyles = createGlobalStyle`
-    .border-grey {
-        border-color: #4e4e4e !important;
-    }
-    
-    .mw-500px {
-        max-width: 500px;
-    }
-    
-    .groups {
-        display: grid;
-        grid-template-columns: auto auto;
-        column-gap: 15px;
-    }
-`;
+import Clock from "../../components/Clock";
+import Empty from "../../components/Empty";
+import Attr from "../../components/ItemDetails/attributes";
+import ItemDetailsLoading from "../../components/Loading/ItemDetailsLoading";
+import Art from "../../components/Asset/art";
+import "./style.module.css";
 
 const NFTItem = () => {
 
@@ -262,118 +246,115 @@ const NFTItem = () => {
 
     return (
         <div>
-            <>
-                <GlobalStyles/>
-                <section className='jumbotron breadcumb no-bg'>
-                    <div className='mainbreadcumb'>
-                        <div className='container'>
-                            <div className='row m-10-hor'>
-                            <div className='col-12'>
-                                <h1 className='text-center'>NFT Description</h1>
-                            </div>
-                            </div>
+            <section className='jumbotron breadcumb no-bg'>
+                <div className='mainbreadcumb'>
+                    <div className='container'>
+                        <div className='row m-10-hor'>
+                        <div className='col-12'>
+                            <h1 className='text-center'>NFT Description</h1>
+                        </div>
                         </div>
                     </div>
-                </section>
-                {
-                    loading ? <ItemDetailsLoading/>
-                    : (
-                        Object.keys(nft).length ?
-                            <section className='container'>
-                                <div className='row mt-md-5 pt-md-4'>
+                </div>
+            </section>
+            {
+                loading ? <ItemDetailsLoading/>
+                : (
+                    Object.keys(nft).length ?
+                        <section className='container'>
+                            <div className='row mt-md-5 pt-md-4'>
 
-                                    <div className="col-md-6 col-sm-12 text-center d-md-block d-flex justify-content-center align-items-center flex-column">
-                                        <Art
-                                            tokenID={nft.tokenID}
-                                            image={nft.image}
-                                            asset={nft.asset}
-                                            redirect={() => null}
-                                            type={nft.type}
-                                        />
+                                <div className="col-md-6 col-sm-12 text-center d-md-block d-flex justify-content-center align-items-center flex-column">
+                                    <Art
+                                        tokenID={nft.tokenID}
+                                        image={nft.image}
+                                        asset={nft.asset}
+                                        redirect={() => null}
+                                        type={nft.type}
+                                    />
 
-                                        { !isNFTOwner && (
-                                            nft.action && (
-                                                nft.action == 'list'
-                                                    ? <span className="btn-main py-3 mx-auto w-100 mt-3 mw-500px" onClick={buyNow} >Buy Now</span>
-                                                    : (
-                                                        !isBidOwner 
-                                                        ? <span className="btn-main mx-auto py-3 w-50 mt-2" onClick={openModal}>Place Bid</span>
-                                                        : <span className="btn-main mx-auto py-3 w-50 mt-2" onClick={withdrawBid}>Withdraw Bid</span>
-                                                    )
+                                    { !isNFTOwner && (
+                                        nft.action && (
+                                            nft.action == 'list'
+                                                ? <span className="btn-main py-3 mx-auto w-100 mt-3 mw-500px" onClick={buyNow} >Buy Now</span>
+                                                : (
+                                                    !isBidOwner 
+                                                    ? <span className="btn-main mx-auto py-3 w-50 mt-2" onClick={openModal}>Place Bid</span>
+                                                    : <span className="btn-main mx-auto py-3 w-50 mt-2" onClick={withdrawBid}>Withdraw Bid</span>
                                                 )
                                             )
+                                        )
+                                    }
+                                </div>
+                                <div className="col-md-6 col-sm-12">
+                                    <div className="item_info">
+                                        {
+                                            nft.action == "auction" && (
+                                                <>
+                                                    Auctions ends in 
+                                                    <div className="de_countdown">
+                                                        <Clock deadline={new Date(nft.deadline).toLocaleDateString()} />
+                                                    </div>
+                                                </>
+                                            )
                                         }
-                                    </div>
-                                    <div className="col-md-6 col-sm-12">
-                                        <div className="item_info">
+                                        <h2>{nft.nftName}</h2>
+                                        <h5>TOKEN ID : {nft.tokenID} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { price ?`PRICE : ${web3.utils.fromWei(price.toString(), "ether")} BNB` : ""}</h5>
+                                        <div className="item_info_counts">
+                                            <div className="item_info_type"><i className="fa fa-image"></i>{nft.category}</div>
                                             {
-                                                nft.action == "auction" && (
-                                                    <>
-                                                        Auctions ends in 
-                                                        <div className="de_countdown">
-                                                            <Clock deadline={new Date(nft.deadline).toLocaleDateString()} />
-                                                        </div>
-                                                    </>
+                                                nft.status == 'premium' && (
+                                                    <div className="item_info_type"><i className="fa fa-sparkles"></i>Premium NFT</div>
                                                 )
                                             }
-                                            <h2>{nft.nftName}</h2>
-                                            <h5>TOKEN ID : {nft.tokenID} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { price ?`PRICE : ${web3.utils.fromWei(price.toString(), "ether")} BNB` : ""}</h5>
-                                            <div className="item_info_counts">
-                                                <div className="item_info_type"><i className="fa fa-image"></i>{nft.category}</div>
-                                                {
-                                                    nft.status == 'premium' && (
-                                                        <div className="item_info_type"><i className="fa fa-sparkles"></i>Premium NFT</div>
-                                                    )
-                                                }
-                                            </div>
-                                            <p>{nft.nftDesc}</p>
-
-                                            <div className="spacer-40"></div>
-                                            <Attr data={nft.attributes}/>
                                         </div>
+                                        <p>{nft.nftDesc}</p>
+
+                                        <div className="spacer-40"></div>
+                                        <Attr data={nft.attributes}/>
                                     </div>
-
                                 </div>
-                                <Modal
-                                    visible={visible}
-                                    width="300"
-                                    height="200"
-                                    effect="fadeInUp"
-                                    onClickAway={null}
-                                >
-                                    {
-                                        isTrading ?
-                                        <div className='d-flex w-100 h-100 justify-content-center align-items-center'>
-                                            <div className='reverse-spinner'></div>
-                                        </div>
-                                        : <div className='p-5'>
-                                                <div className='form-group'>
-                                                    <label>Please reserve price.</label>
-                                                    <input
-                                                        type="number"
-                                                        className='form-control text-dark border-dark'
-                                                        value={bidPrice}
-                                                        onChange={(e) => setBidPrice(e.target.value)}
-                                                    />
-                                                </div>
-                                                <div className='groups'>
-                                                    <button
-                                                        className='btn-main btn-apply w-100'
-                                                        onClick={placeBid}
-                                                    >Place</button>
-                                                    <button
-                                                        className='btn-main w-100'
-                                                        onClick={_closeModal}
-                                                    >Cancel</button>
-                                                </div>
+
+                            </div>
+                            <Modal
+                                visible={visible}
+                                width="300"
+                                height="200"
+                                effect="fadeInUp"
+                                onClickAway={null}
+                            >
+                                {
+                                    isTrading ?
+                                    <div className='d-flex w-100 h-100 justify-content-center align-items-center'>
+                                        <div className='reverse-spinner'></div>
+                                    </div>
+                                    : <div className='p-5'>
+                                            <div className='form-group'>
+                                                <label>Please reserve price.</label>
+                                                <input
+                                                    type="number"
+                                                    className='form-control text-dark border-dark'
+                                                    value={bidPrice}
+                                                    onChange={(e) => setBidPrice(e.target.value)}
+                                                />
                                             </div>
-                                    }
-                                </Modal>
-                            </section>
-                        : !Object.keys(nft).length && <Empty/>
-                    )
-                }
-            </>
+                                            <div className='groups'>
+                                                <button
+                                                    className='btn-main btn-apply w-100'
+                                                    onClick={placeBid}
+                                                >Place</button>
+                                                <button
+                                                    className='btn-main w-100'
+                                                    onClick={_closeModal}
+                                                >Cancel</button>
+                                            </div>
+                                        </div>
+                                }
+                            </Modal>
+                        </section>
+                    : !Object.keys(nft).length && <Empty/>
+                )
+            }
         </div>
     );
 }

@@ -1,0 +1,21 @@
+.navbar .light-logo {
+    width: 100px;
+    height: 70px;
+}
+.navbar .mainside .connect-wal {
+    display: none;
+}
+.navbar .mainside .logout {
+    display: flex !important;
+    align-items: center;
+    position: relative;
+}
+.navbar .mainside .logout .index-avatar {
+    aspect-ratio: 1;
+}
+.navbar .mainside .font-bold {
+    font-weight: 900;
+}
+.btn-main {
+    padding: 6px 20px;
+}

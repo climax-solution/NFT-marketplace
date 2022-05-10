@@ -1,32 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { createGlobalStyle } from "styled-components";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
+import "./premium.module.css";
 
 import PremiumNFTLoading from '../Loading/PremiumNFTLoading';
 import Empty from "../Empty";
 import TradeNFT  from  "../FolderNFT/tradeNFT";
-
-const GlobalStyles = createGlobalStyle`
-  .text-grey {
-    color: #a2a2a2;
-  }
-
-  .nft__item {
-    height: calc(100% - 20px);
-  }
- 
-  .groups {
-      display: grid;
-      grid-template-columns: auto auto;
-      column-gap: 15px;
-  }
-  .carousel-item-padding-40-px {
-    transform-style: unset !important;
-  }
-`;
 
 export default function () {
   const initialUser = useSelector(({ auth }) => auth.user);
@@ -86,8 +67,6 @@ export default function () {
         </div>
       </div> 
       <div className='nft'>
-        <>
-          <GlobalStyles/>
           { carouselLoading && <PremiumNFTLoading/> }
           {
             !carouselLoading && (
@@ -118,7 +97,6 @@ export default function () {
             </>
             )
           }
-          </>
       </div>
     </section>
   )

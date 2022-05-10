@@ -2,23 +2,9 @@ import axios from "axios";
 import { useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { useDispatch, useSelector } from "react-redux";
-import { createGlobalStyle } from "styled-components";
 import { UPDATE_AUTH } from "../../../store/action/auth.action";
 import { success_toastify, error_toastify } from "../../../utils/notify";
-
-const GlobalStyles = createGlobalStyle`
-  
-  .edit-btn {
-    transform: translate(-50%, -50%);
-    top: 50%;
-    left: 50%;
-    cursor: pointer;
-  }
-  
-  .avatar-image {
-    max-width: 150px;
-  }
-`;
+import "./avatar.module.css";
 
 export default function Avatar() {
     
@@ -59,7 +45,6 @@ export default function Avatar() {
 
     return (
       <>
-        <GlobalStyles/>
         <div
           className="avatar-image position-relative w-50"
           onMouseEnter={() => isLoading ? null : setOpenChange(true)}

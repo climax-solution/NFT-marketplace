@@ -1,20 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { createGlobalStyle } from 'styled-components';
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { UPDATE_AUTH, UPDATE_LOADING_PROCESS } from '../../store/action/auth.action';
-import { success_toastify, error_toastify } from "../../utils/notify";
-
-const GlobalStyles = createGlobalStyle`
-  .box-login p{
-    color: #a2a2a2 !important;
-  }
-  .box-login{
-    border-radius: 3px;
-    padding: 40px 50px;
-  }
-`;
+import { UPDATE_AUTH, UPDATE_LOADING_PROCESS } from '../../../store/action/auth.action';
+import { success_toastify, error_toastify } from "../../../utils/notify";
+import "./style.module.css";
 
 const login = () => {
   const [email, setEmail] = useState('');
@@ -64,7 +54,6 @@ const login = () => {
 
   return(
     <div>
-    <GlobalStyles/>
 
       <section className='jumbotron breadcumb no-bg' style={{backgroundImage: `url(${'./img/background/bg.webp'})`}}>
         <div className='mainbreadcumb'>
