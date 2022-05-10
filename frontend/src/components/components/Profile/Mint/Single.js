@@ -8,61 +8,14 @@ import { warning_toastify, success_toastify, error_toastify } from "../../../../
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { Checkbox } from 'pretty-checkbox-react';
-import { createGlobalStyle } from 'styled-components';
 import detects from "detect-file-type";
 import { filterDropdown } from "../../../../config/styles.js";
 import '@djthoms/pretty-checkbox';
 import categories from "../../../../config/category.json";
 import MusicArt from '../../Asset/music';
+import "./single.module.css";
+
 const categoryOptions = categories.slice(1, categories.length);
-
-const GlobalStyles = createGlobalStyle`
-    .preview-video {
-        object-fit: cover;
-    }
-
-    .nft-art {
-        padding: 20px 0;
-        border: solid 1px rgba(255, 255, 255, 0.1);
-        border-radius: 6px;
-    }
-
-    .border-grey {
-        border-color: #4e4e4e !important;
-    }
-
-    .w-300px {
-        min-width: 300px !important;
-        max-width: 300px !important;
-    }
-
-    .properties-group {
-        display:  flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 1px solid #333;
-        border-top: 1px solid #333;
-        padding: 10px 0;
-    }
-
-    .open-btn {
-        padding: 15px 20px;
-        border: 1px solid #333;
-        border-radius: 6px;
-    }
-
-    .attr-list {
-        max-height: 350px;
-        overflow: auto;
-    }
-
-    .attr-item {
-        display: flex;
-        align-items: center;
-        column-gap: 10px;
-    }
-`;
-
 const image_ext = ['jpg', 'png', 'gif'];
 const audio_ext = ['mp3', 'wav', 'ogg'];
 const video_ext = ['mp4', 'avi', 'webm'];
@@ -364,7 +317,6 @@ export default function() {
 
     return (
         <>
-            <GlobalStyles/>
             <div className="old-panel">
                 <div className="nft__item p-5 position-relative">
                     <div className='d-flex mb-2 justify-content-between align-items-center'>

@@ -1,17 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { createGlobalStyle } from 'styled-components';
 import { useNavigate, useParams } from "react-router-dom";
-import { success_toastify, error_toastify } from "../../utils/notify";
+import { success_toastify, error_toastify } from "../../../utils/notify";
 
-import PasswordInput from '../components/Form/PasswordInput';
-
-const GlobalStyles = createGlobalStyle`
-  .box-login{
-    border-radius: 3px;
-    padding: 40px 50px;
-  }
-`;
+import PasswordInput from '../../components/Form/PasswordInput';
 
 const ResetPassword = () => {
 
@@ -48,7 +40,6 @@ const ResetPassword = () => {
 
   return(
     <div>
-    <GlobalStyles/>
 
       <section className='jumbotron breadcumb no-bg' style={{backgroundImage: `url(${'./img/background/bg.webp'})`}}>
         <div className='mainbreadcumb'>

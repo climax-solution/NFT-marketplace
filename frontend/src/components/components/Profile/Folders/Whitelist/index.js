@@ -1,67 +1,10 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { createGlobalStyle } from "styled-components";
 
 import WhiteListLoading from "../../../Loading/whiteListLoading";
 import WhitelistItem from "./whitelistItem";
-
-const GlobalStyles = createGlobalStyle`
-    .container {
-        max-width: 1170px;
-    }
-    .list-box {
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 4px;
-        padding: 20px;
-        max-width: 500px;
-        width: 100%;
-        .list {
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            min-height: 300px;
-            max-height: 300px;
-            overflow: auto;
-
-            display: flex;
-            flex-direction: column;
-            grid-gap: 10px;
-
-            /* width */
-            ::-webkit-scrollbar {
-                width: 10px;
-            }
-
-            /* Track */
-            ::-webkit-scrollbar-track {
-                background: #f1f1f1; 
-            }
-            
-            /* Handle */
-            ::-webkit-scrollbar-thumb {
-                background: #888; 
-            }
-
-            /* Handle on hover */
-            ::-webkit-scrollbar-thumb:hover {
-                background: #555; 
-            }
-        }
-    }
-
-    .manage-content {
-        max-width: 1170px;
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        align-items: center;
-    }
-
-    .folder-name {
-        text-shadow: 2px 2px 0 #4074b5, 2px -2px 0 #4074b5, -2px 2px 0 #4074b5, -2px -2px 0 #4074b5, 2px 0px 0 #4074b5, 0px 2px 0 #4074b5, -2px 0px 0 #4074b5, 0px -2px 0 #4074b5;
-        font-size: 26px;
-    }
-`;
+import "./style.module.css";
 
 export default function Whitelist() {
 
@@ -109,7 +52,6 @@ export default function Whitelist() {
 
     return (
         <div className="container">
-            <GlobalStyles/>
             <div className="title">
                 <h3 className="folder-name">{folderinfo.name}</h3>
             </div>

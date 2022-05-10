@@ -1,30 +1,17 @@
 import React, {  useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import getWeb3 from "../../utils/getWeb3";
+import getWeb3 from "../../../utils/getWeb3";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { createGlobalStyle } from 'styled-components';
 import Skeleton from "react-loading-skeleton";
 import axios from "axios";
 import { useSelector } from "react-redux";
 import Select from 'react-select';
-import { filterDropdown } from "../../config/styles.js";
+import { filterDropdown } from "../../../config/styles.js";
 
-import TradeNFT from "../components/FolderNFT/tradeNFT";
-import PremiumNFTLoading from "../components/Loading/PremiumNFTLoading";
-import Empty from "../components/Empty";
-
-const GlobalStyles = createGlobalStyle`
-    
-    .groups {
-        display: grid;
-        grid-template-columns: auto auto;
-        column-gap: 15px;
-    }
-
-    .dropdownSelect {
-        width: 200px;
-    }
-`;
+import TradeNFT from "../../components/FolderNFT/tradeNFT";
+import PremiumNFTLoading from "../../components/Loading/PremiumNFTLoading";
+import Empty from "../../components/Empty";
+import "./style.module.css";
 
 const filters = [
     {
@@ -99,7 +86,6 @@ const folderNFTs = () => {
 
     return (
         <div>
-            <GlobalStyles/>
             <>
                 <section className='jumbotron breadcumb no-bg'>
                     <div className='mainbreadcumb'>
