@@ -1,7 +1,7 @@
 require('dotenv').config();
 
 const HDWalletProvider = require('@truffle/hdwallet-provider');  // @notice - Should use new module.
-const mnemonic = 'master gallery almost century lonely label anxiety refuse cable super kitten autumn'; // process.env.;
+const mnemonic = ''; // process.env.;
 
 const INFURA_API_KEY="e5f6b05589544b1bb8526dc3c034c63e";
 
@@ -16,7 +16,7 @@ module.exports = {
         'truffle-plugin-verify'
     ],
     api_keys: {
-        bscscan: "D66C8M35HQSFITQJJT4ZIKHKPVUAA8I4YJ",
+        bscscan: "4567H9QH3XQG4BR1C2XSW4JZ23XJ1JGUMN",
         etherscan: "5Z1RRTM3R1VF8U9BS6DVBZZEACU5XUN59Q"
     },
   networks: {
