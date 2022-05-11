@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import validator from "validator";
-import { warning_toastify, success_toastify, error_toastify, info_toastify } from "../../../utils/notify";
+import { warning_toastify, success_toastify, error_toastify } from "../../../utils/notify";
 
 export default function InternalLinks() {
 

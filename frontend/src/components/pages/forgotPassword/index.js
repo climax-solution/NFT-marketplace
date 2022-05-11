@@ -1,17 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { createGlobalStyle } from 'styled-components';
-import { success_toastify, error_toastify } from "../../utils/notify";
-
-const GlobalStyles = createGlobalStyle`
-  .box-login p{
-    color: #a2a2a2 !important;
-  }
-  .box-login{
-    border-radius: 3px;
-    padding: 40px 50px;
-  }
-`;
+import { success_toastify, error_toastify } from "../../../utils/notify";
+import "./style.css";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -39,8 +29,6 @@ const ForgotPassword = () => {
 
   return(
     <div>
-    <GlobalStyles/>
-
       <section className='jumbotron breadcumb no-bg' style={{backgroundImage: `url(${'./img/background/bg.webp'})`}}>
         <div className='mainbreadcumb'>
           <div className='container'>

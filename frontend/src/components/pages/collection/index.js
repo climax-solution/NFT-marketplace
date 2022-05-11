@@ -1,23 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import getWeb3 from "../../utils/getWeb3";
+import getWeb3 from "../../../utils/getWeb3";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { createGlobalStyle } from 'styled-components';
 
-import TradeNFT from "../components/FolderNFT/tradeNFT";
-import Banner from "../components/Collection/banner";
-import PremiumNFTLoading from "../components/Loading/PremiumNFTLoading";
-import Empty from "../components/Empty";
-import Loading from "../components/Loading/Loading";
-
-const GlobalStyles = createGlobalStyle`
-    .groups {
-      display: grid;
-      grid-template-columns: auto auto;
-      column-gap: 15px;
-    }
-`;
+import TradeNFT from "../../components/FolderNFT/tradeNFT";
+import Banner from "../../components/Collection/banner";
+import PremiumNFTLoading from "../../components/Loading/PremiumNFTLoading";
+import Empty from "../../components/Empty";
+import Loading from "../../components/Loading/Loading";
+import "./style.css";
 
 const Collection= function() {
   const params = useParams();
@@ -78,7 +70,6 @@ const Collection= function() {
 
   return (
     <div>
-      <GlobalStyles/>
         {
           isLoading ? <Loading/>
           : (

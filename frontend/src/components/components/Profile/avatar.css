@@ -1,0 +1,10 @@
+.edit-btn {
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
+    cursor: pointer;
+}
+  
+.avatar-image {
+    max-width: 150px;
+}

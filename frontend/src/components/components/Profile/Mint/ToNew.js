@@ -11,7 +11,7 @@ import { filterDropdown } from "../../../../config/styles.js";
 
 const categoryOptions = categories.slice(1, categories.length);
 
-export default function() {
+export default function MintToNew() {
 
     const initialUser = useSelector((state) => state.auth.user);
     const wallet_info = useSelector(({ wallet }) => wallet.wallet_connected);
