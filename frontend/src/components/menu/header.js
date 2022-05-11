@@ -6,16 +6,19 @@ import useOnclickOutside from "react-cool-onclickoutside";
 import { useSelector, useDispatch } from "react-redux";
 import { UPDATE_AUTH } from "../../store/action/auth.action";
 import Web3 from  'web3';
+import { createGlobalStyle } from "styled-components";
 import getWeb3 from "../../utils/getWeb3";
 import { warning_toastify, success_toastify, info_toastify } from "../../utils/notify";
 import { WalletConnect } from "../../store/action/wallet.action";
-import "./style.css";
+import style from "./style.js";
 
 setDefaultBreakpoints([
   { xs: 0 },
   { l: 1199 },
   { xl: 1200 }
 ]);
+
+const GlobalStyle = createGlobalStyle`${style}`;
 
 const Header = () => {
   const dispatch = useDispatch();
@@ -116,16 +119,7 @@ const Header = () => {
   }
   
   const copyAlert = () => {
-    info_toastify('Copied', {
-      position: "top-center",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-        theme: "colored"
-    });
+    info_toastify('Copied');
   }
 
   const connectWallet = async() => {
@@ -173,6 +167,7 @@ const Header = () => {
 
   return (
     <>
+      <GlobalStyle/>
         <header id="myHeader" className='navbar white'>
           <div className='container'>
             <div className='row w-100-nav'>

@@ -7,11 +7,13 @@ import axios from "axios";
 import { useSelector } from "react-redux";
 import Select from 'react-select';
 import { filterDropdown } from "../../../config/styles.js";
-
+import { createGlobalStyle } from "styled-components";
 import TradeNFT from "../../components/FolderNFT/tradeNFT";
 import PremiumNFTLoading from "../../components/Loading/PremiumNFTLoading";
 import Empty from "../../components/Empty";
-import "./style.css";
+import style from "./style.js";
+
+const GlobalStyle = createGlobalStyle`${style}`;
 
 const filters = [
     {
@@ -85,76 +87,75 @@ const FolderNFTs = () => {
     }
 
     return (
-        <div>
-            <>
-                <section className='jumbotron breadcumb no-bg'>
-                    <div className='mainbreadcumb'>
-                        <div className='container'>
-                            <div className='row m-10-hor'>
-                            <div className='col-12'>
-                                {
-                                    isLoading ? <Skeleton/>
-                                    : (
-                                        <div className="d-flex align-items-center justify-content-center flex-column profile_avatar">
-                                            <img src={`${process.env.REACT_APP_BACKEND}avatar/${artist.avatar}`} alt="artist" className="rounded-circle mx-150px ratio-1-1" crossOrigin="true"/>
-                                            <h1 className="text-center">{artist.name}</h1>
-                                            <p className="text-center">{description}</p>
-                                        </div>
+        <>
+            <GlobalStyle/>
+            <section className='jumbotron breadcumb no-bg'>
+                <div className='mainbreadcumb'>
+                    <div className='container'>
+                        <div className='row m-10-hor'>
+                        <div className='col-12'>
+                            {
+                                isLoading ? <Skeleton/>
+                                : (
+                                    <div className="d-flex align-items-center justify-content-center flex-column profile_avatar">
+                                        <img src={`${process.env.REACT_APP_BACKEND}avatar/${artist.avatar}`} alt="artist" className="rounded-circle mx-150px ratio-1-1" crossOrigin="true"/>
+                                        <h1 className="text-center">{artist.name}</h1>
+                                        <p className="text-center">{description}</p>
+                                    </div>
+                                )
+                            }
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <section className='container'>
+                <div className="d-flex align-items-center justify-content-end w-100 gap-3 mb-3">
+                    <div>
+                        <span className="fs-6">Filter:</span>
+                    </div>
+                    <div className='dropdownSelect one'>
+                        <Select
+                            className='select1'
+                            styles={filterDropdown}
+                            menuContainerStyle={{'zIndex': 999}}
+                            value={active}
+                            options={filters}
+                            onChange={(value) => {
+                                setActive(value);
+                                // setFolderList([]);
+                            }}
+                        />
+                    </div>
+                </div>
+                {
+                    isLoading && <PremiumNFTLoading/>
+                }
+                {
+                    !isLoading &&  (
+                        <InfiniteScroll
+                            dataLength={nfts.length}
+                            next={fetchNFT}
+                            hasMore={restList.length ? true : false}
+                            loader={<PremiumNFTLoading/>}
+                            className="row"
+                        >
+                            {
+                                nfts.map( (nft, index) => {
+                                    return (
+                                        <TradeNFT data={nft} key={index}/>
                                     )
-                                }
-                            </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-                <section className='container'>
-                    <div className="d-flex align-items-center justify-content-end w-100 gap-3 mb-3">
-                        <div>
-                            <span className="fs-6">Filter:</span>
-                        </div>
-                        <div className='dropdownSelect one'>
-                            <Select
-                                className='select1'
-                                styles={filterDropdown}
-                                menuContainerStyle={{'zIndex': 999}}
-                                value={active}
-                                options={filters}
-                                onChange={(value) => {
-                                    setActive(value);
-                                    // setFolderList([]);
-                                }}
-                            />
-                        </div>
-                    </div>
-                    {
-                        isLoading && <PremiumNFTLoading/>
-                    }
-                    {
-                        !isLoading &&  (
-                            <InfiniteScroll
-                                dataLength={nfts.length}
-                                next={fetchNFT}
-                                hasMore={restList.length ? true : false}
-                                loader={<PremiumNFTLoading/>}
-                                className="row"
-                            >
-                                {
-                                    nfts.map( (nft, index) => {
-                                        return (
-                                            <TradeNFT data={nft} key={index}/>
-                                        )
-                                    })
-                                }
-                            </InfiniteScroll>
-                        )
-                    }
-                    {
-                        !isLoading && !nfts.length && <Empty/>
-                    }
-                    
-                </section>
-            </>
-        </div>
+                                })
+                            }
+                        </InfiniteScroll>
+                    )
+                }
+                {
+                    !isLoading && !nfts.length && <Empty/>
+                }
+                
+            </section>
+        </>
 
     );
 }

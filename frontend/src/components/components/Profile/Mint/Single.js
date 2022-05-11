@@ -8,12 +8,14 @@ import { warning_toastify, success_toastify, error_toastify } from "../../../../
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { Checkbox } from 'pretty-checkbox-react';
+import { createGlobalStyle } from "styled-components";
 import detects from "detect-file-type";
 import { filterDropdown } from "../../../../config/styles.js";
 import '@djthoms/pretty-checkbox';
 import categories from "../../../../config/category.json";
 import MusicArt from '../../Asset/music';
-import "./single.css";
+import style from "./style/single.js";
+const GlobalStyle = createGlobalStyle`${style}`;
 
 const categoryOptions = categories.slice(1, categories.length);
 const image_ext = ['jpg', 'png', 'gif'];
@@ -317,6 +319,7 @@ export default function SingleMint() {
 
     return (
         <>
+            <GlobalStyle/>
             <div className="old-panel">
                 <div className="nft__item p-5 position-relative">
                     <div className='d-flex mb-2 justify-content-between align-items-center'>

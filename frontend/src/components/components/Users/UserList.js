@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import InfiniteScroll from "react-infinite-scroll-component";
-
+import { createGlobalStyle } from "styled-components";
 import Empty from "../Empty";
 import User from "./User";
 import PremiumNFTLoading from "../Loading/PremiumNFTLoading";
-import "./style.css";
+import style from "./style.js";
+const GlobalStyle = createGlobalStyle`${style}`;
 
 export default function UserList({data}) {
 
@@ -37,6 +38,7 @@ export default function UserList({data}) {
     
     return (
         <>
+            <GlobalStyle/>
             <InfiniteScroll
                 dataLength={userList.length}
                 next={fetchFolders}

@@ -1,19 +1,19 @@
+const style = `
 .mint-group {
     display: grid;
     grid-auto-flow: column;
     grid-gap: 15px;
     justify-content: center;
-}
-.mint-group .old-panel, .new-panel {
-    max-width: 500px;
-    width: 100%;
-}
-
-.couple-column {
-    display: grid;
-    grid-auto-columns: minmax(0, 1fr);
-    grid-auto-flow: column;
-    column-gap: 10px;
+    .old-panel, .new-panel {
+        max-width: 500px;
+        width: 100%;
+    }
+    .couple-column {
+        display: grid;
+        grid-auto-columns: minmax(0, 1fr);
+        grid-auto-flow: column;
+        column-gap: 10px;
+    }
 }
 
 @media screen and (max-width: 1000px) {
@@ -26,4 +26,6 @@
     .couple-column {
         display: block;
     }
-}
+}`;
+
+export default style;

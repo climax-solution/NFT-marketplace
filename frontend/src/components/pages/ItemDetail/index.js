@@ -6,14 +6,15 @@ import axios from "axios";
 import Modal from 'react-awesome-modal';
 import { useSelector } from "react-redux";
 import { marketplace_addr } from "../../../config/address.json";
-
+import { createGlobalStyle } from "styled-components";
 import Clock from "../../components/Clock";
 import Empty from "../../components/Empty";
 import Attr from "../../components/ItemDetails/attributes";
 import ItemDetailsLoading from "../../components/Loading/ItemDetailsLoading";
 import Art from "../../components/Asset/art";
-import "./style.css";
+import style from "./style.js";
 import { offerSign } from "../../../utils/sign";
+const GlobalStyle = createGlobalStyle`${style}`;
 
 const ItemDetail = () => {
 
@@ -247,7 +248,8 @@ const ItemDetail = () => {
     }
 
     return (
-        <div>
+        <>
+            <GlobalStyle/>
             <section className='jumbotron breadcumb no-bg'>
                 <div className='mainbreadcumb'>
                     <div className='container'>
@@ -357,7 +359,7 @@ const ItemDetail = () => {
                     : !Object.keys(nft).length && <Empty/>
                 )
             }
-        </div>
+        </>
     );
 }
 export default ItemDetail;

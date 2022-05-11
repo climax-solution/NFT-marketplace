@@ -1,3 +1,4 @@
+const style = `
 .text-grey {
     color: #a2a2a2;
 }
@@ -8,4 +9,6 @@
 
 .carousel-item-padding-40-px {
     transform-style: unset !important;
-}
+}`;
+
+export default style;

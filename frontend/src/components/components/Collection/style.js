@@ -1,3 +1,4 @@
+const style = `
 .border-grey {
     border-color: #4e4e4e !important;
 }
@@ -7,9 +8,9 @@
     margin: auto;
     height: 40px;
     margin-top: 20px;
-}
-
-.social-links i {
-    display: inline-block;
-    cursor: pointer;
-}
+    i {
+        display: inline-block;
+        cursor: pointer;
+    }
+}`;
+export default style;

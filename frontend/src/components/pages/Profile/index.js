@@ -3,10 +3,11 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import { useDispatch } from "react-redux";
 import { UPDATE_AUTH } from "../../../store/action/auth.action";
 import { WalletConnect } from "../../../store/action/wallet.action";
-
+import { createGlobalStyle } from "styled-components";
 import Avatar from "../../components/Profile/avatar";
 import UserInfo from "../../components/Profile/userInfo";
-import "./style.css";
+import style from "./style.js";
+const GlobalStyle = createGlobalStyle`${style}`;
 
 const Profile = function() {
 
@@ -24,7 +25,8 @@ const Profile = function() {
   }
 
   return (
-    <div>
+    <>
+      <GlobalStyle/>
       <section className='container no-bottom'>
         <div className='row'>
           <div className='spacer-double'></div>
@@ -100,7 +102,7 @@ const Profile = function() {
 
         <Outlet/>
       </section>
-    </div>
+    </>
   );
 }
 export default Profile;

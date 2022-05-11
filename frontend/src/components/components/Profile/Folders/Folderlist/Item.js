@@ -4,9 +4,10 @@ import { useNavigate } from "react-router-dom";
 import getWeb3 from "../../../../../utils/getWeb3";
 import Art from "../../../Asset/art";
 import { error_toastify, success_toastify } from "../../../../../utils/notify";
-
+import { createGlobalStyle } from "styled-components";
 import ItemLoading from "../../../Loading/ItemLoading";
-import "./style.css";
+import style from "./style.js";
+const GlobalStyle = createGlobalStyle`${style}`;
 
 const Folder = ({ folderID }) => {
 
@@ -56,6 +57,7 @@ const Folder = ({ folderID }) => {
 
     return (
         <>
+            <GlobalStyle/>
             {
                 loading ? <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4"><ItemLoading/></div>
                 : (

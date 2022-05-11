@@ -3,15 +3,14 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import getWeb3 from "../../../utils/getWeb3";
 import InfiniteScroll from "react-infinite-scroll-component";
-
 import TradeNFT from "../../components/FolderNFT/tradeNFT";
 import Banner from "../../components/Collection/banner";
 import PremiumNFTLoading from "../../components/Loading/PremiumNFTLoading";
 import Empty from "../../components/Empty";
 import Loading from "../../components/Loading/Loading";
-import "./style.css";
 
-const Collection= function() {
+const Collection = () => {
+
   const params = useParams();
   const navigate = useNavigate();
   const [userData, setUserData] = useState({});

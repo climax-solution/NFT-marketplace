@@ -2,7 +2,6 @@ import React from 'react';
 import Reveal from 'react-awesome-reveal';
 import { keyframes } from "@emotion/react";
 import { Link } from "react-router-dom";
-import "./slider.css";
 
 const fadeInUp = keyframes`
   0% {
@@ -29,7 +28,7 @@ const inline = keyframes`
 `;
 
 
-const slidermainparticle= () => {
+const SliderMainParticle = () => {
   
   return (
     <>
@@ -62,4 +61,4 @@ const slidermainparticle= () => {
     </>
   )
 }
-export default slidermainparticle;
+export default SliderMainParticle;

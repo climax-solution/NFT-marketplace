@@ -1,3 +1,4 @@
+const style = `
 .ml-12 {
     margin-left: 12px;
 }
@@ -43,4 +44,6 @@
 
 .overflow-unset {
     overflow: unset !important;
-}
+}`;
+
+export default style;
