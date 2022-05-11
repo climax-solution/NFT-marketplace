@@ -1,7 +1,7 @@
 import React from 'react';
 import Reveal from 'react-awesome-reveal';
 import { keyframes } from "@emotion/react";
-import "./feature.module.css";
+import "./feature.css";
 
 const fadeInUp = keyframes`
   0% {

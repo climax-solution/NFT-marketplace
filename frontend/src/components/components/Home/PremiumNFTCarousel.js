@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import axios from "axios";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import "./premium.module.css";
+import "./premium.css";
 
 import PremiumNFTLoading from '../Loading/PremiumNFTLoading';
 import Empty from "../Empty";

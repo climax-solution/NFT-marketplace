@@ -9,7 +9,7 @@ import Web3 from  'web3';
 import getWeb3 from "../../utils/getWeb3";
 import { warning_toastify, success_toastify, info_toastify } from "../../utils/notify";
 import { WalletConnect } from "../../store/action/wallet.action";
-import "./style.module.css";
+import "./style.css";
 
 setDefaultBreakpoints([
   { xs: 0 },

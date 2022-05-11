@@ -1,4 +1,4 @@
-import "./style.module.css";
+import "./style.css";
 export default function Empty() {
     return (
         <div className="empty-panel text-center">

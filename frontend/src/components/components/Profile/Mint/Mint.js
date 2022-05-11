@@ -4,7 +4,7 @@ import { useState } from "react";
 import ToNew from "./ToOld";
 import ToOld from "./ToNew";
 import Single from "./Single";
-import "./style.module.css";
+import "./style.css";
 
 export default function Mint() {
 

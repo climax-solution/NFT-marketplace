@@ -4,7 +4,7 @@ import axios from 'axios';
 
 import UserList from '../../components/Users/UserList';
 import PremiumNFTLoading from  '../../components/Loading/PremiumNFTLoading';
-import "./style.module.css";
+import "./style.css";
 
 const Users = () => {
   const [userList, setUserList] = useState([]);

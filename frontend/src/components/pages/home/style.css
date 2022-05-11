@@ -36,7 +36,7 @@ h2 {
 }
 .author_list_pp i, .nft_coll_pp i, .feature-box.style-3 i, 
 footer.footer-light #form_subscribe #btn-subscribe i, #scroll-to-top div{
-    background: #8364e2 !important;
+    background: #8364e2;
 }
 footer.footer-light .subfooter .social-icons span i{
     background: #403f83;

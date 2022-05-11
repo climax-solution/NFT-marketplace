@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 
 import WhiteListLoading from "../../../Loading/whiteListLoading";
 import WhitelistItem from "./whitelistItem";
-import "./style.module.css";
+import "./style.css";
 
 export default function Whitelist() {
 

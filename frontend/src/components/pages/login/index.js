@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { UPDATE_AUTH, UPDATE_LOADING_PROCESS } from '../../../store/action/auth.action';
+import { UPDATE_AUTH } from '../../../store/action/auth.action';
 import { success_toastify, error_toastify } from "../../../utils/notify";
-import "./style.module.css";
+import "./style.css";
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -34,7 +34,7 @@ const Login = () => {
       id: email,
       password
     };
-    dispatch(UPDATE_LOADING_PROCESS(true));
+    setLoading(true);
     try {
       await axios.post(`${process.env.REACT_APP_BACKEND}auth/login`, data).then(res => {
         success_toastify("You have logged in successfully");
@@ -49,7 +49,7 @@ const Login = () => {
     } catch(err) {
       
     }
-    dispatch(UPDATE_LOADING_PROCESS(false));
+    setLoading(false);
   }
 
   return(

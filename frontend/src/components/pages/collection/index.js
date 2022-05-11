@@ -9,7 +9,7 @@ import Banner from "../../components/Collection/banner";
 import PremiumNFTLoading from "../../components/Loading/PremiumNFTLoading";
 import Empty from "../../components/Empty";
 import Loading from "../../components/Loading/Loading";
-import "./style.module.css";
+import "./style.css";
 
 const Collection= function() {
   const params = useParams();

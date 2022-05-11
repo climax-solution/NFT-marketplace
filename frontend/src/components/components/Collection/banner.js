@@ -1,6 +1,6 @@
 import { CopyToClipboard } from "react-copy-to-clipboard/lib/Component";
 import { info_toastify } from "../../../utils/notify";
-import "./style.module.css";
+import "./style.css";
 
 const socials =  [
     {key: "facebook", icon: 'fab fa-facebook'},
@@ -60,7 +60,7 @@ export default function Banner({ userData }) {
                                                     return (
                                                         <span onClick={()=> window.open(`${userData[item.key]}`, "_blank")} key={index}><i className={item.icon}></i></span>
                                                     )
-                                                }
+                                                } else return "";
                                             })
                                         }
                                     </div>

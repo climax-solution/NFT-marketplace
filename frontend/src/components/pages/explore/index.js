@@ -7,7 +7,7 @@ import { filterDropdown } from "../../../config/styles.js";
 
 import FolderList from '../../components/Explore/FolderList';
 import PremiumNFTLoading from '../../components/Loading/PremiumNFTLoading';
-import "./style.module.css";
+import "./style.css";
 
 const Explore = () => {
 
