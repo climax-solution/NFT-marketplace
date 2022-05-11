@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { createGlobalStyle } from "styled-components";
 import { success_toastify, error_toastify } from "../../../utils/notify";
-import "./style.css";
+import style from "./style.js";
+
+const GlobalStyle = createGlobalStyle`${style}`;
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -28,7 +31,8 @@ const ForgotPassword = () => {
   }
 
   return(
-    <div>
+    <>
+      <GlobalStyle/>
       <section className='jumbotron breadcumb no-bg' style={{backgroundImage: `url(${'./img/background/bg.webp'})`}}>
         <div className='mainbreadcumb'>
           <div className='container'>
@@ -69,7 +73,7 @@ const ForgotPassword = () => {
           </div>
         </div>
       </section>
-    </div>
+    </>
   )
 };
 export default ForgotPassword;

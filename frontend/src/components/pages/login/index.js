@@ -2,9 +2,11 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
+import { createGlobalStyle } from "styled-components";
 import { UPDATE_AUTH } from '../../../store/action/auth.action';
 import { success_toastify, error_toastify } from "../../../utils/notify";
-import "./style.css";
+import style from "./style.js";
+const GlobalStyle = createGlobalStyle`${style}`;
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -53,8 +55,8 @@ const Login = () => {
   }
 
   return(
-    <div>
-
+    <>
+      <GlobalStyle/>
       <section className='jumbotron breadcumb no-bg' style={{backgroundImage: `url(${'./img/background/bg.webp'})`}}>
         <div className='mainbreadcumb'>
           <div className='container'>
@@ -117,7 +119,7 @@ const Login = () => {
           </div>
         </div>
       </section>
-    </div>
+    </>
   )
 };
 export default Login;

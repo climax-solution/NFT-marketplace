@@ -1,10 +1,11 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-
+import { createGlobalStyle } from "styled-components";
 import WhiteListLoading from "../../../Loading/whiteListLoading";
 import WhitelistItem from "./whitelistItem";
-import "./style.css";
+import style from "./style.js";
+const GlobalStyle = createGlobalStyle`${style}`;
 
 export default function Whitelist() {
 
@@ -51,84 +52,87 @@ export default function Whitelist() {
     }
 
     return (
-        <div className="container">
-            <div className="title">
-                <h3 className="folder-name">{folderinfo.name}</h3>
-            </div>
-            <div className="manage-content">
-                <div className="list-box whitelist-box">
-                    <h3>Whitelited Users</h3>
-                    <div className="search-bar">
-                        <input
-                            className="form-control"
-                            placeholder="Search user"
-                            onChange={filterWhiteList}
-                        />
+        <>
+            <GlobalStyle/>
+            <div className="container">
+                <div className="title">
+                    <h3 className="folder-name">{folderinfo.name}</h3>
+                </div>
+                <div className="manage-content">
+                    <div className="list-box whitelist-box">
+                        <h3>Whitelited Users</h3>
+                        <div className="search-bar">
+                            <input
+                                className="form-control"
+                                placeholder="Search user"
+                                onChange={filterWhiteList}
+                            />
+                        </div>
+                        <div className="whitelist list">
+                            {
+                                isLoading ? <WhiteListLoading/>
+                                : <>
+                                {
+                                    !whitelist.length ? <p>No items to display</p>
+                                    : (
+                                        whitelist.map((item, index) => (
+                                            <WhitelistItem
+                                                avatar={item.avatar}
+                                                name={item.name}
+                                                username={item.username}
+                                                isWhite={true}
+                                                update={() => setUpdated(!updated)}
+                                                activeLoading={setLoading}
+                                                key={index}
+                                            />
+                                        ))
+                                    )
+                                }
+                                </>
+                            }
+                            
+                            
+                        </div>
                     </div>
-                    <div className="whitelist list">
+                    <div className="replace-icon">
+                        <i className="fa fa-long-arrow-right fa-2x d-block"/>
+                        <i className="fa fa-long-arrow-left fa-2x d-block"/>
+                    </div>
+                    <div className="list-box whitelist-box">
+                        <h3>Unwhitelisted Users</h3>
+                        <div className="search-bar">
+                            <input
+                                className="form-control"
+                                placeholder="Search user"
+                                onChange={filterUnWhiteList}
+                            />
+                        </div>
+                        <div className="un-whitelist list">
                         {
-                            isLoading ? <WhiteListLoading/>
-                            : <>
-                            {
-                                !whitelist.length ? <p>No items to display</p>
-                                : (
-                                    whitelist.map((item, index) => (
-                                        <WhitelistItem
-                                            avatar={item.avatar}
-                                            name={item.name}
-                                            username={item.username}
-                                            isWhite={true}
-                                            update={() => setUpdated(!updated)}
-                                            activeLoading={setLoading}
-                                            key={index}
-                                        />
-                                    ))
-                                )
+                                isLoading ? <WhiteListLoading/>
+                                : <>
+                                {
+                                    !unWhitelist.length ? <p>No items to display</p>
+                                    : (
+                                        unWhitelist.map((item, index) => (
+                                            <WhitelistItem
+                                                avatar={item.avatar}
+                                                name={item.name}
+                                                username={item.username}
+                                                isWhite={false}
+                                                update={() => setUpdated(!updated)}
+                                                activeLoading={setLoading}
+                                                key={index}
+                                            />
+                                        ))
+                                    )
+                                }
+                                </>
                             }
-                            </>
-                        }
-                        
-                        
-                    </div>
-                </div>
-                <div className="replace-icon">
-                    <i className="fa fa-long-arrow-right fa-2x d-block"/>
-                    <i className="fa fa-long-arrow-left fa-2x d-block"/>
-                </div>
-                <div className="list-box whitelist-box">
-                    <h3>Unwhitelisted Users</h3>
-                    <div className="search-bar">
-                        <input
-                            className="form-control"
-                            placeholder="Search user"
-                            onChange={filterUnWhiteList}
-                        />
-                    </div>
-                    <div className="un-whitelist list">
-                    {
-                            isLoading ? <WhiteListLoading/>
-                            : <>
-                            {
-                                !unWhitelist.length ? <p>No items to display</p>
-                                : (
-                                    unWhitelist.map((item, index) => (
-                                        <WhitelistItem
-                                            avatar={item.avatar}
-                                            name={item.name}
-                                            username={item.username}
-                                            isWhite={false}
-                                            update={() => setUpdated(!updated)}
-                                            activeLoading={setLoading}
-                                            key={index}
-                                        />
-                                    ))
-                                )
-                            }
-                            </>
-                        }
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </>
     )
 }

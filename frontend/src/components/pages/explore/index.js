@@ -4,10 +4,11 @@ import categoryOptions from "../../../config/category.json";
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { filterDropdown } from "../../../config/styles.js";
-
+import { createGlobalStyle } from "styled-components";
 import FolderList from '../../components/Explore/FolderList';
 import PremiumNFTLoading from '../../components/Loading/PremiumNFTLoading';
-import "./style.css";
+import style from "./style.js";
+const GlobalStyle = createGlobalStyle`${style}`;
 
 const Explore = () => {
 
@@ -37,7 +38,8 @@ const Explore = () => {
   }
 
   return(
-    <div>
+    <>
+      <GlobalStyle/>
       <section className='jumbotron breadcumb no-bg'>
         <div className='mainbreadcumb'>
           <div className='container'>
@@ -95,7 +97,7 @@ const Explore = () => {
         </div>
         { isLoading ? <PremiumNFTLoading/> : <FolderList data={folderList}/> }
       </section>
-    </div>
+    </>
   )
 };
 export default Explore;

@@ -1,3 +1,4 @@
+const style = `
 .btn-group-overlay {
     position: absolute;
     left: 0;
@@ -13,14 +14,16 @@
     grid-gap: 10px;
     justify-content: center;
     align-items: center;
-}
-.btn-group-overlay button {
-    width: 200px;
-}
-.btn-group-overlay .btn:before {
-    background-image: none !important;
+    button {
+        width: 200px;
+    }
+    .btn:before {
+        background-image: none !important;
+    }
 }
 
 .folder-item:hover .btn-group-overlay {
     opacity: 1;
-}
+}`;
+
+export default style;

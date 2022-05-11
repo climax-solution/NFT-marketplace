@@ -1,6 +1,9 @@
+const style = `
 .wrapper-404 {
     min-height: 100vh;
-    
+    @media screen and (max-height: 500px) {
+        min-height: 500px;
+    }
 }
 .not-found-container {
     position: absolute;
@@ -9,9 +12,5 @@
     transform: translate(-50%, -50%);
     width: 100%;
 }
-
-@media screen and (max-height: 500px) {
-    .wrapper-404 {
-        min-height: 500px;
-    }
-}
+`;
+export default style;

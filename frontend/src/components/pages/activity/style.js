@@ -1,3 +1,4 @@
+const style = `
 .activity-list li:after, .fa, .fas {
     font-family: "Font Awesome 5 Pro" !important;
 }
@@ -78,4 +79,6 @@
     background: rgba(255, 255, 255, 0.025);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0px 0px 8px 0px rgb(0 0 0 / 30%);
-}
+}`;
+
+export default style;

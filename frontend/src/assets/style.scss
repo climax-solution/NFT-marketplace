@@ -646,6 +646,7 @@ p.lead {
     line-height: 1.7em;
     margin-top: 0;
     font-weight: 400;
+    color: #a2a2a2;
 }
 .btn-main {
     display: block;
@@ -3721,7 +3722,7 @@ img.img-rounded{
   background: #212428;
   border-radius: 3px;
   p{
-    color: $white !important;
+    color: #a2a2a2 !important;
     span{
       color: $color;
       text-decoration: none;

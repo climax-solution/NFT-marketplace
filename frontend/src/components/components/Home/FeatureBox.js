@@ -1,7 +1,9 @@
 import React from 'react';
 import Reveal from 'react-awesome-reveal';
 import { keyframes } from "@emotion/react";
-import "./feature.css";
+import { createGlobalStyle } from "styled-components";
+import style from "./style/feature.js";
+const GlobalStyle = createGlobalStyle`${style}`;
 
 const fadeInUp = keyframes`
   0% {
@@ -18,7 +20,9 @@ const fadeInUp = keyframes`
 
 
 const FeatureBox= () => (
-  <div className='row'>
+  <>
+    <GlobalStyle/>
+    <div className='row'>
       <div className="col-lg-4 col-md-6 mb-3">
           <div className="feature-box f-boxed h-100 style-3">
             <Reveal className='onStep' keyframes={fadeInUp} delay={0} duration={600} triggerOnce>
@@ -36,39 +40,40 @@ const FeatureBox= () => (
           </div>
       </div>
 
-    <div className="col-lg-4 col-md-6 mb-3">
-        <div className="feature-box f-boxed h-100 style-3">
-          <Reveal className='onStep' keyframes={fadeInUp} delay={0} duration={600} triggerOnce>
-            <i className=" bg-color-2 i-boxed icon_cloud-upload_alt"></i>
-          </Reveal>
-            <div className="text">
-              <Reveal className='onStep' keyframes={fadeInUp} delay={100} duration={600} triggerOnce>
-                <h4 className="">Add your NFT's</h4>
-              </Reveal>
-              <Reveal className='onStep' keyframes={fadeInUp} delay={200} duration={600} triggerOnce>
-                <p className="">Click here to learn how to add your NFTs to the NFTD Marketplace.</p>
-              </Reveal>
-            </div>
-            <i className="wm icon_cloud-upload_alt"></i>
-        </div>
-    </div>
+      <div className="col-lg-4 col-md-6 mb-3">
+          <div className="feature-box f-boxed h-100 style-3">
+            <Reveal className='onStep' keyframes={fadeInUp} delay={0} duration={600} triggerOnce>
+              <i className=" bg-color-2 i-boxed icon_cloud-upload_alt"></i>
+            </Reveal>
+              <div className="text">
+                <Reveal className='onStep' keyframes={fadeInUp} delay={100} duration={600} triggerOnce>
+                  <h4 className="">Add your NFT's</h4>
+                </Reveal>
+                <Reveal className='onStep' keyframes={fadeInUp} delay={200} duration={600} triggerOnce>
+                  <p className="">Click here to learn how to add your NFTs to the NFTD Marketplace.</p>
+                </Reveal>
+              </div>
+              <i className="wm icon_cloud-upload_alt"></i>
+          </div>
+      </div>
 
-    <div className="col-lg-4 col-md-6 mb-3">
-        <div className="feature-box f-boxed h-100 style-3">
-          <Reveal className='onStep' keyframes={fadeInUp} delay={0} duration={600} triggerOnce>
-            <i className=" bg-color-2 i-boxed icon_tags_alt"></i>
-          </Reveal>
-            <div className="text">
-              <Reveal className='onStep' keyframes={fadeInUp} delay={100} duration={600} triggerOnce>
-                <h4 className="">Sell your NFT's</h4>
-              </Reveal>
-              <Reveal className='onStep' keyframes={fadeInUp} delay={200} duration={600} triggerOnce>
-                <p className="">Click here to learn how to sell your NFTs to the NFTD Marketplace.</p>
-              </Reveal>
-            </div>
-            <i className="wm icon_tags_alt"></i>
-        </div>
+      <div className="col-lg-4 col-md-6 mb-3">
+          <div className="feature-box f-boxed h-100 style-3">
+            <Reveal className='onStep' keyframes={fadeInUp} delay={0} duration={600} triggerOnce>
+              <i className=" bg-color-2 i-boxed icon_tags_alt"></i>
+            </Reveal>
+              <div className="text">
+                <Reveal className='onStep' keyframes={fadeInUp} delay={100} duration={600} triggerOnce>
+                  <h4 className="">Sell your NFT's</h4>
+                </Reveal>
+                <Reveal className='onStep' keyframes={fadeInUp} delay={200} duration={600} triggerOnce>
+                  <p className="">Click here to learn how to sell your NFTs to the NFTD Marketplace.</p>
+                </Reveal>
+              </div>
+              <i className="wm icon_tags_alt"></i>
+          </div>
+      </div>
     </div>
-  </div>
+  </>
 );
 export default FeatureBox;

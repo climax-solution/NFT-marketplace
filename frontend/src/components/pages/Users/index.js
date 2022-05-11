@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 // import Select from 'react-select';
 import axios from 'axios';
-
 import UserList from '../../components/Users/UserList';
 import PremiumNFTLoading from  '../../components/Loading/PremiumNFTLoading';
-import "./style.css";
 
 const Users = () => {
   const [userList, setUserList] = useState([]);
@@ -32,7 +30,7 @@ const Users = () => {
   }
 
   return(
-    <div>
+    <>
       <section className='jumbotron breadcumb no-bg'>
         <div className='mainbreadcumb'>
           <div className='container'>
@@ -93,7 +91,7 @@ const Users = () => {
           : <UserList data={userList}/>
         }
       </section>
-    </div>
+    </>
   )
 };
 export default Users;
