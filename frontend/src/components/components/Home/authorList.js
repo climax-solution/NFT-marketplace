@@ -6,7 +6,7 @@ import Empty from '../Empty';
 import TopSellerLoading from '../Loading/TopSellerLoading';
 import Buyer from './buyer';
 
-const authorlist= () => {
+const AuthorList= () => {
     
     const [list, setList] = useState([]);
     const [web3,setWEB3] = useState({});
@@ -56,4 +56,4 @@ const authorlist= () => {
         </section>
     )
 }
-export default authorlist;
+export default AuthorList;

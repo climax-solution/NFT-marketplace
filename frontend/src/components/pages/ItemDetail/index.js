@@ -13,8 +13,9 @@ import Attr from "../../components/ItemDetails/attributes";
 import ItemDetailsLoading from "../../components/Loading/ItemDetailsLoading";
 import Art from "../../components/Asset/art";
 import "./style.module.css";
+import { offerSign } from "../../../utils/sign";
 
-const NFTItem = () => {
+const ItemDetail = () => {
 
     const params = useParams();
 
@@ -147,7 +148,7 @@ const NFTItem = () => {
     const placeBid = async() => {
 
         let message = "";
-        let minPrice = web3.utils.fromWei(nftPrice, "ether");
+        let minPrice = web3.utils.fromWei(price, "ether");
         if (!initialUser.walletAddress) message = 'Please log in';
         else if (!wallet_info) message = 'Please connect metamask';
         else if (bidPrice < minPrice) message = 'Minimum price is ' + minPrice + 'BNB';
@@ -166,7 +167,7 @@ const NFTItem = () => {
             
             await WBNB.methods.approve(marketplace_addr, price).send({ from: initialUser.walletAddress });
             const nonce = await Marketplace.methods.nonces(nft.tokenID).call();
-            const result = await sign(nonce, nft.tokenID, initialUser.walletAddress, price, false);
+            const result = await offerSign(nonce, nft.tokenID, initialUser.walletAddress, price, false);
   
             const offer = {
                 tokenID: nft.tokenID,
@@ -206,7 +207,8 @@ const NFTItem = () => {
 
         try {
             setLoading(true);
-            const signature = await processOfferSign(nft,tokenID, initialUser.walletAddress, nft.price);
+            const { id } = params;
+            const signature = await offerSign(nft, id, initialUser.walletAddress, nft.price);
             const withdraw = {
                 walletAddress: initialUser.walletAddress,
                 tokenID: nft.tokenID,
@@ -358,4 +360,4 @@ const NFTItem = () => {
         </div>
     );
 }
-export default NFTItem;
+export default ItemDetail;

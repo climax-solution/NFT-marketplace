@@ -4,8 +4,10 @@ import { useNavigate, useParams } from "react-router-dom";
 import getWeb3 from "../../../../utils/getWeb3";
 import { error_toastify, success_toastify } from "../../../../utils/notify";
 import { marketplace_addr } from "../../../../config/address.json";
+import { useSelector } from "react-redux";
 
 export default function BidRow({ index, data, price, isOwner, startLoading }) {
+    const initialUser = useSelector((state) => state.auth.user)
     const navigate = useNavigate();
 
     const [Marketplace, setMarekplace] = useState({});

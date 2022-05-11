@@ -20,7 +20,7 @@ const image_ext = ['jpg', 'png', 'gif'];
 const audio_ext = ['mp3', 'wav', 'ogg'];
 const video_ext = ['mp4', 'avi', 'webm'];
 
-export default function() {
+export default function SingleMint() {
 
     const initialUser = useSelector((state) => state.auth.user);
     const wallet_info = useSelector(({ wallet }) => wallet.wallet_connected);

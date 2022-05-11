@@ -1,6 +1,6 @@
 import "./style.module.css";
 
-const notfound = () => {
+const NotFound = () => {
     return (
         <div className="container wrapper-404 position-relative">
             <div className="not-found-container">
@@ -11,4 +11,4 @@ const notfound = () => {
     )
 }
 
-export default notfound;
+export default NotFound;
