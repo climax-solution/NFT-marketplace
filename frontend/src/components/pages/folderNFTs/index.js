@@ -23,7 +23,7 @@ const filters = [
         value: true
     }
 ]
-const folderNFTs = () => {
+const FolderNFTs = () => {
 
     const params = useParams();
     const navigate = useNavigate();
@@ -159,4 +159,4 @@ const folderNFTs = () => {
     );
 }
 
-export default folderNFTs;
+export default FolderNFTs;

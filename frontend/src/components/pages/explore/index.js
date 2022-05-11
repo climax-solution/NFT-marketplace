@@ -9,7 +9,7 @@ import FolderList from '../../components/Explore/FolderList';
 import PremiumNFTLoading from '../../components/Loading/PremiumNFTLoading';
 import "./style.module.css";
 
-const explore = () => {
+const Explore = () => {
 
   const initialUser = useSelector(({ auth }) => auth.user);
   const [folderList, setFolderList] = useState([]);
@@ -98,4 +98,4 @@ const explore = () => {
     </div>
   )
 };
-export default explore;
+export default Explore;

@@ -6,7 +6,7 @@ import { UPDATE_AUTH, UPDATE_LOADING_PROCESS } from '../../../store/action/auth.
 import { success_toastify, error_toastify } from "../../../utils/notify";
 import "./style.module.css";
 
-const login = () => {
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailStatus, setEmailStatus] = useState('');
@@ -120,4 +120,4 @@ const login = () => {
     </div>
   )
 };
-export default login;
+export default Login;

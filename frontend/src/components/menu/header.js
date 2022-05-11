@@ -17,7 +17,7 @@ setDefaultBreakpoints([
   { xl: 1200 }
 ]);
 
-const Header= function() {
+const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

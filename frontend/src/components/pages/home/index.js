@@ -6,7 +6,7 @@ import PremiumNFTCarousel from '../../components/Home/PremiumNFTCarousel';
 import AuthorList from '../../components/Home/authorList';
 import "./style.module.css";
 
-const homeone= () => {
+const Home= () => {
   return (
     <div>
       <section className="jumbotron no-bg" style={{backgroundImage: `url(${'./img/background/bg.webp'})`}}>
@@ -29,4 +29,4 @@ const homeone= () => {
     </div>
   )
 }
-export default homeone;
+export default Home;

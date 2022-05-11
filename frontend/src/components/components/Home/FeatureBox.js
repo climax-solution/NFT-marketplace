@@ -17,7 +17,7 @@ const fadeInUp = keyframes`
 `;
 
 
-const featurebox= () => (
+const FeatureBox= () => (
   <div className='row'>
       <div className="col-lg-4 col-md-6 mb-3">
           <div className="feature-box f-boxed h-100 style-3">
@@ -71,4 +71,4 @@ const featurebox= () => (
     </div>
   </div>
 );
-export default featurebox;
+export default FeatureBox;

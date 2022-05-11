@@ -34,7 +34,7 @@ const VerifyAccount = lazy(() => import('./pages/verify/'));
 const Whitelist = lazy(() => import('./components/Profile/Folders/Whitelist/'));
 const Footer = lazy(() => import('./components/footer'));
 
-const app = () => {
+const App = () => {
   const dispatch = useDispatch();
 
   const loadingProcessing = useSelector((state) => state.auth.isLoading);
@@ -111,4 +111,4 @@ const app = () => {
     </div>
   )
 };
-export default app;
+export default App;
