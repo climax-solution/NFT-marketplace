@@ -4,7 +4,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import Empty from "../Empty";
 import User from "./User";
 import PremiumNFTLoading from "../Loading/PremiumNFTLoading";
-import "./style.module.css";
+import "./style.css";
 
 export default function UserList({data}) {
 

@@ -13,7 +13,7 @@ import { filterDropdown } from "../../../../config/styles.js";
 import '@djthoms/pretty-checkbox';
 import categories from "../../../../config/category.json";
 import MusicArt from '../../Asset/music';
-import "./single.module.css";
+import "./single.css";
 
 const categoryOptions = categories.slice(1, categories.length);
 const image_ext = ['jpg', 'png', 'gif'];

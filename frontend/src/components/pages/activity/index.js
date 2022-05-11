@@ -5,7 +5,7 @@ import axios from 'axios';
 import ActivityItem from "../../components/Activity/row";
 import Empty from '../../components/Empty';
 import ActivityLoading from '../../components/Loading/ActivityLoading';
-import "./style.module.css";
+import "./style.css";
 
 const Activity= function() {
 

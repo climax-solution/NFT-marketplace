@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { success_toastify } from "../../../../../utils/notify";
-import "./item.module.css";
+import "./item.css";
 
 export default function WhitelistItem({ avatar, name, username, isWhite, update, activeLoading }) {
 

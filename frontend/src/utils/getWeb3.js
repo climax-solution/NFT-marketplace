@@ -9,19 +9,17 @@ import { marketplace_addr, nft_addr, wbnb_addr } from "../config/address.json";
 // ]
 
 const getWeb3 = async() => {
-  let _web3; let ranId;
+  let _web3;
   if (window.ethereum) {
     _web3 = new Web3(window.ethereum);
     const networkId = await _web3.eth.net.getId();
     if (networkId !== 97) {
-      ranId = Math.floor(Math.random() * 5);
       const provider = new Web3.providers.HttpProvider("https://data-seed-prebsc-2-s3.binance.org:8545/");
       _web3 = new Web3(provider);
     }
   }
 
   else {
-    ranId = Math.floor(Math.random() * 5);
     const provider = new Web3.providers.HttpProvider("https://data-seed-prebsc-2-s3.binance.org:8545/");
     _web3 = new Web3(provider);
   }

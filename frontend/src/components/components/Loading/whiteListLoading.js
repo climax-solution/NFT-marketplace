@@ -1,5 +1,5 @@
 import Skeleton from "react-loading-skeleton";
-import "./whitelist.module.css";
+import "./whitelist.css";
 
 export default function WhiteListLoading() {
     return (

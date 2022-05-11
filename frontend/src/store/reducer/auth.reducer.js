@@ -7,7 +7,7 @@ const data = {
     isLoading: true
 }
 
-export default function(state = data, action) {
+export default function AuthReducer(state = data, action) {
     switch(action.type) {
         case SET_AUTH:
             return { ...state, user: action.payload };

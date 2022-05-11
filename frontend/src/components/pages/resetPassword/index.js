@@ -17,7 +17,7 @@ const ResetPassword = () => {
 
     const authenticate = async() => {
         let flag = 0;
-        if (!password || !confirmPassword || password && confirmPassword && password !== confirmPassword) flag = 1;
+        if (!password || !confirmPassword || (password && confirmPassword && password !== confirmPassword)) flag = 1;
         console.log(!password , !confirmPassword , password , confirmPassword , password === confirmPassword)
         if (flag) {
             setUpdate(true);

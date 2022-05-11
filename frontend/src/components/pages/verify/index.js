@@ -10,7 +10,7 @@ export default function VerifyAccount() {
 
     useEffect(async() => {
         const verifyData = {
-            token, 
+            token,
             email,
             username
         };

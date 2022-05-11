@@ -6,7 +6,7 @@ import Art from "../../../Asset/art";
 import { error_toastify, success_toastify } from "../../../../../utils/notify";
 
 import ItemLoading from "../../../Loading/ItemLoading";
-import "./style.module.css";
+import "./style.css";
 
 const Folder = ({ folderID }) => {
 

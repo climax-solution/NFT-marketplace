@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { success_toastify, error_toastify } from "../../../utils/notify";
-import "./style.module.css";
+import "./style.css";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');

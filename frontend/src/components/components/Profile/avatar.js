@@ -4,7 +4,7 @@ import Skeleton from "react-loading-skeleton";
 import { useDispatch, useSelector } from "react-redux";
 import { UPDATE_AUTH } from "../../../store/action/auth.action";
 import { success_toastify, error_toastify } from "../../../utils/notify";
-import "./avatar.module.css";
+import "./avatar.css";
 
 export default function Avatar() {
     

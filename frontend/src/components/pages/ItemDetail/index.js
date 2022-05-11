@@ -12,7 +12,7 @@ import Empty from "../../components/Empty";
 import Attr from "../../components/ItemDetails/attributes";
 import ItemDetailsLoading from "../../components/Loading/ItemDetailsLoading";
 import Art from "../../components/Asset/art";
-import "./style.module.css";
+import "./style.css";
 import { offerSign } from "../../../utils/sign";
 
 const ItemDetail = () => {

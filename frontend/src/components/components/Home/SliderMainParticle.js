@@ -2,7 +2,7 @@ import React from 'react';
 import Reveal from 'react-awesome-reveal';
 import { keyframes } from "@emotion/react";
 import { Link } from "react-router-dom";
-import "./slider.module.css";
+import "./slider.css";
 
 const fadeInUp = keyframes`
   0% {

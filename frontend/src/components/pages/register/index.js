@@ -35,7 +35,7 @@ const Register = () => {
 
             else if (!validator.isEthereumAddress(walletAddress)) flag = 1;
 
-            if (!password || !confirmPassword || password && confirmPassword && password !== confirmPassword) flag = 1;
+            if (!password || !confirmPassword || (password && confirmPassword && password !== confirmPassword)) flag = 1;
 
             if (flag) {
                 setUpdate(true);

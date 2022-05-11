@@ -6,7 +6,7 @@ import { WalletConnect } from "../../../store/action/wallet.action";
 
 import Avatar from "../../components/Profile/avatar";
 import UserInfo from "../../components/Profile/userInfo";
-import "./style.module.css";
+import "./style.css";
 
 const Profile = function() {
 

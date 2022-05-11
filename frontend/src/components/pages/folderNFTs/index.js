@@ -11,7 +11,7 @@ import { filterDropdown } from "../../../config/styles.js";
 import TradeNFT from "../../components/FolderNFT/tradeNFT";
 import PremiumNFTLoading from "../../components/Loading/PremiumNFTLoading";
 import Empty from "../../components/Empty";
-import "./style.module.css";
+import "./style.css";
 
 const filters = [
     {
