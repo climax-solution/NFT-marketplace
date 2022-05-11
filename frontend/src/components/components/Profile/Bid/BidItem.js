@@ -8,7 +8,7 @@ import Art from "../../Asset/art";
 import Clock from "../../Clock";
 import ItemLoading from "../../Loading/ItemLoading";
 
-export default function({ tokenID, remove }) {
+export default function BidItem({ tokenID, remove }) {
 
     const navigate = useNavigate();
 

@@ -1,22 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { createGlobalStyle } from 'styled-components';
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { UPDATE_AUTH, UPDATE_LOADING_PROCESS } from '../../store/action/auth.action';
-import { success_toastify, error_toastify } from "../../utils/notify";
+import { UPDATE_AUTH } from '../../../store/action/auth.action';
+import { success_toastify, error_toastify } from "../../../utils/notify";
+import "./style.css";
 
-const GlobalStyles = createGlobalStyle`
-  .box-login p{
-    color: #a2a2a2 !important;
-  }
-  .box-login{
-    border-radius: 3px;
-    padding: 40px 50px;
-  }
-`;
-
-const login = () => {
+const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailStatus, setEmailStatus] = useState('');
@@ -44,7 +34,7 @@ const login = () => {
       id: email,
       password
     };
-    dispatch(UPDATE_LOADING_PROCESS(true));
+    setLoading(true);
     try {
       await axios.post(`${process.env.REACT_APP_BACKEND}auth/login`, data).then(res => {
         success_toastify("You have logged in successfully");
@@ -59,12 +49,11 @@ const login = () => {
     } catch(err) {
       
     }
-    dispatch(UPDATE_LOADING_PROCESS(false));
+    setLoading(false);
   }
 
   return(
     <div>
-    <GlobalStyles/>
 
       <section className='jumbotron breadcumb no-bg' style={{backgroundImage: `url(${'./img/background/bg.webp'})`}}>
         <div className='mainbreadcumb'>
@@ -131,4 +120,4 @@ const login = () => {
     </div>
   )
 };
-export default login;
+export default Login;

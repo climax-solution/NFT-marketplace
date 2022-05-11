@@ -1,23 +1,6 @@
 import { CopyToClipboard } from "react-copy-to-clipboard/lib/Component";
-import { createGlobalStyle } from "styled-components";
 import { info_toastify } from "../../../utils/notify";
-
-const GlobalStyles = createGlobalStyle`
-    .border-grey {
-        border-color: #4e4e4e !important;
-    }
-    .social-links {
-        max-width: 500px;
-        text-align: center;
-        margin: auto;
-        height: 40px;
-        margin-top: 20px;
-        i {
-            display: inline-block;
-            cursor: pointer;
-        }
-    }
-`;
+import "./style.css";
 
 const socials =  [
     {key: "facebook", icon: 'fab fa-facebook'},
@@ -40,7 +23,6 @@ export default function Banner({ userData }) {
 
     return (
         <>
-            <GlobalStyles/>
             <section id='profile_banner' className='jumbotron breadcumb no-bg' style={{backgroundImage: `url(${'/img/background/4.jpg'})`}}>
                 <div className='mainbreadcumb'>
                 </div>
@@ -78,7 +60,7 @@ export default function Banner({ userData }) {
                                                     return (
                                                         <span onClick={()=> window.open(`${userData[item.key]}`, "_blank")} key={index}><i className={item.icon}></i></span>
                                                     )
-                                                }
+                                                } else return "";
                                             })
                                         }
                                     </div>

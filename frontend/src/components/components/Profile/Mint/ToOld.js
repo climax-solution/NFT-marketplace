@@ -8,7 +8,7 @@ import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { filterDropdown } from "../../../../config/styles.js";
 
-export default function() {
+export default function MintToOld() {
 
     const initialUser = useSelector((state) => state.auth.user);
     const wallet_info = useSelector(({ wallet }) => wallet.wallet_connected);

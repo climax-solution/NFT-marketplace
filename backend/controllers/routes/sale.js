@@ -123,7 +123,7 @@ router.post('/update-premium', async(req, res) => {
             walletAddress: _existed.walletAddress,
             tokenID,
             type : status == 'premium' ? 3 : 4 ,
-            price
+            price: _existed.price
         });
     
         await logs.save();
@@ -343,8 +343,8 @@ router.post('/get-nft-item', async(req, res) => {
         });
 
         let nft = await SaleSchema.findOne({ tokenID, action: {$in : ['list', 'auction']}});
-        if (!nft) nft = { ...nft, isSale: false };
-        else nft = { ...nft, isSale: true };
+        if (!nft) nft = { isSale: false };
+        else nft = { ...nft._doc, isSale: true };
 
         const _collect = await NFTSchema.findOne({ tokenID });
         nft = { ...nft, metadata: _collect?.metadata };

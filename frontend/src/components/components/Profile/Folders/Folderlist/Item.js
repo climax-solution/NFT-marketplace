@@ -1,42 +1,12 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { createGlobalStyle } from 'styled-components';
 import { useNavigate } from "react-router-dom";
 import getWeb3 from "../../../../../utils/getWeb3";
 import Art from "../../../Asset/art";
 import { error_toastify, success_toastify } from "../../../../../utils/notify";
 
 import ItemLoading from "../../../Loading/ItemLoading";
-
-const GlobalStyles = createGlobalStyle`
-
-    .btn-group-overlay {
-        position: absolute;
-        left: 0;
-        right: 0;
-        top: 0;
-        bottom: 0;
-        background: rgba(0, 0, 0, 0.3);
-        border-radius: 15px;
-        opacity: 0;
-        transition: 0.5s ease;
-        display: flex;
-        flex-direction: column;
-        grid-gap: 10px;
-        justify-content: center;
-        align-items: center;
-        button {
-            width: 200px;
-        }
-        .btn:before {
-            background-image: none !important;
-        }
-    }
-
-    .folder-item:hover .btn-group-overlay {
-        opacity: 1;
-    }
-`;
+import "./style.css";
 
 const Folder = ({ folderID }) => {
 
@@ -86,7 +56,6 @@ const Folder = ({ folderID }) => {
 
     return (
         <>
-            <GlobalStyles/>
             {
                 loading ? <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4"><ItemLoading/></div>
                 : (

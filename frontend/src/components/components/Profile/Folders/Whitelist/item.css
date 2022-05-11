@@ -1,0 +1,22 @@
+.whitelist-item {
+    box-shadow: 0 1px 5px rgba(255, 255, 255, 0.3);
+    padding: 20px;
+    border-radius: 10px;
+    
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    grid-gap: 20px;
+}
+.whitelist-item .user_info {
+    display: flex;
+    grid-gap: 10px;
+    align-items: center;
+}
+.whitelist-item .user_info .avatar {
+    width: 60px;
+    height: 60px;
+}
+.whitelist-item .scaleX--1 {
+    transform: scaleX(-1);
+}

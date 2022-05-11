@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import validator from "validator";
 import { useNavigate } from 'react-router-dom';
-import { success_toastify, error_toastify } from "../../utils/notify";
+import { success_toastify, error_toastify } from "../../../utils/notify";
 
-import TextInput from '../components/Form/TextInput';
-import PasswordInput from '../components/Form/PasswordInput';
+import TextInput from '../../components/Form/TextInput';
+import PasswordInput from '../../components/Form/PasswordInput';
 
 const Register = () => {
 
@@ -35,7 +35,7 @@ const Register = () => {
 
             else if (!validator.isEthereumAddress(walletAddress)) flag = 1;
 
-            if (!password || !confirmPassword || password && confirmPassword && password !== confirmPassword) flag = 1;
+            if (!password || !confirmPassword || (password && confirmPassword && password !== confirmPassword)) flag = 1;
 
             if (flag) {
                 setUpdate(true);

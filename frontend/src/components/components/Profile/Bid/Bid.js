@@ -7,7 +7,7 @@ import Empty from "../../Empty";
 import PremiumNFTLoading from "../../Loading/PremiumNFTLoading";
 import InfiniteScroll from "react-infinite-scroll-component";
 
-export default function() {
+export default function Bid() {
     
     const initialUser = useSelector((state) => state.auth.user);
 
@@ -37,7 +37,7 @@ export default function() {
             setRestList(restList.slice(8, restList.length));
         } else setRestList([]);
         
-        setNFTLists([...nfts, ...list]);
+        setNFTs([...nfts, ...list]);
     }
 
     const remove = (index) => {

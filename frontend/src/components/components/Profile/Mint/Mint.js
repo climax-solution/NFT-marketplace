@@ -1,43 +1,10 @@
-import { createGlobalStyle } from "styled-components"
 import Switch from "react-switch";
 import { useState } from "react";
 
 import ToNew from "./ToOld";
 import ToOld from "./ToNew";
 import Single from "./Single";
-
-const GlobalStyles = createGlobalStyle`
-    .mint-group {
-        display: grid;
-        grid-auto-flow: column;
-        grid-gap: 15px;
-        justify-content: center;
-        .old-panel, .new-panel {
-            max-width: 500px;
-            width: 100%;
-        }
-    }
-    
-    .couple-column {
-        display: grid;
-        grid-auto-columns: minmax(0, 1fr);
-        grid-auto-flow: column;
-        column-gap: 10px;
-    }
-
-    @media screen and (max-width: 1000px) {
-        .mint-group {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-        .couple-column {
-            display: block;
-        }
-    }
-`;
-
+import "./style.css";
 
 export default function Mint() {
 
@@ -45,7 +12,6 @@ export default function Mint() {
     
     return (
         <div id='zero5' className='onStep fadeIn mn-h-300px'>
-            <GlobalStyles/>
             <div className="d-flex align-items-center justify-content-end">
                 <span className={!isBulk ? "text-light text-bold" : ""}>Single Mint</span>
                 <Switch

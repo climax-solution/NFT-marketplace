@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Breakpoint, { BreakpointProvider, setDefaultBreakpoints } from "react-socks";
-import { createGlobalStyle } from 'styled-components';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { Link, useNavigate } from 'react-router-dom';
 import useOnclickOutside from "react-cool-onclickoutside";
@@ -10,34 +9,7 @@ import Web3 from  'web3';
 import getWeb3 from "../../utils/getWeb3";
 import { warning_toastify, success_toastify, info_toastify } from "../../utils/notify";
 import { WalletConnect } from "../../store/action/wallet.action";
-
-const GlobalStyles = createGlobalStyle`
-  .navbar {
-    .light-logo {
-      width: 100px;
-      height: 70px;
-    }
-    .mainside {
-      .connect-wal{
-        display: none;
-      }
-      .logout {
-        display: flex !important;
-        align-items: center;
-        position: relative;
-        .index-avatar {
-          aspect-ratio: 1;
-        }
-      }
-      .font-bold {
-        font-weight: 900;
-      }
-    }
-  }
-  .btn-main {
-    padding: 6px 20px;
-  }
-`;
+import "./style.css";
 
 setDefaultBreakpoints([
   { xs: 0 },
@@ -45,7 +17,7 @@ setDefaultBreakpoints([
   { xl: 1200 }
 ]);
 
-const Header= function() {
+const Header = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -201,7 +173,6 @@ const Header= function() {
 
   return (
     <>
-      <GlobalStyles/>
         <header id="myHeader" className='navbar white'>
           <div className='container'>
             <div className='row w-100-nav'>

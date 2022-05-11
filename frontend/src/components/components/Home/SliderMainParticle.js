@@ -1,8 +1,8 @@
 import React from 'react';
 import Reveal from 'react-awesome-reveal';
 import { keyframes } from "@emotion/react";
-import { createGlobalStyle } from 'styled-components';
 import { Link } from "react-router-dom";
+import "./slider.css";
 
 const fadeInUp = keyframes`
   0% {
@@ -28,20 +28,11 @@ const inline = keyframes`
    }
 `;
 
-const GlobalStyles = createGlobalStyle`
-  p.lead{
-    color: #a2a2a2;
-  }
-  #tsparticles{
-    top: 0;
-  }
-`;
 
 const slidermainparticle= () => {
   
   return (
     <>
-      <GlobalStyles/>
       <div className="container">
         <div className="row align-items-center">
             <div className="col-md-6">
