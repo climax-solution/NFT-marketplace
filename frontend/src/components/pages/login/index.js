@@ -62,56 +62,57 @@ const Login = () => {
           <div className='container'>
             <div className='row align-items-center px-0'>
               <div className="col-lg-4 offset-lg-4 m-auto px-0">
-                <div className="box-login">
-                  <h3 className="mb10">Sign In</h3>
-                  <p>Login using an existing account or create a new account <span onClick={() => navigate('/register')}>here</span>.</p>
-                  <div name="contactForm" id='contact_form' className="form-border" action='#'>
-
-                    <div className="field-set">
-                      <input
-                        type='text'
-                        name='email'
-                        id='email'
-                        className="form-control mb-0"
-                        placeholder="Please enter your email or username"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                      />
-                      <label className='text-danger f-12px'>{emailStatus}</label>
-                    </div>
-                    
-                    <div className="field-set">
-                      <input
-                        type='password'
-                        name='password'
-                        id='password'
-                        className="form-control mb-0"
-                        placeholder="Please enter your password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                      />
-                      <label className='text-danger f-12px'>{passwordStatus}</label>
-                    </div>
-                    <div className='mb-2'>
-                      <Link to="/forgot-password" className='text-decoration-none'>Forgot Password?</Link>
-                    </div>
-                    <div className="field-set">
-                      <input
-                        type='submit'
-                        id='send_message'
-                        value='Login'
-                        className="btn btn-main btn-fullwidth color-2"
-                        onClick={authenticate}
-                      />
-                    </div>
-                    <div className="spacer-half"></div>
-                  </div>
+                <div className="box-login ratio-1-1">
                   {
                     isLoading ? (
                       <div className='d-flex w-100 h-100 justify-content-center align-items-center'>
                           <div className='reverse-spinner'></div>
                       </div>
-                    ) : ""
+                    ) : <>
+                      <h3 className="mb10">Sign In</h3>
+                      <p>Login using an existing account or create a new account <span onClick={() => navigate('/register')}>here</span>.</p>
+                      <div name="contactForm" id='contact_form' className="form-border" action='#'>
+
+                        <div className="field-set">
+                          <input
+                            type='text'
+                            name='email'
+                            id='email'
+                            className="form-control mb-0"
+                            placeholder="Please enter your email or username"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                          />
+                          <label className='text-danger f-12px'>{emailStatus}</label>
+                        </div>
+                        
+                        <div className="field-set">
+                          <input
+                            type='password'
+                            name='password'
+                            id='password'
+                            className="form-control mb-0"
+                            placeholder="Please enter your password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                          />
+                          <label className='text-danger f-12px'>{passwordStatus}</label>
+                        </div>
+                        <div className='mb-2'>
+                          <Link to="/forgot-password" className='text-decoration-none'>Forgot Password?</Link>
+                        </div>
+                        <div className="field-set">
+                          <input
+                            type='submit'
+                            id='send_message'
+                            value='Login'
+                            className="btn btn-main btn-fullwidth color-2"
+                            onClick={authenticate}
+                          />
+                        </div>
+                        <div className="spacer-half"></div>
+                      </div>
+                    </>
                   }
                 </div>
               </div>
