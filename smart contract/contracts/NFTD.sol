@@ -48,10 +48,8 @@ contract NFTD is ERC721Enumerable, ERC721URIStorage, Ownable {
     }
 
     mapping(uint256 => Royalty) private royalties;
-    mapping(address => bool) public whitelist;
 
     bool private openPublic;
-    uint256 private mintPrice = 10000000000000000;
     uint256 public lastID;
 
     event NFTMinted(uint tokenId);
@@ -146,17 +144,4 @@ contract NFTD is ERC721Enumerable, ERC721URIStorage, Ownable {
         openPublic = true;
     }
 
-    function addWhitelist(address[] memory account) external onlyOwner {
-        require(account.length > 0, "empty list");
-        for (uint256 i; i < account.length; i ++) {
-            if (account[i] != address(0)) whitelist[account[i]] = true;
-        }
-    }
-
-    function removeWhitelist(address[] memory account) external onlyOwner {
-        require(account.length > 0, "empty list");
-        for (uint256 i; i < account.length; i ++) {
-            if (account[i] != address(0)) whitelist[account[i]] = false;
-        }
-    }
 }
