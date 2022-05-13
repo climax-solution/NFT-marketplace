@@ -142,25 +142,32 @@ contract Marketplace is Ownable{
         treasurer = _treasurer;
     }
 
-    function addWhitelist(address account) external onlyOwner {
-        require(account != address(0), "Not allowed zero adddress");
-        whitelist[account] = true;
+    function addWhitelist(address[] memory account) external onlyOwner {
+        require(account.length > 0, "empty list");
+        for (uint256 i; i < account.length; i ++) {
+            if (account[i] != address(0)) whitelist[account[i]] = true;
+        }
     }
 
-    function removeWhitelist(address account) external onlyOwner {
-        require(account != address(0), "Not allowed zero adddress");
-        whitelist[account] = false;
+    function removeWhitelist(address[] memory account) external onlyOwner {
+        require(account.length > 0, "empty list");
+        for (uint256 i; i < account.length; i ++) {
+            if (account[i] != address(0)) whitelist[account[i]] = false;
+        }
     }
 
-    function setProfit(uint256 tokenID) external onlyOwner {
-        require(!profit[tokenID].status, "You have already set");
-        Profit memory _profit = Profit(true, 40, 60);
-        profit[tokenID] = _profit;
+    function enableProfit(uint256[] memory tokenID) external onlyOwner {
+        require(tokenID.length > 0, "empty list");
+        for (uint256 i; i < tokenID.length; i ++) {
+            profit[tokenID[i]] = Profit(true, 40, 60);
+        }
     }
 
-    function removeProfit(uint256 tokenID) external onlyOwner {
-        require(profit[tokenID].status, "You haven't set");
-        profit[tokenID].status = false;
+    function disableProfit(uint256[] memory tokenID) external onlyOwner {
+        require(tokenID.length > 0, "empty list");
+        for (uint256 i; i < tokenID.length; i ++) {
+            profit[tokenID[i]].status = false;
+        }
     }
 
     function updateDevWallet(address account) external onlyOwner {
@@ -173,5 +180,9 @@ contract Marketplace is Ownable{
         require(profit[tokenID].status, "you need to set profit");
         Profit memory _profit = Profit(true, owner, 100 - owner);
         profit[tokenID] = _profit;
+    }
+
+    function getProfit(uint256 tokenID) external view onlyOwner returns(Profit memory) {
+        return profit[tokenID];
     }
 }

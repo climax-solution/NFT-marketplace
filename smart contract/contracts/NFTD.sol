@@ -5,6 +5,7 @@ pragma experimental ABIEncoderV2;
 import { ERC721 } from "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import { ERC721URIStorage } from "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import { ERC721Enumerable } from "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import { Ownable } from "@openzeppelin/contracts/access/Ownable.sol";
 
 library Strings {
     
@@ -30,64 +31,6 @@ library Strings {
     
 }
 
-abstract contract Ownable {
-    address private _owner;
-
-    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
-
-    /**
-     * @dev Initializes the contract setting the deployer as the initial owner.
-     */
-    constructor(address owner_) {
-        _transferOwnership(owner_);
-    }
-
-    /**
-     * @dev Returns the address of the current owner.
-     */
-    function owner() public view virtual returns (address) {
-        return _owner;
-    }
-
-    /**
-     * @dev Throws if called by any account other than the owner.
-     */
-    modifier onlyOwner() {
-        require(owner() == msg.sender, "Ownable: caller is not the owner");
-        _;
-    }
-
-    /**
-     * @dev Leaves the contract without owner. It will not be possible to call
-     * `onlyOwner` functions anymore. Can only be called by the current owner.
-     *
-     * NOTE: Renouncing ownership will leave the contract without an owner,
-     * thereby removing any functionality that is only available to the owner.
-     */
-    function renounceOwnership() public virtual onlyOwner {
-        _transferOwnership(address(0));
-    }
-
-    /**
-     * @dev Transfers ownership of the contract to a new account (`newOwner`).
-     * Can only be called by the current owner.
-     */
-    function transferOwnership(address newOwner) public virtual onlyOwner {
-        require(newOwner != address(0), "Ownable: new owner is the zero address");
-        _transferOwnership(newOwner);
-    }
-
-    /**
-     * @dev Transfers ownership of the contract to a new account (`newOwner`).
-     * Internal function without access restriction.
-     */
-    function _transferOwnership(address newOwner) internal virtual {
-        address oldOwner = _owner;
-        _owner = newOwner;
-        emit OwnershipTransferred(oldOwner, newOwner);
-    }
-}
-
 contract NFTD is ERC721Enumerable, ERC721URIStorage, Ownable {
 
     using Strings for uint256;
@@ -105,33 +48,18 @@ contract NFTD is ERC721Enumerable, ERC721URIStorage, Ownable {
     }
 
     mapping(uint256 => Royalty) private royalties;
-    mapping(address => bool) public whitelist;
 
-    bool private isSale;
-    uint256 private mintPrice = 10000000000000000;
+    bool private openPublic;
     uint256 public lastID;
 
     event NFTMinted(uint tokenId);
 
-    constructor(address owner)
-    ERC721("NFT DEVELOPMENTS", "NFT DEVELOPMENTS")
-    Ownable(owner) {
-    
-    }
+    constructor() ERC721("NFT DEVELOPMENTS", "NFT DEVELOPMENTS") {}
 
-    function bulkMint(string memory baseURI, address royaltyAddress, address to, uint256 count, uint fee) external payable {
+    function bulkMint(string memory baseURI, address royaltyAddress, address to, uint256 count, uint fee) external {
         require(fee > 0 && fee <= 1000, "Royalty fee is 0 ~ 10%");
-        require(isSale, "No start sale yet");
+        require(openPublic, "No start sale yet");
         require(count <= 100, "You can mint 100 NFTs at a time at max");
-
-        if (!whitelist[msg.sender] && msg.sender != owner()) {
-            require(msg.value >= count * mintPrice, "Not enough balance");
-            payable(owner()).transfer(msg.value);
-        }
-
-        else {
-            if (msg.value > 0) payable(msg.sender).transfer(msg.value);
-        }
 
         for (uint i = 0; i < count; i ++) {
             _mint(to, lastID);
@@ -143,17 +71,9 @@ contract NFTD is ERC721Enumerable, ERC721URIStorage, Ownable {
         emit NFTMinted(lastID);
     }
 
-    function singleMint(string memory _tokenURI, address royaltyAddress, uint fee) external payable {
+    function singleMint(string memory _tokenURI, address royaltyAddress, uint fee) external {
         require(fee > 0 && fee <= 1000, "Royalty fee is 0 ~ 10%");
-        require(isSale, "No start sale yet");
-        if (!whitelist[msg.sender] && msg.sender != owner()) {
-            require(msg.value >= mintPrice, "Not enough balance");
-            payable(owner()).transfer(msg.value);
-        }
-
-        else {
-            if (msg.value > 0) payable(msg.sender).transfer(msg.value);
-        }
+        require(openPublic, "No start sale yet");
 
         _mint(msg.sender, lastID);
         _setTokenURI(lastID, _tokenURI);
@@ -220,17 +140,8 @@ contract NFTD is ERC721Enumerable, ERC721URIStorage, Ownable {
     }
 
     function start() external onlyOwner {
-        require(!isSale, "Already started");
-        isSale = true;
+        require(!openPublic, "already started");
+        openPublic = true;
     }
 
-    function addWhitelist(address account) external onlyOwner {
-        require(account != address(0), "Not allowed zero adddress");
-        whitelist[account] = true;
-    }
-
-    function removeWhitelist(address account) external onlyOwner {
-        require(account != address(0), "Not allowed zero adddress");
-        whitelist[account] = false;
-    }
 }
