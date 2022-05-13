@@ -16,7 +16,7 @@ module.exports = {
         'truffle-plugin-verify'
     ],
     api_keys: {
-        bscscan: "D66C8M35HQSFITQJJT4ZIKHKPVUAA8I4YJ",
+        bscscan: "ANZWAZS69JPGZYJKQ9ZKID8AQM5UGRA32G",
         etherscan: "5Z1RRTM3R1VF8U9BS6DVBZZEACU5XUN59Q"
     },
   networks: {
