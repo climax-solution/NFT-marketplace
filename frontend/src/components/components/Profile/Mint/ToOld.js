@@ -98,10 +98,8 @@ export default function MintToOld() {
 
             setLoadingStatus('Processing mint...');
 
-            const mintPay = web3.utils.toWei(`${0.01 * count}`, "ether");
             const result = await NFT.methods.bulkMint(folderHash, royaltyAddress, initialUser.walletAddress, count, Math.floor(royalty * 100)).send({
-                from: initialUser.walletAddress,
-                value: mintPay
+                from: initialUser.walletAddress
             });
             const lastID = Number(result.events.NFTMinted.returnValues.tokenId);
             

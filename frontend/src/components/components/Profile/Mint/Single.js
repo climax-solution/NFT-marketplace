@@ -163,8 +163,7 @@ export default function SingleMint() {
             setLoadingStatus('Processing mint...');
 
             const result = await NFT.methods.singleMint(tokenURI, royaltyAddress, Math.floor(royalty * 100)).send({
-                from: initialUser.walletAddress,
-                value: "10000000000000000"
+                from: initialUser.walletAddress
             });
             const lastID = Number(result.events.NFTMinted.returnValues.tokenId);
                         
