@@ -49,7 +49,7 @@ contract NFTD is ERC721Enumerable, ERC721URIStorage, Ownable {
 
     mapping(uint256 => Royalty) private royalties;
 
-    bool private openPublic;
+    bool public openPublic;
     uint256 public lastID;
 
     event NFTMinted(uint tokenId);
