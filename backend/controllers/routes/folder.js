@@ -155,17 +155,29 @@ router.post('/get-sale-folder-list', async(req, res) => {
 
 router.post('/get-folder-detail', async(req, res) => {
     try {
-        const { folderID, user } = req.body;
+        const { folderID, user, isSale, sort } = req.body;
         const folder = await FolderSchema.findById(folderID);
         if (!folder.isPublic && folder.artist != user.toLowerCase()) {
             const whiteItem = await WhitelistSchema.findOne({ folderID, user });
             if (!whiteItem) throw Error("Not allowed");
         }
-        let list = await NFTSchema.find({ folderID });
-        console.log("list", list);
-        for await (let item of list) {
-            const saled = await SaleSchema.findOne({ tokenID: item.tokenID, action: {$in: ['list', 'auction'] }});
-            item = { ...saled, tokenID: item.tokenID };
+        let list = [];
+        if (!isSale) {
+            list = await NFTSchema.find({ folderID });
+            for (let i = list.length - 1; i >=0 ; i --) {
+                const saled = await SaleSchema.findOne({ tokenID: list[i].tokenID, action: {$in: ['list', 'auction'] }});
+                list[i] = { tokenID: list[i].tokenID };
+                if (isSale) {
+                    if (saled) list.splice(i, 1);
+                }
+            }
+        }
+        
+        else {
+            const nfts = await NFTSchema.find({ folderID });
+            let tokenIDs = [];
+            for (let i = nfts.length - 1; i >=0 ; i --) tokenIDs.push(nfts[i].tokenID);
+            list = await SaleSchema.find({ tokenID: { $in: tokenIDs }, action: {$in: ['list', 'auction'] }}).sort({ price: sort });
         }
         const artist = await UserSchema.findOne({ username: folder.artist });
         res.status(200).json({
@@ -349,7 +361,7 @@ router.post('/update-metadata', async(req, res) => {
         const _exist = await NFTSchema.findOne({ tokenID });
         if (_exist) {
             if (!_exist.metadata || !_exist.metadata.length) {
-                const result = await NFTSchema.updateOne({ tokenID }, JSON.stringify(metadata));
+                const result = await NFTSchema.updateOne({ tokenID }, {metadata: JSON.stringify(metadata)});
                 console.log(result);
                 res.status(200).json({
                     status: true

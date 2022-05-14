@@ -347,7 +347,7 @@ router.post('/get-nft-item', async(req, res) => {
         else nft = { ...nft._doc, isSale: true };
 
         const _collect = await NFTSchema.findOne({ tokenID });
-        nft = { ...nft, metadata: _collect?.metadata };
+        nft = { ...nft, metadata: _collect?._doc?.metadata };
         
         let childList = {};
         if (nft.action == 'auction') {
