@@ -24,7 +24,20 @@ const filters = [
         label: "For Sale",
         value: true
     }
-]
+];
+
+const sale_filters = [
+    {
+        label: "Highest",
+        value: -1
+    },
+    {
+        label: "Lowest",
+        value: 1
+    }
+];
+
+
 const FolderNFTs = () => {
 
     const params = useParams();
@@ -37,7 +50,8 @@ const FolderNFTs = () => {
     const [artist, setArtist] = useState();
     const [description, setDescription] = useState();
     const [isLoading, setIsLoading] = useState(true);
-    const [active, setActive] = useState(filters[0]);
+    const [activeCategory, setActiveCategory] = useState(filters[0]);
+    const [priceSort, setPriceActiveCategory] = useState(sale_filters[0]);
 
     useEffect(async () => {
         if (!isLoading) {
@@ -56,16 +70,28 @@ const FolderNFTs = () => {
             setRestList([]);
             await getInitNFTs();
         }
-    },[Marketplace, active])
+    },[Marketplace, activeCategory, priceSort])
 
     const getInitNFTs = async() => {
         const { id } = params;
-        let gradList = await axios.post(`${process.env.REACT_APP_BACKEND}folder/get-folder-detail`, { folderID: id, user: initialUser?.username ? initialUser.username : ""}).then(res => {
+        let gradList = await axios.post(
+            `${process.env.REACT_APP_BACKEND}folder/get-folder-detail`,
+            {
+                folderID: id,
+                user: initialUser?.username ? initialUser.username : "",
+                isSale: activeCategory.value,
+                sort: priceSort.value
+            }).then(res => {
             let { list, artist: _artist, description: _desc } = res.data;
             setArtist(_artist);
             setDescription(_desc);
-            if (active.value) {
-                list = list.filter(item => item.action == "list" || item.action == "auction");
+            if (activeCategory.value) {
+                // list = list.filter(item => item.action == "list" || item.action == "auction");
+                console.log(list);
+                // list.sort((start, end) => {
+                //     if (!priceSort.value) return Number(start.price) - Number(end.price);
+                //     return Number(end.price) - Number(start.price);
+                // });
             }
             return list;
         }).catch(err => {
@@ -119,14 +145,31 @@ const FolderNFTs = () => {
                             className='select1'
                             styles={filterDropdown}
                             menuContainerStyle={{'zIndex': 999}}
-                            value={active}
+                            value={activeCategory}
                             options={filters}
                             onChange={(value) => {
-                                setActive(value);
+                                setActiveCategory(value);
                                 // setFolderList([]);
                             }}
+                            
                         />
                     </div>
+
+                    <div className='dropdownSelect one'>
+                        <Select
+                            className='select1'
+                            styles={filterDropdown}
+                            menuContainerStyle={{'zIndex': 999}}
+                            value={priceSort}
+                            options={sale_filters}
+                            onChange={(value) => {
+                                if (activeCategory.value) setPriceActiveCategory(value);
+                                else return null;
+                            }}
+                            disabled
+                        />
+                    </div>
+
                 </div>
                 {
                     isLoading && <PremiumNFTLoading/>
