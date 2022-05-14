@@ -57,7 +57,7 @@ router.post('/get-top-sellers', async(req, res) => {
         let seller = await ActivitySchema.aggregate([
             {
                 $match: {
-                    type: { $in: ["1", "5"]}
+                    type: "0"
                 }
             },
             {
