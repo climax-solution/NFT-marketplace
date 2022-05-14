@@ -75,7 +75,7 @@ const Folder = ({ folderID }) => {
                             <div className="nft__item m-0 pb-4 h-100 justify-content-between">
                                 <div className="author_list_pp">
                                     <span onClick={()=> navigate(`/user/${nft.folder.artist}`)}>                                    
-                                        <img className="lazy" src={`${process.env.REACT_APP_BACKEND}avatar/${nft.artistData.avatar}`} alt="" crossOrigin="true"/>
+                                        <img className="lazy ratio-1-1" src={`${process.env.REACT_APP_BACKEND}avatar/${nft.artistData.avatar}`}alt="" crossOrigin="true"/>
                                         <i className="fa fa-check"></i>
                                     </span>
                                 </div>
