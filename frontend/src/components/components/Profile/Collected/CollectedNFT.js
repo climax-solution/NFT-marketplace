@@ -51,9 +51,9 @@ export default function CollectedNFT() {
     const fetchNFT = async() => {
         if (!restList.length) return;
         let tmpList = restList;
-        if (tmpList.length > 8) {
-          tmpList = tmpList.slice(0, 8);
-          setRestList(restList.slice(8, restList.length));
+        if (tmpList.length > 48) {
+          tmpList = tmpList.slice(0, 48);
+          setRestList(restList.slice(48, restList.length));
         }
         
         else setRestList([]);
@@ -74,9 +74,10 @@ export default function CollectedNFT() {
             <InfiniteScroll
                 dataLength={nfts.length}
                 next={fetchNFT}
-                hasMore={restList.length ? true : false}
+                hasMore={restList.length > 0 ? true : false}
                 loader={<PremiumNFTLoading/>}
                 className="row overflow-unset"
+                scrollThreshold={0.5}
             >
                 {nfts.map( (nft, index) => (
                     <Item data={nft} key={index} remove={() => removeItem(index)} NFT={nftContract} Marketplace={marketContract}/>

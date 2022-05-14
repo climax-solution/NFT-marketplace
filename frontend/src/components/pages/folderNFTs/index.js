@@ -78,9 +78,9 @@ const FolderNFTs = () => {
 
     const fetchNFT = async () => {
         let list = restList;
-        if (list.length > 8) {
-            list = list.slice(0,8);
-            setRestList(restList.slice(8, restList.length));
+        if (list.length > 48) {
+            list = list.slice(0,48);
+            setRestList(restList.slice(48, restList.length));
         } else setRestList([]);
         
         setNFTLists([...nfts, ...list]);

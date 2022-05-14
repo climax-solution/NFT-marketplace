@@ -25,12 +25,12 @@ export default function UserList({data}) {
 
     const fetchFolders = async() => {
         let list = restList;
-        if (list.length > 8) {
-            list = list.slice(0, 8);
+        if (list.length > 48) {
+            list = list.slice(0, 48);
         }
         setUserList([ ...userList, ...list ]);
-        if (restList.length > 8) {
-            setRestList(restList.slice(8, restList.length));
+        if (restList.length > 48) {
+            setRestList(restList.slice(48, restList.length));
         }
         else setRestList([]);
         setLoaded(false);
