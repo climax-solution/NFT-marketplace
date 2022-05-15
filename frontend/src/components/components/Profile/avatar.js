@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { UPDATE_AUTH } from "../../../store/action/auth.action";
 import { success_toastify, error_toastify } from "../../../utils/notify";
 import "./avatar.css";
+import { failedLoadImage } from "../../../utils/compre.js";
 
 export default function Avatar() {
     
@@ -37,10 +38,6 @@ export default function Avatar() {
           })
           setLoading(false);
         }
-    }
-
-    const failedLoadImage = (e) => {
-      e.target.src = "/img/empty-avatar.png";
     }
 
     return (

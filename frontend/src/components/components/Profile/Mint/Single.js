@@ -5,6 +5,7 @@ import validator from "validator";
 import Select from 'react-select';
 import getWeb3 from '../../../../utils/getWeb3';
 import { warning_toastify, success_toastify, error_toastify } from "../../../../utils/notify";
+import { failedLoadImage } from "../../../../utils/compre.js";
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 import { Checkbox } from 'pretty-checkbox-react';
@@ -467,7 +468,7 @@ export default function SingleMint() {
             <div className='old-panel w-300px'>
                 <div className='nft__item align-items-center'>
                     {
-                        fileType == 'image' ? <img src={preview} className="ratio-1-1 w-100"/>
+                        fileType == 'image' ? <img src={preview} onError={failedLoadImage} alt="" className="ratio-1-1 w-100"/>
                         : (
                             fileType == 'video' ? <video src={preview} controls className="ratio-1-1 w-100 h-100 preview-video"/>
                             : <MusicArt

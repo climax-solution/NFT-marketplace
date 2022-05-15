@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { failedLoadImage } from "../../../utils/compre.js";
 
 export default function MusicArt({ tokenID, image, asset, redirect }) {
 
@@ -8,10 +9,6 @@ export default function MusicArt({ tokenID, image, asset, redirect }) {
         setPlay(!isPlay);
         if (!isPlay) document.getElementsByClassName(`track-${tokenID}`)[0].play();
         else document.getElementsByClassName(`track-${tokenID}`)[0].pause();
-    }
-    
-    const failedLoadImage = (e) => {
-        e.target.src = "/img/background/2.jpg";
     }
 
     return (

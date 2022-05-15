@@ -9,6 +9,7 @@ import Web3 from  'web3';
 import { createGlobalStyle } from "styled-components";
 import getWeb3 from "../../utils/getWeb3";
 import { warning_toastify, success_toastify, info_toastify } from "../../utils/notify";
+import { failedLoadImage } from "../../utils/compre.js";
 import { WalletConnect } from "../../store/action/wallet.action";
 import style from "./style.js";
 
@@ -177,6 +178,7 @@ const Header = () => {
                         <img
                           src="/img/logo-light.png"
                           className="img-fluid d-block light-logo"
+                          onError={failedLoadImage}
                           alt="#"
                         />
                       </Link>
@@ -289,7 +291,7 @@ const Header = () => {
                   <div className="logout">
                     { user_data?.walletAddress &&
                       <div id="de-click-menu-profile" className="de-menu-profile" onClick={() => btn_icon_pop(!showpop)} ref={refpop}>                           
-                          <img src={`${process.env.REACT_APP_BACKEND}avatar/${user_data.avatar ? user_data.avatar : "empty-avatar.png"}`}  alt="" crossOrigin="true" className="index-avatar"/>
+                          <img src={`${process.env.REACT_APP_BACKEND}avatar/${user_data.avatar ? user_data.avatar : "empty-avatar.png"}`} onError={failedLoadImage}  alt="" crossOrigin="true" className="index-avatar"/>
                           {showpop && 
                             <div className="popshow">
                               <div className="d-name">

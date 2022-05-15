@@ -1,5 +1,6 @@
 import { CopyToClipboard } from "react-copy-to-clipboard/lib/Component";
 import { info_toastify } from "../../../utils/notify";
+import { failedLoadImage } from "../../../utils/compre.js";
 import { createGlobalStyle } from "styled-components";
 import style from "./style.js";
 const GlobalStyle = createGlobalStyle`${style}`;
@@ -15,14 +16,6 @@ const socials =  [
 
 export default function Banner({ userData }) {
 
-    const copyAlert = () => {
-        info_toastify("copied");
-    }
-
-    const failedLoadImage = (e) => {
-        e.target.src="/img/empty.jfif";
-    }
-
     return (
         <>
             <GlobalStyle/>
@@ -37,7 +30,7 @@ export default function Banner({ userData }) {
                     <div className="d_profile">
                         <div className="profile_avatar">
                             <div className="d_profile_img">
-                            <img src={`${process.env.REACT_APP_BACKEND}avatar/${userData.avatar}`} className="ratio-1-1" alt="" onError={failedLoadImage} crossOrigin="true"/>
+                            <img src={`${process.env.REACT_APP_BACKEND}avatar/${userData?.avatar}`} className="ratio-1-1" alt="" onError={failedLoadImage} crossOrigin="true"/>
                             <i className="fa fa-check"></i>
                             </div>
                             
@@ -46,10 +39,10 @@ export default function Banner({ userData }) {
                                     {userData.name}
                                 </h4>
                                 <div className="d-flex justify-content-center">
-                                    <span id="wallet" className="profile_wallet mx-2">{ userData.walletAddress && ((userData.walletAddress).substr(0, 4) + '...' + (userData.walletAddress).substr(-4))}</span>
+                                    <span id="wallet" className="profile_wallet mx-2">{ userData?.walletAddress && ((userData?.walletAddress).substr(0, 4) + '...' + (userData?.walletAddress).substr(-4))}</span>
                                     <CopyToClipboard
                                         text={userData.walletAddress}
-                                        onCopy={copyAlert}
+                                        onCopy={() => info_toastify("copied")}
                                     >
                                         <button id="btn_copy" className="position-relative">Copy</button>
                                     </CopyToClipboard>

@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import getWeb3 from "../../../utils/getWeb3";
 import Art from "../Asset/art";
 import ItemLoading from "../Loading/ItemLoading";
+import { failedLoadImage } from "../../../utils/compre.js";
 
 const Folder = ({ folderID }) => {
 
@@ -15,7 +16,6 @@ const Folder = ({ folderID }) => {
     useEffect(async() => {
         const _list = await axios.post(`${process.env.REACT_APP_BACKEND}folder/get-folder-interface`, { folderID }).then(async(res) => {
             const  { list, initialNFT } = res.data;
-            console.log(initialNFT);
             let initNFTData = {};
             if (initialNFT) {
                 
@@ -64,7 +64,7 @@ const Folder = ({ folderID }) => {
         setNFT(_list);
         setLoading(false);
     },[folderID])
-
+    
     return (
         <>
             {
@@ -74,8 +74,8 @@ const Folder = ({ folderID }) => {
                         <div className="d-item col-lg-3 col-md-6 col-sm-6 col-xs-12 mb-4">
                             <div className="nft__item m-0 pb-4 h-100 justify-content-between">
                                 <div className="author_list_pp">
-                                    <span onClick={()=> navigate(`/user/${nft.folder.artist}`)}>                                    
-                                        <img className="lazy ratio-1-1" src={`${process.env.REACT_APP_BACKEND}avatar/${nft.artistData.avatar}`}alt="" crossOrigin="true"/>
+                                    <span onClick={()=> navigate(`/user/${nft?.folder?.artist}`)}>                                    
+                                        <img className="lazy ratio-1-1" src={`${process.env.REACT_APP_BACKEND}avatar/${nft?.artistData?.avatar}`}alt="" crossOrigin="true" onError={failedLoadImage}/>
                                         <i className="fa fa-check"></i>
                                     </span>
                                 </div>

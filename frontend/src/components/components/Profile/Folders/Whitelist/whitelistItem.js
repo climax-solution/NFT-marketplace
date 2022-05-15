@@ -2,6 +2,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { success_toastify } from "../../../../../utils/notify";
 import "./item.css";
+import { failedLoadImage } from "../../../../../utils/compre.js";
 
 export default function WhitelistItem({ avatar, name, username, isWhite, update, activeLoading }) {
 
@@ -36,6 +37,7 @@ export default function WhitelistItem({ avatar, name, username, isWhite, update,
                     src={process.env.REACT_APP_BACKEND + "avatar/" +  avatar}
                     className="avatar rounded-circle"
                     crossOrigin="true"
+                    onError={failedLoadImage}
                 />
                 <div className="name-group">
                     <span className="full-name">{name}</span><br/>

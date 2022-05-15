@@ -1,12 +1,8 @@
 import MusicArt from "./music";
 import VideoArt from "./video";
+import { failedLoadImage } from "../../../utils/compre.js";
 
 const Art = ({ tokenID, image, asset, redirect, type }) => {
-
-
-    const failedLoadImage = (e) => {
-        e.target.src="/img/empty.jfif";
-    }
 
     return (
         <>
