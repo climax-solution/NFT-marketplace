@@ -44,7 +44,7 @@ export default function UserList({data}) {
                 next={fetchFolders}
                 hasMore={restList.length ? true : false}
                 loader={<PremiumNFTLoading/>}
-                className="d-flex flex-wrap user-list"
+                className="d-flex flex-wrap user-list row"
             >
                 { userList.map( (user, index) => (
                     <User data={user} key={index}/>
