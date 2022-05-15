@@ -97,8 +97,8 @@ export default function PremiumNFTCarousel() {
                       })
                     }
                   </Carousel>
-                { !list.length && <Empty/> }
-              </>
+                  { !list.length && <Empty/> }
+                </>
               )
             }
         </div>

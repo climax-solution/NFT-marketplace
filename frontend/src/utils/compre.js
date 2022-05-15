@@ -1,3 +1,3 @@
-const failedLoadImage = (e) => {
+export const failedLoadImage = (e) => {
     e.target.src="/img/empty.jfif";
 }
