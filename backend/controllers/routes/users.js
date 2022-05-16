@@ -85,8 +85,7 @@ router.post('/update-user', async(req, res) => {
     try {
         let data = req.body;
         const existedUser = await UserSchema.findOne({
-            _id: mongoose.Types.ObjectId("6224bd2f9dc0889b77e059e3"),
-            verified: true
+            _id: mongoose.Types.ObjectId(id)
         });
         if (!existedUser) {
             return res.status(400).json({
@@ -100,49 +99,13 @@ router.post('/update-user', async(req, res) => {
             data.password = hash;
         }
 
-        if (existedUser.email != data.email) {
-            const buffer = crypto.randomBytes(48);
-            const verifyToken = buffer.toString('hex');
-            data.verifyToken = verifyToken;
-            data.verified = false;
-
-            await courier.send({
-                message: {
-                    content: {
-                        title: "Verify your account",
-                        body: `${
-                            'You have updated email.\n\n' +
-                            'Please verify account.\n\n' +
-                            'https://marketplace.nftdevelopments.site/verify/'
-                        }${verifyToken}/${data.email}/${existedUser.username}`
-                    },
-                    data: {
-                        joke: ""
-                    },
-                    to: {
-                        email: data.email
-                    },
-                    timeout: {
-                        message: 600000
-                    }
-                }
-            });
-
-            await UserSchema.findOneAndUpdate({ _id: mongoose.Types.ObjectId(id) }, data);
-            res.status(200).json({
-                status: true,
-                message: "Please check your email and verify account"
-            });
-        }
-        else {
-            await UserSchema.findOneAndUpdate({ _id: mongoose.Types.ObjectId(id) }, data);
-            const user = await UserSchema.findOne({ _id: mongoose.Types.ObjectId(id) });
-            res.status(200).json({
-                status: false,
-                message: "Updated Successfully",
-                user
-            });
-        }    
+        await UserSchema.findOneAndUpdate({ _id: mongoose.Types.ObjectId(id) }, data);
+        const user = await UserSchema.findOne({ _id: mongoose.Types.ObjectId(id) });
+        res.status(200).json({
+            status: false,
+            message: "Updated Successfully",
+            user
+        });
     } catch(err) {
         console.log(err);
         res.status(400).json({

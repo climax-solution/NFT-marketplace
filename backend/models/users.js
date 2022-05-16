@@ -12,9 +12,9 @@ const UserSchema = Schema({
     },
     email: {
         type: String,
-        required: () => {
-            return this.provider !== 'email' ? false : true
-        },
+        // required: () => {
+        //     return this.provider !== 'email' ? false : true
+        // },
         lowercase: true
     },
     walletAddress: {
@@ -56,7 +56,7 @@ const UserSchema = Schema({
     },
     verified: {
         type: Boolean,
-        default: false
+        default: true
     },
     verifyToken: {
         type: String

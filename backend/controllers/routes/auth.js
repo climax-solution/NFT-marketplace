@@ -16,10 +16,11 @@ const courier = CourierClient({ authorizationToken: "pk_prod_YTMEXMYZA84MWVPTW3K
 router.post('/login', async(req, res) => {
     try {
         let { id, password } = req.body;
-        const exitingEmail = await UserSchema.findOne({ email: id });
+        // const exitingEmail = await UserSchema.findOne({ email: id });
         const existingUserName = await UserSchema.findOne({ username: id });
-        if (existingUserName || exitingEmail) {
-            const user = existingUserName ? existingUserName : exitingEmail;
+        if (existingUserName) {
+            // const user = existingUserName ? existingUserName : exitingEmail;
+            const user = existingUserName;
             const isMatch = await bcrypt.compare(password, user.password);
             
             if (!isMatch) {
@@ -28,41 +29,41 @@ router.post('/login', async(req, res) => {
                 });
             }
 
-            if (!user.verified) {
+            // if (!user.verified) {
 
-                const buffer = crypto.randomBytes(48);
-                const verifyToken = buffer.toString('hex');
+            //     const buffer = crypto.randomBytes(48);
+            //     const verifyToken = buffer.toString('hex');
 
-                user.verifyToken = verifyToken;
-                await user.save();
+            //     user.verifyToken = verifyToken;
+            //     await user.save();
 
-                await courier.send({
-                    message: {
-                        content: {
-                            title: "Verify your account",
-                            body: `${
-                                'You are receiving this because you have requested to regsitered into platform.\n\n' +
-                                'Please verify account\n\n' +
-                                'https://marketplace.nftdevelopments.site/verify/'
-                            }${verifyToken}/${user.email}/${user.username}`
-                        },
-                        data: {
-                            joke: ""
-                        },
-                        to: {
-                            email: user.email
-                        },
-                        timeout: {
-                            message: 600000
-                        }
-                    }
-                });
-                return res.status(400).json({
-                    status: true,
-                    error: 'Your account is not verified. Please check your email and verify account.'
-                })
+            //     // await courier.send({
+            //     //     message: {
+            //     //         content: {
+            //     //             title: "Verify your account",
+            //     //             body: `${
+            //     //                 'You are receiving this because you have requested to regsitered into platform.\n\n' +
+            //     //                 'Please verify account\n\n' +
+            //     //                 'https://marketplace.nftdevelopments.site/verify/'
+            //     //             }${verifyToken}/${user.email}/${user.username}`
+            //     //         },
+            //     //         data: {
+            //     //             joke: ""
+            //     //         },
+            //     //         to: {
+            //     //             email: user.email
+            //     //         },
+            //     //         timeout: {
+            //     //             message: 600000
+            //     //         }
+            //     //     }
+            //     // });
+            //     return res.status(400).json({
+            //         status: true,
+            //         error: 'Your account is not verified. Please check your email and verify account.'
+            //     })
 
-            };
+            // };
 
             const payload = {
                 id: user.id
@@ -90,12 +91,12 @@ router.post('/login', async(req, res) => {
 
 router.post('/register', async(req, res) => {
     try {
-        const { username, name, email, walletAddress, password } = req.body;
-        if (!emailValidator.validate(email)) {
-            return res.status(400).json({ error: 'You must enter an correct email address.' });
-        }
+        const { username, name, walletAddress, password } = req.body;
+        // if (!emailValidator.validate(email)) {
+        //     return res.status(400).json({ error: 'You must enter an correct email address.' });
+        // }
 
-        else if (!walletValidator.validate(walletAddress, 'ETH')) {
+        if (!walletValidator.validate(walletAddress, 'ETH')) {
             return res.status(400).json({ error: 'You must enter an correct BSC wallet address.' });
         }
 
@@ -111,12 +112,12 @@ router.post('/register', async(req, res) => {
             return res.status(400).json({ error: 'You must enter a user name.' });
         }
 
-        const existingEmail = await UserSchema.findOne({ email });
+        // const existingEmail = await UserSchema.findOne({ email });
         const existingUserName = await UserSchema.findOne({ username });
         const existingWallet =  await UserSchema.findOne({ walletAddress });
-        if (existingEmail) {
-            return res.status(400).json({ error: 'That email address is already in use.' });
-        }
+        // if (existingEmail) {
+        //     return res.status(400).json({ error: 'That email address is already in use.' });
+        // }
 
         if (existingUserName) {
             return res.status(400).json({ error: 'That username is already in use.' });
@@ -130,7 +131,7 @@ router.post('/register', async(req, res) => {
         const verifyToken = buffer.toString('hex');
 
         let user = new UserSchema({
-            email,
+            // email,
             username,
             name,
             walletAddress,
@@ -150,30 +151,30 @@ router.post('/register', async(req, res) => {
 
         // const token = jwt.sign(payload, JWT.secret, { expiresIn: JWT.tokenLife });
 
-        await courier.send({
-            message: {
-                content: {
-                    title: "Verify your account",
-                    body: `${
-                        'You are receiving this because you have requested to regsitered into platform.\n\n' +
-                        'Please verify account.\n\n' +
-                        'https://marketplace.nftdevelopments.site/verify/'
-                    }${verifyToken}/${email}/${username}`
-                },
-                data: {
-                    joke: ""
-                },
-                to: {
-                    email: email
-                },
-                timeout: {
-                    message: 600000
-                }
-            }
-        });
+        // await courier.send({
+        //     message: {
+        //         content: {
+        //             title: "Verify your account",
+        //             body: `${
+        //                 'You are receiving this because you have requested to regsitered into platform.\n\n' +
+        //                 'Please verify account.\n\n' +
+        //                 'https://marketplace.nftdevelopments.site/verify/'
+        //             }${verifyToken}/${email}/${username}`
+        //         },
+        //         data: {
+        //             joke: ""
+        //         },
+        //         to: {
+        //             email: email
+        //         },
+        //         timeout: {
+        //             message: 600000
+        //         }
+        //     }
+        // });
         res.status(200).json({
             status: true,
-            message: 'You have registered. Please check your email and verify account.'
+            message: 'You have registered. Please login.'
         })
 
         // return res.status(200).json({
@@ -313,7 +314,7 @@ router.post('/reset/:token', async(req, res) => {
 router.post('/check-authentication', async(req, res) => {
     const result = await checkAuth(req);
     if (!result) return res.status(400).json({ error: "No validation"});
-    const user = await UserSchema.findOne({ _id: mongoose.Types.ObjectId(result.id), verified: true });
+    const user = await UserSchema.findOne({ _id: mongoose.Types.ObjectId(result.id)});
     res.status(200).json(user);
 });
 
