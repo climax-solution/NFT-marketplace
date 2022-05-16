@@ -11,7 +11,7 @@ import Art from "../../Asset/art";
 import ItemLoading from "../../Loading/ItemLoading";
 import Clock from "../../Clock";
 
-export default function NFTItem({ data, NFT, Marketplace, remove }) {
+export default function NFTItem({ data, Marketplace, remove }) {
 
     const [web3, setWeb3] = useState(null);
     const [nft, setNFT] = useState([]);
@@ -37,6 +37,7 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
 
         setTrading(true);
         try {
+
             const signature = await deListSign(nft.action, id, initialUser.walletAddress, nft.price, nft.status == "premium" ? true : false);
 
             await axios.post(`${process.env.REACT_APP_BACKEND}sale/delist`, { tokenID: id, walletAddress: initialUser.walletAddress, signature}).then(res => {
@@ -81,7 +82,13 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
                 signature = await listSign(nonce, id, initialUser.walletAddress, nft.price, status);
             } else {
                 const deadline = Math.floor((Date.parse(new Date(nft.deadline)) - Date.parse(new Date(nft.created_at))) / (60 * 60 * 1000));
-                signature = await auctionSign(nonce, id, initialUser.walletAddress, nft.price, deadline, status);
+                signature = await auctionSign(nonce, id, initialUser.walletAddress, nft.price, deadline, status);   
+            }
+
+            if (status == true) {
+                const treasure = await Marketplace.methods.treasurer().call();
+                const premium_fee = await Marketplace.methods.premium_fee().call();
+                await web3.eth.sendTransaction({ to: treasure, from: initialUser.walletAddress, value: (nft.price * premium_fee) / 100 });
             }
 
             const data = {
@@ -98,6 +105,7 @@ export default function NFTItem({ data, NFT, Marketplace, remove }) {
 
             })
         } catch(err) {
+            console.log(err);
             let message = "";
             if (err?.code == 4001) message = "Cancelled";
             else message = "Failed";

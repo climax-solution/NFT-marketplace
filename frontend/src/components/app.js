@@ -30,7 +30,6 @@ const Bid = lazy(() => import('./components/Profile/Bid/Bid'));
 const Mint = lazy(() => import('./components/Profile/Mint/Mint'));
 const ManageFolder = lazy(() => import('./components/Profile/Folders/'));
 const FolderList = lazy(() => import('./components/Profile/Folders/Folderlist/'));
-const VerifyAccount = lazy(() => import('./pages/verify/'));
 const Whitelist = lazy(() => import('./components/Profile/Folders/Whitelist/'));
 const Footer = lazy(() => import('./components/footer'));
 
@@ -83,7 +82,6 @@ const App = () => {
                 <Route path="/login" element={<Login/>}/>
                 <Route path="/forgot-password" element={<ForgotPassword/>}/>
                 <Route path="/reset-password/:token" element={<ResetPassword/>}/>
-                <Route path="/verify/:token/:email/:username" element={<VerifyAccount/>}/>
                 <Route path="/register" element={<Register/>}/>
                 <Route path="/activity" element={<Activity/>}/>
                 <Route path="/users" element={<Users/>}/>

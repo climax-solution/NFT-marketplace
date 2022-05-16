@@ -1,16 +1,13 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import validator from "validator";
-import { useNavigate } from 'react-router-dom';
 import { success_toastify, error_toastify } from "../../../utils/notify";
 
 import TextInput from '../../components/Form/TextInput';
 import PasswordInput from '../../components/Form/PasswordInput';
+import getWeb3 from '../../../utils/getWeb3';
 
 const Register = () => {
 
-    const navigate = useNavigate();
-    
     const [name, setName] = useState('');
     const [username, setUserName] = useState('');
     const [walletAddress, setWalletAddres] = useState('');
@@ -22,6 +19,7 @@ const Register = () => {
     const register = async() => {
 
         try {
+            const { _web3: web3 } = await getWeb3();
             let flag = 0;
 
             if (!name) flag = 1;
@@ -30,7 +28,7 @@ const Register = () => {
 
             if (!walletAddress) flag = 1;
 
-            else if (!validator.isEthereumAddress(walletAddress)) flag = 1;
+            else if (!web3.utils.isAddress(walletAddress) || walletAddress == '0x0000000000000000000000000000000000000000') flag = 1;
 
             if (!password || !confirmPassword || (password && confirmPassword && password !== confirmPassword)) flag = 1;
 
@@ -49,8 +47,6 @@ const Register = () => {
             await axios.post(`${process.env.REACT_APP_BACKEND}auth/register`, data).then(res => {
                 const { message } = res.data;
                 success_toastify(message);
-                navigate("/");
-                
             }).catch(err => {
                 const { error } = err.response.data;
                 error_toastify(error);
