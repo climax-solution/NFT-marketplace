@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react"
-import validator from "validator";
+import getWeb3 from "../../../utils/getWeb3";
 
 export default function TextInput({ label, _request,  _key, checkable, update }) {
 
@@ -21,16 +21,10 @@ export default function TextInput({ label, _request,  _key, checkable, update })
 
             update("");
             setChecking(true);
-            if (_key === 'email') {
-                if (!validator.isEmail(value)) {
-                    setStatus("This field is email required");
-                    setChecking(false);
-                    return;
-                }
-            }
 
             if (_key === 'walletAddress') {
-                if (!validator.isEthereumAddress(value)) {
+                const { _web3 } = await getWeb3();
+                if (!_web3.utils.isAddress(value) || value == '0x0000000000000000000000000000000000000000') {
                     setStatus("Invalid! Please enter a valid wallet address");
                     setChecking(false);
                     return;
