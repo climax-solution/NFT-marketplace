@@ -11,6 +11,7 @@ const style = `
     i {
         display: inline-block;
         cursor: pointer;
+        position: relative;
     }
 }`;
 export default style;

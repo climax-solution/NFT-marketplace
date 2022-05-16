@@ -54,7 +54,7 @@ export default function Banner({ userData }) {
                                                 socials.map((item, index) => {
                                                     if (userData[item.key]) {
                                                         return (
-                                                            <span onClick={()=> window.open(`${userData[item.key]}`, "_blank")} key={index}><i className={item.icon}></i></span>
+                                                            <span onClick={()=> window.open(`https://${item.key}.com/user/${userData[item.key]}`, "_blank")} key={index}><i className={item.icon + " mx-2"}/></span>
                                                         )
                                                     } else return "";
                                                 })
