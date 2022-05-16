@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import validator from "validator";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { UPDATE_AUTH } from "../../../store/action/auth.action";
@@ -22,9 +21,9 @@ export default function ManageInfo() {
 
     const updateUserInfo = async() => {
         let updatedData = { ...userData };
-        const { name, email, password, confirmPassword } = updatedData;
-        if (!name || !validator.isEmail(email)) {
-          error_toastify("You must input name, email correctly!");
+        const { name, password, confirmPassword } = updatedData;
+        if (!name) {
+          error_toastify("You must input name correctly!");
           return;
         }
     
@@ -85,7 +84,7 @@ export default function ManageInfo() {
                             }
                             <div className="spacer-single"></div>
                             <div className="row">
-                              <div className="col-md-6 col-12">
+                              <div className="col-md-12 col-12">
                                 <span>Name</span>
                                 <input
                                   type="text"
@@ -94,16 +93,6 @@ export default function ManageInfo() {
                                   value={userData.name}
                                   onChange={(e) => setUserData({ ...userData, name: e.target.value })}
                                 />
-                              </div>
-                              <div className="col-md-6 col-12">
-                                <span>Email</span>
-                                <input
-                                  type="email"
-                                  className="form-control"
-                                  placeholder="Please enter your email address"
-                                  value={userData.email}
-                                  onChange={(e) => setUserData({ ...userData, email: e.target.value })}
-                              />
                               </div>
                               <div className="col-md-6 col-12">
                                 <span>Facebook</span>

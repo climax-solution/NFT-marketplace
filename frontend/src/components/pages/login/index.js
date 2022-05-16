@@ -9,9 +9,9 @@ import style from "./style.js";
 const GlobalStyle = createGlobalStyle`${style}`;
 
 const Login = () => {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [emailStatus, setEmailStatus] = useState('');
+  const [usernameStatus, setUsernameStatus] = useState('');
   const [passwordStatus, setPasswordStatus] = useState('');
   const [isLoading, setLoading] = useState(false);
 
@@ -20,11 +20,11 @@ const Login = () => {
 
   const authenticate = async() => {
     let flag = 0;
-    if (!email) {
-      setEmailStatus("Please enter correctly");
+    if (!username) {
+      setUsernameStatus("Please enter correctly");
       flag = 1;
     }
-    else setEmailStatus("");
+    else setUsernameStatus("");
 
     if (!password) {
       setPasswordStatus("Please enter correctly");
@@ -33,7 +33,7 @@ const Login = () => {
     else setPasswordStatus("");
     if (flag) return;
     const data = {
-      id: email,
+      id: username,
       password
     };
     setLoading(true);
@@ -76,14 +76,14 @@ const Login = () => {
                         <div className="field-set">
                           <input
                             type='text'
-                            name='email'
-                            id='email'
+                            name='username'
+                            id='username'
                             className="form-control mb-0"
-                            placeholder="Please enter your email or username"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="Please enter your username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
                           />
-                          <label className='text-danger f-12px'>{emailStatus}</label>
+                          <label className='text-danger f-12px'>{usernameStatus}</label>
                         </div>
                         
                         <div className="field-set">

@@ -12,7 +12,6 @@ const Register = () => {
     const navigate = useNavigate();
     
     const [name, setName] = useState('');
-    const [email ,setEmail] = useState('');
     const [username, setUserName] = useState('');
     const [walletAddress, setWalletAddres] = useState('');
     const [password, setPassword] = useState('');
@@ -26,8 +25,6 @@ const Register = () => {
             let flag = 0;
 
             if (!name) flag = 1;
-
-            if (!email || !validator.isEmail(email)) flag = 1;
 
             if (!username) flag = 1;
 
@@ -44,7 +41,6 @@ const Register = () => {
             // setUpdate(false);
             const data = {
                 username,
-                email,
                 name,
                 walletAddress,
                 password
@@ -89,16 +85,6 @@ const Register = () => {
 
                             <div className="col-md-6">
                                 <TextInput
-                                    label={"Email"}
-                                    update={setEmail}
-                                    _key={"email"}
-                                    checkable={true}
-                                    _request={update}
-                                />
-                            </div>
-
-                            <div className="col-md-6">
-                                <TextInput
                                     label={"Choose a Username"}
                                     update={setUserName}
                                     _key={"username"}
@@ -107,7 +93,7 @@ const Register = () => {
                                 />
                             </div>
                             
-                            <div className="col-md-6">
+                            <div className="col-md-12">
                                 <TextInput
                                     label={"Wallet Address"}
                                     update={setWalletAddres}
