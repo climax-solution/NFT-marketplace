@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import ipfsAPI from "ipfs-api";
 import Modal from 'react-awesome-modal';
-import validator from "validator";
 import Select from 'react-select';
 import getWeb3 from '../../../../utils/getWeb3';
 import { warning_toastify, success_toastify, error_toastify } from "../../../../utils/notify";
@@ -29,6 +28,7 @@ export default function SingleMint() {
     const wallet_info = useSelector(({ wallet }) => wallet.wallet_connected);
 
     const [NFT, setNFT] = useState();
+    const [web3, setWeb3] = useState();
     const [activeFolder, setActiveFolder] = useState();
     const [folderList, setFolderList] = useState([]);
     const [nftName, setNFTName] = useState();
@@ -84,8 +84,9 @@ export default function SingleMint() {
         }).catch(err => {
 
         })
-        const { instanceNFT } = await getWeb3();
+        const { instanceNFT, _web3 } = await getWeb3();
         setNFT(instanceNFT);
+        setWeb3(_web3);
     },[])
 
     const mint = async() => {
@@ -132,7 +133,7 @@ export default function SingleMint() {
                 setFolderStatus({ ...folderStatus, name: "" });
             }
 
-            if (!validator.isEthereumAddress(royaltyAddress) || !royaltyAddress) {
+            if (!web3.utils.isAddress(royaltyAddress) || royaltyAddress == '0x0000000000000000000000000000000000000000') {
                 setAddressStatus('Not valid account address');
                 flag = 1;
             } else setAddressStatus('');

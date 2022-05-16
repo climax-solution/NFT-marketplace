@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import ipfsAPI from "ipfs-api";
-import validator from "validator";
 import Select from 'react-select';
 import getWeb3 from '../../../../utils/getWeb3';
 import { warning_toastify, success_toastify, error_toastify } from "../../../../utils/notify";
@@ -77,7 +76,7 @@ export default function MintToOld() {
                 flag = 1;
             } else setCountStatus('');
 
-            if (!validator.isEthereumAddress(royaltyAddress) || !royaltyAddress) {
+            if (!web3.utils.isAddress(royaltyAddress) || royaltyAddress == '0x0000000000000000000000000000000000000000') {
                 setAddressStatus('Not valid account address');
                 flag = 1;
             } else setAddressStatus('');
