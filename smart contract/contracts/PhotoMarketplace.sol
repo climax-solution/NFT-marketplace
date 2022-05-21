@@ -8,20 +8,20 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import { ECDSA } from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import { NFTD } from "./NFTD.sol";
 
-contract Marketplace is Ownable{
+contract Marketplace is Ownable {
 
     using SafeMath for uint256;
 
     struct Profit {
         bool status;
-        uint256 owner;
-        uint256 dev;
+        uint256 index;
     }
 
     string public constant salt = "NFTD MARKETPLACE";
-    mapping(uint => uint) public nonces;
-    mapping(address => bool) public whitelist;
-    mapping(uint256 => Profit) private profit;
+    mapping (uint => uint) public nonces;
+    mapping (address => bool) public whitelist;
+    mapping (uint256 => Profit) public profitSet;
+    uint256[] public profits;
 
     NFTD public flexNFT;
     // IERC20 public WBNB = IERC20(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2); //mainnet weth
@@ -36,6 +36,7 @@ contract Marketplace is Ownable{
     bytes32 public immutable BUY_SALT;
     bytes32 public immutable SELL_SALT;
 
+    bool private profitable;
     constructor(address _nftNFT) {
         flexNFT = NFTD(_nftNFT);
         treasurer = msg.sender;
@@ -69,9 +70,11 @@ contract Marketplace is Ownable{
             feeValue = msg.value.mul(fee).div(10000);
         }
         
-        if (!profit[tokenId].status) {
-            NFTD.Royalty memory royalty = flexNFT.getRoyalty(tokenId);
-            if (royalty.fee > 0) royaltyFee = msg.value.mul(royalty.fee).div(10000);
+        NFTD.Royalty memory royalty = flexNFT.getRoyalty(tokenId);
+        if (royalty.fee > 0) royaltyFee = msg.value.mul(royalty.fee).div(10000);
+
+        if (!profitable) {
+            
             
             if(feeValue > 0) {
                 address receiver = treasurer;
@@ -79,14 +82,19 @@ contract Marketplace is Ownable{
                 payable(receiver).transfer(feeValue);
             }
 
-            if(royaltyFee > 0) payable(royalty.receiver).transfer(royaltyFee);
         }
 
         else {
-            uint256 forOwner = feeValue * profit[tokenId].owner / 100;
-            payable(flexNFT.ownerOf(tokenId)).transfer(forOwner);
-            payable(devWallet).transfer(feeValue - forOwner);
+            uint256 toDev = feeValue * 600 / 1000;
+            uint256 toProfit = feeValue - toDev;
+            
+            payable(devWallet).transfer(toDev);
+            for (uint i; i < profits.length; i ++) {
+                payable(flexNFT.ownerOf(profits[i])).transfer(toProfit/profits.length);
+            }
         }
+
+        if(royaltyFee > 0) payable(royalty.receiver).transfer(royaltyFee);
 
         payable(from).transfer(msg.value - feeValue - royaltyFee);
         
@@ -94,7 +102,7 @@ contract Marketplace is Ownable{
 
     function sell(uint tokenId, address to, uint price, bool is_premium, bytes memory signature) external {
         address from = msg.sender;
-        require(WBNB.balanceOf(to) >= price, "payer doen't have enough price");
+        require(WBNB.balanceOf(to) >= price, "payer doesn't have enough price");
         require(flexNFT.ownerOf(tokenId) == from, "wrong owner");
 
         bytes32 digest = keccak256(abi.encodePacked(uint8(0x19), uint8(0x01), DOMAIN_SEPARATOR, keccak256(abi.encode(SELL_SALT, nonces[tokenId] ++, to, tokenId, price))));
@@ -110,9 +118,11 @@ contract Marketplace is Ownable{
             feeValue = price.mul(fee).div(10000);
         }
         
-        if (!profit[tokenId].status) {
-            NFTD.Royalty memory royalty = flexNFT.getRoyalty(tokenId);
-            if (royalty.fee > 0) royaltyFee = price.mul(royalty.fee).div(10000);
+        NFTD.Royalty memory royalty = flexNFT.getRoyalty(tokenId);
+        if (royalty.fee > 0) royaltyFee = price.mul(royalty.fee).div(10000);
+
+        if (!profitable) {
+            
             
             if(feeValue > 0) {
                 address receiver = treasurer;
@@ -120,14 +130,20 @@ contract Marketplace is Ownable{
                 WBNB.transferFrom(to, receiver, feeValue);
             }
 
-            if(royaltyFee > 0) WBNB.transferFrom(to, royalty.receiver, royaltyFee);
         }
 
         else {
-            uint256 forOwner = feeValue * profit[tokenId].owner / 100;
-            WBNB.transferFrom(to, flexNFT.ownerOf(tokenId), forOwner);
-            WBNB.transferFrom(to, devWallet, feeValue - forOwner);
+            uint256 toDev = feeValue * 600 / 1000;
+            uint256 toProfit = feeValue - toDev;
+
+            WBNB.transferFrom(to, devWallet, toDev);
+            for (uint i; i < profits.length; i ++) {
+                WBNB.transferFrom(to, flexNFT.ownerOf(profits[i]), toProfit/profits.length);
+
+            }
         }
+
+        if(royaltyFee > 0) WBNB.transferFrom(to, royalty.receiver, royaltyFee);
 
         WBNB.transferFrom(to, from, price - feeValue - royaltyFee);
 
@@ -156,33 +172,27 @@ contract Marketplace is Ownable{
         }
     }
 
-    function enableProfit(uint256[] memory tokenID) external onlyOwner {
-        require(tokenID.length > 0, "empty list");
-        for (uint256 i; i < tokenID.length; i ++) {
-            profit[tokenID[i]] = Profit(true, 40, 60);
+    function addProfit(uint256[] calldata tokenIDs) external onlyOwner {
+        require(tokenIDs.length > 0, "empty list");
+        require(tokenIDs.length + profits.length <= 100, "exceed maximum");
+        for (uint256 i = 0; i < tokenIDs.length; i ++) {
+            require(flexNFT.ownerOf(tokenIDs[i]) != address(0), "no nft created");
+            profitSet[tokenIDs[i]] = Profit(true, i);
         }
+        profits = tokenIDs;
     }
-
-    function disableProfit(uint256[] memory tokenID) external onlyOwner {
-        require(tokenID.length > 0, "empty list");
-        for (uint256 i; i < tokenID.length; i ++) {
-            profit[tokenID[i]].status = false;
-        }
-    }
-
+        
     function updateDevWallet(address account) external onlyOwner {
         require(account != address(0), "invalid address");
         require(account != devWallet, "same address");
         devWallet = account;
     }
 
-    function updateProfitDiv(uint256 tokenID, uint256 owner) external onlyOwner {
-        require(profit[tokenID].status, "you need to set profit");
-        Profit memory _profit = Profit(true, owner, 100 - owner);
-        profit[tokenID] = _profit;
+    function manageProfitable(bool status) external onlyOwner {
+        profitable = status;
     }
 
-    function getProfit(uint256 tokenID) external view onlyOwner returns(Profit memory) {
-        return profit[tokenID];
+    function getProfitable() external view onlyOwner returns(bool) {
+        return profitable;
     }
 }
