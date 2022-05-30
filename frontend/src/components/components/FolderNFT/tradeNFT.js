@@ -65,6 +65,17 @@ export default function TradeNFT({ data, className = "mx-0" }) {
             if (_nft.action != 'list') throw Error();
 
             await Marketplace.methods.buy(_nft.tokenID, _nft.walletAddress, _nft.price, _nft.status == "premium" ? true : false, nft.signature).send({ from: initialUser.walletAddress, value: nft.price });
+            await axios.post(`${process.env.REACT_APP_BACKEND}activity/create-log`, {
+                walletAddress: initialUser.walletAddress,
+                tokenID: _nft.tokenID,
+                type: 0,
+                price: _nft.price
+            }).then(res => {
+                
+            }).catch(err => {
+
+            });
+
             success_toastify("Buy success");
 
         } catch(err) {
