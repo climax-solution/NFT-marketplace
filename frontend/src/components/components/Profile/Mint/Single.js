@@ -337,7 +337,7 @@ export default function SingleMint() {
                             Please choose NFT art
                             <input
                                 type="file"
-                                accept="audio/*,video/*,image/*"
+                                accept="image/*"
                                 onChange={importAsset}
                                 hidden
                             />
@@ -546,7 +546,6 @@ export default function SingleMint() {
             <Modal
                 visible={isLoading}
                 width="400"
-                height="300"
                 effect="fadeInUp"
                 onClickAway={closeModal}
             >
