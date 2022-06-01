@@ -75,7 +75,7 @@ export default function InternalLinks() {
                                     onChange={({ target }) => setEmail(target.value)}
                                 />
                                 <span onClick={sendEmail} id="btn-subscribe" role="button">
-                                    <i className="arrow_right bg-color-secondary"></i>
+                                    <i className="far fa-arrow-right bg-color-secondary"></i>
                                 </span>
                                 <div className="clearfix"></div>
                             </div>

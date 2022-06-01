@@ -273,7 +273,7 @@ const ItemDetail = () => {
                                         tokenID={nft.tokenID}
                                         image={nft.image}
                                         asset={nft.asset}
-                                        redirect={() => null}
+                                        redirect={null}
                                         type={nft.type}
                                     />
 
