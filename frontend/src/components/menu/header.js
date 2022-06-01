@@ -100,7 +100,7 @@ const Header = () => {
       })
 
       provider.on("chainChanged", async(chainID) => {
-        if (chainID != '0x61') {
+        if (chainID != '0x38') {
           localStorage.setItem("nftdevelopments-connected", JSON.stringify({ connected: false }));
         }
         else {
@@ -127,7 +127,7 @@ const Header = () => {
     try {
       const _web3 = new Web3(window.ethereum);
       const chainID = await _web3.eth.getChainId();
-      if (chainID != '0x61') {
+      if (chainID != '0x38') {
         throw Error('Please switch to BSC testnet');
       };
 

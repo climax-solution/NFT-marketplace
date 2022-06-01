@@ -13,14 +13,14 @@ const getWeb3 = async() => {
   if (window.ethereum) {
     _web3 = new Web3(window.ethereum);
     const networkId = await _web3.eth.net.getId();
-    if (networkId !== 97) {
-      const provider = new Web3.providers.HttpProvider("https://data-seed-prebsc-2-s3.binance.org:8545/");
+    if (networkId !== 56) {
+      const provider = new Web3.providers.HttpProvider("https://bsc-dataseed.binance.org");
       _web3 = new Web3(provider);
     }
   }
 
   else {
-    const provider = new Web3.providers.HttpProvider("https://data-seed-prebsc-2-s3.binance.org:8545/");
+    const provider = new Web3.providers.HttpProvider("https://bsc-dataseed.binance.org");
     _web3 = new Web3(provider);
   }
 
