@@ -2553,12 +2553,14 @@ i.font60 {
     right: 0;
     top: 30%;
 }
+
 .feature-box.style-3:hover i.wm {
     -webkit-transform: rotate(-25deg);
     -moz-transform: rotate(-25deg);
     -o-transform: rotate(-25deg);
     transform: rotate(-25deg);
 }
+
 .feature-box.style-4 i {
     position: relative;
     z-index: 2;
@@ -2714,17 +2716,6 @@ i.font60 {
     -webkit-transition: .5s;
     transition: .5s;
     outline: none;
-}
-
-.icon_wallet::before {
-    content: "\e100";
-    font-family: 'ElegantIcons';
-    font-style: normal;
-    font-weight: normal;
-    font-variant: normal;
-    text-transform: none;
-    line-height: 1;
-    transition: .7s;
 }
 
 /*** column nft ***/

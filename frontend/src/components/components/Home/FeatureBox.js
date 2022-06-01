@@ -26,7 +26,7 @@ const FeatureBox= () => (
       <div className="col-lg-4 col-md-6 mb-3">
           <div className="feature-box f-boxed h-100 style-3">
             <Reveal className='onStep' keyframes={fadeInUp} delay={0} duration={600} triggerOnce>
-              <i className="bg-color-2 i-boxed icon_wallet"></i>
+              <i className="bg-color-2 i-boxed fas fa-wallet"></i>
             </Reveal>
               <div className="text">
                 <Reveal className='onStep' keyframes={fadeInUp} delay={100} duration={600} triggerOnce>
@@ -36,14 +36,14 @@ const FeatureBox= () => (
                   <p className="">Click here to learn how to set your wallet up to accept Binance token and interact with the NFTD Market Place.</p>
                 </Reveal>
               </div>
-              <i className="wm icon_wallet"></i>
+              <i className="wm fas fa-wallet"></i>
           </div>
       </div>
 
       <div className="col-lg-4 col-md-6 mb-3">
           <div className="feature-box f-boxed h-100 style-3">
             <Reveal className='onStep' keyframes={fadeInUp} delay={0} duration={600} triggerOnce>
-              <i className=" bg-color-2 i-boxed icon_cloud-upload_alt"></i>
+              <i className=" bg-color-2 i-boxed fas fa-cloud-upload"></i>
             </Reveal>
               <div className="text">
                 <Reveal className='onStep' keyframes={fadeInUp} delay={100} duration={600} triggerOnce>
@@ -53,14 +53,14 @@ const FeatureBox= () => (
                   <p className="">Click here to learn how to add your NFTs to the NFTD Marketplace.</p>
                 </Reveal>
               </div>
-              <i className="wm icon_cloud-upload_alt"></i>
+              <i className="wm fas fa-cloud-upload"></i>
           </div>
       </div>
 
       <div className="col-lg-4 col-md-6 mb-3">
           <div className="feature-box f-boxed h-100 style-3">
             <Reveal className='onStep' keyframes={fadeInUp} delay={0} duration={600} triggerOnce>
-              <i className=" bg-color-2 i-boxed icon_tags_alt"></i>
+              <i className=" bg-color-2 i-boxed fas fa-tags"></i>
             </Reveal>
               <div className="text">
                 <Reveal className='onStep' keyframes={fadeInUp} delay={100} duration={600} triggerOnce>
@@ -70,7 +70,7 @@ const FeatureBox= () => (
                   <p className="">Click here to learn how to sell your NFTs to the NFTD Marketplace.</p>
                 </Reveal>
               </div>
-              <i className="wm icon_tags_alt"></i>
+              <i className="wm fas fa-tags"></i>
           </div>
       </div>
     </div>
