@@ -87,11 +87,52 @@ router.post('/register', async(req, res) => {
 router.post('/remove-user', async(req, res) => {
     try {
         const { id } = req.body;
-        await UserSchema.deleteOne({ _id: Mongoose.Types.ObjectId(id) });
+        await UserSchema.findByIdAndDelete(id);
         res.status(200).json({
             message: "Removed successfully!"
         });
     } catch(err) {
+        res.status(400).json({
+            error: "Your request is restricted"
+        });
+    }
+});
+
+router.post('/create-empty-folder', async(req, res) => {
+    try {
+        const { name, artist, category, description } = req.body;
+        if (!name) {
+            return res.status(400).json({
+                error: "Name is not defined"
+            });
+        }
+
+        if (!artist) {
+            return res.status(400).json({
+                error: "Artist is not defined"
+            });
+        }
+
+        if (!category) {
+            return res.status(400).json({
+                error: "Category is required"
+            });
+        }
+
+        let folder = new FolderSchema({
+            name,
+            artist,
+            category,
+            description
+        });
+
+        await folder.save();
+
+        res.status(200).json({
+            message: "Add NFTs and folder successfully"
+        });
+    } catch(err) {
+        console.log(err);
         res.status(400).json({
             error: "Your request is restricted"
         });
