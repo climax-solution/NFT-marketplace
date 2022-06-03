@@ -275,6 +275,7 @@ const ItemDetail = () => {
                                         asset={nft.asset}
                                         redirect={null}
                                         type={nft.type}
+                                        ratio={false}
                                     />
 
                                     { !isNFTOwner && (
