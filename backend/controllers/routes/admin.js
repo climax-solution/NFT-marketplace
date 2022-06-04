@@ -3,9 +3,11 @@ const bcrypt = require('bcryptjs');
 const Mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 const { ADMIN } = require("../../config/key");
+
 const UserSchema = require('../../models/users');
 const AdminSchema = require('../../models/admin');
 const FolderSchema = require('../../models/folders');
+const NFTSchema = require('../../models/nfts');
 
 router.post('/login', async(req, res) => {
     try {
@@ -142,10 +144,31 @@ router.post('/create-empty-folder', async(req, res) => {
 router.post('/remove-folder', async(req, res) => {
     try {
         const { id } = req.body;
-        await FolderSchema.deleteOne({ _id: Mongoose.Types.ObjectId(id) });
+        await FolderSchema.findByIdAndRemove(id);
         res.status(200).json({
             message: "Removed successfully!"
         });
+    } catch(err) {
+        res.status(400).json({
+            error: "Your request is restricted"
+        });
+    }
+});
+
+router.post('/move-nfts-to-folder', async(req, res) => {
+    try {
+        const { folderID, list } = req.body;
+        if (!folderID || !list.length) {
+            return res.status(400).json({
+                error: "FolderID or Token IDs is empty"
+            });
+        }
+
+        await NFTSchema.updateMany({ tokenID: {$in: list} }, { folderID: folderID });
+        res.status(200).json({
+            message: "moved success"
+        });
+
     } catch(err) {
         res.status(400).json({
             error: "Your request is restricted"
