@@ -23,9 +23,9 @@ const Art = ({ tokenID, image, asset, redirect, type }) => {
                 (!type || type && (type).toLowerCase() == 'image') &&
                 <>
                     {
-                        redirect ? <img src={image ? image : asset} onError={failedLoadImage} className="lazy nft__item_preview ratio-1-1 w-100" role="button" onClick={redirect} alt=""/>
+                        redirect ? <img src={image ? image : asset} onError={failedLoadImage} className= "lazy nft__item_preview w-100 ratio-1-1" role="button" onClick={redirect} alt=""/>
                         : <SRLWrapper options={options}>
-                            <img src={image ? image : asset} onError={failedLoadImage} className="lazy nft__item_preview ratio-1-1 w-100" role="button" onClick={redirect} alt=""/>
+                            <img src={image ? image : asset} onError={failedLoadImage} className="lazy nft__item_preview w-100" role="button" onClick={redirect} alt=""/>
                         </SRLWrapper>
                     }
                 </>

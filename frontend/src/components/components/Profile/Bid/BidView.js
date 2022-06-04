@@ -73,7 +73,6 @@ export default function BidView() {
                             asset={metadata.asset}
                             redirect={() => null}
                             type={metadata.type}
-                            ratio={false}
                         />
 
                         {
