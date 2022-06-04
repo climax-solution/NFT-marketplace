@@ -88,7 +88,7 @@ export default function NFTItem({ data, Marketplace, remove }) {
             if (status == true) {
                 const treasure = await Marketplace.methods.treasurer().call();
                 const premium_fee = await Marketplace.methods.premium_fee().call();
-                await web3.eth.sendTransaction({ to: treasure, from: initialUser.walletAddress, value: (nft.price * premium_fee) / 100 });
+                await web3.eth.sendTransaction({ to: treasure, from: initialUser.walletAddress, value: (nft.price * premium_fee) / 10000 });
             }
 
             const data = {
