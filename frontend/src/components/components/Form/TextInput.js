@@ -67,7 +67,7 @@ export default function TextInput({ label, _request,  _key, checkable, update })
                     setValue(e.target.value);
                     setStatus("");
                 }}
-                onBlur={() => checkValue()}
+                onBlur={() => { setValue(value.trim()); checkValue(); }}
                 readOnly={checking}
             />
             {
