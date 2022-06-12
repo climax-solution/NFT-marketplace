@@ -176,4 +176,58 @@ router.post('/move-nfts-to-folder', async(req, res) => {
     }
 });
 
+router.post('/modify-user', async(req, res) => {
+    const { id } = req.body;
+    if (!id) {
+        return res.status(400).json({
+            error: 'Session expired'
+        });
+    }
+
+    try {
+        let data = req.body;
+        const existedUser = await UserSchema.findById(id);
+
+        if (!existedUser) {
+            return res.status(400).json({
+                error: 'No user exist'
+            });
+        }
+
+        if (data.username) {
+            const _existedUsername = await UserSchema.findOne({ walletAddress: data.username });
+            if (_existedUsername && (_existedUsername._id).toString() != id) {
+                return res.status(400).json({
+                    error: 'Existing wallet address'
+                });
+            }
+        }
+
+        if (data.walletAddress) {
+            const _existedWallet = await UserSchema.findOne({ walletAddress: data.walletAddress });
+            if (_existedWallet && (_existedWallet._id).toString() != id) {
+                return res.status(400).json({
+                    error: 'Existing wallet address'
+                });
+            }
+        }
+
+        if (data.password) {
+            const salt = await bcrypt.genSalt(10);
+            const hash = await bcrypt.hash(data.password, salt);
+            data.password = hash;
+        }
+
+        await UserSchema.findByIdAndUpdate(id, data);
+        res.status(200).json({
+            message: "Updated Successfully",
+        });
+    } catch(err) {
+        console.log(err);
+        res.status(400).json({
+            error: "Your request is restricted!"
+        });
+    }
+});
+
 module.exports = router;
