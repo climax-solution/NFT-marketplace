@@ -9,7 +9,9 @@ export default function TextInput({ label, _request,  _key, checkable, update })
     const [checking, setChecking] = useState(false);
 
     const checkValue = async() => {
-        if (!value) {
+        const _value = value.trim();
+        setValue(_value);
+        if (!_value) {
             setStatus('This field is required.');
             update("");
             return;
@@ -17,14 +19,14 @@ export default function TextInput({ label, _request,  _key, checkable, update })
 
         if (checkable) {
             let data = {};
-            data[_key] = value;
+            data[_key] = _value;
 
             update("");
             setChecking(true);
 
             if (_key === 'walletAddress') {
                 const { _web3 } = await getWeb3();
-                if (!_web3.utils.isAddress(value) || value == '0x0000000000000000000000000000000000000000') {
+                if (!_web3.utils.isAddress(_value) || _value == '0x0000000000000000000000000000000000000000') {
                     setStatus("Invalid! Please enter a valid wallet address");
                     setChecking(false);
                     return;
@@ -32,7 +34,7 @@ export default function TextInput({ label, _request,  _key, checkable, update })
             }
             
             await axios.post(`${process.env.REACT_APP_BACKEND}user/check-existing-user`, data).then(res => {
-                update(value);
+                update(_value);
                 setStatus("");
             }).catch(err => {
                 const { error } = err.response.data;
@@ -67,7 +69,7 @@ export default function TextInput({ label, _request,  _key, checkable, update })
                     setValue(e.target.value);
                     setStatus("");
                 }}
-                onBlur={() => { setValue(value.trim()); checkValue(); }}
+                onBlur={() => { checkValue(); }}
                 readOnly={checking}
             />
             {

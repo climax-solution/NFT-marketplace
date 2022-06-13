@@ -37,7 +37,7 @@ const Register = () => {
                 setUpdate(true);
                 return;
             }
-            // setUpdate(false);
+            setUpdate(false);
             setLoading(true);
             const data = {
                 username,
