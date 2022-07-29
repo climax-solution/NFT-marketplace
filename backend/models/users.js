@@ -6,24 +6,24 @@ const UserSchema = Schema({
     name: {
         type: String
     },
-    username: {
-        type: String,
-        lowercase: true
-    },
-    email: {
-        type: String,
-        // required: () => {
-        //     return this.provider !== 'email' ? false : true
-        // },
-        lowercase: true
-    },
+    // username: {
+    //     type: String,
+    //     lowercase: true
+    // },
+    // email: {
+    //     type: String,
+    //     // required: () => {
+    //     //     return this.provider !== 'email' ? false : true
+    //     // },
+    //     lowercase: true
+    // },
     walletAddress: {
         type: String,
         lowercase: true
     },
-    password: {
-        type: String
-    },
+    // password: {
+    //     type: String
+    // },
     avatar: {
         default: "empty-avatar.png",
         type: String
@@ -54,19 +54,19 @@ const UserSchema = Schema({
         default: 'ROLE_VISITOR',
         enum: ['ROLE_VISITOR', 'ROLE_CREATOR', 'ROLE_ADMIN']
     },
-    verified: {
-        type: Boolean,
-        default: true
-    },
-    verifyToken: {
-        type: String
-    },
-    resetPasswordToken: {
-        type: String
-    },
-    resetPasswordExpires: {
-        type: Date
-    },
+    // verified: {
+    //     type: Boolean,
+    //     default: true
+    // },
+    // verifyToken: {
+    //     type: String
+    // },
+    // resetPasswordToken: {
+    //     type: String
+    // },
+    // resetPasswordExpires: {
+    //     type: Date
+    // },
     updated_at: {
         type: Date
     },

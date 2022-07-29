@@ -233,10 +233,50 @@ const processOfferSign = async ( tokenID, from, price, signature) => {
     return false;
 }
 
+const authSign = async(account, action, signature) => {
+    const msgParams = JSON.stringify({
+        domain: {
+          chainId: 56,
+          name: 'NFT Developments Marketplace',
+          verifyingContract: marketplace_addr,
+          version: '1'
+        },
+    
+        message: {
+            action,
+            account
+        },
+        primaryType: 'Auth',
+        types: {
+          EIP712Domain: [
+            { name: 'name', type: 'string' },
+            { name: 'version', type: 'string' },
+            { name: 'chainId', type: 'uint256' },
+            { name: 'verifyingContract', type: 'address' }
+          ],
+          Auth: [
+            { name: 'action', type: 'string'},
+            { name: 'account', type: 'address' },
+          ],
+        },
+    });
+  
+    const { _web3 } = await getWeb3();
+    const recovered = recoverTypedSignature({
+        data: JSON.parse(msgParams),
+        signature,
+        version: SignTypedDataVersion.V3
+    });
+
+    if (_web3.utils.toChecksumAddress(recovered) === _web3.utils.toChecksumAddress(account)) return true;
+    return false;
+}
+  
 module.exports = {
     listSign,
     auctionSign,
     deListSign,
     offerSign,
-    processOfferSign
+    processOfferSign,
+    authSign
 };

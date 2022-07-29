@@ -13,14 +13,8 @@ const { CourierClient } = require("@trycourier/courier");
 const courier = CourierClient({ authorizationToken: "pk_prod_X9RTESPDMXMBN7KFYP37EDJBNS44"});
 //pk_prod_YTMEXMYZA84MWVPTW3KHYS44B1S0
 router.post('/get-user', async(req, res) => {
-    const token = await checkAuth(req);
-    if (!token) {
-        return res.status(400).json({
-            error: 'Session expired'
-        });
-    }
-    const { id } = token;
-    const result = await UserSchema.findOne({ _id: mongoose.Types.ObjectId(id) });
+    const { walletAddress } = req.body;
+    const result = await UserSchema.findOne({ walletAddress });
     if (!result) {
         return res.status(400).json({
             error: "not existing user"

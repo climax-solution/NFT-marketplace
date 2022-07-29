@@ -11,6 +11,7 @@ const { jwt: JWT } = require("../../config/key");
 
 const { CourierClient } = require("@trycourier/courier");
 const mongoose = require('mongoose');
+const { authSign } = require('../../helpers/check_sign');
 const courier = CourierClient({ authorizationToken: "pk_prod_YTMEXMYZA84MWVPTW3KHYS44B1S0"});
 
 router.post('/login', async(req, res) => {
@@ -91,7 +92,7 @@ router.post('/login', async(req, res) => {
 
 router.post('/register', async(req, res) => {
     try {
-        const { username, name, walletAddress, password } = req.body;
+        const { walletAddress, signature, action } = req.body;
         // if (!emailValidator.validate(email)) {
         //     return res.status(400).json({ error: 'You must enter an correct email address.' });
         // }
@@ -100,49 +101,53 @@ router.post('/register', async(req, res) => {
             return res.status(400).json({ error: 'You must enter an correct BSC wallet address.' });
         }
 
-        if (!name) {
-            return res.status(400).json({ error: 'You must enter your full name.' });
-        }
+        // if (!name) {
+        //     return res.status(400).json({ error: 'You must enter your full name.' });
+        // }
     
-        if (!password) {
-            return res.status(400).json({ error: 'You must enter a password.' });
-        }
+        // if (!password) {
+        //     return res.status(400).json({ error: 'You must enter a password.' });
+        // }
 
-        if (!username) {
-            return res.status(400).json({ error: 'You must enter a user name.' });
-        }
+        // if (!username) {
+        //     return res.status(400).json({ error: 'You must enter a user name.' });
+        // }
 
         // const existingEmail = await UserSchema.findOne({ email });
-        const existingUserName = await UserSchema.findOne({ username });
+        // const existingUserName = await UserSchema.findOne({ username });
         const existingWallet =  await UserSchema.findOne({ walletAddress });
         // if (existingEmail) {
         //     return res.status(400).json({ error: 'That email address is already in use.' });
         // }
 
-        if (existingUserName) {
-            return res.status(400).json({ error: 'That username is already in use.' });
-        }
+        // if (existingUserName) {
+        //     return res.status(400).json({ error: 'That username is already in use.' });
+        // }
 
         if (existingWallet) {
             return res.status(400).json({ error: 'That wallet address is already in use.' });
         }
 
+        const validateSign  = await authSign(walletAddress, action, signature);
+        if (!validateSign) {
+            return res.status(400).json({ error: 'Signature is invalid.' });
+        }
         const buffer = crypto.randomBytes(48);
-        const verifyToken = buffer.toString('hex');
+        // const verifyToken = buffer.toString('hex');
 
         let user = new UserSchema({
             // email,
-            username,
-            name,
+            // username,
+            // name,
             walletAddress,
-            password,
-            verifyToken
+            // password,
+            // verifyToken
         });
 
-        const salt = await bcrypt.genSalt(10);
-        const hash = await bcrypt.hash(user.password, salt);
+        // const salt = await bcrypt.genSalt(10);
+        // const hash = await bcrypt.hash(user.password, salt);
         
-        user.password = hash;
+        // user.password = hash;
         await user.save();
 
         // const payload = {
