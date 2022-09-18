@@ -11,8 +11,7 @@ export default function UserInfo() {
             {
                 Object.keys(userData).length &&
                 <h4>
-                    {`${userData.name}`}
-                    <span className="profile_username">@{userData.username}</span>
+                    <span>{`${userData.name ? userData.name : "Unamed"}`}</span><br/>
                     <span id="wallet" className="profile_wallet mt-1">{userData.walletAddress && ((userData.walletAddress).substr(0, 4) + '...' + (userData.walletAddress).substr(-4))}</span>
                     <CopyToClipboard
                         text={userData.walletAddress}

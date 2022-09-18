@@ -6,6 +6,7 @@ import { UPDATE_AUTH } from "../../../store/action/auth.action";
 import { success_toastify, error_toastify } from "../../../utils/notify";
 import "./avatar.css";
 import { failedLoadImage } from "../../../utils/compre.js";
+import { authSign } from "../../../utils/sign";
 
 export default function Avatar() {
     
@@ -16,26 +17,26 @@ export default function Avatar() {
 
     const updateAvatar = async(e) => {
         const files = e.target.files;
-        const token = localStorage.getItem("nftdevelopments-token");
         if (files[0].type.indexOf("image") > -1) {
           let fileData = new FormData();
           fileData.append("myfile", files[0]);
           setLoading(true);
-          await axios.post(
-            `${process.env.REACT_APP_BACKEND}user/update-avatar`,
-            fileData,
-            {
-              headers: {
-                Authorization: JSON.parse(token),
-                'Content-Type': 'multipart/form-data'
-              }
-            }
-          ).then(res => {
-            dispatch(UPDATE_AUTH(res.data));
-            success_toastify("Updated avatar successfully!");
-          }).catch(err => {
-            error_toastify("Update failed");
-          })
+          try {
+            const signature = await authSign(userData.walletAddress, 'update avatar');
+            fileData.append("signature", signature);
+            fileData.append("walletAddress", userData.walletAddress);
+            await axios.post(
+              `${process.env.REACT_APP_BACKEND}user/update-avatar`,
+              fileData
+            ).then(res => {
+              dispatch(UPDATE_AUTH(res.data));
+              success_toastify("Updated avatar successfully!");
+            }).catch(err => {
+              error_toastify("Update failed");
+            })
+          } catch(err) {
+            
+          }
           setLoading(false);
         }
     }

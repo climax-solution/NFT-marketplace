@@ -264,3 +264,50 @@ export const processOfferSign = async ( tokenID, from, price) => {
       );
   });
 }
+
+export const authSign = async(account, action) => {
+  const msgParams = JSON.stringify({
+      domain: {
+        chainId: 56,
+        name: 'NFT Developments Marketplace',
+        verifyingContract: marketplace_addr,
+        version: '1'
+      },
+  
+      message: {
+          action,
+          account
+      },
+      primaryType: 'Auth',
+      types: {
+        EIP712Domain: [
+          { name: 'name', type: 'string' },
+          { name: 'version', type: 'string' },
+          { name: 'chainId', type: 'uint256' },
+          { name: 'verifyingContract', type: 'address' }
+        ],
+        Auth: [
+          { name: 'action', type: 'string'},
+          { name: 'account', type: 'address' },
+        ],
+      },
+  });
+
+  var params = [account, msgParams];
+  var method = 'eth_signTypedData_v3';
+  const { _web3 } = await getWeb3();
+  return new Promise((resolve, reject) => {
+    _web3.currentProvider.sendAsync(
+          {
+              method,
+              params,
+              from: account,
+          },
+          function (err, result) {
+              if (err) reject(err);
+              else if (result.error) reject(result.err);
+              else if (result.result) resolve(result.result);
+          }
+      );
+  });
+}

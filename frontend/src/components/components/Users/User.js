@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom"
-import { failedLoadImage } from "../../../utils/compre.js";
+import { failedLoadImage, shorten } from "../../../utils/compre.js";
 
 export default function User({ data }) {
 
@@ -10,7 +10,7 @@ export default function User({ data }) {
             <div className="avatar text-center">
                 <img
                     src={`${process.env.REACT_APP_BACKEND}avatar/${data?.avatar}`}
-                    onClick={() => navigate(`/user/${data?.username}`)}
+                    onClick={() => navigate(`/user/${data?.walletAddress}`)}
                     onError={failedLoadImage}
                     className="ratio-1-1"
                     crossOrigin="true"
@@ -21,14 +21,14 @@ export default function User({ data }) {
             <div className="user-name mt-5">
                 <h3
                     className="text-center mb-1"
-                    onClick={() => navigate(`/user/${data?.username}`)}
+                    onClick={() => navigate(`/user/${data?.walletAddress}`)}
                     role="button"
                 >{data.name}</h3>
                 <p
                     className="text-danger text-center"
-                    onClick={() => navigate(`/user/${data?.username}`)}
+                    onClick={() => navigate(`/user/${data?.walletAddress}`)}
                     role="button"
-                >@{data?.username}</p>
+                >{shorten(data.walletAddress)}</p>
             </div>
         </div>
     )

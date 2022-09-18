@@ -38,11 +38,6 @@ const Profile = function() {
                       <UserInfo/>
                   </div>
               </div>
-              <div className="profile_follow de-flex">
-                <div className="de-flex-col">
-                    <span className="btn-main" onClick={logout}>Sign out</span>
-                </div>
-              </div>
             </div>
           </div>
         </div>

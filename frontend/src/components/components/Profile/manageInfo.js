@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { UPDATE_AUTH } from "../../../store/action/auth.action";
 import { WalletConnect } from "../../../store/action/wallet.action";
 import { error_toastify, success_toastify } from "../../../utils/notify";
+import { authSign } from "../../../utils/sign";
 
 export default function ManageInfo() {
     
@@ -21,25 +22,17 @@ export default function ManageInfo() {
 
     const updateUserInfo = async() => {
         let updatedData = { ...userData };
-        const { name, password, confirmPassword } = updatedData;
+        const { name } = updatedData;
         if (!name) {
           error_toastify("You must input name correctly!");
           return;
         }
-    
-        if (password && confirmPassword && password !== confirmPassword) {
-          error_toastify("Please confirm your password!");
-          return;
-        } else {
-          delete updatedData['password'];
-          delete updatedData['confirmPassword'];
-        }
-        
-        const jwtToken = localStorage.getItem("nftdevelopments-token");
-        const _headers = { headers :{ Authorization: JSON.parse(jwtToken) } };
 
         setLoading(true);
-        await axios.post(`${process.env.REACT_APP_BACKEND}user/update-user`, updatedData, _headers).then(res => {
+        const signature = await authSign(userData.walletAddress, 'update user info');
+        updatedData = { ...updatedData, signature };
+        
+        await axios.post(`${process.env.REACT_APP_BACKEND}user/update-user`, updatedData ).then(res => {
           const { message, status } = res.data;
           success_toastify(message);
           if (!status) {
@@ -152,26 +145,6 @@ export default function ManageInfo() {
                                   placeholder="Please enter your tiktok profile link"
                                   value={userData.telegram}
                                   onChange={(e) => setUserData({ ...userData, telegram: e.target.value })}
-                                />
-                              </div>
-                              <div className="col-md-6 col-12">
-                                <span>Password</span>
-                                <input
-                                  type="password"
-                                  className="form-control"
-                                  placeholder="Please enter your password"
-                                  value={userData.password}
-                                  onChange={(e) => setUserData({ ...userData, password: e.target.value })}
-                                />
-                              </div>
-                              <div className="col-md-6 col-12">
-                                <span>Confirm Password</span>
-                                <input
-                                  type="password"
-                                  className="form-control"
-                                  placeholder="Please confirm password"
-                                  value={userData.confirmPassword}
-                                  onChange={(e) => setUserData({ ...userData, confirmPassword: e.target.value })}
                                 />
                               </div>
                               <div className="col-12">

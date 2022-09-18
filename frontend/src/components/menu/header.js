@@ -9,9 +9,11 @@ import Web3 from  'web3';
 import { createGlobalStyle } from "styled-components";
 import getWeb3 from "../../utils/getWeb3";
 import { warning_toastify, success_toastify, info_toastify } from "../../utils/notify";
-import { failedLoadImage } from "../../utils/compre.js";
+import { failedLoadImage, shorten } from "../../utils/compre.js";
 import { WalletConnect } from "../../store/action/wallet.action";
 import style from "./style.js";
+import axios from "axios";
+import { authSign } from "../../utils/sign";
 
 setDefaultBreakpoints([
   { xs: 0 },
@@ -132,13 +134,34 @@ const Header = () => {
       };
 
       const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+      const _existed = await axios.post(
+        `${process.env.REACT_APP_BACKEND}user/get-user`,
+        { walletAddress: accounts[0] }
+      ).then(res => {
+        dispatch(UPDATE_AUTH(res.data));
+        return true;
+      }).catch(err => { return false; });
+
+      if (!_existed) {
+        const authSignature = await authSign(accounts[0], 'register');
+        await axios.post(`${process.env.REACT_APP_BACKEND}auth/register`, {
+          walletAddress: accounts[0],
+          signature: authSignature,
+          action: "register"
+        }).then(async(res) => {
+          const { user } = res.data;
+            dispatch(UPDATE_AUTH(user));
+        }).catch(err => {
+
+        });
+      }
       // console.log(accounts, user_data.walletAddress);
-      if ((accounts[0]).toLowerCase() != (user_data.walletAddress).toLowerCase()) throw new Error("Please switch account and connect.");
-      else {
+      // if ((accounts[0]).toLowerCase() != (user_data.walletAddress).toLowerCase()) throw new Error("Please switch account and connect.");
+      // else {
         localStorage.setItem("nftdevelopments-connected", JSON.stringify({ connected: true }));
         dispatch(WalletConnect());
         success_toastify('Connected');
-      }
+      // }
     } catch(err) {
       let message = "";
       if (!window.ethereum) {
@@ -163,6 +186,7 @@ const Header = () => {
   const disConnectWallet = () => {
     localStorage.setItem("nftdevelopments-connected", JSON.stringify({ connected: false }));
     dispatch(WalletConnect());
+    dispatch(UPDATE_AUTH({ walletAddress: '' }));
     info_toastify('Disconnected');
   }
 
@@ -213,24 +237,6 @@ const Header = () => {
                             <span className='lines'></span>
                           </Link>
                         </div>
-                        {
-                          !user_data?.walletAddress && (
-                            <>
-                            <div className='navbar-item'>
-                              <Link to="/login" onClick={() => btn_icon(!showmenu)}>
-                              Login
-                                <span className='lines'></span>
-                              </Link>
-                            </div>
-                            <div className='navbar-item'>
-                              <Link to="/register" onClick={() => btn_icon(!showmenu)}>
-                              Register
-                                <span className='lines'></span>
-                              </Link>
-                            </div>
-                            </>
-                          )
-                        }
                       </div>
                     }
                   </Breakpoint>
@@ -261,33 +267,12 @@ const Header = () => {
                           <span className='lines'></span>
                         </Link>
                       </div>
-                      {
-                        !user_data?.walletAddress && (
-                          <>
-                          <div className='navbar-item'>
-                            <Link to="/login" onClick={() => btn_icon(!showmenu)}>
-                              Login
-                              <span className='lines'></span>
-                            </Link>
-                          </div>
-                          <div className='navbar-item'>
-                            <Link to="/register" onClick={() => btn_icon(!showmenu)}>
-                              Register
-                              <span className='lines'></span>
-                            </Link>
-                          </div>
-                          </>
-                        )
-                      }
                     </div>
                   </Breakpoint>
                 </BreakpointProvider>
 
                 <div className='mainside d-flex align-items-center'>
-                  { user_data?.walletAddress && 
-                    <span className="btn-main" onClick={ !wallet_info ? connectWallet : disConnectWallet }>{ !wallet_info ? "Connect Wallet" : "Disconnect Wallet"
-                  } </span>
-                  }
+                  <span className="btn-main cursor-pointer" onClick={ !wallet_info ? connectWallet : disConnectWallet }>{ !wallet_info ? "Connect Wallet" : "Disconnect Wallet" } </span>
                   <div className="logout">
                     { user_data?.walletAddress &&
                       <div id="de-click-menu-profile" className="de-menu-profile" onClick={() => btn_icon_pop(!showpop)} ref={refpop}>                           
@@ -295,7 +280,7 @@ const Header = () => {
                           {showpop && 
                             <div className="popshow">
                               <div className="d-name">
-                                  <h3 className="text-black">{user_data.name }</h3>
+                                  <h3 className="text-black">{user_data.name ? user_data.name : "Unamed"}</h3>
                               </div>
                               <div className="d-balance">
                                   <h4 className="text-black">Balance</h4>
@@ -303,7 +288,7 @@ const Header = () => {
                               </div>
                               <div className="d-wallet">
                                   <h4 className="text-black">My Wallet</h4>
-                                  <span id="wallet" className="d-wallet-address font-bold">{ user_data.walletAddress && ((user_data.walletAddress).substr(0, 4) + '...' + (user_data.walletAddress).substr(-4))}</span>
+                                  <span id="wallet" className="d-wallet-address font-bold">{ user_data.walletAddress && shorten(user_data.walletAddress)}</span>
                                   <CopyToClipboard text={user_data.walletAddress}
                                     onCopy={copyAlert}>
                                     <button id="btn_copy">Copy</button>
@@ -316,11 +301,6 @@ const Header = () => {
                                     <Link to="/profile" className="text-black">
                                       <i className="fa fa-user"></i> My profile
                                     </Link>
-                                  </span>
-                                </li>
-                                <li>
-                                  <span onClick={logout}>
-                                    <i className="fa fa-sign-out"></i> Sign out
                                   </span>
                                 </li>
                               </ul>

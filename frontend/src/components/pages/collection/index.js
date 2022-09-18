@@ -20,9 +20,9 @@ const Collection = () => {
   const [isLoading, setLoading] = useState(true);
 
   useEffect(async () => {
-    const { username } = params;
+    const { walletAddress } = params;
     const { instanceNFT } = await getWeb3();
-    await axios.post(`${process.env.REACT_APP_BACKEND}user/get-user-by-username`, { username }).then(async(res) => {
+    await axios.post(`${process.env.REACT_APP_BACKEND}user/get-user-by-wallet-address`, { walletAddress }).then(async(res) => {
       const { data } = res;
       let _list = await instanceNFT.methods.getPersonalNFT(data.walletAddress).call();
       let sellingList = [];

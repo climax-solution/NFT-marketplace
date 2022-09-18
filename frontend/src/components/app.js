@@ -13,10 +13,6 @@ const Home = lazy(() => import('./pages/home/'));
 const Explore = lazy(() => import('./pages/explore/'));
 const Collection = lazy(() => import('./pages/collection/'));
 const ItemDetail = lazy(() => import('./pages/ItemDetail/'));
-const Login = lazy(() => import('./pages/login/'));
-const Register = lazy(() => import('./pages/register/'));
-const ForgotPassword = lazy(() => import('./pages/forgotPassword/'));
-const ResetPassword = lazy(() => import('./pages/resetPassword/'));
 const Activity = lazy(() => import('./pages/activity/'));
 const FolderItems = lazy(() => import('./pages/folderNFTs/'));
 const Profile = lazy(() => import('./pages/Profile/'));
@@ -79,10 +75,10 @@ const App = () => {
                 <Route exact path="/" element={<Home/>}/>
                 <Route path="/explore" element={<Explore/>}/>
                 <Route path="/item-detail/:id" element={<ItemDetail/>}/>
-                <Route path="/login" element={<Login/>}/>
-                <Route path="/forgot-password" element={<ForgotPassword/>}/>
-                <Route path="/reset-password/:token" element={<ResetPassword/>}/>
-                <Route path="/register" element={<Register/>}/>
+                {/* <Route path="/login" element={<Login/>}/> */}
+                {/* <Route path="/forgot-password" element={<ForgotPassword/>}/> */}
+                {/* <Route path="/reset-password/:token" element={<ResetPassword/>}/> */}
+                {/* <Route path="/register" element={<Register/>}/> */}
                 <Route path="/activity" element={<Activity/>}/>
                 <Route path="/users" element={<Users/>}/>
                 <Route path="/folder-explorer/:id" element={<FolderItems/>}/>
@@ -97,7 +93,7 @@ const App = () => {
                     <Route path="manage-whitelist/:folderID" element={<Whitelist/>}/>
                   </Route>
                 </Route>
-                <Route path="/user/:username" element={<Collection/>}/>
+                <Route path="/user/:walletAddress" element={<Collection/>}/>
                 <Route path="/explore-bids/:tokenID" element={<BidView/>}/>
                 <Route path='*' element={<NotFound/>}/>
             </Routes>
