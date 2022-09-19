@@ -132,7 +132,7 @@ router.post('/register', async(req, res) => {
         if (!validateSign) {
             return res.status(400).json({ error: 'Signature is invalid.' });
         }
-        const buffer = crypto.randomBytes(48);
+        // const buffer = crypto.randomBytes(48);
         // const verifyToken = buffer.toString('hex');
 
         let user = new UserSchema({
@@ -179,7 +179,8 @@ router.post('/register', async(req, res) => {
         // });
         res.status(200).json({
             status: true,
-            message: 'You have registered. Please login.'
+            message: 'You have registered. Please login.',
+            user
         })
 
         // return res.status(200).json({

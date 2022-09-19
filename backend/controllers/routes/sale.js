@@ -269,8 +269,8 @@ router.post('/get-premium-list', async(req, res) => {
             notAllowed.push(item._id.toString());
         });
         for (let i = privateFolders.length - 1; i >= 0 ; i --) {
-            const whiteItem = await WhitelistSchema.findOne({ folderID: privateFolders[i]._id.toString(), user: user?.username ? user.username : "" });
-            if (privateFolders[i].artist == user?.username || whiteItem) {
+            const whiteItem = await WhitelistSchema.findOne({ folderID: privateFolders[i]._id.toString(), user: user?._id ? user._id : "" });
+            if (privateFolders[i].artist == user?._id || whiteItem) {
                 notAllowed.push(privateFolders[i]._id.toString());
             }
         }

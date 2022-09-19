@@ -34,6 +34,13 @@ router.post('/create-new-items', async(req, res) => {
             });
         }
 
+        const _existingUser = await UserSchema.findById(artist);
+        if (!_existingUser) {
+            return res.status(400).json({
+                error: "Artist is not existing user"
+            });
+        }
+
         let folder = new FolderSchema({
             name,
             artist,
@@ -57,7 +64,6 @@ router.post('/create-new-items', async(req, res) => {
             message: "Add NFTs and folder successfully"
         });
     } catch(err) {
-        console.log(err);
         res.status(400).json({
             error: "Your request is restricted"
         });
@@ -179,7 +185,7 @@ router.post('/get-folder-detail', async(req, res) => {
             for (let i = nfts.length - 1; i >=0 ; i --) tokenIDs.push(nfts[i].tokenID);
             list = await SaleSchema.find({ tokenID: { $in: tokenIDs }, action: {$in: ['list', 'auction'] }}).sort({ price: sort });
         }
-        const artist = await UserSchema.findOne({ username: folder.artist });
+        const artist = await UserSchema.findById(folder.artist);
         res.status(200).json({
             list, artist, description: folder.description
         });
@@ -195,7 +201,7 @@ router.post('/get-folder-interface', async(req, res) => {
     try {
         const { folderID } = req.body;
         const folder = await FolderSchema.findById(folderID);
-        const artistData = await UserSchema.findOne({ username: folder.artist });
+        const artistData = await UserSchema.findById(folder.artist);
         const initialNFT = await NFTSchema.findOne({ folderID });
 
         res.status(200).json({ list: { folder, artistData }, initialNFT });
@@ -257,6 +263,13 @@ router.post('/add-user-to-whitelist', async(req, res) => {
         if (folder && folder.isPulic) {
             return res.status(400).json({
                 error: "This folder was moved to public"
+            });
+        }
+        
+        const existingUser = await UserSchema.findById(user);
+        if (!existingUser) {
+            return res.status(400).json({
+                error: "You are going to add no existing user"
             });
         }
 
@@ -336,12 +349,12 @@ router.post('/get-private-folder-info', async(req, res) => {
         let whiteID = [folderInfo.artist];
         let whiteList = [];
         for await (let item of savedList) {            
-            const user = await UserSchema.findOne({username: item.user});
-        	whiteID.push(item.user);
+            const user = await UserSchema.findById(item.user);
+        	whiteID.push(mongoose.Mongoose.ObjectId(item.user));
             whiteList.push(user);
         }
 
-        const restList = await UserSchema.find({ username: { $nin: whiteID }});
+        const restList = await UserSchema.find({ _id: { $nin: whiteID }});
         res.status(200).json({
             whiteList,
             restList,

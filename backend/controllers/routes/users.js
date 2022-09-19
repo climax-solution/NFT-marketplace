@@ -10,6 +10,7 @@ let LikedLogs = require("../../models/activity-log");
 const checkAuth = require("../../helpers/auth");
 
 const { CourierClient } = require("@trycourier/courier");
+const { authSign } = require('../../helpers/check_sign');
 const courier = CourierClient({ authorizationToken: "pk_prod_X9RTESPDMXMBN7KFYP37EDJBNS44"});
 //pk_prod_YTMEXMYZA84MWVPTW3KHYS44B1S0
 router.post('/get-user', async(req, res) => {
@@ -53,48 +54,44 @@ const upload = multer({
 });
 
 router.post('/update-avatar', upload.single("myfile") ,async(req, res) => {
-    const { id } = await checkAuth(req);
-    if (!id) {
+    const { walletAddress, signature } = req.body;
+    const valid = await authSign(walletAddress, 'update avatar', signature);
+    if (!valid) {
         return res.status(400).json({
-            error: 'Session expired'
+            message: "Invalid signature"
         });
     }
 
-    const oldAvatar = await UserSchema.findOne({ _id: mongoose.Types.ObjectId(id) });
+    const oldAvatar = await UserSchema.findOne({ walletAddress });
     if (oldAvatar.avatar != "empty-avatar.png") fs.unlinkSync("public/avatar/" + oldAvatar.avatar);
-    await UserSchema.findOneAndUpdate({ _id: mongoose.Types.ObjectId(id) }, {avatar: req.file.filename});
-    const newUser = await UserSchema.findOne({ _id: mongoose.Types.ObjectId(id) });
+    await UserSchema.findOneAndUpdate({ walletAddress }, {avatar: req.file.filename});
+    const newUser = await UserSchema.findOne({ walletAddress });
     res.status(200).json(newUser)
 
 })
 
 router.post('/update-user', async(req, res) => {
-    const { id } = await checkAuth(req);
-    if (!id) {
-        return res.status(400).json({
-            error: 'Session expired'
-        });
-    }
 
     try {
         let data = req.body;
+        const valid = await authSign(data.walletAddress, 'update user info', data.signature);
+        if (!valid) {
+            return res.status(400).json({
+                message: "Invalid signature"
+            });
+        }
+
         const existedUser = await UserSchema.findOne({
-            _id: mongoose.Types.ObjectId(id)
+            walletAddress: data.walletAddress
         });
         if (!existedUser) {
             return res.status(400).json({
                 error: 'No user exist'
             });
         }
-        if (data.password) {
-            const salt = await bcrypt.genSalt(10);
-            delete data['confirmPassword'];
-            const hash = await bcrypt.hash(data.password, salt);
-            data.password = hash;
-        }
-
-        await UserSchema.findOneAndUpdate({ _id: mongoose.Types.ObjectId(id) }, data);
-        const user = await UserSchema.findOne({ _id: mongoose.Types.ObjectId(id) });
+        
+        await UserSchema.findOneAndUpdate({ walletAddress: data.walletAddress }, data);
+        const user = await UserSchema.findOne({ walletAddress: data.walletAddress });
         res.status(200).json({
             status: false,
             message: "Updated Successfully",
@@ -109,11 +106,11 @@ router.post('/update-user', async(req, res) => {
 
 })
 
-router.post('/get-user-by-username', async(req, res) => {
+router.post('/get-user-by-wallet-address', async(req, res) => {
     
     try {
-        const { username } = req.body;
-        const user = await UserSchema.findOne({ username });
+        const { walletAddress } = req.body;
+        const user = await UserSchema.findOne({ walletAddress });
         if (!user) {
             return res.status(400).json({
                 error: "Not found user"
