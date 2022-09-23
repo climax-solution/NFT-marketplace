@@ -55,7 +55,7 @@ const Users = () => {
         <div className="items_filter justify-content-between">
           <div className="row ml-0" name="form_quick_search">
             <div className="input-group w-100 position-relative align-items-center flex-nowrap">
-              <i className='fa fa-search icon position-absolute'/>
+              <i className='fa fa-search icon position-absolute z-index-1 text-dark'/>
               <input
                 type="text"
                 className="form-control ps-5 mb-0 rounded-pill"
